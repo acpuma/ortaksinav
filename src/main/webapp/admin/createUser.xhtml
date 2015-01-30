@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Create User</title>
+</h:head>
+<h:body>
+
+	<h:form>
+	
+		<p:growl id="growl" showDetail="true" life="3000" />
+
+		<h:outputLabel for="username" value="Username:" />
+		<p:inputText id="username" value="#{userCreateSer.user.username}" required="true" label="username" />
+		
+		<h:outputLabel for="password" value="Password:" />
+		<p:password id="password" value="#{userCreateSer.user.password}" required="true" label="password" />
+		<p:selectOneMenu value="#{userCreateSer.user.userRolesCollection}"  rendered="false">
+			<f:selectItems value="#{rolesSer.all}" var="sitem"
+						   itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+		</p:selectOneMenu>
+		<p:commandButton value="Create" update="growl" actionListener="#{userCreateSer.create}" />
+		<p:commandButton value="Clear" update="growl" actionListener="#{userCreateSer.clear}" />
+	</h:form>
+
+</h:body>
+</html> 
