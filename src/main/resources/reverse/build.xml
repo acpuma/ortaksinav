@@ -1,0 +1,26 @@
+<project name="antbuild" basedir="../" default="gen_hibernate">
+
+    <taskdef name="hibernatetool"
+             classname="org.hibernate.tool.ant.HibernateToolTask">
+        <classpath>
+            <fileset dir="lib">
+                <include name="**/*.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
+
+    <target name="gen_hibernate"
+            description="generate hibernate classes">
+        <hibernatetool>
+
+            <jdbcconfiguration
+                    configurationfile="hibernate.cfg.xml"
+                    packagename="com.mycompany.model"
+                    detectmanytomany="true"
+                    ></jdbcconfiguration>
+            <hbm2hbmxml destdir="src" />
+            <hbm2java  destdir="src" />
+        </hibernatetool>
+    </target>
+
+</project>

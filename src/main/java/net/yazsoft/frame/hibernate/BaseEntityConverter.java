@@ -2,8 +2,9 @@ package net.yazsoft.frame.hibernate;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.jsf.FacesContextUtils;
 
-import javax.enterprise.inject.Model;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -13,13 +14,17 @@ import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-/** * @author fec */
+import static com.google.common.base.CaseFormat.LOWER_CAMEL;
+import static com.google.common.base.CaseFormat.UPPER_CAMEL;
+
 
 @FacesConverter(forClass = BaseEntity.class) //entityid")
-@Model
 public class BaseEntityConverter implements Converter {
     static final Logger logger= Logger.getLogger(BaseEntityConverter.class.getName());
-    
+
+    //@Autowired
+    //BaseDao baseDao;
+
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         Number id =null;
@@ -49,25 +54,33 @@ public class BaseEntityConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        if (value == null || value.isEmpty()) {
-            return null;
-        }
-      
-        //return value;
-        
-        if (!value.matches("[0-9]+")) {
-            throw new ConverterException("Value is not a valid ID of BaseEntity.");
-        }
-        logger.debug(">>>>Converter: "+value);
-        Class<?> type = component.getValueExpression("value").getType(context.getELContext());
-        logger.debug(">>>>---TYPE : " + type); 
-        Class classs=type.getClass();
-        BaseDao<BaseEntity> dao;
+        BaseDao baseDao =null;
         Long tblid=Long.valueOf(value);
-        logger.debug(">>>>---ID : " + tblid);
-        dao = new BaseDao((Class<BaseEntity>) type);
-        //return baseService.find((Class<BaseEntity<? extends Number>>) type, Long.valueOf(value));
-        return dao.getById(tblid);
+        try {
+            if (value == null || value.isEmpty()) {
+                return null;
+            }
+            //return value;
+
+            if (!value.matches("[0-9]+")) {
+                throw new ConverterException("Value is not a valid ID of BaseEntity.");
+            }
+            logger.info(">>>>Converter: " + value);
+            Class<?> type = component.getValueExpression("value").getType(context.getELContext());
+            logger.info(">>>>---TYPE : " + type);
+            String lowClassName=UPPER_CAMEL.to(LOWER_CAMEL,type.getSimpleName());
+
+            WebApplicationContext webAppContext = FacesContextUtils
+                    .getWebApplicationContext(FacesContext.getCurrentInstance());
+            baseDao=(BaseDao)webAppContext.getBean(lowClassName+"Dao");
+            logger.info("BASEDAO : " +baseDao);
+            logger.info(">>>>---ID : " + tblid);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return baseDao.getById(tblid);
     }
 
 }

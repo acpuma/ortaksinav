@@ -1,34 +1,34 @@
 /* *  YAZSOFT  */
 /** @author fec */
-package net.yazsoft.frame.entities;
+package net.yazsoft.ors.entities;
 
-import net.yazsoft.frame.hibernate.BaseEntity;
-
-import javax.persistence.*;
+import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.util.Collection;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Menus.findAll", query = "SELECT m FROM Menus m"),
-    @NamedQuery(name = "Menus.findByTid", query = "SELECT m FROM Menus m WHERE m.tid = :tid"),
-    @NamedQuery(name = "Menus.findByActive", query = "SELECT m FROM Menus m WHERE m.active = :active"),
-    @NamedQuery(name = "Menus.findByVersion", query = "SELECT m FROM Menus m WHERE m.version = :version"),
-    @NamedQuery(name = "Menus.findByCreated", query = "SELECT m FROM Menus m WHERE m.created = :created"),
-    @NamedQuery(name = "Menus.findByUpdated", query = "SELECT m FROM Menus m WHERE m.updated = :updated"),
-    @NamedQuery(name = "Menus.findByNameTr", query = "SELECT m FROM Menus m WHERE m.nameTr = :nameTr"),
-    @NamedQuery(name = "Menus.findByNameEn", query = "SELECT m FROM Menus m WHERE m.nameEn = :nameEn"),
-    @NamedQuery(name = "Menus.findByImage", query = "SELECT m FROM Menus m WHERE m.image = :image"),
-    @NamedQuery(name = "Menus.findByForm", query = "SELECT m FROM Menus m WHERE m.form = :form"),
-    @NamedQuery(name = "Menus.findByOrder", query = "SELECT m FROM Menus m WHERE m.order = :order"),
-    @NamedQuery(name = "Menus.findByComment", query = "SELECT m FROM Menus m WHERE m.comment = :comment")})
-public class Menus extends BaseEntity<Long> implements Serializable {
+    @NamedQuery(name = "Menus.findAll", query = "SELECT m FROM Menus m")})
+public class Menus extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -219,7 +219,7 @@ public class Menus extends BaseEntity<Long> implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.app.entities.Menus[ tid=" + tid + " ]";
+        return "net.yazsoft.ors.entities.Menus[ tid=" + tid + " ]";
     }
 
 }

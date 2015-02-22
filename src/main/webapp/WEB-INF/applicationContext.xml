@@ -15,7 +15,7 @@
     <context:component-scan base-package="net.yazsoft"/>
     <context:annotation-config/>
     <context:spring-configured/>
-    <tx:annotation-driven/>
+    <tx:annotation-driven mode="proxy"/>
 
 <!--     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"> -->
 <!--         <property name="driverClass" value="com.mysql.jdbc.Driver" /> -->
@@ -39,7 +39,7 @@
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <property name="dataSource" ref="dataSource" />
-        <property name="packagesToScan" value="net.yazsoft.frame.entities, net.yazsoft.ors.entities" />
+        <property name="packagesToScan" value="net.yazsoft.ors.entities" />
         <property name="hibernateProperties">
             <props>
 <!--                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> -->
@@ -55,6 +55,7 @@
 		        <prop key="org.hibernate.envers.do_not_audit_optimistic_locking_field">false</prop>
                 <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/orsdb</prop>
                 <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
             </props>
         </property>
         

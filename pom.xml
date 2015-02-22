@@ -98,6 +98,23 @@
     <version>1.0.10</version>
   </dependency>
 
+    <dependency>
+        <groupId>org.primefaces.extensions</groupId>
+        <artifactId>primefaces-extensions</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.primefaces.extensions</groupId>
+        <artifactId>resources-ckeditor</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.primefaces.extensions</groupId>
+        <artifactId>resources-codemirror</artifactId>
+        <version>3.0.0</version>
+    </dependency>
+
   <!-- Spring Logging fix -->
   <dependency>
     <groupId>org.springframework</groupId>
@@ -194,8 +211,13 @@
     <artifactId>mysql-connector-java</artifactId>
     <version>5.1.34</version>
   </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-tools</artifactId>
+        <version>4.3.1.CR1</version>
+    </dependency>
 
-  <!-- Connection pool -->
+    <!-- Connection pool -->
   <dependency>
     <groupId>com.mchange</groupId>
     <artifactId>c3p0</artifactId>
@@ -243,6 +265,21 @@
     <artifactId>omnifaces</artifactId>
     <version>1.10</version>
   </dependency>
+
+    <dependency>
+        <groupId>org.imgscalr</groupId>
+        <artifactId>imgscalr-lib</artifactId>
+        <version>4.2</version>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>18.0</version>
+    </dependency>
+
 
 </dependencies>
 

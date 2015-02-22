@@ -1,36 +1,38 @@
 /* *  YAZSOFT  */
 /** @author fec */
-package net.yazsoft.frame.entities;
+package net.yazsoft.ors.entities;
 
-import net.yazsoft.frame.hibernate.BaseEntity;
-
-import javax.persistence.*;
+import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.util.Collection;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MenusType.findAll", query = "SELECT m FROM MenusType m"),
-    @NamedQuery(name = "MenusType.findByTid", query = "SELECT m FROM MenusType m WHERE m.tid = :tid"),
-    @NamedQuery(name = "MenusType.findByActive", query = "SELECT m FROM MenusType m WHERE m.active = :active"),
-    @NamedQuery(name = "MenusType.findByVersion", query = "SELECT m FROM MenusType m WHERE m.version = :version"),
-    @NamedQuery(name = "MenusType.findByName", query = "SELECT m FROM MenusType m WHERE m.name = :name"),
-    @NamedQuery(name = "MenusType.findByCreated", query = "SELECT m FROM MenusType m WHERE m.created = :created"),
-    @NamedQuery(name = "MenusType.findByUpdated", query = "SELECT m FROM MenusType m WHERE m.updated = :updated")})
-public class MenusType extends BaseEntity<Long> implements Serializable {
+    @NamedQuery(name = "Cities.findAll", query = "SELECT c FROM Cities c")})
+public class Cities extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Integer active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -44,17 +46,20 @@ public class MenusType extends BaseEntity<Long> implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refMenutype", fetch = FetchType.LAZY)
-    private Collection<Menus> menusCollection;
+    private Boolean active;
+    @OneToMany(mappedBy = "refCity", fetch = FetchType.LAZY)
+    private Collection<Towns> townsCollection;
+    @OneToMany(mappedBy = "refCity", fetch = FetchType.LAZY)
+    private Collection<Schools> schoolsCollection;
 
-    public MenusType() {
+    public Cities() {
     }
 
-    public MenusType(Long tid) {
+    public Cities(Long tid) {
         this.tid = tid;
     }
 
-    public MenusType(Long tid, int version, String name) {
+    public Cities(Long tid, int version, String name) {
         this.tid = tid;
         this.version = version;
         this.name = name;
@@ -66,14 +71,6 @@ public class MenusType extends BaseEntity<Long> implements Serializable {
 
     public void setTid(Long tid) {
         this.tid = tid;
-    }
-
-    public Integer getActive() {
-        return active;
-    }
-
-    public void setActive(Integer active) {
-        this.active = active;
     }
 
     public int getVersion() {
@@ -108,13 +105,30 @@ public class MenusType extends BaseEntity<Long> implements Serializable {
         this.updated = updated;
     }
 
-    @XmlTransient
-    public Collection<Menus> getMenusCollection() {
-        return menusCollection;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setMenusCollection(Collection<Menus> menusCollection) {
-        this.menusCollection = menusCollection;
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    @XmlTransient
+    public Collection<Towns> getTownsCollection() {
+        return townsCollection;
+    }
+
+    public void setTownsCollection(Collection<Towns> townsCollection) {
+        this.townsCollection = townsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Schools> getSchoolsCollection() {
+        return schoolsCollection;
+    }
+
+    public void setSchoolsCollection(Collection<Schools> schoolsCollection) {
+        this.schoolsCollection = schoolsCollection;
     }
 
     @Override
@@ -127,10 +141,10 @@ public class MenusType extends BaseEntity<Long> implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MenusType)) {
+        if (!(object instanceof Cities)) {
             return false;
         }
-        MenusType other = (MenusType) object;
+        Cities other = (Cities) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }
@@ -139,7 +153,7 @@ public class MenusType extends BaseEntity<Long> implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.app.entities.MenusType[ tid=" + tid + " ]";
+        return "net.yazsoft.ors.entities.Cities[ tid=" + tid + " ]";
     }
 
 }

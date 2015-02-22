@@ -30,11 +30,11 @@
 		<resource-handler>org.omnifaces.resourcehandler.UnmappedResourceHandler</resource-handler>
 
     </application>
-
 	<factory>
 		<exception-handler-factory>
 			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
 		</exception-handler-factory>
 	</factory>
+
 
 </faces-config>

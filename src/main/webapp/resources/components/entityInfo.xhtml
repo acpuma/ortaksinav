@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<!-- INTERFACE -->
+<cc:interface>
+    <cc:attribute name="daobean" />
+    <cc:attribute name="displayStyle" default="block"/>
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <p:outputPanel id="entityInfoPanel" style="display:#{cc.attrs.displayStyle};" >
+        <c:set var="daobeann" value="#{cc.attrs.daobean}" />
+        <p:outputLabel value="Tid:" for="tid" />
+        <p:inputText id="tid" value="#{daobeann.item.tid}" title="Tid" size="5" disabled="true"/>
+        <p:outputLabel value="Active:" for="active" />
+        <p:inputText id="active" value="#{daobeann.item.active}" title="Active" size="1" disabled="true"/>
+        <p:outputLabel value="Version:" for="version" />
+        <p:inputText id="version" value="#{daobeann.item.version}" title="Version" size="3" disabled="true"/>
+        <p:outputLabel value="Created:" for="created" />
+        <p:inputText id="created" value="#{daobeann.item.created}" title="Created" disabled="true">
+            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+        </p:inputText>
+        <p:outputLabel value="Updated:" for="updated" />
+        <p:inputText id="updated" value="#{daobeann.item.updated}" title="Updated" disabled="true">
+            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+        </p:inputText>
+    </p:outputPanel>
+</cc:implementation>
+</html>

@@ -5,7 +5,9 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      >
+      xmlns:of="http://omnifaces.org/functions"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+        >
 
 <ui:composition >
     <h:head>
@@ -34,7 +36,7 @@
 
 <div id="wrap" class="boxed">
     <ui:debug hotkey="x" />
-            <div class="wrapmenu">
+            <div class="wrapmenu ui-corner-tl">
                 <ui:include src="/WEB-INF/templates/menu.xhtml"/>
             </div>
 
@@ -43,7 +45,12 @@
                     <ui:include src="/WEB-INF/templates/header.xhtml"/>
                 </ui:insert>
 
+                <hr style="box-shadow: 0 1px 3px #ccc; color: #eeeeee;" />
+                <p:outputPanel id="block" layout="block" style="height:100%;">
+                <p:outputPanel styleClass="pageFormDiv clear" style="margin:0px; padding: 0px;" >
                 <ui:insert />
+                    </p:outputPanel>
+                </p:outputPanel>
             </div>
 
             <ui:insert name="footer">
@@ -51,6 +58,27 @@
             </ui:insert>
 
     <p:growl id="messages" showDetail="true" life="5000" />
+    <p:ajaxExceptionHandler type="java.lang.NullPointerException"
+                            update="exceptionDialog"
+                            onexception="PF('exceptionDialog').show();" />
+
+    <p:dialog id="exceptionDialog" header="Exception '#{pfExceptionHandler.type}' occured!"
+              widgetVar="exceptionDialog"
+              height="500px">
+        Message: #{pfExceptionHandler.message} <br/>
+        StackTrace: <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /> <br />
+
+
+        <p:button onclick="document.location.href = document.location.href;"
+                  value="Reload!"
+                  />
+    </p:dialog>
+
+    <pe:blockUI target="block"  widgetVar="blockUIWidget1"   >
+        <p:graphicImage library="images" name="loading.gif"  />
+        <p:spacer height="0" width="15" />
+        <h:outputText value="#{msg.global_loading}" style="white-space: nowrap;"/>
+    </pe:blockUI>
 </div>    
         </h:body>
 </ui:composition>

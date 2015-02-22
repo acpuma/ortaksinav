@@ -11,6 +11,7 @@
         <security:intercept-url pattern="/javax.faces.resource/**" access="permitAll"/>
         <security:intercept-url pattern="/resources/**" access="permitAll"/>
         <security:intercept-url pattern="/index.html" access="permitAll"/>
+        <security:intercept-url pattern="/error.html" access="permitAll"/>
         <security:intercept-url pattern="/login/**" access="permitAll"/>
         <security:intercept-url pattern="/admin/createUser.html" access="permitAll"/>
 

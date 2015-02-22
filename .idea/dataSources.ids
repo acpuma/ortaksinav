@@ -7,19 +7,65 @@
     </database-info>
     <case-sensitivity plain-identifiers="mixed" quoted-identifiers="upper"/>
     <schema name="" catalog="orsdb"/>
+    <table name="Menus" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="name_tr" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="name_en" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="main_id" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5" def="MQ=="/>
+      <column name="image" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="form" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="order" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="comment" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="ref_menutype" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_menus_mainmenu" columns="main_id" ref-table="Menus" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_menus_menustype" columns="ref_menutype" ref-table="MenusType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fk_menus_mainmenu" table="Menus" schema="" catalog="orsdb" columns="main_id"/>
+      <index name="fk_menus_mainmenu_idx" unique="false" columns="main_id"/>
+      <index name="fk_menus_menustype_idx" unique="false" columns="ref_menutype"/>
+    </table>
+    <table name="MenusType" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <exported-key name="fk_menus_menustype" table="Menus" schema="" catalog="orsdb" columns="ref_menutype"/>
+    </table>
     <table name="Roles" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
-      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
-      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="active" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7"/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
       <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <exported-key name="FK_bto3hic2ax5in5cxkkp3smri0" table="UserRoles" schema="" catalog="orsdb" columns="role"/>
     </table>
+    <table name="Schools" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="meb_code" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="city" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="town" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <exported-key name="fk_users_schools" table="Users" schema="" catalog="orsdb" columns="ref_school"/>
+    </table>
     <table name="UserRoles" schema="" catalog="orsdb" type="TABLE">
-      <column name="role" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
       <column name="user" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
+      <column name="role" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
+      <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="FK_3a9bjkpjyv6u88nuje7m61imh" columns="user" ref-table="Users" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="FK_bto3hic2ax5in5cxkkp3smri0" columns="role" ref-table="Roles" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <index name="FK_3a9bjkpjyv6u88nuje7m61imh" unique="false" columns="user"/>
@@ -27,15 +73,26 @@
     </table>
     <table name="Users" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
-      <column name="active" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7"/>
-      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
-      <column name="password" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
-      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="enabled" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7" def="YicxJw=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
       <column name="username" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
-      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="password" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="accountNonExpired" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7" def="YicxJw=="/>
+      <column name="accountNonLocked" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7" def="YicxJw=="/>
+      <column name="credentialsNonExpired" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7" def="YicxJw=="/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="surname" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="phone" sqlType="VARCHAR" precision="45" scale="0" nullable="true" jdbcType="12"/>
+      <column name="email" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="image" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="ref_school" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_users_schools" columns="ref_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="FK_3a9bjkpjyv6u88nuje7m61imh" table="UserRoles" schema="" catalog="orsdb" columns="user"/>
       <exported-key name="FK_q0i68mu44ojfsgpp6h2ul38ks" table="ZL_REVINFO" schema="" catalog="orsdb" columns="ref_user"/>
+      <index name="fk_users_schools_idx" unique="false" columns="ref_school"/>
     </table>
     <table name="ZL_REVINFO" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>

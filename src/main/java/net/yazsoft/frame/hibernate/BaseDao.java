@@ -1,6 +1,9 @@
 package net.yazsoft.frame.hibernate;
 
 import net.yazsoft.frame.utils.ReflectionUtil;
+import net.yazsoft.frame.utils.Util;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -8,88 +11,65 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.jsf.FacesContextUtils;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+import javax.inject.Named;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Named
+@Transactional
 public class BaseDao<T extends BaseEntity> implements Serializable {
+    private static final Logger logger = Logger.getLogger(BaseDao.class.getName());
 
 	private static final long serialVersionUID = 1L;
 
 	@Autowired
-	protected SessionFactory sessionFactory;
+	private SessionFactory sessionFactory;
 
-	final protected Class<T> type;
-	
-	public enum SortOrder {
-	    ASCENDING,
-	    DESCENDING,
-	    UNSORTED;
-	}
-	
+    Session session;
 
-	/**
-	 * Sets generic type class for this Dao. By setting this we will be able to
-	 * call methods that use Criteria without explicit class parameters. <br>
-	 * <br>
-	 * Note that this method is not optional! You have to use this.
-	 * 
-	 * <br>
-	 * <br>
-	 * 
-	 * <strong>If not used:</strong> <br>
-	 * <code>
-	 * 	session.createCriteria(clazz); // clazz should come as method parameter
-	 * </code>
-	 * <br>
-	 * <br>
-	 * 
-	 * <strong>If used:</strong> <br>
-	 * <code>
-	 * 	session.createCriteria(this.type); // no need for clazz parameter in method
-	 * </code>
-	 */
-//	@SuppressWarnings("unchecked")
-//	public BaseDAO() {
-//		this.type = (Class<T>) ((ParameterizedType) getClass()
-//				.getGenericSuperclass()).getActualTypeArguments()[0];
-//	}
+	protected Class<T> type;
 
+    public BaseDao() {
+    }
 
-	public BaseDao() {
-		type=null;
-	}
-	public BaseDao(Class<T> type) {
+    public BaseDao(Class<T> type) {
 		this.type = type;
 	}
 
 	public Long create(final T t) {
-		final Session session = sessionFactory.getCurrentSession();
-		return (Long) session.save(t);
+		return (Long) getSession().save(t);
 	}
 
 	@SuppressWarnings("unchecked")
 	public T getById(final Long id) {
-		final Session session = sessionFactory.getCurrentSession();
-		return (T) session.get(type, id);
+		return (T) getSession().get(type, id);
 	}
 
 	public T update(final T t) {
-		final Session session = sessionFactory.getCurrentSession();
 		final Calendar now = Calendar.getInstance();
-		return (T) session.merge(t);
+		return (T) getSession().merge(t);
 	}
 
-	public T delete(final T t) {
-		final Session session = sessionFactory.getCurrentSession();
-		return (T) session.merge(t);
+	public void delete(final T t) {
+        getSession().delete(t);
 	}
 
 	/**
@@ -114,71 +94,104 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 	}
 
 	public void hardDelete(final T t) {
-		final Session session = sessionFactory.getCurrentSession();
-		session.delete(t);
+		getSession().delete(t);
 	}
 	
 	protected Criteria getCriteria(){
-		final Session session = sessionFactory.getCurrentSession();
-		return session.createCriteria(type);
+		return getSession().createCriteria(type);
 	}
-	
+
+    public List<T> getAll(int first, int pageSize, String sortField,
+                        SortOrder sortOrder, Map<String, Object> filters) {
+        return load(first,  pageSize,  sortField,
+                 sortOrder,  filters);
+    }
+
 	public List<T> load(int first, int pageSize, String sortField,
 			SortOrder sortOrder, Map<String, Object> filters) {
-		
-		Criteria c = getCriteria();
-		c.add(Restrictions.eq("active", true));
-		c.add(Restrictions.eq("isDeleted", false));
-		
-		// Add sorting if requested
-		if (sortField != null && !sortField.trim().isEmpty()) {
-            if (sortOrder == SortOrder.ASCENDING) {
-                c.addOrder(Order.asc(sortField));
-            } else if(sortOrder == SortOrder.DESCENDING) {
-                c.addOrder(Order.desc(sortField));
+        logger.info("BASEDAO LOAD");
+		Criteria c=null;
+        List<T> list=null;
+        try {
+            c = getCriteria();
+            getSession().flush();
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+
+            // Add sorting if requested
+            if (sortField != null && !sortField.trim().isEmpty()) {
+                if (sortOrder == SortOrder.ASCENDING) {
+                    c.addOrder(Order.asc(sortField));
+                } else if (sortOrder == SortOrder.DESCENDING) {
+                    c.addOrder(Order.desc(sortField));
+                }
             }
+
+            // Add filtering if requested
+            if (!filters.isEmpty()) {
+                Iterator<Map.Entry<String, Object>> iterator = filters.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, Object> entry = iterator.next();
+
+                    try {
+
+                        Field field = ReflectionUtil.getField(type, entry.getKey());
+                        Class<?> clazz = field.getType();
+
+                        if (clazz.equals(Long.class)) {
+                            c.add(Restrictions.eq(entry.getKey(), Long.parseLong(entry.getValue().toString())));
+                        } else if (clazz.equals(String.class)) {
+                            c.add(Restrictions.like(entry.getKey(), entry.getValue().toString(), MatchMode.START));
+                        }
+
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            // Add paging
+            c.setMaxResults(pageSize).setFirstResult(first);
+            list=c.list();
+            for(T item:list) {
+                getSession().update(item);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
         }
 		
-		// Add filtering if requested
-		if (!filters.isEmpty()) {
-            Iterator<Map.Entry<String, Object>> iterator = filters.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, Object> entry = iterator.next();
-                
-                try {
+		return list;
+	}
 
-					Field field = ReflectionUtil.getField(type, entry.getKey());
-					Class<?> clazz = field.getType();
+	public int rowCount() {
+        Integer countInt=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            c.setProjection(Projections.rowCount());
 
-					if(clazz.equals(Long.class)){
-						c.add(Restrictions.eq(entry.getKey(), Long.parseLong(entry.getValue().toString())));
-					}
-					else if(clazz.equals(String.class)){
-						c.add(Restrictions.like(entry.getKey(), entry.getValue().toString(), MatchMode.START));
-					}
-					
-				} catch (NoSuchFieldException e) {
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				}
-            }
+            List list = c.list();
+            Long count = (Long) list.get(0);
+            countInt=count.intValue();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
         }
-		
-		// Add paging
-		c.setMaxResults(pageSize).setFirstResult(first);
-		
-		return c.list();
+        return countInt;
 	}
 
-	public long rowCount() {
-		Criteria  c = getCriteria();
-		c.add(Restrictions.eq("active", true));
-		c.add(Restrictions.eq("isDeleted", false));
-        c.setProjection(Projections.rowCount());
-        
-        List list = c.list();
-        return (long) list.get(0);
-	}
-	
+    public Session getSession() {
+        Session session1=sessionFactory.getCurrentSession();
+        logger.info(session1.isOpen());
+        session=session1;
+        return session1;
+    }
+
 }

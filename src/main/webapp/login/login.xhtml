@@ -4,7 +4,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:at="http://xmlns.jcp.org/jsf/passthrough">
 
 <h:head>
     <h:outputStylesheet library="css" name="core.css" />
@@ -23,7 +24,7 @@
                 </p:inputText>
 
                 <h:outputLabel for="password" value="#{msg.password}:" />
-                <p:password id="password" required="true"
+                <p:password id="password" required="true" at:autofocus="true"
                             value="#{loginSer.password}">
                 </p:password>
 

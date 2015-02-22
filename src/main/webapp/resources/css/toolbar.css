@@ -1,0 +1,64 @@
+
+#toolbar {
+    margin:10px 0;
+    padding:4px;
+    text-align: center;
+    width: 100%;
+    display:block;
+}
+
+#toolbarForm {
+    background: #eee;
+    display:inline-table;
+    padding:5px 15px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 2px 1px #444444;
+    
+}
+
+#toolbar img {
+    padding:3px;
+}
+
+.toolbar-button {
+    border-radius: 5px !important;
+    padding:4px 10px;
+}
+.toolbar-icon {
+    height:32px !important;
+    width: 32px !important;
+    top:3px !important;
+    margin-top:0px !important;
+}
+
+.toolbar-save {
+    background-image: url(images/toolbar/save32.png) !important;
+}
+
+.toolbar-add {
+    background-image: url(images/toolbar/add.png) !important;
+}
+
+.toolbar-search {
+    background-image: url(images/toolbar/search.png) !important;
+}
+
+.toolbar-delete {
+    background-image: url(images/toolbar/delete.png) !important;
+}
+
+.toolbar-print {
+    background-image: url(images/toolbar/print.png) !important;
+}
+
+.toolbar-ok {
+    background-image: url(images/toolbar/ok.png) !important;
+}
+
+.toolbar-help {
+    background-image: url(images/toolbar/help.png) !important;
+}
+
+.toolbar-send {
+    background-image: url(images/toolbar/sendbutton.png) !important;
+}

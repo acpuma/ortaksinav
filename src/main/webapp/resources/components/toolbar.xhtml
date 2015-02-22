@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+ 
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute default="true"     required="false"   name="save"  />
+        <cc:attribute default="true"     required="false"   name="new" />
+        <cc:attribute default="true"     required="false"   name="search" />
+        <cc:attribute default="true"     required="false"   name="delete" />
+        <cc:attribute default="true"     required="false"   name="print" />
+        <cc:attribute default="false"     required="false"   name="help" />
+        <cc:attribute default="true"     required="false"   name="gridname" />
+        <cc:attribute default="#{p:component('pageForm')}" name="resetfields" />
+        <cc:attribute name="daobean" /> 
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:outputStylesheet library="css" name="toolbar.css" />
+        <p:toolbar>
+            <p:toolbarGroup align="center" style="top: 20px;text-align: center" >
+            <c:set var="daobeann" value="#{cc.attrs.daobean}" />
+            <h:inputHidden id="disabledelete" value="#{daobeann.disabledelete}" />
+            <p:commandButton icon="toolbar-save toolbar-icon" styleClass="toolbar-button"
+                             value="#{msg.toolbar_save}"
+                             action="#{daobeann.save}"
+                            onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock()"
+                             update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)}  :messages"
+                             process="@this :#{p:component('pageForm')}" partialSubmit="true"
+                             rendered="#{cc.attrs.save}">
+                <p:confirm header="#{msg.global_confirmation}"
+                           message="#{msg.toolbar_save_confirm}" icon="ui-icon-alert"/>
+            </p:commandButton>
+            <p:commandButton icon="toolbar-add toolbar-icon" styleClass="toolbar-button"
+                             value="#{msg.toolbar_add}"
+                             process=":#{p:component('pageForm')}"  actionListener="#{daobeann.reset}"
+                             immediate="true"
+                             
+                             update=":#{p:component('pageForm')}"
+                             rendered="#{cc.attrs.new}">  
+                
+                <p:resetInput  target=":#{cc.attrs.resetfields}" />
+               
+            </p:commandButton>
+            
+            <p:commandButton icon="toolbar-search toolbar-icon" styleClass="toolbar-button" 
+                             value="#{msg.toolbar_search}"
+                             onclick="PF('pageGrid').show();" rendered="#{cc.attrs.search}"
+                             update="toolbarDelete" 
+                             process="@none"
+                             >
+                <f:setPropertyActionListener value="#{disabledelete}" target="#{daobeann.disabledelete}"/>
+                <f:setPropertyActionListener value="#{item}" target="#{daobeann.item}"/>
+            </p:commandButton>
+            <p:commandButton icon="toolbar-ok toolbar-icon" styleClass="toolbar-button"
+                             value="#{msg.toolbar_ok}" rendered="false" disabled="true"/>
+            
+            <p:commandButton icon="toolbar-delete toolbar-icon" styleClass="toolbar-button" 
+                             value="#{msg.toolbar_delete}"  immediate="true"
+                             process="@this :#{p:component('pageForm')}" partialSubmit="true"
+                             action="#{daobeann.delete}"
+                             update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)} :messages"
+                             disabled="#{daobeann.disabledelete}" rendered="#{cc.attrs.delete}"
+                             id="toolbarDelete">
+                <p:confirm header="#{msg.global_confirmation}" message="#{msg.toolbar_remove_confirm}"
+                           icon="ui-icon-alert"/>
+            </p:commandButton>
+            <p:commandButton icon="toolbar-print toolbar-icon" styleClass="toolbar-button"
+                             value="#{msg.toolbar_print}" rendered="#{cc.attrs.print}"/>
+            <p:commandButton icon="toolbar-help toolbar-icon" styleClass="toolbar-button"
+                             value="#{msg.toolbar_help}" rendered="#{cc.attrs.help}" disabled="true"/>
+
+            <p:confirmDialog global="true">
+                <p:commandButton value="#{msg.global_yes}" type="button"
+                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                <p:commandButton value="#{msg.global_no}" type="button"
+                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+            </p:confirmDialog>
+          
+             </p:toolbarGroup>
+        </p:toolbar>
+        
+    </cc:implementation>
+    
+</html>

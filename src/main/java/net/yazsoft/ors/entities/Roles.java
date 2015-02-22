@@ -1,25 +1,26 @@
 /* *  YAZSOFT  */
 /** @author fec */
-package net.yazsoft.frame.entities;
+package net.yazsoft.ors.entities;
 
-import net.yazsoft.frame.hibernate.BaseEntity;
-
-import java.io.Serializable;
+import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -27,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r")})
-public class Roles extends BaseEntity<Long> implements Serializable {
+public class Roles extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,17 +37,20 @@ public class Roles extends BaseEntity<Long> implements Serializable {
     private Long tid;
     private Boolean active;
     @Basic(optional = false)
+    @NotNull
     @Column(nullable = false)
     private int version;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role", fetch = FetchType.LAZY)
-    private Collection<UserRoles> userRolesCollection;
+    @ManyToMany(mappedBy = "rolesCollection", fetch = FetchType.LAZY)
+    private Collection<Users> usersCollection;
 
     public Roles() {
     }
@@ -110,12 +114,12 @@ public class Roles extends BaseEntity<Long> implements Serializable {
     }
 
     @XmlTransient
-    public Collection<UserRoles> getUserRolesCollection() {
-        return userRolesCollection;
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
     }
 
-    public void setUserRolesCollection(Collection<UserRoles> userRolesCollection) {
-        this.userRolesCollection = userRolesCollection;
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     @Override
@@ -140,7 +144,7 @@ public class Roles extends BaseEntity<Long> implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.ors.hibernate.Roles[ tid=" + tid + " ]";
+        return "net.yazsoft.ors.entities.Roles[ tid=" + tid + " ]";
     }
 
 }

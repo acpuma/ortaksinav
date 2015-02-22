@@ -1,6 +1,6 @@
 package net.yazsoft.frame.hibernate;
 
-import net.yazsoft.frame.entities.Users;
+import net.yazsoft.ors.entities.Users;
 import org.hibernate.envers.DefaultRevisionEntity;
 import org.hibernate.envers.RevisionEntity;
 

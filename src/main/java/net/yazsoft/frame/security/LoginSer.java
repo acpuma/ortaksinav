@@ -25,8 +25,8 @@ import java.io.Serializable;
 @Named
 public class LoginSer implements Serializable{
     private static final Logger logger = Logger.getLogger(LoginSer.class);
-    private String username;
-    private String password;
+    private String username="b";
+    private String password="b";
     private boolean rememberMe = false;
     private boolean loggedIn = false;
 
@@ -52,8 +52,10 @@ public class LoginSer implements Serializable{
                     response);
             ExternalContext ec = FacesContext.getCurrentInstance()
                     .getExternalContext();
-
-            if (savedRequest != null) {
+            if (savedRequest!=null) {
+                logger.info("LOGIN REQUEST PAGE : " + savedRequest.getRedirectUrl());
+            }
+            if ((savedRequest != null) && (!savedRequest.getRedirectUrl().contains("login"))) {
                 // redirect to the page requested before login
                 ec.redirect(savedRequest.getRedirectUrl());
             } else {

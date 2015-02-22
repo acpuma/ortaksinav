@@ -1,9 +1,7 @@
 package net.yazsoft.frame.security;
 
-import java.util.*;
-
-import net.yazsoft.frame.entities.UserRoles;
-import net.yazsoft.frame.entities.Users;
+import net.yazsoft.ors.entities.Roles;
+import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,12 +9,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collection;
 
-@Service
+@Named
 @Transactional
 public class UsersSecuritySer implements UserDetailsService {
     Logger logger= Logger.getLogger(UsersSecuritySer.class);
@@ -34,7 +34,7 @@ public class UsersSecuritySer implements UserDetailsService {
         return new User(
                 user.getUsername(),
                 user.getPassword(),
-                user.getEnabled(),
+                user.getActive(),
                 user.getAccountNonExpired(),
                 user.getCredentialsNonExpired(),
                 user.getAccountNonLocked(),
@@ -45,12 +45,12 @@ public class UsersSecuritySer implements UserDetailsService {
     public Collection<? extends GrantedAuthority> getAuthorities(Users user) {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         //Set<Roles> userRoles = user.getRoles();
-        Collection<UserRoles> userRoles=user.getUserRolesCollection();
+        Collection<Roles> userRoles=user.getRolesCollection();
 
         if(userRoles != null)
         {
-            for (UserRoles role : userRoles) {
-                String roleName=role.getRole().getName();
+            for (Roles role : userRoles) {
+                String roleName=role.getName();
                 logger.info("ROLE : " + roleName);
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roleName);
                 authorities.add(authority);

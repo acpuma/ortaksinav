@@ -24,6 +24,13 @@
     <show-object-properties value="true" />
     <loaded-nodes />
   </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-list connection-id="488529cd-f90c-43ed-a6e6-d9a0bfecd1f0" dataset="orsdb.Users" active-filter-id="EMPTY_FILTER">
+      <filter id="5290ff6f-73e3-491b-88d8-fc8fc3faf9ec" name="Filter 1" temporary="false" custom-name="false" type="basic" join-type="AND">
+        <condition column="tid" operator="=" value="" active="true" />
+      </filter>
+    </filter-list>
+  </component>
   <component name="DBNavigator.Project.MethodExecutionManager">
     <method-browser />
     <execution-history>
@@ -32,7 +39,69 @@
     </execution-history>
   </component>
   <component name="DBNavigator.Project.Settings">
-    <connections />
+    <connections>
+      <connection id="488529cd-f90c-43ed-a6e6-d9a0bfecd1f0">
+        <database>
+          <name value="ors mysql" />
+          <description value="" />
+          <active value="true" />
+          <os-authentication value="false" />
+          <database-type value="MYSQL" />
+          <database-version value="5.6" />
+          <user value="ors" />
+          <password value="b3J0YWsyMQ==" />
+          <driver-library value="$PROJECT_DIR$/../../libs/mysql-connector-java-5.1.34/mysql-connector-java-5.1.34-bin.jar" />
+          <driver value="com.mysql.fabric.jdbc.FabricMySQLDriver" />
+          <url value="jdbc:mysql://localhost:3306/orsdb" />
+        </database>
+        <details>
+          <charset value="UTF-8" />
+          <auto-commit value="false" />
+          <ddl-file-binding value="true" />
+          <database-logging value="false" />
+          <environment-type value="development" />
+          <idle-time-to-disconnect value="30" />
+          <max-connection-pool-size value="7" />
+          <alternative-statement-delimiter value="" />
+          <connect-automatically value="true" />
+        </details>
+        <object-filters hide-empty-schemas="true">
+          <object-type-filter use-master-settings="true">
+            <object-type name="SCHEMA" enabled="true" />
+            <object-type name="USER" enabled="true" />
+            <object-type name="ROLE" enabled="true" />
+            <object-type name="PRIVILEGE" enabled="true" />
+            <object-type name="CHARSET" enabled="true" />
+            <object-type name="TABLE" enabled="true" />
+            <object-type name="VIEW" enabled="true" />
+            <object-type name="MATERIALIZED VIEW" enabled="true" />
+            <object-type name="NESTED TABLE" enabled="true" />
+            <object-type name="COLUMN" enabled="true" />
+            <object-type name="INDEX" enabled="true" />
+            <object-type name="CONSTRAINT" enabled="true" />
+            <object-type name="TRIGGER" enabled="true" />
+            <object-type name="TRIGGER" enabled="true" />
+            <object-type name="SYNONYM" enabled="true" />
+            <object-type name="SEQUENCE" enabled="true" />
+            <object-type name="PROCEDURE" enabled="true" />
+            <object-type name="FUNCTION" enabled="true" />
+            <object-type name="PACKAGE" enabled="true" />
+            <object-type name="TYPE" enabled="true" />
+            <object-type name="TYPE ATTRIBUTE" enabled="true" />
+            <object-type name="ARGUMENT" enabled="true" />
+            <object-type name="DIMENSION" enabled="true" />
+            <object-type name="CLUSTER" enabled="true" />
+            <object-type name="DBLINK" enabled="true" />
+          </object-type-filter>
+          <object-name-filters>
+            <filter join-type="AND" object-type="schema">
+              <simple-condition operator="EQUAL" text="orsdb" />
+            </filter>
+          </object-name-filters>
+        </object-filters>
+        <consoles />
+      </connection>
+    </connections>
     <browser-settings>
       <general>
         <display-mode value="TABBED" />
@@ -42,10 +111,10 @@
       <filters>
         <object-type-filter>
           <object-type name="SCHEMA" enabled="true" />
-          <object-type name="USER" enabled="true" />
+          <object-type name="USER" enabled="false" />
           <object-type name="ROLE" enabled="true" />
-          <object-type name="PRIVILEGE" enabled="true" />
-          <object-type name="CHARSET" enabled="true" />
+          <object-type name="PRIVILEGE" enabled="false" />
+          <object-type name="CHARSET" enabled="false" />
           <object-type name="TABLE" enabled="true" />
           <object-type name="VIEW" enabled="true" />
           <object-type name="MATERIALIZED VIEW" enabled="true" />
@@ -177,10 +246,10 @@
       </record-navigation>
     </dataset-editor-settings>
     <code-editor-settings>
-      <values-list-popup>
+      <general>
         <show-object-navigation-gutter value="false" />
         <show-spec-declaration-navigation-gutter value="true" />
-      </values-list-popup>
+      </general>
     </code-editor-settings>
     <code-completion-settings>
       <filters>
@@ -189,8 +258,11 @@
           <filter-element type="RESERVED_WORD" id="function" selected="false" />
           <filter-element type="RESERVED_WORD" id="parameter" selected="false" />
           <filter-element type="RESERVED_WORD" id="datatype" selected="true" />
+          <filter-element type="RESERVED_WORD" id="exception" selected="true" />
           <filter-element type="OBJECT" id="schema" selected="true" />
+          <filter-element type="OBJECT" id="role" selected="true" />
           <filter-element type="OBJECT" id="user" selected="true" />
+          <filter-element type="OBJECT" id="privilege" selected="true" />
           <user-schema>
             <filter-element type="OBJECT" id="table" selected="true" />
             <filter-element type="OBJECT" id="view" selected="true" />
@@ -248,8 +320,11 @@
           <filter-element type="RESERVED_WORD" id="function" selected="true" />
           <filter-element type="RESERVED_WORD" id="parameter" selected="true" />
           <filter-element type="RESERVED_WORD" id="datatype" selected="true" />
+          <filter-element type="RESERVED_WORD" id="exception" selected="true" />
           <filter-element type="OBJECT" id="schema" selected="true" />
           <filter-element type="OBJECT" id="user" selected="true" />
+          <filter-element type="OBJECT" id="role" selected="true" />
+          <filter-element type="OBJECT" id="privilege" selected="true" />
           <user-schema>
             <filter-element type="OBJECT" id="table" selected="true" />
             <filter-element type="OBJECT" id="view" selected="true" />
@@ -304,6 +379,8 @@
         </extended-filter>
       </filters>
       <sorting enabled="true">
+        <sorting-element type="OBJECT" id="role" />
+        <sorting-element type="OBJECT" id="user" />
         <sorting-element type="RESERVED_WORD" id="keyword" />
         <sorting-element type="RESERVED_WORD" id="datatype" />
         <sorting-element type="OBJECT" id="column" />
@@ -346,6 +423,24 @@
         <always-show-controls value="false" />
       </compiler>
     </execution-engine-settings>
+    <operation-settings>
+      <transactions>
+        <uncommitted-changes>
+          <on-project-close value="ASK" />
+          <on-disconnect value="ASK" />
+          <on-autocommit-toggle value="ASK" />
+        </uncommitted-changes>
+        <multiple-uncommitted-changes>
+          <on-commit value="ASK" />
+          <on-rollback value="ASK" />
+        </multiple-uncommitted-changes>
+      </transactions>
+      <session-browser>
+        <disconnect-session value="ASK" />
+        <kill-session value="ASK" />
+        <reload-on-filter-change value="false" />
+      </session-browser>
+    </operation-settings>
     <ddl-file-settings>
       <extensions>
         <mapping file-type-id="VIEW" extensions="vw" />

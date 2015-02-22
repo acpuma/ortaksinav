@@ -2,7 +2,7 @@
 /** @author fec */
 package net.yazsoft.frame.menus;
 
-import net.yazsoft.frame.entities.Menus;
+import net.yazsoft.ors.entities.Menus;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -11,12 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Named
 @Transactional
 public class MenusBus implements Serializable{
     private MenuModel model = new DefaultMenuModel();

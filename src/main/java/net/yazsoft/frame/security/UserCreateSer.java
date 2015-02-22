@@ -1,7 +1,6 @@
 package net.yazsoft.frame.security;
 
-import net.yazsoft.frame.entities.UserRoles;
-import net.yazsoft.frame.entities.Users;
+import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,17 +23,10 @@ public class UserCreateSer {
     @Autowired
     private UsersSer usersSer;
 
-    @Autowired
-    private UserRolesDao userRolesDao;
-
     public void create() {
         user.setPassword(encoder.encode(user.getPassword()));
         usersSer.create(user);
-        UserRoles userRoles=new UserRoles();
-        userRoles.setUser(user);
-        userRoles.setRole(new RolesDao().getById(3L));
-        userRolesDao.create(userRoles);
-
+        //ADD DEFAULT USER ROLE
         logger.info("PASSWORD : " + user.getPassword());
 
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
