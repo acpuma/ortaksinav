@@ -6,6 +6,7 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,21 +56,22 @@ public class Schools extends BaseEntity implements Serializable {
     @Column(name = "meb_code", length = 50)
     private String mebCode;
     @JoinTable(name = "UsersSchools", joinColumns = {
-        @JoinColumn(name = "ref_school", referencedColumnName = "tid", nullable = false)},
-            inverseJoinColumns = {
+        @JoinColumn(name = "ref_school", referencedColumnName = "tid", nullable = false)}, inverseJoinColumns = {
         @JoinColumn(name = "ref_user", referencedColumnName = "tid", nullable = false)})
     @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Users> usersCollection;
     @OneToMany(mappedBy = "refSchools", fetch = FetchType.LAZY)
     private Collection<Images> imagesCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<Albums> albumsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<Exams> examsCollection;
     @JoinColumn(name = "ref_city", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cities refCity;
     @JoinColumn(name = "ref_town", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Towns refTown;
-    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
-    private Collection<Albums> albumsCollection;
 
     public Schools() {
     }
@@ -158,6 +160,24 @@ public class Schools extends BaseEntity implements Serializable {
         this.imagesCollection = imagesCollection;
     }
 
+    @XmlTransient
+    public Collection<Albums> getAlbumsCollection() {
+        return albumsCollection;
+    }
+
+    public void setAlbumsCollection(Collection<Albums> albumsCollection) {
+        this.albumsCollection = albumsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Exams> getExamsCollection() {
+        return examsCollection;
+    }
+
+    public void setExamsCollection(Collection<Exams> examsCollection) {
+        this.examsCollection = examsCollection;
+    }
+
     public Cities getRefCity() {
         return refCity;
     }
@@ -172,15 +192,6 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setRefTown(Towns refTown) {
         this.refTown = refTown;
-    }
-
-    @XmlTransient
-    public Collection<Albums> getAlbumsCollection() {
-        return albumsCollection;
-    }
-
-    public void setAlbumsCollection(Collection<Albums> albumsCollection) {
-        this.albumsCollection = albumsCollection;
     }
 
     @Override
