@@ -1,5 +1,6 @@
 package net.yazsoft.frame.security;
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
+@ViewScoped
 public class UserCreateSer {
     private static final Logger logger = Logger.getLogger(UserCreateSer.class);
 

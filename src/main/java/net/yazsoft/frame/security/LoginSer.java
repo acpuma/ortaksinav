@@ -1,6 +1,7 @@
 package net.yazsoft.frame.security;
 
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,24 +24,30 @@ import java.io.IOException;
 import java.io.Serializable;
 
 @Named
+@ViewScoped
 public class LoginSer implements Serializable{
     private static final Logger logger = Logger.getLogger(LoginSer.class);
     private String username="b";
-    private String password="b";
+    private String password; //="b";
     private boolean rememberMe = false;
     private boolean loggedIn = false;
 
     @Inject
     private AuthenticationManager authenticationManager;
 
+    @Inject SessionInfo sessionInfo;
+    @Inject UsersDao usersDao;
+
     public String login() throws IOException {
         try {
+            logger.info("user / pass : " + this.getUsername() + " / " + this.getPassword());
             Authentication authenticationRequest = new UsernamePasswordAuthenticationToken(
                     this.getUsername(), this.getPassword());
             Authentication result = authenticationManager
                     .authenticate(authenticationRequest);
 
             SecurityContextHolder.getContext().setAuthentication(result);
+            sessionInfo.setUser(usersDao.findByUserName(this.getUsername()));
 
             // restore the request before the login-redirect, if any.
             RequestCache requestCache = new HttpSessionRequestCache();

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>Sınavlar</title>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+        <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+            <h:form id="pageForm">
+                <p:panelGrid columns="2" id="pagePanel">
+                    <h:outputLabel value="Hello, world"/>
+                </p:panelGrid>
+                <h:inputHidden id="status" value="#{schoolsDao.status}"  />
+                <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
+                <h:messages />
+                <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" />
+            </h:form>
+
+            <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
+                      modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+                <components:schoolsGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')}"
+                                        widgetVar="schoolsGridWidget"/>
+            </p:dialog>
+
+        </p:outputPanel>
+    </ui:decorate>
+</f:view>
+</html>

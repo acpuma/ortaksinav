@@ -2,6 +2,7 @@
 /** @author fec */
 package net.yazsoft.frame.menus;
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Menus;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Named
+@ViewScoped
 @Transactional
 public class MenusBus implements Serializable{
     private MenuModel model = new DefaultMenuModel();

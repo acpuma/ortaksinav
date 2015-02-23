@@ -1,11 +1,10 @@
-package net.yazsoft.ors.schools;
+package net.yazsoft.ors.lessonsGroup;
 
 import net.yazsoft.frame.hibernate.BaseSer;
 import net.yazsoft.frame.scopes.ViewScoped;
-import net.yazsoft.ors.entities.Schools;
+import net.yazsoft.ors.entities.LessonsGroup;
 import org.apache.log4j.Logger;
 import org.primefaces.model.LazyDataModel;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -13,18 +12,17 @@ import javax.inject.Named;
 
 @Named
 @ViewScoped
-@Transactional
-public class SchoolsSer extends BaseSer<Schools> {
-    private Logger logger = Logger.getLogger(SchoolsSer.class);
+public class LessonsGroupSer extends BaseSer<LessonsGroup> {
+    private Logger logger = Logger.getLogger(LessonsGroupSer.class);
 
     @Inject
-    SchoolsDao schoolsDao;
+    LessonsGroupDao lessonsGroupDao;
 
     @Inject
-    SchoolsLazy lazyModel;
+    LessonsGroupLazy lazyModel;
 
     @Transactional
-    public LazyDataModel<Schools> getLazyModel() {
+    public LazyDataModel<LessonsGroup> getLazyModel() {
         return lazyModel;
     }
 }

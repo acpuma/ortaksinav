@@ -1,5 +1,6 @@
 package net.yazsoft.frame.security;
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Roles;
 import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Named
+@ViewScoped
 @Transactional
 public class UsersSecuritySer implements UserDetailsService {
     Logger logger= Logger.getLogger(UsersSecuritySer.class);

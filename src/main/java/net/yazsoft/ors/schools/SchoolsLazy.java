@@ -1,15 +1,18 @@
 package net.yazsoft.ors.schools;
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Schools;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Named
+@ViewScoped
 public class SchoolsLazy extends LazyDataModel<Schools>{
 
     @Inject

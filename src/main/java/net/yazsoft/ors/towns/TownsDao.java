@@ -1,23 +1,21 @@
 package net.yazsoft.ors.towns;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Cities;
 import net.yazsoft.ors.entities.Towns;
-import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
 @Named
+@ViewScoped
 @Transactional
 public class TownsDao extends BaseGridDao<Towns> implements Serializable{
     Logger logger= Logger.getLogger(TownsDao.class);

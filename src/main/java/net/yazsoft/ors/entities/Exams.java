@@ -61,7 +61,6 @@ public class Exams extends BaseEntity implements Serializable {
     @NotNull
     @Column(name = "ref_exam_year", nullable = false)
     private long refExamYear;
-    private Integer time;
     @Column(name = "answer_count")
     private Integer answerCount;
     @Column(name = "booklet_count")
@@ -171,14 +170,6 @@ public class Exams extends BaseEntity implements Serializable {
 
     public void setRefExamYear(long refExamYear) {
         this.refExamYear = refExamYear;
-    }
-
-    public Integer getTime() {
-        return time;
-    }
-
-    public void setTime(Integer time) {
-        this.time = time;
     }
 
     public Integer getAnswerCount() {

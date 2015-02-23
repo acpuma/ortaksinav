@@ -44,7 +44,7 @@
                 <h:inputHidden id="status" value="#{schoolsDao.status}"  />
                 <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
                 <h:messages />
-                <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" />
+                <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" print="false" />
             </h:form>
 
             <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"

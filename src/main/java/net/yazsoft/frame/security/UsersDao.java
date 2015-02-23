@@ -1,6 +1,7 @@
 package net.yazsoft.frame.security;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Roles;
 import net.yazsoft.ors.entities.Schools;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @Named
+@ViewScoped
 @Transactional
 public class UsersDao extends BaseGridDao<Users> {
     Logger logger= Logger.getLogger(UsersDao.class);
