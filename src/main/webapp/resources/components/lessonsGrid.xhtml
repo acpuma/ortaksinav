@@ -9,8 +9,8 @@
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
     <cc:attribute default="false"     required="false"   name="draggableColumns" />
     <cc:attribute default="false"     required="false"   name="editable" />
-    <cc:attribute default="false"     required="false"   name="editMode" />
-    <cc:attribute default="false"     required="false"   name="editingRow" />
+    <cc:attribute default="row"     required="false"   name="editMode" />
+    <cc:attribute default="true"     required="false"   name="editingRow" />
     <cc:attribute default="false"     required="false"   name="expandedRow" />
     <cc:attribute default="true"      required="false"   name="paginator" />
     <cc:attribute default="bottom"    required="false"   name="paginatorPosition" />
@@ -34,10 +34,10 @@
 <cc:implementation>
     <h:form>
         <p:dataTable id="lessonsGrid"
-                     var="lessonsGrid"
+                     var="lessonVar"
 
                      filterEvent="enter"
-                     value="#{lessonsDao.all}"
+                     value="#{lessonsDao.lessonsDtos}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -47,9 +47,6 @@
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
-                     editMode="#{cc.attrs.editMode}"
-                     editingRow="#{cc.attrs.editingRow}"
-                     expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
                      paginatorPosition="#{cc.attrs.paginatorPosition}"
@@ -70,29 +67,79 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selectionMode="single"
-                     selection="#{lessonsDao.item}"
-                     lazy="true"
-                     rowKey="#{lessonsGrid.tid}"
+
+                     rowKey="#{lessonVar.id}"
                      tableStyle="#{cc.attrs.tableStyle}"
                 >
 
-            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
-                    onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();"
-                    process="@all"
-                    listener="#{lessonsDao.select}"
-                    />
 
-            <p:ajax event="rowSelect" listener="#{lessonsDao.onRowSelect}" update="#{cc.attrs.update}" />
+            <p:ajax event="rowEdit" listener="#{lessonsDao.onRowEdit}"
+                    update=":messages :#{p:component('questionCount')}" process="lessonsGrid" />
+            <p:ajax event="rowEditCancel" listener="#{lessonsDao.onRowCancel}"
+                    update=":messages :#{p:component('questionCount')}" />
 
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{lessonsGrid.tid}  </p:column>
-
-
-            <p:column headerText="#{msg.global_name}" width="170" >
-                #{lessonsGrid.refLessonName.nameTr}
+            <f:facet name="header">
+                #{msg.lessons}
+            </f:facet>
+            <p:column headerText="#{msg.global_rank}" width="20" rendered="true"  >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{lessonVar.rank}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{lessonVar.rank}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
             </p:column>
 
+            <p:column headerText="#{msg.exam_group}" width="120" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{lessonVar.refLessonName.refLessonGroup.nameTr}" />
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:selectOneMenu value="#{lessonsGroupDao.selected}" style="width:100%">
+                            <f:selectItems value="#{lessonsGroupDao.all}" var="man"
+                                           itemLabel="#{man.nameTr}" itemValue="#{man}" />
+                        </h:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.global_name}" width="120" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{lessonVar.refLessonName.nameTr}" />
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:selectOneMenu value="#{lessonVar.refLessonName}" style="width:100%">
+                            <f:selectItems value="#{lessonsNameDao.all}" var="man"
+                                           itemLabel="#{man.nameTr}" itemValue="#{man}" />
+                        </h:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.lesson_question_count}" width="50" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{lessonVar.questionCount}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{lessonVar.questionCount}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column headerText="#{msg.lesson_start}" width="50" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{lessonVar.start}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{lessonVar.start}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+
+            </p:column>
+
+            <p:column style="width:32px">
+                <p:rowEditor />
+            </p:column>
+            <p:column width="40">
+                <p:commandButton value="Sil" update=":#{p:component('questionCount')} :messages lessonsGrid "
+                                 actionListener="#{lessonsDao.delete(lessonVar)}">
+                </p:commandButton>
+            </p:column>
         </p:dataTable>
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />

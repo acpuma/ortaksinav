@@ -6,7 +6,6 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,8 +25,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsYear.findAll", query = "SELECT e FROM ExamsYear e")})
-public class ExamsYear extends BaseEntity implements Serializable {
+    @NamedQuery(name = "ExamsAnswerType.findAll", query = "SELECT e FROM ExamsAnswerType e")})
+public class ExamsAnswerType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,17 +50,17 @@ public class ExamsYear extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExamYear", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "refAnswerType", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
 
-    public ExamsYear() {
+    public ExamsAnswerType() {
     }
 
-    public ExamsYear(Long tid) {
+    public ExamsAnswerType(Long tid) {
         this.tid = tid;
     }
 
-    public ExamsYear(Long tid, boolean active, int version, String name) {
+    public ExamsAnswerType(Long tid, boolean active, int version, String name) {
         this.tid = tid;
         this.active = active;
         this.version = version;
@@ -135,10 +134,10 @@ public class ExamsYear extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ExamsYear)) {
+        if (!(object instanceof ExamsAnswerType)) {
             return false;
         }
-        ExamsYear other = (ExamsYear) object;
+        ExamsAnswerType other = (ExamsAnswerType) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }
@@ -147,7 +146,7 @@ public class ExamsYear extends BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.ors.entities.ExamsYear[ tid=" + tid + " ]";
+        return "net.yazsoft.ors.entities.ExamsAnswerType[ tid=" + tid + " ]";
     }
 
 }

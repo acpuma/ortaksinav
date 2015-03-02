@@ -47,6 +47,8 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 
 	protected Class<T> type;
 
+    List<T> all;
+
     public BaseDao() {
     }
 
@@ -57,6 +59,24 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 	public Long create(final T t) {
 		return (Long) getSession().save(t);
 	}
+
+    public void saveOrUpdate(final T t) {
+        getSession().saveOrUpdate(t);
+        /*
+        if (t!=null) {
+            if (t.getTid()==null) {
+                create(t);
+            } else {
+                T temp=getById(t.getTid());
+                if (temp==null) {
+                    create(t);
+                } else {
+                    update(t);
+                }
+            }
+        }
+        */
+    }
 
 	@SuppressWarnings("unchecked")
 	public T getById(final Long id) {
@@ -78,10 +98,14 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<T> getAll() {
-		final Criteria c = getCriteria();
-		c.add(Restrictions.eq("active", true));
-		c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return c.list();
+        if (all==null) {
+            final Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+            all = c.list();
+        }
+        return all;
+
 	}
 	
 	@SuppressWarnings("unchecked")

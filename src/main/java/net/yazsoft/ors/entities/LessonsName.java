@@ -3,8 +3,10 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,11 +17,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
@@ -55,6 +59,8 @@ public class LessonsName extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_lesson_group", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private LessonsGroup refLessonGroup;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonName", fetch = FetchType.LAZY)
+    private Collection<Lessons> lessonsCollection;
 
     public LessonsName() {
     }
@@ -132,6 +138,15 @@ public class LessonsName extends BaseEntity implements Serializable {
 
     public void setRefLessonGroup(LessonsGroup refLessonGroup) {
         this.refLessonGroup = refLessonGroup;
+    }
+
+    @XmlTransient
+    public Collection<Lessons> getLessonsCollection() {
+        return lessonsCollection;
+    }
+
+    public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
+        this.lessonsCollection = lessonsCollection;
     }
 
     @Override

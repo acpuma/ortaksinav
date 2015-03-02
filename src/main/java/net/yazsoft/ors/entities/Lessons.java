@@ -7,9 +7,12 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
@@ -42,20 +45,19 @@ public class Lessons extends BaseEntity implements Serializable {
     private Date updated;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ref_exam", nullable = false)
-    private long refExam;
-    @Basic(optional = false)
-    @NotNull
     @Column(nullable = false)
     private int rank;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ref_lesson_name", nullable = false)
-    private long refLessonName;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "question_count", nullable = false)
     private int questionCount;
+    private Integer start;
+    @JoinColumn(name = "ref_exam", referencedColumnName = "tid", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Exams refExam;
+    @JoinColumn(name = "ref_lesson_name", referencedColumnName = "tid", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private LessonsName refLessonName;
 
     public Lessons() {
     }
@@ -64,13 +66,11 @@ public class Lessons extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Lessons(Long tid, boolean active, int version, long refExam, int rank, long refLessonName, int questionCount) {
+    public Lessons(Long tid, boolean active, int version, int rank, int questionCount) {
         this.tid = tid;
         this.active = active;
         this.version = version;
-        this.refExam = refExam;
         this.rank = rank;
-        this.refLessonName = refLessonName;
         this.questionCount = questionCount;
     }
 
@@ -114,14 +114,6 @@ public class Lessons extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    public long getRefExam() {
-        return refExam;
-    }
-
-    public void setRefExam(long refExam) {
-        this.refExam = refExam;
-    }
-
     public int getRank() {
         return rank;
     }
@@ -130,20 +122,36 @@ public class Lessons extends BaseEntity implements Serializable {
         this.rank = rank;
     }
 
-    public long getRefLessonName() {
-        return refLessonName;
-    }
-
-    public void setRefLessonName(long refLessonName) {
-        this.refLessonName = refLessonName;
-    }
-
     public int getQuestionCount() {
         return questionCount;
     }
 
     public void setQuestionCount(int questionCount) {
         this.questionCount = questionCount;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Exams getRefExam() {
+        return refExam;
+    }
+
+    public void setRefExam(Exams refExam) {
+        this.refExam = refExam;
+    }
+
+    public LessonsName getRefLessonName() {
+        return refLessonName;
+    }
+
+    public void setRefLessonName(LessonsName refLessonName) {
+        this.refLessonName = refLessonName;
     }
 
     @Override

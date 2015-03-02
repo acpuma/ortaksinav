@@ -25,19 +25,18 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetLessonsGroup"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetExam"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
-    <cc:attribute default="width:900px;" required="false" name="tableStyle" />
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form>
-        <p:dataTable id="lessonsGroupGrid"
-                     var="lessonsGroupGrid"
+        <p:dataTable id="examsGrid"
+                     var="examsGrid"
 
                      filterEvent="enter"
-                     value="#{lessonsGroupSer.lazyModel}"
+                     value="#{examsDao.all}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -71,31 +70,29 @@
                      widgetVar="#{cc.attrs.widgetVar}"
 
                      selectionMode="single"
-                     selection="#{lessonsGroupDao.item}"
+                     selection="#{examsDao.item}"
                      lazy="true"
-                     rowKey="#{lessonsGroupGrid.tid}"
-                     tableStyle="#{cc.attrs.tableStyle}"
+                     rowKey="#{examsGrid.tid}"
+                     tableStyle="width:900px;"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
                     process="@all"
-                    listener="#{lessonsGroupDao.select}"
+                    listener="#{examsDao.select}"
                     />
 
-            <p:ajax event="rowSelect" listener="#{lessonsGroupDao.onRowSelect}" update="#{cc.attrs.update}" />
-
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{lessonsGroupGrid.tid}  </p:column>
+            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{examsGrid.tid}  </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="170" filterBy="#{lessonsGroupGrid.nameTr}">
-                #{lessonsGroupGrid.nameTr}
+            <p:column headerText="#{msg.global_name}" width="370" filterBy="#{examsGrid.nameTr}">
+                #{examsGrid.nameTr}
             </p:column>
 
-            <f:facet name="footer">
-                <p:commandButton value="Ekle" />
-            </f:facet>
+            <p:column headerText="Tarih" rendered="true" filterBy="#{examsGrid.date}">
+                #{examsGrid.date}  </p:column>
+            <p:column headerText="#{msg.exam_number}" rendered="true" > #{examsGrid.number}  </p:column>
 
         </p:dataTable>
     </h:form>

@@ -13,71 +13,113 @@
     </h:head>
     <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+
     <h:form id="pageForm">
-            <p:outputLabel value="#{msg.school}:" for="refSchool" />
+        <p:outputPanel id="pagePanel">
+            <p:outputLabel value="#{msg.school}:" for="refSchool" style="margin-left:10px;"/>
             <p:selectOneMenu id="refSchool" value="#{examsDao.item.refSchool}" title="RefSchool"
                              required="true" requiredMessage="The RefSchool field is required.">
-                <!-- TODO: update below reference to list of available items-->
+                <f:selectItems value="#{schoolsDao.all}" var="man"
+                               itemLabel="#{man.name}" itemValue="#{man}"/>
+            </p:selectOneMenu>
+            <p:outputLabel value="#{msg.exam_year}:" for="refExamYear" style="margin-left:10px;"/>
+            <p:selectOneMenu id="refExamYear" value="#{examsDao.item.refExamYear}" title="RefExamYear"
+                             required="true" requiredMessage="The RefSchool field is required.">
+                <f:selectItems value="#{examsYearDao.all}" var="man"
+                               itemLabel="#{man.name}" itemValue="#{man}"/>
+            </p:selectOneMenu>
+            <p:outputLabel value="#{msg.exam_season}:" for="refExamSeason" style="margin-left:10px;"/>
+            <p:selectOneMenu id="refExamSeason" value="#{examsDao.item.refExamSeason}" title="RefExamSeason"
+                             >
+                <f:selectItems value="#{examsSeasonDao.all}" var="man"
+                               itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+            </p:selectOneMenu>
+            <p:selectOneMenu id="refExamSeasonNumber" value="#{examsDao.item.refExamSeasonNumber}"
+                             title="RefExamSeasonNumber" >
+                <f:selectItems value="#{examsSeasonNumberDao.all}" var="man"
+                               itemLabel="#{man.name}" itemValue="#{man}"/>
+            </p:selectOneMenu>
+            <p:outputLabel value=". #{msg.exam}" for="refExamSeason" style="margin-left:10px;"/>
+
+            <p:separator/>
+            <p:outputLabel value="#{msg.exam_name}:" for="nameTr" style="margin-left:10px;"/>
+            <p:inputText id="nameTr" value="#{examsDao.item.nameTr}" title="NameTr" size="40" style="margin:5px;"
+                         required="true" requiredMessage="#{msg.exam_name} field is required."/>
+            <p:outputLabel value="NameEn:" for="nameEn" rendered="false"/>
+            <p:inputText id="nameEn" value="#{examsDao.item.nameEn}" title="NameEn" rendered="false"/>
+            <p:outputLabel value="#{msg.global_date}:" for="date" style="margin-left:10px;"/>
+            <p:calendar id="date" value="#{examsDao.item.date}" title="Date" showOn="button"
+                        pattern="dd/MM/yyyy HH:mm:ss" navigator="true"/>
+            <br/>
+
+            <p:outputLabel value="#{msg.exam_number}:" for="number" style="margin:0 10px;"/>
+            <p:inputText id="number" value="#{examsDao.item.number}" title="Number"/>
+            <p:separator/>
+
+            <span style="font-size: 24px;display: none;">Dersler</span>
+            <p:outputPanel style="width: 795px;" id="lessonsPanel">
+                <components:lessonsGrid tableStyle="700px;" widgetVar="lessonsWidget"
+                                        paginator="false" editable="true"/>
+            </p:outputPanel>
+            <p:panelGrid columns="2" style="width: 100%;">
+                <p:outputLabel value="Toplam soru sayısı : #{lessonsDao.sumQuestionCount}"
+                        id="questionCount" />
+                <p:commandButton value="Ders Ekle" style="text-align: right;"
+                                 actionListener="#{lessonsDao.addLesson}"
+                                 process="@this"
+                                 update="@widgetVar(lessonsWidget)"
+                                 />
+            </p:panelGrid>
+
+            <p:separator/>
+            <p:panelGrid columns="4">
+                <p:outputLabel value="#{msg.exam_answer_count}:" for="answerType"/>
+                <p:selectOneMenu id="answerType" value="#{examsDao.item.refAnswerType}" title="answerType"
+                                 required="true" requiredMessage="The answerType field is required.">
+                    <f:selectItems value="#{examsAnswerTypeDao.all}" var="man"
+                                   itemLabel="#{man.name}" itemValue="#{man}"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel value="#{msg.exam_booklet_count}:" for="bookletCount"/>
+                <p:selectOneMenu id="bookletCount" value="#{examsDao.item.refBookletType}" title="bookletCount"
+                                 required="true" requiredMessage="The bookletCount field is required.">
+                    <f:selectItems value="#{examsBookletTypeDao.all}" var="man"
+                                   itemLabel="#{man.name}" itemValue="#{man}"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel value="#{msg.exam_false_delete}:" for="falseDelete"/>
+                <p:selectOneMenu id="falseDelete" value="#{examsDao.item.refFalseType}" title="falseDelete"
+                                 required="true" requiredMessage="The falseDelete field is required.">
+                    <f:selectItems value="#{examsFalseTypeDao.all}" var="man"
+                                   itemLabel="#{man.name}" itemValue="#{man}"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="#{msg.exam_time} :" for="time" style="margin-left:10px;"/>
+                <p:inputText id="time" value="#{examsDao.item.time}" title="Time" size="4" style="margin:5px;"
+                             />
+            </p:panelGrid>
+            <p:outputLabel value="RefExamType:" for="refExamType" rendered="false"/>
+            <p:selectOneMenu id="refExamType" value="#{examsDao.item.refExamType}"
+                             title="RefExamType" rendered="false"
+                             required="true" requiredMessage="The RefExamType field is required.">
                 <f:selectItems value="#{fixme}"/>
             </p:selectOneMenu>
-        <p:outputLabel value="#{msg.exam_year}:" for="refExamYear" />
-        <p:inputText id="refExamYear" value="#{examsDao.item.refExamYear}" title="RefExamYear"
-                     required="true" requiredMessage="The RefExamYear field is required."/>
-        <p:outputLabel value="#{msg.exam_season}:" for="refExamSeason" />
-        <p:selectOneMenu id="refExamSeason" value="#{examsDao.item.refExamSeason}" title="RefExamSeason"
-                         required="true" requiredMessage="The RefExamSeason field is required.">
-            <!-- TODO: update below reference to list of available items-->
-            <f:selectItems value="#{fixme}"/>
-        </p:selectOneMenu>
-        <p:separator/>
-        <p:outputLabel value="#{msg.exam_name}:" for="nameTr" />
-        <p:inputText id="nameTr" value="#{examsDao.item.nameTr}" title="NameTr"
-                     required="true" requiredMessage="#{msg.exam_name} field is required."/>
-        <p:outputLabel value="NameEn:" for="nameEn" rendered="false" />
-        <p:inputText id="nameEn" value="#{examsDao.item.nameEn}" title="NameEn" rendered="false"/>
-        <br/>
-        <p:outputLabel value="#{msg.global_date}:" for="date" />
-        <p:calendar id="date" value="#{examsDao.item.date}" title="Date" showOn="button"
-                    pattern="MM/dd/yyyy HH:mm:ss" navigator="true"/>
-        <br/>
-        <p:outputLabel value="#{msg.exam_number}:" for="number" />
-        <p:inputText id="number" value="#{examsDao.item.number}" title="Number" />
-        <p:separator/>
+            <br/>
+            <p:panelGrid columns="2" rendered="false">
+                <h:outputLabel value="EntityInfo:"/>
+                <components:entityInfo daobean="#{examsDao}"/>
+            </p:panelGrid>
+        </p:outputPanel>
 
-        <h4>Dersler</h4>
-        <components:lessonsGrid />
-        <p:separator/>
-        <p:outputLabel value="#{msg.exam_answer_count}:" for="answerCount" />
-        <p:inputText id="answerCount" value="#{examsDao.item.answerCount}" title="AnswerCount" />
-        <br/>
-        <p:outputLabel value="#{msg.exam_booklet_count}:" for="bookletCount" />
-        <p:inputText id="bookletCount" value="#{examsDao.item.bookletCount}" title="BookletCount" />
-        <br/>
-        <p:outputLabel value="#{msg.exam_false_delete}:" for="falseDelete" />
-        <p:inputText id="falseDelete" value="#{examsDao.item.falseDelete}" title="FalseDelete" />
-        <br/>
-        <p:outputLabel value="RefExamType:" for="refExamType" />
-        <p:selectOneMenu id="refExamType" value="#{examsDao.item.refExamType}" title="RefExamType"
-                         required="true" requiredMessage="The RefExamType field is required.">
-            <!-- TODO: update below reference to list of available items-->
-            <f:selectItems value="#{fixme}"/>
-        </p:selectOneMenu>
-        <br/>
-        <p:panelGrid columns="2" id="pagePanel">
-            <h:outputLabel value="EntityInfo:"/>
-            <components:entityInfo daobean="#{examsDao}" />
-        </p:panelGrid>
-
-        <h:inputHidden id="status" value="#{schoolsDao.status}"  />
-        <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
-        <p:messages />
-        <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" />
+        <h:inputHidden id="status" value="#{examsDao.status}"/>
+        <h:inputHidden id="disabledelete" value="#{examsDao.disabledelete}"/>
+        <h:messages rendered="false"/>
     </h:form>
+        <components:toolbar gridname="examsGrid" daobean="#{examsDao}" print="false" />
 
-        <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
+        <p:dialog id="gridDialog" header="#{msg.exams}" widgetVar="pageGrid"
                   modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
-            <components:schoolsGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')}"
-                                    widgetVar="schoolsGridWidget"/>
+            <components:examsGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')} "
+                                    widgetVar="examsGridWidget"/>
         </p:dialog>
 
     </p:outputPanel>

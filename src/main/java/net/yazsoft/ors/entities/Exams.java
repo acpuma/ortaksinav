@@ -3,8 +3,10 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,11 +17,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
@@ -57,19 +61,27 @@ public class Exams extends BaseEntity implements Serializable {
     private String number;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ref_exam_year", nullable = false)
-    private long refExamYear;
-    @Column(name = "answer_count")
-    private Integer answerCount;
-    @Column(name = "booklet_count")
-    private Integer bookletCount;
-    @Column(name = "false_delete")
-    private Integer falseDelete;
+    private Integer time;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<Lessons> lessonsCollection;
+    @JoinColumn(name = "ref_answer_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ExamsAnswerType refAnswerType;
+    @JoinColumn(name = "ref_booklet_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ExamsBookletType refBookletType;
+    @JoinColumn(name = "ref_exam_season_number", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ExamsSeasonNumber refExamSeasonNumber;
     @JoinColumn(name = "ref_exam_type", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private ExamsType refExamType;
+    @JoinColumn(name = "ref_exam_year", referencedColumnName = "tid", nullable = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private ExamsYear refExamYear;
+    @JoinColumn(name = "ref_false_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ExamsFalseType refFalseType;
     @JoinColumn(name = "ref_school", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Schools refSchool;
@@ -84,12 +96,11 @@ public class Exams extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Exams(Long tid, boolean active, int version, String nameTr, long refExamYear) {
+    public Exams(Long tid, boolean active, int version, String nameTr) {
         this.tid = tid;
         this.active = active;
         this.version = version;
         this.nameTr = nameTr;
-        this.refExamYear = refExamYear;
     }
 
     public Long getTid() {
@@ -164,36 +175,45 @@ public class Exams extends BaseEntity implements Serializable {
         this.date = date;
     }
 
-    public long getRefExamYear() {
-        return refExamYear;
+    public Integer getTime() {
+        return time;
     }
 
-    public void setRefExamYear(long refExamYear) {
-        this.refExamYear = refExamYear;
+    public void setTime(Integer time) {
+        this.time = time;
     }
 
-    public Integer getAnswerCount() {
-        return answerCount;
+    @XmlTransient
+    public Collection<Lessons> getLessonsCollection() {
+        return lessonsCollection;
     }
 
-    public void setAnswerCount(Integer answerCount) {
-        this.answerCount = answerCount;
+    public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
+        this.lessonsCollection = lessonsCollection;
     }
 
-    public Integer getBookletCount() {
-        return bookletCount;
+    public ExamsAnswerType getRefAnswerType() {
+        return refAnswerType;
     }
 
-    public void setBookletCount(Integer bookletCount) {
-        this.bookletCount = bookletCount;
+    public void setRefAnswerType(ExamsAnswerType refAnswerType) {
+        this.refAnswerType = refAnswerType;
     }
 
-    public Integer getFalseDelete() {
-        return falseDelete;
+    public ExamsBookletType getRefBookletType() {
+        return refBookletType;
     }
 
-    public void setFalseDelete(Integer falseDelete) {
-        this.falseDelete = falseDelete;
+    public void setRefBookletType(ExamsBookletType refBookletType) {
+        this.refBookletType = refBookletType;
+    }
+
+    public ExamsSeasonNumber getRefExamSeasonNumber() {
+        return refExamSeasonNumber;
+    }
+
+    public void setRefExamSeasonNumber(ExamsSeasonNumber refExamSeasonNumber) {
+        this.refExamSeasonNumber = refExamSeasonNumber;
     }
 
     public ExamsType getRefExamType() {
@@ -202,6 +222,22 @@ public class Exams extends BaseEntity implements Serializable {
 
     public void setRefExamType(ExamsType refExamType) {
         this.refExamType = refExamType;
+    }
+
+    public ExamsYear getRefExamYear() {
+        return refExamYear;
+    }
+
+    public void setRefExamYear(ExamsYear refExamYear) {
+        this.refExamYear = refExamYear;
+    }
+
+    public ExamsFalseType getRefFalseType() {
+        return refFalseType;
+    }
+
+    public void setRefFalseType(ExamsFalseType refFalseType) {
+        this.refFalseType = refFalseType;
     }
 
     public Schools getRefSchool() {

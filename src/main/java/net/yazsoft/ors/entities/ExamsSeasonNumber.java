@@ -6,13 +6,14 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -26,8 +27,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsYear.findAll", query = "SELECT e FROM ExamsYear e")})
-public class ExamsYear extends BaseEntity implements Serializable {
+    @NamedQuery(name = "ExamsSeasonNumber.findAll", query = "SELECT e FROM ExamsSeasonNumber e")})
+public class ExamsSeasonNumber extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,17 +52,20 @@ public class ExamsYear extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExamYear", fetch = FetchType.LAZY)
+    @JoinColumn(name = "ref_exam_season", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ExamsSeason refExamSeason;
+    @OneToMany(mappedBy = "refExamSeasonNumber", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
 
-    public ExamsYear() {
+    public ExamsSeasonNumber() {
     }
 
-    public ExamsYear(Long tid) {
+    public ExamsSeasonNumber(Long tid) {
         this.tid = tid;
     }
 
-    public ExamsYear(Long tid, boolean active, int version, String name) {
+    public ExamsSeasonNumber(Long tid, boolean active, int version, String name) {
         this.tid = tid;
         this.active = active;
         this.version = version;
@@ -116,6 +120,14 @@ public class ExamsYear extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
+    public ExamsSeason getRefExamSeason() {
+        return refExamSeason;
+    }
+
+    public void setRefExamSeason(ExamsSeason refExamSeason) {
+        this.refExamSeason = refExamSeason;
+    }
+
     @XmlTransient
     public Collection<Exams> getExamsCollection() {
         return examsCollection;
@@ -135,10 +147,10 @@ public class ExamsYear extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ExamsYear)) {
+        if (!(object instanceof ExamsSeasonNumber)) {
             return false;
         }
-        ExamsYear other = (ExamsYear) object;
+        ExamsSeasonNumber other = (ExamsSeasonNumber) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }
@@ -147,7 +159,7 @@ public class ExamsYear extends BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.ors.entities.ExamsYear[ tid=" + tid + " ]";
+        return "net.yazsoft.ors.entities.ExamsSeasonNumber[ tid=" + tid + " ]";
     }
 
 }

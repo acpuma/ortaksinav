@@ -54,6 +54,8 @@ public class ExamsSeason extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    @OneToMany(mappedBy = "refExamSeason", fetch = FetchType.LAZY)
+    private Collection<ExamsSeasonNumber> examsSeasonNumberCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExamSeason", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
 
@@ -125,6 +127,15 @@ public class ExamsSeason extends BaseEntity implements Serializable {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    @XmlTransient
+    public Collection<ExamsSeasonNumber> getExamsSeasonNumberCollection() {
+        return examsSeasonNumberCollection;
+    }
+
+    public void setExamsSeasonNumberCollection(Collection<ExamsSeasonNumber> examsSeasonNumberCollection) {
+        this.examsSeasonNumberCollection = examsSeasonNumberCollection;
     }
 
     @XmlTransient
