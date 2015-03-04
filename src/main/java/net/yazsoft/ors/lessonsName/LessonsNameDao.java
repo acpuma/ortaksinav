@@ -23,9 +23,6 @@ public class LessonsNameDao extends BaseGridDao<LessonsName> implements Serializ
 
     List<LessonsName> names;
 
-    @Inject
-    LessonsGroupDao lessonsGroupDao;
-
     public List findByGroup(LessonsGroup group) {
         logger.info(group);
         List list=null;
@@ -45,7 +42,7 @@ public class LessonsNameDao extends BaseGridDao<LessonsName> implements Serializ
     }
 
     public List<LessonsName> getNames() {
-        names=findByGroup(lessonsGroupDao.getSelected());
+        //names=findByGroup(lessonsGroupDao.getSelected());
         return names;
     }
 

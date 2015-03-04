@@ -89,15 +89,17 @@
                 </p:cellEditor>
             </p:column>
 
-            <p:column headerText="#{msg.exam_group}" width="120" rendered="true">
+            <p:column headerText="#{msg.exam_group}" width="80" rendered="true">
                 <p:cellEditor>
                     <f:facet name="output">
                         <h:outputText value="#{lessonVar.refLessonName.refLessonGroup.nameTr}" />
                     </f:facet>
                     <f:facet name="input">
-                        <h:selectOneMenu value="#{lessonsGroupDao.selected}" style="width:100%">
+                        <h:selectOneMenu value="#{lessonsGroupDao.selected}" style="width:100%"
+                                >
                             <f:selectItems value="#{lessonsGroupDao.all}" var="man"
                                            itemLabel="#{man.nameTr}" itemValue="#{man}" />
+                            <p:ajax update="lessonsNames" listener="#{lessonsGroupDao.handleGroupChange}"/>
                         </h:selectOneMenu>
                     </f:facet>
                 </p:cellEditor>
@@ -108,8 +110,9 @@
                         <h:outputText value="#{lessonVar.refLessonName.nameTr}" />
                     </f:facet>
                     <f:facet name="input">
-                        <h:selectOneMenu value="#{lessonVar.refLessonName}" style="width:100%">
-                            <f:selectItems value="#{lessonsNameDao.all}" var="man"
+                        <h:selectOneMenu value="#{lessonVar.refLessonName}" style="width:100%" id="lessonsNames"
+                                >
+                            <f:selectItems value="#{lessonsGroupDao.lessonsNames}" var="man"
                                            itemLabel="#{man.nameTr}" itemValue="#{man}" />
                         </h:selectOneMenu>
                     </f:facet>
