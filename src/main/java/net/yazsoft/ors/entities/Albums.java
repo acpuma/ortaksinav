@@ -186,7 +186,8 @@ public class Albums extends BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.ors.entities.Albums[ tid=" + tid + " ]";
+        return "Albums{" +
+                "tid=" + tid +
+                '}';
     }
-
 }

@@ -35,8 +35,9 @@
         <p:dataTable id="examsGrid"
                      var="examsGrid"
 
-                     filterEvent="enter"
-                     value="#{examsDao.all}"
+
+                     filteredValue="#{exam}"
+                     value="#{examsSer.lazyModel}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -68,31 +69,78 @@
 
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
+                     lazy="true"
 
                      selectionMode="single"
                      selection="#{examsDao.item}"
-                     lazy="true"
+
                      rowKey="#{examsGrid.tid}"
-                     tableStyle="width:900px;"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('formDialogWidget').show();"
                     process="@all"
                     listener="#{examsDao.select}"
                     />
 
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{examsGrid.tid}  </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="370" filterBy="#{examsGrid.nameTr}">
+            <p:column headerText="#{msg.global_id}" width="50" rendered="false"  > #{examsGrid.tid}  </p:column>
+
+            <p:column headerText="#{msg.exam_year}" width="60" rendered="true"
+                      filterBy="#{examsGrid.refExamYear}"  sortBy="#{examsGrid.refExamYear}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{examsYearDao.all}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                <h:outputText value="#{examsGrid.refExamYear.name}" />
+            </p:column>
+            <p:column headerText="#{msg.exam_season}" width="80" rendered="true"
+                      filterBy="#{examsGrid.refExamSeason}" sortBy="#{examsGrid.refExamSeason}"  >
+                <f:facet name="filter">
+                <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()">
+                    <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                  noSelectionOption="true" />
+                    <f:selectItems value="#{examsSeasonDao.all}" var="man"
+                                   itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                </p:selectOneMenu>
+                </f:facet>
+                #{examsGrid.refExamSeason.nameTr}
+            </p:column>
+
+            <p:column headerText="#{msg.exam}" width="60" rendered="true"
+                      filterBy="#{examsGrid.refExamSeasonNumber}" sortBy="#{examsGrid.refExamSeasonNumber}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()">
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{examsSeasonNumberDao.all}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                #{examsGrid.refExamSeasonNumber.name}
+            </p:column>
+
+            <p:column headerText="#{msg.global_number_short}" width="30" rendered="true"
+                      filterBy="#{examsGrid.number}" sortBy="#{examsGrid.number}" >
+             #{examsGrid.number}
+            </p:column>
+
+
+            <p:column headerText="#{msg.global_name}" width="270"  filterBy="#{examsGrid.nameTr}">
                 #{examsGrid.nameTr}
             </p:column>
 
-            <p:column headerText="Tarih" rendered="true" filterBy="#{examsGrid.date}">
-                #{examsGrid.date}  </p:column>
-            <p:column headerText="#{msg.exam_number}" rendered="true" > #{examsGrid.number}  </p:column>
+            <p:column headerText="Tarih" rendered="true" >
+                <h:outputText value="#{examsGrid.date}" >
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                </h:outputText>
+            </p:column>
 
         </p:dataTable>
     </h:form>

@@ -1,5 +1,6 @@
 package net.yazsoft.frame.utils;
 
+import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.ors.entities.Schools;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -56,6 +57,11 @@ public class Util implements Serializable{
         return (Users) session.getAttribute("sessionInfo");
     }
     */
+
+    public static SessionInfo getSessionInfo() {
+        HttpSession session=getSession();
+        return (SessionInfo) session.getAttribute("sessionInfo");
+    }
 
     public static String getUserId() {
         HttpSession session = getSession();

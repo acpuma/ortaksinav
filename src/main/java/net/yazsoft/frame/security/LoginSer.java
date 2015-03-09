@@ -2,6 +2,7 @@ package net.yazsoft.frame.security;
 
 
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.ors.schools.SchoolsDao;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +38,8 @@ public class LoginSer implements Serializable{
 
     @Inject SessionInfo sessionInfo;
     @Inject UsersDao usersDao;
+    @Inject
+    SchoolsDao schoolsDao;
 
     public String login() throws IOException {
         try {
@@ -48,6 +51,7 @@ public class LoginSer implements Serializable{
 
             SecurityContextHolder.getContext().setAuthentication(result);
             sessionInfo.setUser(usersDao.findByUserName(this.getUsername()));
+            sessionInfo.setSchool(schoolsDao.getAll().get(1));
 
             // restore the request before the login-redirect, if any.
             RequestCache requestCache = new HttpSessionRequestCache();

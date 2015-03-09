@@ -128,7 +128,9 @@ public class LessonsDao extends BaseGridDao<Lessons> implements Serializable{
             dto.setQuestionCount(lesson.getQuestionCount());
             dto.setRefLessonName(lesson.getRefLessonName());
             dto.setRefExam(lesson.getRefExam());
-            dto.setStart(lesson.getStart());
+            if (lesson.getStart()!=null) {
+                dto.setStart(lesson.getStart());
+            }
             lessonsDtos.add(dto);
         }
         logger.info("LESSONS :" + lessonsDtos);

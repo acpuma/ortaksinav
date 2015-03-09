@@ -145,9 +145,4 @@ public class ExamsYear extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.ExamsYear[ tid=" + tid + " ]";
-    }
-
 }

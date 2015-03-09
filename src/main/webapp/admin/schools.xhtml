@@ -15,6 +15,11 @@
     <ui:decorate template="/WEB-INF/templates/master.xhtml">
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <h:form id="pageForm">
+            <p:commandButton value="Aktif Kurum Yap"
+                             rendered="#{schoolsDao.item.tid!=null}"
+                             actionListener="#{sessionInfo.setSchool(schoolsDao.item)}"
+                             update=":activeSchool"
+                    />
         <p:panelGrid columns="2" id="pagePanel">
             <h:outputLabel value="#{msg.global_id}:" for="tid" />
             <h:inputText id="tid" value="#{schoolsDao.item.tid}" title="Tid" required="true"

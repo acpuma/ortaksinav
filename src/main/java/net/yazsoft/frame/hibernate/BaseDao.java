@@ -11,6 +11,7 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +29,7 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @Transactional
@@ -134,7 +132,8 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 	public List<T> load(int first, int pageSize, String sortField,
 			SortOrder sortOrder, Map<String, Object> filters) {
         logger.info("BASEDAO LOAD");
-		Criteria c=null;
+        logger.info("FILTERS : " + filters);
+        Criteria c=null;
         List<T> list=null;
         try {
             c = getCriteria();
@@ -166,6 +165,17 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
                             c.add(Restrictions.eq(entry.getKey(), Long.parseLong(entry.getValue().toString())));
                         } else if (clazz.equals(String.class)) {
                             c.add(Restrictions.like(entry.getKey(), entry.getValue().toString(), MatchMode.START));
+                        } else if (clazz.getGenericSuperclass().equals(BaseEntity.class)){
+                            logger.info("FILTER CLAZZ BASE ENTITY entry/value: " +
+                                    entry.getKey() + "/ " + entry.getValue());
+                            Long tid=Long.parseLong(entry.getValue().toString());
+
+                            c.add(Restrictions.eq(entry.getKey(), getById(tid) ));
+                            //        ((BaseEntity)entry.getValue()).getTid()) );
+                        } else {
+                            //logger.info("SUPER : " + clazz.getGenericSuperclass());
+                            logger.info("UNSUPPORTED FILTER CLAZZ :" + clazz);
+
                         }
 
                     } catch (NoSuchFieldException e) {
@@ -191,6 +201,96 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 		
 		return list;
 	}
+
+
+    public List<T> load(int first, int pageSize, List<SortMeta> multiSortMeta,Map<String, Object> filters) {
+
+        System.out.println("\nTHE INPUT PARAMETER VALUE OF LOAD METHOD : \t"+"first=" + first + ", pagesize=" + pageSize + ", multiSortMeta=" + multiSortMeta + " filter:" + filters);
+
+        System.out.println("\nTHE MULTISORTMETA CONTENT  : \t");
+
+
+
+        logger.info("BASEDAO LOAD");
+        logger.info("FILTERS : " + filters);
+        Criteria c=null;
+        List<T> list=null;
+        try {
+            c = getCriteria();
+            getSession().flush();
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+
+            // Add sorting if requested
+            if (multiSortMeta != null) {
+                for (SortMeta sortMeta : multiSortMeta) {
+                    System.out.println("SORTFIELD:" +sortMeta.getSortField());
+                    System.out.println("SORTORDER:" +sortMeta.getSortOrder());
+                    System.out.println("SORTFUNCTION:" +sortMeta.getSortFunction());
+                    System.out.println("COLUMN:" +sortMeta.getColumn());
+                    System.out.println("CLASS:" +sortMeta.getClass());
+                    if (sortMeta.getSortField() != null && !sortMeta.getSortField().trim().isEmpty()) {
+                        if (sortMeta.getSortOrder() == SortOrder.ASCENDING) {
+                            c.addOrder(Order.asc(sortMeta.getSortField()));
+                        } else if (sortMeta.getSortOrder() == SortOrder.DESCENDING) {
+                            c.addOrder(Order.desc(sortMeta.getSortField()));
+                        }
+                    }
+                }
+            }
+
+            // Add filtering if requested
+            if (!filters.isEmpty()) {
+                Iterator<Map.Entry<String, Object>> iterator = filters.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, Object> entry = iterator.next();
+
+                    try {
+
+                        Field field = ReflectionUtil.getField(type, entry.getKey());
+                        Class<?> clazz = field.getType();
+
+                        if (clazz.equals(Long.class)) {
+                            c.add(Restrictions.eq(entry.getKey(), Long.parseLong(entry.getValue().toString())));
+                        } else if (clazz.equals(String.class)) {
+                            c.add(Restrictions.like(entry.getKey(), entry.getValue().toString(), MatchMode.START));
+                        } else if (clazz.getGenericSuperclass().equals(BaseEntity.class)){
+                            logger.info("FILTER CLAZZ BASE ENTITY entry/value: " +
+                                    entry.getKey() + "/ " + entry.getValue());
+                            Long tid=Long.parseLong(entry.getValue().toString());
+
+                            c.add(Restrictions.eq(entry.getKey(), getById(tid) ));
+                            //        ((BaseEntity)entry.getValue()).getTid()) );
+                        } else {
+                            //logger.info("SUPER : " + clazz.getGenericSuperclass());
+                            logger.info("UNSUPPORTED FILTER CLAZZ :" + clazz);
+
+                        }
+
+                    } catch (NoSuchFieldException e) {
+                        e.printStackTrace();
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+
+            // Add paging
+            c.setMaxResults(pageSize).setFirstResult(first);
+            list=c.list();
+            for(T item:list) {
+                getSession().update(item);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return list;
+
+    }
 
 	public int rowCount() {
         Integer countInt=null;
