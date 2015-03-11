@@ -14,23 +14,56 @@
     <ui:decorate template="/WEB-INF/templates/master.xhtml">
         <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
 
-            <p:outputPanel id="pageForm" />
-            <p:panelGrid columns="2" id="pagePanel" style="margin:40px auto 30px;">
-            <p:outputPanel style="width: 300px; margin:20px;">
-                <h3>Gruplar</h3>
-                <components:lessonsGroupGrid rows="5"  scrollable="true" tableStyle="width:300px;"
-                                             update=":#{p:component('lessonsNameGrid')}"
-                                             paginator="false"
-                                    widgetVar="lessonsGroupGridWidget"/>
-            </p:outputPanel>
-            <p:outputPanel style="width: 350px;margin:5px;" >
-                <h3>Dersler</h3>
-                <components:lessonsNameGrid rows="10"  scrollable="true" tableStyle="width:350px;"
-                                    widgetVar="lessonsNameGridWidget"/>
-            </p:outputPanel>
+            <p:outputPanel id="pageForm"/>
+            <p:panelGrid columns="2" id="pagePanel" style="margin:10px auto 30px;">
+                <p:outputPanel style="width: 340px; margin:2px;">
+                    <h3>Gruplar</h3>
+                    <components:lessonsGroupGrid rows="10" scrollable="true" id="lessonsGroupGrid"
+                                                 update="@widgetVar(lessonsNameGridWidget)"
+                                                 paginator="false"
+                                                 widgetVar="lessonsGroupGridWidget"/>
+
+                    <p:commandButton value="Ekle" onclick="PF('groupDialogWidget').show()"
+                                     actionListener="#{lessonsGroupDao.reset}"
+                                     update="groupForm"
+                            />
+                </p:outputPanel>
+                <p:outputPanel style="width: 400px;margin:2px;">
+                    <h3>Dersler</h3>
+                    <components:lessonsNameGrid rows="10" scrollable="true" editable="true"
+                                                widgetVar="lessonsNameGridWidget"/>
+                    <p:commandButton value="Ekle" onclick="PF('lessonDialogWidget').show()"
+                                     actionListener="#{lessonsNameDao.reset}"
+                                     update="lessonForm"
+                                     />
+                </p:outputPanel>
             </p:panelGrid>
 
         </p:outputPanel>
+
+        <p:dialog id="groupDialog" header="#{msg.global_group}" widgetVar="groupDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+            <h:form id="groupForm">
+                <p:outputLabel value="#{msg.global_name}:" for="name" />
+                <p:inputText id="name" value="#{lessonsGroupDao.item.nameTr}" title="Ad" />
+                <p:commandButton value="Kaydet" actionListener="#{lessonsGroupDao.save}"
+                                 update="@widgetVar(lessonsGroupGridWidget)"
+                        onsuccess="PF('groupDialogWidget').hide()"/>
+                <h:inputHidden id="status" value="#{lessonsGroupDao.status}"/>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="lessonDialog" header="#{msg.lesson}" widgetVar="lessonDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+            <h:form id="lessonForm">
+                <p:outputLabel value="#{msg.global_name}:" for="lesson" />
+                <p:inputText id="lesson" value="#{lessonsNameDao.item.nameTr}" title="Ad" />
+                <p:commandButton value="Kaydet" action="#{lessonsGroupDao.addLessonName}"
+                                 update="@widgetVar(lessonsNameGridWidget)"
+                                 onsuccess="PF('lessonDialogWidget').hide()">
+                    <f:setPropertyActionListener value="#{lessonsGroupDao.item}" target="#{lessonsNameDao.item.refLessonGroup}" />
+                </p:commandButton>
+            </h:form>
+        </p:dialog>
     </ui:decorate>
 </f:view>
 </html>

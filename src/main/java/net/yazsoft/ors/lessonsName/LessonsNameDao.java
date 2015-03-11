@@ -9,6 +9,8 @@ import net.yazsoft.ors.lessonsGroup.LessonsGroupDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.RowEditEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,6 +24,19 @@ public class LessonsNameDao extends BaseGridDao<LessonsName> implements Serializ
     LessonsName selected;
 
     List<LessonsName> names;
+
+    @Override
+    public Long save() {
+        logger.info("GROUP SAVE status : " + getStatus());
+        try {
+            getItem().setActive(Boolean.TRUE);
+            Long pk=super.save();
+            return pk;
+        } catch (Exception e) {
+            Util.setFacesMessage(e.getMessage());
+        }
+        return 0L;
+    }
 
     public List findByGroup(LessonsGroup group) {
         logger.info(group);
@@ -39,6 +54,24 @@ public class LessonsNameDao extends BaseGridDao<LessonsName> implements Serializ
             e.printStackTrace();
         }
         return list;
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+        try {
+            LessonsName lessonsName=(LessonsName) event.getObject();
+            logger.info("LOG00080:" + lessonsName.getNameTr());
+            DataTable table = (DataTable) event.getSource();
+            lessonsName = (LessonsName) table.getRowData();
+            logger.info("LOG00080:" + lessonsName.getNameTr());
+            super.update(lessonsName);
+            //Util.setFacesMessage("Edited :" + lesson+", " +lesson.getQuestionCount());
+        } catch (Exception e) {
+            Util.setFacesMessage(e.getMessage());
+        }
+    }
+
+    public void onRowCancel(RowEditEvent event) {
+        //Util.setFacesMessage("Edit Cancelled : " + ((LessonsDto) event.getObject()).getTid());
     }
 
     public List<LessonsName> getNames() {

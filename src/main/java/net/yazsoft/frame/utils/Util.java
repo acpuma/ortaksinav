@@ -28,11 +28,13 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-@Stateless
-@Named
+
 public class Util implements Serializable{
     static final Logger logger= Logger.getLogger(Util.class.getName());
 //    @Inject SettingsDao settings;
+
+
+    public Util() {}
 
     public static HttpSession getSession() {
         return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);

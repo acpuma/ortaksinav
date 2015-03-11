@@ -27,17 +27,17 @@
     <cc:attribute default="false"     required="false"   name="transient" />
     <cc:attribute default="widgetLessonsName"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
-    <cc:attribute default="width:350px;" required="false" name="tableStyle" />
+    <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
         <p:dataTable id="lessonsNameGrid"
                      var="lessonsNameGrid"
 
                      filterEvent="enter"
-                     value="#{lessonsNameDao.names}"
+                     value="#{lessonsGroupDao.lessonsNames}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -47,8 +47,6 @@
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
-                     editMode="#{cc.attrs.editMode}"
-                     editingRow="#{cc.attrs.editingRow}"
                      expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
@@ -70,9 +68,7 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selectionMode="single"
                      selection="#{lessonsNameDao.item}"
-                     lazy="true"
                      rowKey="#{lessonsNameGrid.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
                 >
@@ -84,15 +80,36 @@
                     listener="#{lessonsNameDao.select}"
                     />
 
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{lessonsNameGrid.tid}  </p:column>
+            <p:ajax event="rowEdit" listener="#{lessonsNameDao.onRowEdit}"
+                    update=":messages "  />
+            <p:ajax event="rowEditCancel" listener="#{lessonsNameDao.onRowCancel}"
+                    update=":messages " />
 
 
-            <p:column headerText="#{msg.global_name}" width="220" filterBy="#{lessonsNameGrid.nameTR}">
-                #{lessonsNameGrid.nameTr}
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{lessonsNameGrid.tid}  </p:column>
+
+
+            <p:column headerText="#{msg.global_name}" width="220" filterBy="#{lessonsNameGrid.nameTr}">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{lessonsNameGrid.nameTr}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{lessonsNameGrid.nameTr}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
             </p:column>
             <p:column headerText="#{msg.global_id}" width="40" rendered="false"
                       filterBy="#{lessonsNameGrid.refLessonGroup.tid}">
                 #{lessonsNameGrid.refLessonGroup.tid}
+            </p:column>
+
+            <p:column width="100%">
+                <p:rowEditor />
+            </p:column>
+            <p:column width="40">
+                <p:commandButton value="" update=" :messages lessonsNameGrid"
+                                 icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{lessonsGroupDao.deleteLessonName(lessonsNameGrid)}">
+                </p:commandButton>
             </p:column>
 
         </p:dataTable>

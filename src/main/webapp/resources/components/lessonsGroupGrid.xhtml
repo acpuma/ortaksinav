@@ -27,7 +27,7 @@
     <cc:attribute default="false"     required="false"   name="transient" />
     <cc:attribute default="widgetLessonsGroup"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
-    <cc:attribute default="width:900px;" required="false" name="tableStyle" />
+    <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
@@ -37,7 +37,7 @@
                      var="lessonsGroupGrid"
 
                      filterEvent="enter"
-                     value="#{lessonsGroupSer.lazyModel}"
+                     value="#{lessonsGroupDao.all}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -47,8 +47,6 @@
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
-                     editMode="#{cc.attrs.editMode}"
-                     editingRow="#{cc.attrs.editingRow}"
                      expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
@@ -72,7 +70,7 @@
 
                      selectionMode="single"
                      selection="#{lessonsGroupDao.item}"
-                     lazy="true"
+
                      rowKey="#{lessonsGroupGrid.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
                 >
@@ -84,18 +82,36 @@
                     listener="#{lessonsGroupDao.select}"
                     />
 
+
+
+
             <p:ajax event="rowSelect" listener="#{lessonsGroupDao.onRowSelect}" update="#{cc.attrs.update}" />
 
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{lessonsGroupGrid.tid}  </p:column>
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"> #{lessonsGroupGrid.tid}  </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="170" filterBy="#{lessonsGroupGrid.nameTr}">
+            <p:column headerText="#{msg.global_name}" width="120" filterBy="#{lessonsGroupGrid.nameTr}">
                 #{lessonsGroupGrid.nameTr}
             </p:column>
 
-            <f:facet name="footer">
-                <p:commandButton value="Ekle" />
-            </f:facet>
+            <p:column width="25">
+                <p:commandButton value="" update=" :messages :groupForm" action="#{lessonsGroupDao.setStatus}"
+                                 icon="ui-icon-pencil" style="height: 36px; width: 36px;"
+                                 oncomplete="PF('groupDialogWidget').show()">
+                    <f:setPropertyActionListener value="#{lessonsGroupGrid}" target="#{lessonsGroupDao.item}" />
+                </p:commandButton>
+
+            </p:column>
+
+            <p:column width="25">
+                <p:commandButton value=""  icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 action="#{lessonsGroupDao.delete}"
+                                 update=":messages  lessonsGroupGrid"
+                        >
+                    <f:setPropertyActionListener value="#{lessonsGroupGrid}" target="#{lessonsGroupDao.item}" />
+                </p:commandButton>
+            </p:column>
 
         </p:dataTable>
     </h:form>

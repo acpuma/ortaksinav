@@ -55,7 +55,9 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 	}
 
 	public Long create(final T t) {
-		return (Long) getSession().save(t);
+        Long pk=(Long) getSession().save(t);
+        all=null;
+		return pk;
 	}
 
     public void saveOrUpdate(final T t) {
@@ -88,6 +90,7 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 
 	public void delete(final T t) {
         getSession().delete(t);
+        all=null;
 	}
 
 	/**
@@ -96,14 +99,17 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<T> getAll() {
+
         if (all==null) {
             final Criteria c = getCriteria();
             c.add(Restrictions.eq("active", true));
             c.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
             all = c.list();
+            if (all!=null) {
+                logger.info("ALL COUNT :" + all.size());
+            }
         }
         return all;
-
 	}
 	
 	@SuppressWarnings("unchecked")

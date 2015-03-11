@@ -85,6 +85,7 @@ public abstract class BaseGridDao<T extends BaseEntity> extends BaseDao<T> {
     }
     
     public void reset() {
+        logger.info("RESET ITEM");
         try {
             item=type.newInstance();
             logger.info(FacesContext.getCurrentInstance().getViewRoot().getViewMap());

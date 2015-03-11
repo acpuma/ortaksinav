@@ -32,11 +32,11 @@
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
         <p:dataTable id="lessonsGrid"
                      var="lessonVar"
 
-                     filterEvent="enter"
+
                      value="#{lessonsDao.lessonsDtos}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
