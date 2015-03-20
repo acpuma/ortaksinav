@@ -5,7 +5,22 @@ package net.yazsoft.ors.entities;
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -62,13 +77,15 @@ public class Users extends BaseEntity implements Serializable {
     @Column(length = 255)
     private String image;
     @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
-    private Collection<Schools> schoolsCollection;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "UsersRoles", joinColumns = {
-            @JoinColumn(name = "ref_user", referencedColumnName = "tid", nullable = false)}, inverseJoinColumns = {
-            @JoinColumn(name = "ref_role", referencedColumnName = "tid", nullable = false)})
     private Collection<Roles> rolesCollection;
+    @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
+    private Collection<Schools> schoolsCollection;
+    @JoinColumn(name = "ref_active_exam", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Exams refActiveExam;
+    @JoinColumn(name = "ref_active_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refActiveSchool;
 
     public Users() {
     }
@@ -204,6 +221,15 @@ public class Users extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Roles> getRolesCollection() {
+        return rolesCollection;
+    }
+
+    public void setRolesCollection(Collection<Roles> rolesCollection) {
+        this.rolesCollection = rolesCollection;
+    }
+
+    @XmlTransient
     public Collection<Schools> getSchoolsCollection() {
         return schoolsCollection;
     }
@@ -212,13 +238,20 @@ public class Users extends BaseEntity implements Serializable {
         this.schoolsCollection = schoolsCollection;
     }
 
-    @XmlTransient
-    public Collection<Roles> getRolesCollection() {
-        return rolesCollection;
+    public Exams getRefActiveExam() {
+        return refActiveExam;
     }
 
-    public void setRolesCollection(Collection<Roles> rolesCollection) {
-        this.rolesCollection = rolesCollection;
+    public void setRefActiveExam(Exams refActiveExam) {
+        this.refActiveExam = refActiveExam;
+    }
+
+    public Schools getRefActiveSchool() {
+        return refActiveSchool;
+    }
+
+    public void setRefActiveSchool(Schools refActiveSchool) {
+        this.refActiveSchool = refActiveSchool;
     }
 
     @Override

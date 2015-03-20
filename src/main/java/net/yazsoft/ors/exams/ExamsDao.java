@@ -5,6 +5,7 @@ import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.examsParameters.ExamsParametersDao;
 import net.yazsoft.ors.lessons.LessonsDao;
 import net.yazsoft.ors.lessons.LessonsDto;
 import org.apache.log4j.Logger;
@@ -67,11 +68,10 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     public Long create() {
         Long pk=null;
         try {
-            sessionInfo=Util.getSessionInfo();
             logger.info("CREATE : " + getItem());
             getItem().setActive(Boolean.TRUE);
             getItem().setRefExamType(new ExamsType(1L));
-            getItem().setRefSchool(sessionInfo.getSchool());
+            getItem().setRefSchool(Util.getActiveSchool());
             pk = super.create();
             lessonsDao.DtosToEntities(new Exams(pk));
             reset();

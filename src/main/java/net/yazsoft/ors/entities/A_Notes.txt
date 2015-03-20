@@ -1,0 +1,8 @@
+1-replace in path :
+implements Serializable
+extends BaseEntity implements Serializable
+2-replace in path :
+import java.io.Serializable;
+import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+3-Remove toString methods from all Exams entities
+4-Change UsersRoles owner in Users and Roles entities

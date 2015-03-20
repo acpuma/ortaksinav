@@ -50,8 +50,6 @@ public class Albums extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 255)
     private String name;
     private Boolean editable;
-    @OneToMany(mappedBy = "refAlbums", fetch = FetchType.LAZY)
-    private Collection<Images> imagesCollection;
     @JoinColumn(name = "ref_albums_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private AlbumsType refAlbumsType;
@@ -61,6 +59,8 @@ public class Albums extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
+    @OneToMany(mappedBy = "refAlbums", fetch = FetchType.LAZY)
+    private Collection<Images> imagesCollection;
 
     public Albums() {
     }
@@ -131,15 +131,6 @@ public class Albums extends BaseEntity implements Serializable {
         this.editable = editable;
     }
 
-    @XmlTransient
-    public Collection<Images> getImagesCollection() {
-        return imagesCollection;
-    }
-
-    public void setImagesCollection(Collection<Images> imagesCollection) {
-        this.imagesCollection = imagesCollection;
-    }
-
     public AlbumsType getRefAlbumsType() {
         return refAlbumsType;
     }
@@ -164,6 +155,15 @@ public class Albums extends BaseEntity implements Serializable {
         this.refSchool = refSchool;
     }
 
+    @XmlTransient
+    public Collection<Images> getImagesCollection() {
+        return imagesCollection;
+    }
+
+    public void setImagesCollection(Collection<Images> imagesCollection) {
+        this.imagesCollection = imagesCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -186,8 +186,7 @@ public class Albums extends BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "Albums{" +
-                "tid=" + tid +
-                '}';
+        return "net.yazsoft.ors.entities.Albums[ tid=" + tid + " ]";
     }
+
 }

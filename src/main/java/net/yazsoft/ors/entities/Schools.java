@@ -60,8 +60,8 @@ public class Schools extends BaseEntity implements Serializable {
         @JoinColumn(name = "ref_user", referencedColumnName = "tid", nullable = false)})
     @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Users> usersCollection;
-    @OneToMany(mappedBy = "refSchools", fetch = FetchType.LAZY)
-    private Collection<Images> imagesCollection;
+    @OneToMany(mappedBy = "refActiveSchool", fetch = FetchType.LAZY)
+    private Collection<Users> usersCollection1;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Albums> albumsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refSchool", fetch = FetchType.LAZY)
@@ -72,6 +72,8 @@ public class Schools extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_town", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Towns refTown;
+    @OneToMany(mappedBy = "refSchools", fetch = FetchType.LAZY)
+    private Collection<Images> imagesCollection;
 
     public Schools() {
     }
@@ -152,12 +154,12 @@ public class Schools extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Images> getImagesCollection() {
-        return imagesCollection;
+    public Collection<Users> getUsersCollection1() {
+        return usersCollection1;
     }
 
-    public void setImagesCollection(Collection<Images> imagesCollection) {
-        this.imagesCollection = imagesCollection;
+    public void setUsersCollection1(Collection<Users> usersCollection1) {
+        this.usersCollection1 = usersCollection1;
     }
 
     @XmlTransient
@@ -192,6 +194,15 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setRefTown(Towns refTown) {
         this.refTown = refTown;
+    }
+
+    @XmlTransient
+    public Collection<Images> getImagesCollection() {
+        return imagesCollection;
+    }
+
+    public void setImagesCollection(Collection<Images> imagesCollection) {
+        this.imagesCollection = imagesCollection;
     }
 
     @Override

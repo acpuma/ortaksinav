@@ -1,7 +1,9 @@
 package net.yazsoft.ors.exams;
 
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Exams;
+import org.apache.log4j.Logger;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
@@ -15,6 +17,7 @@ import java.util.Map;
 @Named
 @ViewScoped
 public class ExamsLazy extends LazyDataModel<Exams> {
+    private static final Logger logger = Logger.getLogger(ExamsLazy.class);
     @Inject
     ExamsDao examsDao;
 
@@ -51,6 +54,11 @@ public class ExamsLazy extends LazyDataModel<Exams> {
         sortMeta.setSortField("refExamSeasonNumber");
         sortMeta.setSortOrder(SortOrder.DESCENDING);
         multiSortMeta.add(sortMeta);
+        if (!filters.containsKey("refSchool")) {
+            filters.put("refSchool", Util.getActiveSchool().getTid());
+        }
+        logger.info("EXAMS FILTERS : " + filters);
+        filters.clear();
         return examsDao.load(first, pageSize, multiSortMeta, filters);
     }
 }

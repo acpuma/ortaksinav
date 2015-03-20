@@ -62,8 +62,8 @@ public class Exams extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private Integer time;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
-    private Collection<Lessons> lessonsCollection;
+    @OneToMany(mappedBy = "refActiveExam", fetch = FetchType.LAZY)
+    private Collection<Users> usersCollection;
     @JoinColumn(name = "ref_answer_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private ExamsAnswerType refAnswerType;
@@ -88,6 +88,10 @@ public class Exams extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_exam_season", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private ExamsSeason refExamSeason;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<ExamsParameters> examsParametersCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<Lessons> lessonsCollection;
 
     public Exams() {
     }
@@ -184,12 +188,12 @@ public class Exams extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Lessons> getLessonsCollection() {
-        return lessonsCollection;
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
     }
 
-    public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
-        this.lessonsCollection = lessonsCollection;
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     public ExamsAnswerType getRefAnswerType() {
@@ -256,6 +260,24 @@ public class Exams extends BaseEntity implements Serializable {
         this.refExamSeason = refExamSeason;
     }
 
+    @XmlTransient
+    public Collection<ExamsParameters> getExamsParametersCollection() {
+        return examsParametersCollection;
+    }
+
+    public void setExamsParametersCollection(Collection<ExamsParameters> examsParametersCollection) {
+        this.examsParametersCollection = examsParametersCollection;
+    }
+
+    @XmlTransient
+    public Collection<Lessons> getLessonsCollection() {
+        return lessonsCollection;
+    }
+
+    public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
+        this.lessonsCollection = lessonsCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -278,7 +300,28 @@ public class Exams extends BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "net.yazsoft.ors.entities.Exams[ tid=" + tid + " ]";
+        return "Exams{" +
+                "tid=" + tid +
+                ", active=" + active +
+                ", version=" + version +
+                ", nameTr='" + nameTr + '\'' +
+                ", nameEn='" + nameEn + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", number='" + number + '\'' +
+                ", date=" + date +
+                ", time=" + time +
+                ", usersCollection=" + usersCollection +
+                ", refAnswerType=" + refAnswerType +
+                ", refBookletType=" + refBookletType +
+                ", refExamSeasonNumber=" + refExamSeasonNumber +
+                ", refExamType=" + refExamType +
+                ", refExamYear=" + refExamYear +
+                ", refFalseType=" + refFalseType +
+                ", refSchool=" + refSchool +
+                ", refExamSeason=" + refExamSeason +
+                ", examsParametersCollection=" + examsParametersCollection +
+                ", lessonsCollection=" + lessonsCollection +
+                '}';
     }
-
 }

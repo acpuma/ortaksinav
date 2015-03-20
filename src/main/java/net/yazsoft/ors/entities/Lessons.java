@@ -3,8 +3,10 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,10 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
@@ -52,6 +56,8 @@ public class Lessons extends BaseEntity implements Serializable {
     @Column(name = "question_count", nullable = false)
     private int questionCount;
     private Integer start;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLesson", fetch = FetchType.LAZY)
+    private Collection<Answers> answersCollection;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Exams refExam;
@@ -136,6 +142,15 @@ public class Lessons extends BaseEntity implements Serializable {
 
     public void setStart(Integer start) {
         this.start = start;
+    }
+
+    @XmlTransient
+    public Collection<Answers> getAnswersCollection() {
+        return answersCollection;
+    }
+
+    public void setAnswersCollection(Collection<Answers> answersCollection) {
+        this.answersCollection = answersCollection;
     }
 
     public Exams getRefExam() {

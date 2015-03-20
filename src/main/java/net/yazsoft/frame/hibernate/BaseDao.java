@@ -288,6 +288,7 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
             for(T item:list) {
                 getSession().update(item);
             }
+            logger.info("LOAD COUNT : " +list.size());
         } catch (Exception e) {
             logger.error(e.getMessage());
             Util.setFacesMessage(e.getMessage());

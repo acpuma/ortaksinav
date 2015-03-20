@@ -1,6 +1,7 @@
 package net.yazsoft.frame.utils;
 
 import net.yazsoft.frame.security.SessionInfo;
+import net.yazsoft.ors.entities.Exams;
 import net.yazsoft.ors.entities.Schools;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -73,15 +74,12 @@ public class Util implements Serializable{
             return null;
         }
     }
-    
-    public static Long getSchoolId() {
-        //HttpSession session = getSession();
-        return 1L; //(Long) session.getAttribute("schoolid");
-    }
-    
+
     public static Schools getActiveSchool() {
-        //HttpSession session = getSession();
-        return new Schools(getSchoolId()); //(Long) session.getAttribute("schoolid");
+        return getSessionInfo().getSchool();
+    }
+    public static Exams getActiveExam() {
+        return getSessionInfo().getExam();
     }
     
     public static Locale getLocale() {

@@ -22,12 +22,11 @@
                 >
         </p:commandButton>
 
+
         <p:outputPanel style="margin: 10px; min-height: 400px;" >
             <components:examsGrid rows="10"  scrollable="true" update=":#{p:component('pageForm')} "
                               widgetVar="examsGridWidget" sortMode="multiple"/>
         </p:outputPanel>
-
-
 
 
         <p:dialog id="formDialog" header="#{msg.exam}" widgetVar="formDialogWidget"
@@ -128,6 +127,30 @@
                 <h:messages rendered="false"/>
             </h:form>
             <components:toolbar gridname="examsGrid" daobean="#{examsDao}" print="false" search="false" new="false"/>
+        </p:dialog>
+
+        <p:dialog id="parametersDialog" header="#{msg.exam}" widgetVar="parametersDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)">
+            <p:outputPanel style="width: 600px;">
+                <components:examsParametersGrid rows="10" scrollable="true" editable="true"
+                                                widgetVar="examsParametersGridWidget"/>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog id="answersDialog" header="#{msg.answers}" widgetVar="answersDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)">
+            <h:form id="answersForm">
+                <p:outputLabel value="Ders :" for="answerLessons" rendered="true"/>
+                <p:selectOneMenu id="answerLessons" value="#{answersDao.lesson}" widgetVar="answersLessonSelect"
+                                 title="answerLessonType" rendered="true"
+                                 required="true" requiredMessage="The answerLessonType field is required.">
+                    <f:selectItems value="#{answersDao.lessons}" var="man"
+                                   itemLabel="#{man.refLessonName.nameTr}" itemValue="#{man}"/>
+                    <p:ajax update="@widgetVar(answersGridWidget)" listener="#{answersDao.onLessonChange}"/>
+                </p:selectOneMenu>
+                <components:answersGrid rows="100" scrollable="true" editable="true"  scrollHeight="400"
+                                                widgetVar="answersGridWidget" />
+            </h:form>
         </p:dialog>
 
     </p:outputPanel>

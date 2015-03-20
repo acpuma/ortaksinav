@@ -11,15 +11,18 @@
         </span>
     </p:outputPanel>
 
-    <p:outputPanel style="right:0px; position:absolute; margin:10px; float: left;">
-        <p:outputPanel id="activeSchool" layout="inline" style="margin: 5px; position: relative; top:-8px;">
+    <p:outputPanel style="right:0px; position:absolute; margin:0px; float: left;">
+        <p:panelGrid columns="1" style="float: left;" >
+
+        <p:outputPanel id="activeSchool"  style="font-size: 14px; text-align: right;" >
             #{sessionInfo.school.name}
         </p:outputPanel>
 
-        <p:outputPanel id="activeExam" layout="inline" style="margin: 5px; position: relative; top:-8px;">
+        <p:outputPanel id="activeExam" style="font-size: 14px; text-align: right;">
             #{sessionInfo.exam.nameTr}
         </p:outputPanel>
-        <h:form style="display: inline;">
+        </p:panelGrid>
+        <h:form style="display: inline; position: relative; top:8px;margin:8px;">
 
             <p:graphicImage library="images" name="mail48b.png" width="36" style="margin:0 10px;"/>
             <p:commandLink action="#{loginSer.logout}" immediate="true" style="position:relative; top:-2px;">

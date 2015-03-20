@@ -5,18 +5,7 @@ package net.yazsoft.ors.entities;
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,15 +14,18 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsFalseType.findAll", query = "SELECT e FROM ExamsFalseType e")})
-public class ExamsFalseType extends BaseEntity implements Serializable {
+    @NamedQuery(name = "AnswersSubjectType.findAll", query = "SELECT a FROM AnswersSubjectType a")})
+public class AnswersSubjectType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Boolean active;
+    @Basic(optional = false)
+    @NotNull
+    @Column(nullable = false)
+    private boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -41,26 +33,33 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(nullable = false, length = 255)
-    private String name;
+    @Column(name = "name_tr", nullable = false, length = 255)
+    private String nameTr;
+    @Size(max = 255)
+    @Column(name = "name_en", length = 255)
+    private String nameEn;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refFalseType", fetch = FetchType.LAZY)
-    private Collection<Exams> examsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refAnswerSubject", fetch = FetchType.LAZY)
+    private Collection<Answers> answersCollection;
+    @JoinColumn(name = "ref_lesson_name", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LessonsName refLessonName;
 
-    public ExamsFalseType() {
+    public AnswersSubjectType() {
     }
 
-    public ExamsFalseType(Long tid) {
+    public AnswersSubjectType(Long tid) {
         this.tid = tid;
     }
 
-    public ExamsFalseType(Long tid, int version, String name) {
+    public AnswersSubjectType(Long tid, boolean active, int version, String nameTr) {
         this.tid = tid;
+        this.active = active;
         this.version = version;
-        this.name = name;
+        this.nameTr = nameTr;
     }
 
     public Long getTid() {
@@ -71,11 +70,11 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -87,12 +86,20 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
         this.version = version;
     }
 
-    public String getName() {
-        return name;
+    public String getNameTr() {
+        return nameTr;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameTr(String nameTr) {
+        this.nameTr = nameTr;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
     }
 
     public Date getCreated() {
@@ -112,12 +119,20 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Exams> getExamsCollection() {
-        return examsCollection;
+    public Collection<Answers> getAnswersCollection() {
+        return answersCollection;
     }
 
-    public void setExamsCollection(Collection<Exams> examsCollection) {
-        this.examsCollection = examsCollection;
+    public void setAnswersCollection(Collection<Answers> answersCollection) {
+        this.answersCollection = answersCollection;
+    }
+
+    public LessonsName getRefLessonName() {
+        return refLessonName;
+    }
+
+    public void setRefLessonName(LessonsName refLessonName) {
+        this.refLessonName = refLessonName;
     }
 
     @Override
@@ -130,10 +145,10 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ExamsFalseType)) {
+        if (!(object instanceof AnswersSubjectType)) {
             return false;
         }
-        ExamsFalseType other = (ExamsFalseType) object;
+        AnswersSubjectType other = (AnswersSubjectType) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }

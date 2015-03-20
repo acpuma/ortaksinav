@@ -144,9 +144,5 @@ public class ExamsAnswerType extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.ExamsAnswerType[ tid=" + tid + " ]";
-    }
 
 }

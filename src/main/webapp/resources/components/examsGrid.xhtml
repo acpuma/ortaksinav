@@ -141,6 +141,22 @@
                     <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
                 </h:outputText>
             </p:column>
+            <f:facet name="footer">
+                <p:commandButton value="Aktifleştir"
+                                 actionListener="#{sessionInfo.setExam(examsDao.item)}"
+                                 update=":activeExam"
+                        />
+                <p:commandButton value="Parametreler"
+                                 actionListener="#{examsParametersDao.setExam(examsDao.item)}"
+                                 update="@widgetVar(examsParametersGridWidget)"
+                                 oncomplete="PF('parametersDialogWidget').show()"
+                        />
+                <p:commandButton value="Cevap Anahtarı"
+                                 actionListener="#{answersDao.setExam(examsDao.item)}"
+                                 update="@widgetVar(answersLessonSelect)"
+                                 oncomplete="PF('answersDialogWidget').show()"
+                        />
+            </f:facet>
 
         </p:dataTable>
     </h:form>

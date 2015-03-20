@@ -152,9 +152,4 @@ public class ExamsType extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.ExamsType[ tid=" + tid + " ]";
-    }
-
 }

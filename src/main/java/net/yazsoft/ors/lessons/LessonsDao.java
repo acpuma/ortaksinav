@@ -80,10 +80,19 @@ public class LessonsDao extends BaseGridDao<Lessons> implements Serializable{
 
     public void addLesson() {
         logger.info("LESSONS :" + lessonsDtos);
+        int maxrank=0;
         if (lessonsDtos==null) {
             lessonsDtos=new ArrayList<LessonsDto>();
+        } else {
+            ArrayList<Integer> numbers;
+            for (LessonsDto dto:lessonsDtos) {
+                if (maxrank<dto.getRank())
+                maxrank=dto.getRank();
+            }
         }
-        lessonsDtos.add(new LessonsDto());
+        LessonsDto newdto=new LessonsDto();
+        newdto.setRank(maxrank+1);
+        lessonsDtos.add(newdto);
         logger.info("LESSONS :" + lessonsDtos);
     }
 
@@ -101,7 +110,6 @@ public class LessonsDao extends BaseGridDao<Lessons> implements Serializable{
         for (LessonsDto dto:deletedDtos) {
             entity = new Lessons();
             entity=(Lessons)getSession().get(Lessons.class,dto.getTid());
-
         }
     }
 

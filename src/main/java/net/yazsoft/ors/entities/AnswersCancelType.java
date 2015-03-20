@@ -6,6 +6,7 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,15 +26,18 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsFalseType.findAll", query = "SELECT e FROM ExamsFalseType e")})
-public class ExamsFalseType extends BaseEntity implements Serializable {
+    @NamedQuery(name = "AnswersCancelType.findAll", query = "SELECT a FROM AnswersCancelType a")})
+public class AnswersCancelType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Boolean active;
+    @Basic(optional = false)
+    @NotNull
+    @Column(nullable = false)
+    private boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -41,26 +45,30 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(nullable = false, length = 255)
-    private String name;
+    @Column(name = "name_tr", nullable = false, length = 255)
+    private String nameTr;
+    @Size(max = 255)
+    @Column(name = "name_en", length = 255)
+    private String nameEn;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refFalseType", fetch = FetchType.LAZY)
-    private Collection<Exams> examsCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refAnswerCancel", fetch = FetchType.LAZY)
+    private Collection<Answers> answersCollection;
 
-    public ExamsFalseType() {
+    public AnswersCancelType() {
     }
 
-    public ExamsFalseType(Long tid) {
+    public AnswersCancelType(Long tid) {
         this.tid = tid;
     }
 
-    public ExamsFalseType(Long tid, int version, String name) {
+    public AnswersCancelType(Long tid, boolean active, int version, String nameTr) {
         this.tid = tid;
+        this.active = active;
         this.version = version;
-        this.name = name;
+        this.nameTr = nameTr;
     }
 
     public Long getTid() {
@@ -71,11 +79,11 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Boolean getActive() {
+    public boolean getActive() {
         return active;
     }
 
-    public void setActive(Boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
     }
 
@@ -87,12 +95,20 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
         this.version = version;
     }
 
-    public String getName() {
-        return name;
+    public String getNameTr() {
+        return nameTr;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameTr(String nameTr) {
+        this.nameTr = nameTr;
+    }
+
+    public String getNameEn() {
+        return nameEn;
+    }
+
+    public void setNameEn(String nameEn) {
+        this.nameEn = nameEn;
     }
 
     public Date getCreated() {
@@ -112,12 +128,12 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Exams> getExamsCollection() {
-        return examsCollection;
+    public Collection<Answers> getAnswersCollection() {
+        return answersCollection;
     }
 
-    public void setExamsCollection(Collection<Exams> examsCollection) {
-        this.examsCollection = examsCollection;
+    public void setAnswersCollection(Collection<Answers> answersCollection) {
+        this.answersCollection = answersCollection;
     }
 
     @Override
@@ -130,15 +146,19 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ExamsFalseType)) {
+        if (!(object instanceof AnswersCancelType)) {
             return false;
         }
-        ExamsFalseType other = (ExamsFalseType) object;
+        AnswersCancelType other = (AnswersCancelType) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "net.yazsoft.ors.entities.AnswersCancelType[ tid=" + tid + " ]";
+    }
 
 }

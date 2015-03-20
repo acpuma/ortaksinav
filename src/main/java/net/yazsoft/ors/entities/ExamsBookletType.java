@@ -6,6 +6,7 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -52,6 +53,7 @@ public class ExamsBookletType extends BaseEntity implements Serializable {
     private Date updated;
     @OneToMany(mappedBy = "refBookletType", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
+
 
     public ExamsBookletType() {
     }
@@ -124,6 +126,7 @@ public class ExamsBookletType extends BaseEntity implements Serializable {
         this.examsCollection = examsCollection;
     }
 
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -144,9 +147,5 @@ public class ExamsBookletType extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.ExamsBookletType[ tid=" + tid + " ]";
-    }
 
 }
