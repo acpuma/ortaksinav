@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>Parameters</title>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <h:form id="pageForm" style="margin:5px;">
+    <p:panelGrid columns="1">
+
+        <components:examsParametersTypeGrid rows="100" scrollable="true" editable="true"
+                                            scrollHeight="300"
+                                            widgetVar="examsParametersTypeGridWidget" />
+    </p:panelGrid>
+    </h:form>
+    </p:outputPanel>
+
+        <p:dialog id="parameterDialog" header="#{msg.parameter}" widgetVar="parameterDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+            <h:form id="parameterForm" >
+                <p:outputLabel value="#{msg.global_name}:" for="parameter" />
+                <p:inputText id="parameter" value="#{examsParametersTypeDao.item.nameTr}" title="Ad" />
+                <p:commandButton value="Kaydet" action="#{examsParametersTypeDao.addParameterType}"
+                                 update="@widgetVar(examsParametersTypeGridWidget)"
+                                 onsuccess="PF('parameterDialogWidget').hide()">
+                </p:commandButton>
+            </h:form>
+        </p:dialog>
+    </ui:decorate>
+</f:view>
+</html>

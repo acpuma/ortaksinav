@@ -70,3 +70,9 @@ footer {
     float:right;
     position:relative;
 }
+
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

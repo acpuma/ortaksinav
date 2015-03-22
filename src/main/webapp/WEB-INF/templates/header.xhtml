@@ -14,11 +14,11 @@
     <p:outputPanel style="right:0px; position:absolute; margin:0px; float: left;">
         <p:panelGrid columns="1" style="float: left;" >
 
-        <p:outputPanel id="activeSchool"  style="font-size: 14px; text-align: right;" >
+        <p:outputPanel id="activeSchool"  style="font-size: 14px; text-align: right; max-width: 400px;" styleClass="truncate" >
             #{sessionInfo.school.name}
         </p:outputPanel>
 
-        <p:outputPanel id="activeExam" style="font-size: 14px; text-align: right;">
+        <p:outputPanel id="activeExam" style="font-size: 14px; text-align: right; max-width: 400px;" styleClass="truncate">
             #{sessionInfo.exam.nameTr}
         </p:outputPanel>
         </p:panelGrid>

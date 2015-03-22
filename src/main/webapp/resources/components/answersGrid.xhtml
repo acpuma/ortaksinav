@@ -101,66 +101,66 @@
             </p:column>
 
             <p:column headerText=" A " width="50" rendered="true">
-                <h:selectOneMenu value="#{gridVar.ansA}" style="width:100%" id="ansA">
+                <p:selectOneMenu value="#{gridVar.ansA}" style="width:100%" id="ansA" >
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" B " width="50"
                       rendered="#{answersDao.bookletCount!=null and answersDao.bookletCount gt 1}">
-                <h:selectOneMenu value="#{gridVar.ansB}" style="width:100%" id="ansB">
+                <p:selectOneMenu value="#{gridVar.ansB}" style="width:100%" id="ansB">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" C " width="50"
                       rendered="#{(answersDao.bookletCount!=null) and (answersDao.bookletCount gt 2)}">
-                <h:selectOneMenu value="#{gridVar.ansC}" style="width:100%" id="ansC">
+                <p:selectOneMenu value="#{gridVar.ansC}" style="width:100%" id="ansC">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" D " width="50"
                       rendered="#{answersDao.bookletCount!=null and answersDao.bookletCount gt 3}">
-                <h:selectOneMenu value="#{gridVar.ansD}" style="width:100%" id="ansD">
+                <p:selectOneMenu value="#{gridVar.ansD}" style="width:100%" id="ansD">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" E " width="40"
                       rendered="#{answersDao.bookletCount!=null and answersDao.bookletCount gt 4}">
-                <h:selectOneMenu value="#{gridVar.ansE}" style="width:100%" id="ansE">
+                <p:selectOneMenu value="#{gridVar.ansE}" style="width:100%" id="ansE">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" F " width="40"
                       rendered="#{answersDao.bookletCount!=null and answersDao.bookletCount gt 5}">
-                <h:selectOneMenu value="#{gridVar.ansF}" style="width:100%" id="ansF">
+                <p:selectOneMenu value="#{gridVar.ansF}" style="width:100%" id="ansF">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" G " width="40"
                       rendered="#{answersDao.bookletCount!=null and answersDao.bookletCount gt 6}">
-                <h:selectOneMenu value="#{gridVar.ansG}" style="width:100%" id="ansG">
+                <p:selectOneMenu value="#{gridVar.ansG}" style="width:100%" id="ansG">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
             <p:column headerText=" H " width="40"
                       rendered="#{answersDao.bookletCount!=null and answersDao.bookletCount gt 7}">
-                <h:selectOneMenu value="#{gridVar.ansH}" style="width:100%" id="ansH">
+                <p:selectOneMenu value="#{gridVar.ansH}" style="width:100%" id="ansH">
                     <f:selectItems value="#{answersDao.answerTypes}" var="man"
                                    itemLabel="#{man.name}" itemValue="#{man}"/>
-                </h:selectOneMenu>
+                </p:selectOneMenu>
             </p:column>
 
 

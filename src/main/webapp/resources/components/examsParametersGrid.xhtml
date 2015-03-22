@@ -137,6 +137,7 @@
                                  actionListener="#{examsParametersDao.create}"
                                  process="@this"
                                  update="parametersGrid"
+                                 onsuccess="PF('parametersDialogWidget').hide()"
                         />
                 <p:commandButton value="Parametre Ekle" style="text-align: right;"
                                  actionListener="#{examsParametersDao.addParameter}"
