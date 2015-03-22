@@ -54,8 +54,10 @@
                     <p:outputLabel value=". #{msg.exam}" for="refExamSeason" style="margin-left:10px;" rendered="false"/>
 
                     <p:separator/>
-                    <p:outputLabel value="#{msg.exam_name}:" for="nameTr" style="margin-left:10px;"/>
-                    <p:inputText id="nameTr" value="#{examsDao.item.nameTr}" title="NameTr" size="40" style="margin:5px;"
+                    <p:outputLabel value="#{msg.global_number_short}:" for="number" style="margin:0 10px;"/>
+                    <p:inputText id="number" value="#{examsDao.item.number}" title="Number" size="2" maxlength="4"/>
+                    <p:outputLabel value="#{msg.global_name}:" for="nameTr" style="margin-left:10px;"/>
+                    <p:inputText id="nameTr" value="#{examsDao.item.nameTr}" title="NameTr" size="50" style="margin:5px;"
                                  required="true" requiredMessage="#{msg.exam_name} field is required."/>
                     <p:outputLabel value="NameEn:" for="nameEn" rendered="false"/>
                     <p:inputText id="nameEn" value="#{examsDao.item.nameEn}" title="NameEn" rendered="false"/>
@@ -64,8 +66,7 @@
                                 pattern="dd/MM/yyyy HH:mm:ss" navigator="true"/>
                     <br/>
 
-                    <p:outputLabel value="#{msg.exam_number}:" for="number" style="margin:0 10px;"/>
-                    <p:inputText id="number" value="#{examsDao.item.number}" title="Number"/>
+
                     <p:separator/>
 
                     <span style="font-size: 24px;display: none;">Dersler</span>

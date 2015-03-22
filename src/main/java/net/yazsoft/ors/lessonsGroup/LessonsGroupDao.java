@@ -26,10 +26,8 @@ public class LessonsGroupDao extends BaseGridDao<LessonsGroup> implements Serial
 
     LessonsGroup selected;
 
-    @Inject
-    LessonsNameDao lessonsNameDao;
-    @Inject
-    AnswersSubjectTypeDao answersSubjectTypeDao;
+    @Inject LessonsNameDao lessonsNameDao;
+    @Inject AnswersSubjectTypeDao answersSubjectTypeDao;
 
     List<LessonsName> lessonsNames;
 
