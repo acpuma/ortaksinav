@@ -71,6 +71,7 @@
                      selection="#{lessonsNameDao.item}"
                      rowKey="#{lessonsNameGrid.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
+                     selectionMode="single"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
@@ -80,11 +81,17 @@
                     listener="#{lessonsNameDao.select}"
                     />
 
+            <p:ajax event="rowSelect" listener="#{lessonsNameDao.onRowSelect}"
+                    update="@widgetVar(answersSubjectGridWidget)" />
+
             <p:ajax event="rowEdit" listener="#{lessonsNameDao.onRowEdit}"
                     update=":messages "  />
             <p:ajax event="rowEditCancel" listener="#{lessonsNameDao.onRowCancel}"
                     update=":messages " />
 
+            <f:facet name="header">
+                #{msg.lessons}
+            </f:facet>
 
             <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{lessonsNameGrid.tid}  </p:column>
 
@@ -111,6 +118,13 @@
                                  actionListener="#{lessonsGroupDao.deleteLessonName(lessonsNameGrid)}">
                 </p:commandButton>
             </p:column>
+
+            <f:facet name="footer">
+                <p:commandButton value="Ekle" onclick="PF('lessonDialogWidget').show()"
+                                 actionListener="#{lessonsNameDao.reset}"
+                                 update=":#{p:component('lessonForm')}"
+                        />
+            </f:facet>
 
         </p:dataTable>
     </h:form>

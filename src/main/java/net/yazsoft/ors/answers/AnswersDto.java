@@ -56,7 +56,7 @@ public class AnswersDto extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
-    @Column(nullable = false, length = 1)
+    @Column(length = 1)
     private String ansA;
     @Size(max = 1)
     @Column(length = 1)
@@ -88,9 +88,6 @@ public class AnswersDto extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_answer_subject", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private AnswersSubjectType refAnswerSubject;
-    @JoinColumn(name = "ref_exam_booklet", referencedColumnName = "tid", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private ExamsBookletType refExamBooklet;
     @JoinColumn(name = "ref_lesson", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Lessons refLesson;
@@ -292,14 +289,6 @@ public class AnswersDto extends BaseEntity implements Serializable {
         this.refAnswerSubject = refAnswerSubject;
     }
 
-    public ExamsBookletType getRefExamBooklet() {
-        return refExamBooklet;
-    }
-
-    public void setRefExamBooklet(ExamsBookletType refExamBooklet) {
-        this.refExamBooklet = refExamBooklet;
-    }
-
     public Lessons getRefLesson() {
         return refLesson;
     }
@@ -358,7 +347,6 @@ public class AnswersDto extends BaseEntity implements Serializable {
                 ", refAnswerCancel=" + refAnswerCancel +
                 ", refAnswerQuestion=" + refAnswerQuestion +
                 ", refAnswerSubject=" + refAnswerSubject +
-                ", refExamBooklet=" + refExamBooklet +
                 ", refLesson=" + refLesson +
                 '}';
     }

@@ -55,7 +55,7 @@ public class Answers extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1)
-    @Column(nullable = false, length = 1)
+    @Column(length = 1)
     private String ansA;
     @Size(max = 1)
     @Column(length = 1)
@@ -84,7 +84,7 @@ public class Answers extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_answer_question", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private AnswersQuestionType refAnswerQuestion;
-    @JoinColumn(name = "ref_answer_subject", referencedColumnName = "tid", nullable = false)
+    @JoinColumn(name = "ref_answer_subject", referencedColumnName = "tid")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private AnswersSubjectType refAnswerSubject;
     @JoinColumn(name = "ref_lesson", referencedColumnName = "tid", nullable = false)

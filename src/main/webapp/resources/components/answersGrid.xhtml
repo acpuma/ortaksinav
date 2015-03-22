@@ -76,6 +76,7 @@
 
             <p:column headerText="#{msg.answer_subject_type}" width="120" rendered="true">
                 <h:selectOneMenu value="#{gridVar.refAnswerSubject}" style="width:100%" id="subjectType">
+                    <f:selectItem value="#{null}" itemLabel="#{msg.answer_no_subject}" />
                     <f:selectItems value="#{answersDao.subjects}" var="man"
                                    itemLabel="#{man.nameTr}" itemValue="#{man}"/>
                 </h:selectOneMenu>

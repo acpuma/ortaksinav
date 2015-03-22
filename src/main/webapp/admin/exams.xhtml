@@ -144,6 +144,7 @@
                 <p:selectOneMenu id="answerLessons" value="#{answersDao.lesson}" widgetVar="answersLessonSelect"
                                  title="answerLessonType" rendered="true"
                                  required="true" requiredMessage="The answerLessonType field is required.">
+                    <f:selectItem value="#{null}" itemLabel="#{msg.global_select}" />
                     <f:selectItems value="#{answersDao.lessons}" var="man"
                                    itemLabel="#{man.refLessonName.nameTr}" itemValue="#{man}"/>
                     <p:ajax update="@widgetVar(answersGridWidget)" listener="#{answersDao.onLessonChange}"/>

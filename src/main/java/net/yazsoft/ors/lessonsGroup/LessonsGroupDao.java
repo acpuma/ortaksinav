@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
+import net.yazsoft.ors.answers.AnswersSubjectTypeDao;
 import net.yazsoft.ors.entities.LessonsGroup;
 import net.yazsoft.ors.entities.LessonsName;
 import net.yazsoft.ors.lessonsName.LessonsNameDao;
@@ -27,6 +28,8 @@ public class LessonsGroupDao extends BaseGridDao<LessonsGroup> implements Serial
 
     @Inject
     LessonsNameDao lessonsNameDao;
+    @Inject
+    AnswersSubjectTypeDao answersSubjectTypeDao;
 
     List<LessonsName> lessonsNames;
 
@@ -101,6 +104,7 @@ public class LessonsGroupDao extends BaseGridDao<LessonsGroup> implements Serial
         logger.info("ONROWSELECT :" + selected);
         setStatus(Status.UPDATE);
         handleGroupChange();
+        answersSubjectTypeDao.setSubjectTypes(null);
     }
     public LessonsGroupDao() {
         super(LessonsGroup.class);

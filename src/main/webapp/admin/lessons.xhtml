@@ -15,30 +15,25 @@
         <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
 
             <p:outputPanel id="pageForm"/>
-            <p:panelGrid columns="2" id="pagePanel" style="margin:10px auto 30px;">
+            <p:panelGrid columns="2" id="pagePanel" style="margin:10px auto 10px;">
                 <p:outputPanel style="width: 340px; margin:2px;">
-                    <h3>Gruplar</h3>
-                    <components:lessonsGroupGrid rows="10" scrollable="true" id="lessonsGroupGrid"
-                                                 update="@widgetVar(lessonsNameGridWidget)"
-                                                 paginator="false"
-                                                 widgetVar="lessonsGroupGridWidget"/>
-
-                    <p:commandButton value="Ekle" onclick="PF('groupDialogWidget').show()"
-                                     actionListener="#{lessonsGroupDao.reset}"
-                                     update="groupForm"
-                            />
+                    <components:lessonsGroupGrid rows="100" scrollable="true" id="lessonsGroupGrid"
+                                update="@widgetVar(lessonsNameGridWidget) @widgetVar(answersSubjectGridWidget)"
+                                paginator="false" scrollHeight="250"
+                                widgetVar="lessonsGroupGridWidget"/>
                 </p:outputPanel>
                 <p:outputPanel style="width: 400px;margin:2px;">
-                    <h3>Dersler</h3>
-                    <components:lessonsNameGrid rows="10" scrollable="true" editable="true"
+                    <components:lessonsNameGrid rows="100" scrollable="true" editable="true"
+                                                paginator="false" scrollHeight="250"
                                                 widgetVar="lessonsNameGridWidget"/>
-                    <p:commandButton value="Ekle" onclick="PF('lessonDialogWidget').show()"
-                                     actionListener="#{lessonsNameDao.reset}"
-                                     update="lessonForm"
-                                     />
                 </p:outputPanel>
             </p:panelGrid>
 
+            <p:panelGrid columns="1" style="margin:10px 5px;">
+                <components:answersSubjectsGrid rows="10" scrollable="true" editable="true"
+                                                scrollHeight="300"
+                                                widgetVar="answersSubjectGridWidget" />
+            </p:panelGrid>
         </p:outputPanel>
 
         <p:dialog id="groupDialog" header="#{msg.global_group}" widgetVar="groupDialogWidget"
@@ -54,13 +49,26 @@
         </p:dialog>
         <p:dialog id="lessonDialog" header="#{msg.lesson}" widgetVar="lessonDialogWidget"
                   modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
-            <h:form id="lessonForm">
+            <h:form id="lessonForm" >
                 <p:outputLabel value="#{msg.global_name}:" for="lesson" />
                 <p:inputText id="lesson" value="#{lessonsNameDao.item.nameTr}" title="Ad" />
                 <p:commandButton value="Kaydet" action="#{lessonsGroupDao.addLessonName}"
                                  update="@widgetVar(lessonsNameGridWidget)"
                                  onsuccess="PF('lessonDialogWidget').hide()">
                     <f:setPropertyActionListener value="#{lessonsGroupDao.item}" target="#{lessonsNameDao.item.refLessonGroup}" />
+                </p:commandButton>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="subjectDialog" header="#{msg.answer_subject_type}" widgetVar="subjectDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+            <h:form id="subjectForm" >
+                <p:outputLabel value="#{msg.global_name}:" for="subject" />
+                <p:inputText id="subject" value="#{answersSubjectTypeDao.item.nameTr}" title="Ad" />
+                <p:commandButton value="Kaydet" action="#{answersSubjectTypeDao.addSubjectType}"
+                                 update="@widgetVar(answersSubjectGridWidget)"
+                                 onsuccess="PF('subjectDialogWidget').hide()">
+                    <f:setPropertyActionListener value="#{lessonsNameDao.item}"
+                                                 target="#{answersSubjectTypeDao.item.refLessonName}" />
                 </p:commandButton>
             </h:form>
         </p:dialog>

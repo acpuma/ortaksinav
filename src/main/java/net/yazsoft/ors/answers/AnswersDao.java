@@ -85,13 +85,13 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
         getLessonAnswers(lesson);
         if (answersDtos.size()==0) {
             AnswersDto dto;
-            AnswersSubjectType subjectType=answersSubjectTypeDao.getById(1L);
+            //AnswersSubjectType subjectType=answersSubjectTypeDao.getById(1L);
             AnswersQuestionType questionType=answersQuestionTypeDao.getById(1L);
             AnswersCancelType cancelType=answersCancelTypeDao.getById(1L);
             ExamsAnswerType answerType=examsAnswerTypeDao.getById(1L);
             for (int i=1; i<=questionCount; i++) {
                 dto=new AnswersDto();
-                dto.setRefAnswerSubject(subjectType);
+                //dto.setRefAnswerSubject(subjectType);
                 dto.setRefAnswerQuestion(questionType);
                 dto.setRefAnswerCancel(cancelType);
                 dto.setRank(i);

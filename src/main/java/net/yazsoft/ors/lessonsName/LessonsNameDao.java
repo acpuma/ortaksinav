@@ -3,6 +3,7 @@ package net.yazsoft.ors.lessonsName;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
+import net.yazsoft.ors.answers.AnswersSubjectTypeDao;
 import net.yazsoft.ors.entities.LessonsGroup;
 import net.yazsoft.ors.entities.LessonsName;
 import net.yazsoft.ors.lessonsGroup.LessonsGroupDao;
@@ -11,6 +12,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,6 +26,9 @@ public class LessonsNameDao extends BaseGridDao<LessonsName> implements Serializ
     LessonsName selected;
 
     List<LessonsName> names;
+
+    @Inject
+    AnswersSubjectTypeDao answersSubjectTypeDao;
 
     @Override
     public Long save() {
@@ -54,6 +59,11 @@ public class LessonsNameDao extends BaseGridDao<LessonsName> implements Serializ
             e.printStackTrace();
         }
         return list;
+    }
+
+    public void onRowSelect(SelectEvent event) {
+        selected=(LessonsName) event.getObject();
+        answersSubjectTypeDao.setLessonsName(selected);
     }
 
     public void onRowEdit(RowEditEvent event) {

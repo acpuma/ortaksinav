@@ -25,19 +25,19 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetLessonsGroup"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetAnswersSubject"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form>
-        <p:dataTable id="lessonsGroupGrid"
-                     var="lessonsGroupGrid"
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="answersSubjectGrid"
+                     var="gridVar"
 
                      filterEvent="enter"
-                     value="#{lessonsGroupDao.all}"
+                     value="#{answersSubjectTypeDao.subjectTypes}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -68,58 +68,56 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selectionMode="single"
-                     selection="#{lessonsGroupDao.item}"
-
-                     rowKey="#{lessonsGroupGrid.tid}"
+                     selection="#{answersSubjectTypeDao.item}"
+                     rowKey="#{gridVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
                     process="@all"
-                    listener="#{lessonsGroupDao.select}"
+                    listener="#{answersSubjectTypeDao.select}"
                     />
 
+            <p:ajax event="rowEdit" listener="#{answersSubjectTypeDao.onRowEdit}"
+                    update=":messages "  />
+            <p:ajax event="rowEditCancel" listener="#{answersSubjectTypeDao.onRowCancel}"
+                    update=":messages " />
 
-
-
-            <p:ajax event="rowSelect" listener="#{lessonsGroupDao.onRowSelect}" update="#{cc.attrs.update}" />
-
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true"> #{lessonsGroupGrid.tid}  </p:column>
-
-
-            <f:facet name="header">
-                #{msg.exam_groups}
+            <f:facet name="header" >
+                #{msg.answer_subjects}
             </f:facet>
-            <p:column headerText="#{msg.global_name}" width="120" filterBy="#{lessonsGroupGrid.nameTr}">
-                #{lessonsGroupGrid.nameTr}
+
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
+
+
+            <p:column headerText="#{msg.global_name}" width="580" filterBy="#{gridVar.nameTr}">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{gridVar.nameTr}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{gridVar.nameTr}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.global_id}" width="40" rendered="false"
+                      filterBy="#{gridVar.refLessonName.tid}">
+                #{gridVar.refLessonName.tid}
             </p:column>
 
-            <p:column width="25">
-                <p:commandButton value="" update=" :messages :groupForm" action="#{lessonsGroupDao.setStatus}"
-                                 icon="ui-icon-pencil" style="height: 36px; width: 36px;"
-                                 oncomplete="PF('groupDialogWidget').show()">
-                    <f:setPropertyActionListener value="#{lessonsGroupGrid}" target="#{lessonsGroupDao.item}" />
-                </p:commandButton>
-
+            <p:column width="40">
+                <p:rowEditor />
             </p:column>
-
-            <p:column width="25">
-                <p:commandButton value=""  icon="ui-icon-trash"
+            <p:column width="40">
+                <p:commandButton value="" update=" :messages answersSubjectGrid"
+                                 icon="ui-icon-trash"
                                  style="height: 36px; width: 36px;"
-                                 action="#{lessonsGroupDao.delete}"
-                                 update=":messages  lessonsGroupGrid"
-                        >
-                    <f:setPropertyActionListener value="#{lessonsGroupGrid}" target="#{lessonsGroupDao.item}" />
+                                 actionListener="#{answersSubjectTypeDao.deleteSubjectType(gridVar)}">
                 </p:commandButton>
             </p:column>
-
             <f:facet name="footer">
-                <p:commandButton value="Ekle" onclick="PF('groupDialogWidget').show()"
-                                 actionListener="#{lessonsGroupDao.reset}"
-                                 update=":#{p:component('groupForm')}"
+                <p:commandButton value="Ekle" onclick="PF('subjectDialogWidget').show()"
+                                 actionListener="#{answersSubjectTypeDao.reset}"
+                                 update="@widgetVar(answersSubjectGridWidget)"
                         />
             </f:facet>
 
