@@ -29,7 +29,7 @@ public abstract class BaseGridDao<T extends BaseEntity> extends BaseDao<T> {
     private static final Logger logger = Logger.getLogger(BaseGridDao.class.getName());
     T item;
     public enum Status {CREATE, READ,UPDATE,DELETE};
-    Status status= Status.CREATE;
+    protected Status status= Status.CREATE;
     boolean disabledelete=true; //for delete button
 
     //LazyDataModel<T> lazyModel;
@@ -85,6 +85,7 @@ public abstract class BaseGridDao<T extends BaseEntity> extends BaseDao<T> {
     }
     
     public void reset() {
+        logger.info("RESET ITEM");
         try {
             item=type.newInstance();
             logger.info(FacesContext.getCurrentInstance().getViewRoot().getViewMap());
@@ -188,5 +189,7 @@ public abstract class BaseGridDao<T extends BaseEntity> extends BaseDao<T> {
         return lazyModel;
     }
     */
+
+
 
 }

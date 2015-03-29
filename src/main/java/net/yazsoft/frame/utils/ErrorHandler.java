@@ -1,6 +1,7 @@
 package net.yazsoft.frame.utils;
 
-import javax.enterprise.context.RequestScoped;
+import net.yazsoft.frame.scopes.RequestScoped;
+
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 

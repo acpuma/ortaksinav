@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>Barcode</title>
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="Barcode" />
+        <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+            <h:form id="pageForm" style="margin:20px;">
+                <p:panelGrid columns="3">
+
+                    <h:outputText value="Barcode : " />
+                    <p:inputText value="#{barcodeSer.barcode}" >
+                            <p:ajax listener="#{barcodeSer.change}" update="pagePanel"/>
+                    </p:inputText>
+                    <p:commandButton value="Değiştir" />
+                </p:panelGrid>
+                <br/>
+                <p:panelGrid columns="2" id="pagePanel">
+
+                    <h:outputText value="Code39" />
+                    <p:barcode value="#{barcodeSer.barcode}" type="code39" format="png"/>
+
+                    <h:outputText value="Code128" />
+                    <p:barcode value="#{barcodeSer.barcode}" type="code128" format="png"/>
+
+                    <h:outputText value="CodeEan13" />
+                    <p:barcode value="#{barcodeSer.barcode}" type="ean13" format="png"/>
+                </p:panelGrid>
+            </h:form>
+        </p:outputPanel>
+    </ui:decorate>
+</f:view>
+</html>
+
+
+

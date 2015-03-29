@@ -49,7 +49,10 @@ public class Roles extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @ManyToMany(mappedBy = "rolesCollection", fetch = FetchType.LAZY)
+    @JoinTable(name = "UsersRoles", joinColumns = {
+        @JoinColumn(name = "ref_role", referencedColumnName = "tid", nullable = false)}, inverseJoinColumns = {
+        @JoinColumn(name = "ref_user", referencedColumnName = "tid", nullable = false)})
+    @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Users> usersCollection;
 
     public Roles() {
@@ -140,11 +143,6 @@ public class Roles extends BaseEntity implements Serializable {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.Roles[ tid=" + tid + " ]";
     }
 
 }

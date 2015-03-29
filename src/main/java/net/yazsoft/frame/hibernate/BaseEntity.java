@@ -84,5 +84,13 @@ public abstract class BaseEntity<T extends Long> implements Serializable{
         this.version = version;
     }
     */
+
+    @Override
+    public String toString() {
+        if (getTid()==null) {
+            return null;
+        }
+        return getTid().toString();
+    }
 }
 

@@ -2,21 +2,24 @@
 /** @author fec */
 package net.yazsoft.frame.menus;
 
+import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.ors.entities.Menus;
 import net.yazsoft.ors.entities.MenusType;
-import net.yazsoft.frame.hibernate.BaseDao;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
+import net.yazsoft.frame.scopes.*;
 
 @Named
+@ViewScoped
 public class MenusDao extends BaseDao<Menus> implements Serializable{
 
     @Inject

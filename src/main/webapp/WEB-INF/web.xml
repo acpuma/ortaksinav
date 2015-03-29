@@ -31,6 +31,7 @@
         <param-value>1048576</param-value>
     </context-param>
 
+
 <!-- for omnifaces -->
 <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>

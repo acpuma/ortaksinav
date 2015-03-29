@@ -1,6 +1,7 @@
 package net.yazsoft.ors.cities;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Cities;
 import net.yazsoft.ors.entities.Towns;
 import net.yazsoft.ors.schools.SchoolsDao;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Named
+@ViewScoped
 @Transactional
 public class CitiesDao extends BaseGridDao<Cities> implements Serializable{
     Logger logger= Logger.getLogger(CitiesDao.class);

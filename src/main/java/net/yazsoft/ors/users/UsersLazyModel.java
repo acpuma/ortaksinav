@@ -1,5 +1,6 @@
 package net.yazsoft.ors.users;
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.security.UsersDao;
 import net.yazsoft.ors.entities.Users;
 import org.primefaces.model.LazyDataModel;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 
 @Named
+@ViewScoped
 public class UsersLazyModel extends LazyDataModel<Users>{
 
     @Inject

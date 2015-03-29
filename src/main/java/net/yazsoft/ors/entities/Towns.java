@@ -153,9 +153,4 @@ public class Towns extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.Towns[ tid=" + tid + " ]";
-    }
-
 }

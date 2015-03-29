@@ -7,14 +7,25 @@
 <header>
     <p:outputPanel style="width: auto;">
         <span style="font-size: 24px;float: left; width: 100%; padding: 10px; ">
-            ADMIN PANEL
+            #{headerTitle}
         </span>
     </p:outputPanel>
 
-    <p:outputPanel style="right:0px; position:absolute; margin:10px; float: left;">
-        <h:form>
-            <p:graphicImage library="images" name="mail48.png" width="36" style="margin:0 10px;"/>
-            <p:commandLink action="#{loginSer.logout}" immediate="true">
+    <p:outputPanel style="right:0px; position:absolute; margin:0px; float: left;">
+        <p:panelGrid columns="1" style="float: left;" >
+
+        <p:outputPanel id="activeSchool"  style="font-size: 14px; text-align: right; max-width: 500px;" styleClass="truncate" >
+            #{sessionInfo.school.name}
+        </p:outputPanel>
+
+        <p:outputPanel id="activeExam" style="font-size: 14px; text-align: right; max-width: 500px;" styleClass="truncate">
+            #{sessionInfo.exam.nameTr}
+        </p:outputPanel>
+        </p:panelGrid>
+        <h:form style="display: inline; position: relative; top:8px;margin:8px;">
+
+            <p:graphicImage library="images" name="mail48b.png" width="36" style="margin:0 10px;"/>
+            <p:commandLink action="#{loginSer.logout}" immediate="true" style="position:relative; top:-2px;">
                 <p:graphicImage library="images" name="logout.png" width="32"/>
             </p:commandLink>
             <p:commandButton action="#{loginSer.logout}" value="#{msg.logout}" rendered="false"  />

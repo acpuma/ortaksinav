@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components"
+      xmlns:p="http://primefaces.org/ui"
+
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<!-- INTERFACE -->
+<cc:interface>
+    <cc:attribute name="width" default="700"     required="false"     />
+    <cc:attribute name="multiple" default="false"     required="false"     />
+    <cc:attribute name="update" default="@this" required="false"    />
+    <cc:attribute name="oncomplete" default="" required="false"    />
+    <cc:attribute name="widgetVar" default="" required="false"  />
+    <cc:attribute name="input" default=""  />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <p:outputPanel id="uploadFilePanel" layout="inline">
+        #{cc.attrs.album.tid}
+        <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_file}"
+                         immediate="true" process="@none"
+                         oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
+                >
+        </p:commandButton>
+    </p:outputPanel>
+    <p:dialog header="#{msg.upload_file}" modal="true"  widgetVar="uploadFileWidget_#{cc.id}"
+              closeOnEscape="true" style="z-index: 1 !important;" appendTo="@(body)" dynamic="false">
+        <p:outputPanel style="width: #{cc.attrs.width}px; margin: auto;">
+            <h:form enctype="multipart/form-data" id="uploadForm">
+                <p:fileUpload fileUploadListener="#{uploadsBean.handleFileUpload}"
+                              mode="advanced"
+                              multiple="true"
+                              allowTypes="/(\.|\/)(dat|DAT|txt|TXT)$/"
+                              oncomplete="#{cc.attrs.oncomplete}; PF('uploadFileWidget_#{cc.id}').hide();"
+                              update="#{cc.attrs.update}"
+                              fileLimit="20000"
+                              label="#{msg.upload_select_file}"
+                              uploadLabel="#{msg.upload}"
+                              cancelLabel="#{msg.global_cancel}"
+                              process="uploadForm"
+                        />
+            </h:form>
+        </p:outputPanel>
+
+    </p:dialog>
+</cc:implementation>
+</html>

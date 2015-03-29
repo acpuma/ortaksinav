@@ -1,6 +1,7 @@
 package net.yazsoft.frame.security;
 
 import net.yazsoft.frame.hibernate.BaseSer;
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Users;
 import net.yazsoft.ors.users.UsersLazyModel;
 import org.apache.log4j.Logger;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
+@ViewScoped
 @Transactional
 public class UsersSer extends BaseSer<Users> {
     private Logger logger= Logger.getLogger(UsersSer.class);

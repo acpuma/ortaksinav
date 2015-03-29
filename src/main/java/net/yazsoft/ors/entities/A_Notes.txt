@@ -1,0 +1,28 @@
+1-replace in path :
+implements Serializable
+extends BaseEntity implements Serializable
+
+2-replace in path :
+import java.io.Serializable;
+import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+
+3-Remove toString methods from all Exams entities
+Replace Structually:
+class $Class$ {
+    String $MethodName$();
+}
+MethodName : toString
+Occurrencies : Unlimited
+Target of Search
+
+4-Change UsersRoles owner in Users and Roles entities
+Users.java:
+    @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
+    private Collection<Roles> rolesCollection;
+
+Roles.java :
+    @JoinTable(name = "UsersRoles", joinColumns = {
+    @JoinColumn(name = "ref_role", referencedColumnName = "tid", nullable = false)}, inverseJoinColumns = {
+    @JoinColumn(name = "ref_user", referencedColumnName = "tid", nullable = false)})
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Collection<Users> usersCollection;

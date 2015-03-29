@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="ors:war exploded">
+  <artifact type="exploded-war" build-on-make="true" name="ors:war exploded">
     <output-path>$PROJECT_DIR$/target/ors</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
@@ -55,7 +55,6 @@
           <element id="library" level="project" name="Maven: org.jboss.logging:jboss-logging-annotations:1.2.0.Beta1" />
           <element id="library" level="project" name="Maven: org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.0.0.Final" />
           <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
-          <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.0.b2" />
           <element id="library" level="project" name="Maven: org.hibernate.common:hibernate-commons-annotations:4.0.5.Final" />
           <element id="library" level="project" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final" />
           <element id="library" level="project" name="Maven: org.javassist:javassist:3.18.1-GA" />
@@ -93,6 +92,8 @@
           <element id="library" level="project" name="Maven: org.omnifaces:omnifaces:1.10" />
           <element id="library" level="project" name="Maven: org.imgscalr:imgscalr-lib:4.2" />
           <element id="library" level="project" name="Maven: com.google.guava:guava:18.0" />
+          <element id="library" level="project" name="Maven: net.sf.barcode4j:barcode4j-light:2.0" />
+          <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.3.04" />
         </element>
       </element>
       <element id="directory" name="META-INF">

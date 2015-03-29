@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="false"     required="false"   name="disabledSelection"  />
+    <cc:attribute default="false"     required="false"   name="draggableColumns" />
+    <cc:attribute default="false"     required="false"   name="editable" />
+    <cc:attribute default="row"     required="false"   name="editMode" />
+    <cc:attribute default="true"     required="false"   name="editingRow" />
+    <cc:attribute default="false"     required="false"   name="expandedRow" />
+    <cc:attribute default="true"      required="false"   name="paginator" />
+    <cc:attribute default="bottom"    required="false"   name="paginatorPosition" />
+    <cc:attribute default="true"      required="false"   name="paginatorAlwaysVisible" />
+    <cc:attribute default="true"      required="false"   name="resizableColumns" />
+    <cc:attribute default="0"         required="false"   name="rows" />
+    <cc:attribute default="true"      required="false"   name="rendered" />
+    <cc:attribute default="true"      required="false"   name="scrollable" />
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetParameters"     required="false"   name="widgetVar" />
+    <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute default="width:600px;" required="false" name="tableStyle" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="parametersGrid"
+                     var="parameterVar"
+
+
+                     value="#{examsParametersDao.parametersDtos}"
+                     emptyMessage="#{msg['global_no_data']}"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                 {PreviousPageLink} 
+                 {PageLinks} {NextPageLink} 
+                 {LastPageLink} {RowsPerPageDropdown}"
+
+                     draggableColumns="#{cc.attrs.draggableColumns}"
+
+                     editable="#{cc.attrs.editable}"
+
+                     paginator="#{cc.attrs.paginator}"
+                     paginatorPosition="#{cc.attrs.paginatorPosition}"
+                     paginatorAlwaysVisible="#{cc.attrs.paginatorAlwaysVisible}"
+
+                     resizableColumns="#{cc.attrs.resizableColumns}"
+                     rows="#{cc.attrs.rows}"
+                     rendered="#{cc.attrs.rendered}"
+
+                     scrollable="#{cc.attrs.scrollable}"
+                     sortOrder="#{cc.attrs.sortOrder}"
+                     sortMode="#{cc.attrs.sortMode}"
+                     stickyHeader="#{cc.attrs.stickyHeader}"
+                     scrollWidth="#{cc.attrs.scrollWidth}"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                     liveResize="true"
+
+                     transient="#{cc.attrs.transient}"
+                     widgetVar="#{cc.attrs.widgetVar}"
+
+                     rowKey="#{parameterVar.id}"
+                     tableStyle="#{cc.attrs.tableStyle}"
+                >
+
+
+            <p:ajax event="rowEdit" listener="#{examsParametersDao.onRowEdit}"
+                    update=":messages :#{p:component('questionCount')}" process="parametersGrid" />
+            <p:ajax event="rowEditCancel" listener="#{examsParametersDao.onRowCancel}"
+                    update=":messages :#{p:component('questionCount')}" />
+
+            <f:facet name="header">
+                #{msg.parameters}
+            </f:facet>
+            <p:column headerText="#{msg.exam_group}" width="80" rendered="false">
+                #{parameterVar.refExam.nameTr}
+            </p:column>
+
+            <p:column headerText="#{msg.global_name}" width="120" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{parameterVar.refParameter.nameTr}" />
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:selectOneMenu value="#{parameterVar.refParameter}" style="width:100%" id="parametersType"
+                                >
+                            <f:selectItems value="#{examsParametersTypeDao.all}" var="man"
+                                           itemLabel="#{man.nameTr}" itemValue="#{man}" />
+                        </h:selectOneMenu>
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.global_start}" width="40" rendered="true"  >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{parameterVar.start}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{parameterVar.start}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+
+
+            <p:column headerText="#{msg.global_length}" width="40" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{parameterVar.length}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{parameterVar.length}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column headerText="#{msg.global_direction}" width="30" rendered="true">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{parameterVar.direction}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{parameterVar.direction}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+
+            </p:column>
+
+            <p:column style="width:32px">
+                <p:rowEditor />
+            </p:column>
+            <p:column width="40">
+                <p:commandButton value="Sil" update=":#{p:component('questionCount')} :messages parametersGrid "
+                                 actionListener="#{examsParametersDao.delete(parameterVar)}">
+                </p:commandButton>
+            </p:column>
+            <f:facet name="footer">
+                <p:commandButton value="Kaydet" style="text-align: right;"
+                                 actionListener="#{examsParametersDao.create}"
+                                 process="@this"
+                                 update="parametersGrid"
+                                 onsuccess="PF('parametersDialogWidget').hide()"
+                        />
+                <p:commandButton value="Parametre Ekle" style="text-align: right;"
+                                 actionListener="#{examsParametersDao.addParameter}"
+                                 process="@this"
+                                 update="parametersGrid"
+                        />
+            </f:facet>
+        </p:dataTable>
+    </h:form>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
+
+</cc:implementation>
+</html>

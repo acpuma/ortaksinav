@@ -1,6 +1,7 @@
 package net.yazsoft.frame.security;
 
 
+import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Roles;
 import net.yazsoft.frame.hibernate.BaseDao;
 import org.hibernate.SessionFactory;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Named;
 
 @Named
+@ViewScoped
 @Transactional
 public class RolesDao extends BaseDao<Roles>{
     @Autowired

@@ -55,14 +55,14 @@ public class Images extends BaseEntity implements Serializable {
     @Size(max = 1000)
     @Column(name = "title_en", length = 1000)
     private String titleEn;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<Albums> albumsCollection;
     @JoinColumn(name = "ref_albums", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Albums refAlbums;
     @JoinColumn(name = "ref_schools", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchools;
-    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
-    private Collection<Albums> albumsCollection;
 
     public Images() {
     }
@@ -141,6 +141,15 @@ public class Images extends BaseEntity implements Serializable {
         this.titleEn = titleEn;
     }
 
+    @XmlTransient
+    public Collection<Albums> getAlbumsCollection() {
+        return albumsCollection;
+    }
+
+    public void setAlbumsCollection(Collection<Albums> albumsCollection) {
+        this.albumsCollection = albumsCollection;
+    }
+
     public Albums getRefAlbums() {
         return refAlbums;
     }
@@ -155,15 +164,6 @@ public class Images extends BaseEntity implements Serializable {
 
     public void setRefSchools(Schools refSchools) {
         this.refSchools = refSchools;
-    }
-
-    @XmlTransient
-    public Collection<Albums> getAlbumsCollection() {
-        return albumsCollection;
-    }
-
-    public void setAlbumsCollection(Collection<Albums> albumsCollection) {
-        this.albumsCollection = albumsCollection;
     }
 
     @Override
@@ -184,11 +184,6 @@ public class Images extends BaseEntity implements Serializable {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.Images[ tid=" + tid + " ]";
     }
 
 }
