@@ -95,9 +95,4 @@ public class AlbumsType extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.AlbumsType[ tid=" + tid + " ]";
-    }
-
 }

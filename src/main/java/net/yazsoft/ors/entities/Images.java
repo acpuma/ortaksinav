@@ -186,9 +186,4 @@ public class Images extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.Images[ tid=" + tid + " ]";
-    }
-
 }

@@ -140,5 +140,4 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
         return true;
     }
 
-
 }

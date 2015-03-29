@@ -145,9 +145,4 @@ public class Roles extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.Roles[ tid=" + tid + " ]";
-    }
-
 }

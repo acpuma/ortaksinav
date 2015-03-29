@@ -9,27 +9,28 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>Sınavlar</title>
+        <title>#{msg.exams}</title>
     </h:head>
-    <ui:decorate template="/WEB-INF/templates/master.xhtml">
-        <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
-            <h:form id="pageForm">
-                <p:panelGrid columns="2" id="pagePanel">
-                    <h:outputLabel value="Hello, world"/>
-                </p:panelGrid>
-                <h:inputHidden id="status" value="#{schoolsDao.status}"  />
-                <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
-                <h:messages />
-                <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" />
-            </h:form>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.exams}" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <h:form id="pageForm">
+        <p:panelGrid columns="2" id="pagePanel">
+            <h:outputLabel value="Hello, world"/>
+        </p:panelGrid>
+        <h:inputHidden id="status" value="#{schoolsDao.status}"  />
+        <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
+        <h:messages />
+        <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" />
+    </h:form>
 
-            <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
-                      modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
-                <components:schoolsGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')}"
-                                        widgetVar="schoolsGridWidget"/>
-            </p:dialog>
+    <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+        <components:schoolsGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')}"
+                                widgetVar="schoolsGridWidget"/>
+    </p:dialog>
 
-        </p:outputPanel>
-    </ui:decorate>
+</p:outputPanel>
+</ui:decorate>
 </f:view>
 </html>

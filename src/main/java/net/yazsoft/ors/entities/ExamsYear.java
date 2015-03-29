@@ -145,5 +145,4 @@ public class ExamsYear extends BaseEntity implements Serializable {
         return true;
     }
 
-
 }

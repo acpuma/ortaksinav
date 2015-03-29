@@ -52,9 +52,7 @@ public class Answers extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private int score;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 1)
+    @Size(max = 1)
     @Column(length = 1)
     private String ansA;
     @Size(max = 1)
@@ -85,7 +83,7 @@ public class Answers extends BaseEntity implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private AnswersQuestionType refAnswerQuestion;
     @JoinColumn(name = "ref_answer_subject", referencedColumnName = "tid")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private AnswersSubjectType refAnswerSubject;
     @JoinColumn(name = "ref_lesson", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -98,13 +96,12 @@ public class Answers extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Answers(Long tid, boolean active, int version, int rank, int score, String ansA) {
+    public Answers(Long tid, boolean active, int version, int rank, int score) {
         this.tid = tid;
         this.active = active;
         this.version = version;
         this.rank = rank;
         this.score = score;
-        this.ansA = ansA;
     }
 
     public Long getTid() {
@@ -251,7 +248,6 @@ public class Answers extends BaseEntity implements Serializable {
         this.refAnswerSubject = refAnswerSubject;
     }
 
-
     public Lessons getRefLesson() {
         return refLesson;
     }
@@ -280,28 +276,4 @@ public class Answers extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Answers{" +
-                "tid=" + tid +
-                ", active=" + active +
-                ", version=" + version +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", rank=" + rank +
-                ", score=" + score +
-                ", ansA='" + ansA + '\'' +
-                ", ansB='" + ansB + '\'' +
-                ", ansC='" + ansC + '\'' +
-                ", ansD='" + ansD + '\'' +
-                ", ansE='" + ansE + '\'' +
-                ", ansF='" + ansF + '\'' +
-                ", ansG='" + ansG + '\'' +
-                ", ansH='" + ansH + '\'' +
-                ", refAnswerCancel=" + refAnswerCancel +
-                ", refAnswerQuestion=" + refAnswerQuestion +
-                ", refAnswerSubject=" + refAnswerSubject +
-                ", refLesson=" + refLesson +
-                '}';
-    }
 }

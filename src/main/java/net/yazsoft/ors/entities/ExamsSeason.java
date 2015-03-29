@@ -167,5 +167,4 @@ public class ExamsSeason extends BaseEntity implements Serializable {
         return true;
     }
 
-
 }

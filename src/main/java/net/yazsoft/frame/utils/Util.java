@@ -218,6 +218,11 @@ public class Util implements Serializable{
         FacesMessage msg = new FacesMessage(message);
         FacesContext.getCurrentInstance().addMessage(null,msg);
     }
+
+    public static void setFacesMessageError(String message) {
+        FacesMessage error = new FacesMessage(FacesMessage.SEVERITY_ERROR, message, "");
+        FacesContext.getCurrentInstance().addMessage(null, error);
+    }
     
     public static void moveFile(String filename,String sourceFolder, String targetFolderString) {
         try{
@@ -263,13 +268,13 @@ public class Util implements Serializable{
     }
     */
     
-    public static String getImagesFolder() {
+    public static String getUploadsFolder() {
         File homeDir = new File(System.getProperty("user.home"));
         //String imagesFolder=settings.getSetting("ImagesFolder");
         //File homeDir = new File(imagesFolder);
         
         //logger.info("HOME DIR : " +homeDir.toString());
-        String dirName="images";
+        String dirName="uploads";
         File targetFolder = new File(homeDir,dirName);
 
         // if the IMAGES directory does not exist, create it
@@ -282,6 +287,18 @@ public class Util implements Serializable{
            }
         }
         return homeDir+"/"+dirName;
+    }
+
+    public static File createDirectory(String newDirectory) {
+        String uploadsFolder=Util.getUploadsFolder();
+        File targetFolder = new File(uploadsFolder, newDirectory);
+        if (!targetFolder.exists()) {
+            boolean dirCreated = targetFolder.mkdir();
+            if (dirCreated) {
+                logger.info("DIR created : " + targetFolder);
+            }
+        }
+        return targetFolder;
     }
     
     public static String toCamelCase(String s) {

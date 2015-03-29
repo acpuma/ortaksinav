@@ -59,10 +59,10 @@ public class LessonsName extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_lesson_group", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private LessonsGroup refLessonGroup;
+    @OneToMany(mappedBy = "refLessonName", fetch = FetchType.LAZY)
+    private Collection<AnswersSubjectType> answersSubjectTypeCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonName", fetch = FetchType.LAZY)
     private Collection<Lessons> lessonsCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonName", fetch = FetchType.LAZY)
-    private Collection<AnswersSubjectType> answersSubjectTypeCollection;
 
     public LessonsName() {
     }
@@ -143,20 +143,21 @@ public class LessonsName extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Lessons> getLessonsCollection() {
-        return lessonsCollection;
-    }
-
-    public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
-        this.lessonsCollection = lessonsCollection;
-    }
-
     public Collection<AnswersSubjectType> getAnswersSubjectTypeCollection() {
         return answersSubjectTypeCollection;
     }
 
     public void setAnswersSubjectTypeCollection(Collection<AnswersSubjectType> answersSubjectTypeCollection) {
         this.answersSubjectTypeCollection = answersSubjectTypeCollection;
+    }
+
+    @XmlTransient
+    public Collection<Lessons> getLessonsCollection() {
+        return lessonsCollection;
+    }
+
+    public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
+        this.lessonsCollection = lessonsCollection;
     }
 
     @Override

@@ -9,10 +9,11 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>Kurumlar</title>
+        <title>#{msg.schools}</title>
         <h:outputStylesheet library="pages" name="admin/admin.css" rendered="false"/>
     </h:head>
     <ui:decorate template="/WEB-INF/templates/master.xhtml">
+        <ui:param name="title" value="#{msg.schools}" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <h:form id="pageForm">
             <p:commandButton value="Aktif Kurum Yap"

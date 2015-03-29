@@ -5,7 +5,20 @@ package net.yazsoft.ors.entities;
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -42,11 +55,11 @@ public class AnswersSubjectType extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refAnswerSubject", fetch = FetchType.LAZY)
-    private Collection<Answers> answersCollection;
     @JoinColumn(name = "ref_lesson_name", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private LessonsName refLessonName;
+    @OneToMany(mappedBy = "refAnswerSubject", fetch = FetchType.LAZY)
+    private Collection<Answers> answersCollection;
 
     public AnswersSubjectType() {
     }
@@ -118,6 +131,14 @@ public class AnswersSubjectType extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
+    public LessonsName getRefLessonName() {
+        return refLessonName;
+    }
+
+    public void setRefLessonName(LessonsName refLessonName) {
+        this.refLessonName = refLessonName;
+    }
+
     @XmlTransient
     public Collection<Answers> getAnswersCollection() {
         return answersCollection;
@@ -125,14 +146,6 @@ public class AnswersSubjectType extends BaseEntity implements Serializable {
 
     public void setAnswersCollection(Collection<Answers> answersCollection) {
         this.answersCollection = answersCollection;
-    }
-
-    public LessonsName getRefLessonName() {
-        return refLessonName;
-    }
-
-    public void setRefLessonName(LessonsName refLessonName) {
-        this.refLessonName = refLessonName;
     }
 
     @Override
@@ -154,6 +167,5 @@ public class AnswersSubjectType extends BaseEntity implements Serializable {
         }
         return true;
     }
-
 
 }

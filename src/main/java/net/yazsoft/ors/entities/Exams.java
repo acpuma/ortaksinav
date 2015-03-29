@@ -62,6 +62,8 @@ public class Exams extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private Integer time;
+    @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<Uploads> uploadsCollection;
     @OneToMany(mappedBy = "refActiveExam", fetch = FetchType.LAZY)
     private Collection<Users> usersCollection;
     @JoinColumn(name = "ref_answer_type", referencedColumnName = "tid")
@@ -188,6 +190,15 @@ public class Exams extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Uploads> getUploadsCollection() {
+        return uploadsCollection;
+    }
+
+    public void setUploadsCollection(Collection<Uploads> uploadsCollection) {
+        this.uploadsCollection = uploadsCollection;
+    }
+
+    @XmlTransient
     public Collection<Users> getUsersCollection() {
         return usersCollection;
     }
@@ -298,30 +309,4 @@ public class Exams extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Exams{" +
-                "tid=" + tid +
-                ", active=" + active +
-                ", version=" + version +
-                ", nameTr='" + nameTr + '\'' +
-                ", nameEn='" + nameEn + '\'' +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", number='" + number + '\'' +
-                ", date=" + date +
-                ", time=" + time +
-                ", usersCollection=" + usersCollection +
-                ", refAnswerType=" + refAnswerType +
-                ", refBookletType=" + refBookletType +
-                ", refExamSeasonNumber=" + refExamSeasonNumber +
-                ", refExamType=" + refExamType +
-                ", refExamYear=" + refExamYear +
-                ", refFalseType=" + refFalseType +
-                ", refSchool=" + refSchool +
-                ", refExamSeason=" + refExamSeason +
-                ", examsParametersCollection=" + examsParametersCollection +
-                ", lessonsCollection=" + lessonsCollection +
-                '}';
-    }
 }

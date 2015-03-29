@@ -25,15 +25,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MenusType.findAll", query = "SELECT m FROM MenusType m")})
-public class MenusType extends BaseEntity implements Serializable {
+    @NamedQuery(name = "UploadsType.findAll", query = "SELECT u FROM UploadsType u")})
+public class UploadsType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Integer active;
+    private Boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -47,17 +47,17 @@ public class MenusType extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refMenutype", fetch = FetchType.LAZY)
-    private Collection<Menus> menusCollection;
+    @OneToMany(mappedBy = "refUploadType", fetch = FetchType.LAZY)
+    private Collection<Uploads> uploadsCollection;
 
-    public MenusType() {
+    public UploadsType() {
     }
 
-    public MenusType(Long tid) {
+    public UploadsType(Long tid) {
         this.tid = tid;
     }
 
-    public MenusType(Long tid, int version, String name) {
+    public UploadsType(Long tid, int version, String name) {
         this.tid = tid;
         this.version = version;
         this.name = name;
@@ -71,11 +71,11 @@ public class MenusType extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Integer getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(Integer active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
@@ -112,12 +112,12 @@ public class MenusType extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Menus> getMenusCollection() {
-        return menusCollection;
+    public Collection<Uploads> getUploadsCollection() {
+        return uploadsCollection;
     }
 
-    public void setMenusCollection(Collection<Menus> menusCollection) {
-        this.menusCollection = menusCollection;
+    public void setUploadsCollection(Collection<Uploads> uploadsCollection) {
+        this.uploadsCollection = uploadsCollection;
     }
 
     @Override
@@ -130,10 +130,10 @@ public class MenusType extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MenusType)) {
+        if (!(object instanceof UploadsType)) {
             return false;
         }
-        MenusType other = (MenusType) object;
+        UploadsType other = (UploadsType) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }

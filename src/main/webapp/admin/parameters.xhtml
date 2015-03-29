@@ -11,7 +11,8 @@
     <h:head>
         <title>Parameters</title>
     </h:head>
-    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.parameters}" />
     <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <h:form id="pageForm" style="margin:5px;">
     <p:panelGrid columns="1">

@@ -3,6 +3,7 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -26,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ExamsParameters.findAll", query = "SELECT e FROM ExamsParameters e")})
 public class ExamsParameters extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Long id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -53,6 +53,7 @@ public class ExamsParameters extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    private BigInteger id;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Exams refExam;
@@ -139,6 +140,14 @@ public class ExamsParameters extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
+    public BigInteger getId() {
+        return id;
+    }
+
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
     public Exams getRefExam() {
         return refExam;
     }
@@ -175,11 +184,4 @@ public class ExamsParameters extends BaseEntity implements Serializable {
         return true;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

@@ -60,6 +60,8 @@ public class Schools extends BaseEntity implements Serializable {
         @JoinColumn(name = "ref_user", referencedColumnName = "tid", nullable = false)})
     @ManyToMany(fetch = FetchType.LAZY)
     private Collection<Users> usersCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<Uploads> uploadsCollection;
     @OneToMany(mappedBy = "refActiveSchool", fetch = FetchType.LAZY)
     private Collection<Users> usersCollection1;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
@@ -154,6 +156,15 @@ public class Schools extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Uploads> getUploadsCollection() {
+        return uploadsCollection;
+    }
+
+    public void setUploadsCollection(Collection<Uploads> uploadsCollection) {
+        this.uploadsCollection = uploadsCollection;
+    }
+
+    @XmlTransient
     public Collection<Users> getUsersCollection1() {
         return usersCollection1;
     }
@@ -223,11 +234,6 @@ public class Schools extends BaseEntity implements Serializable {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.Schools[ tid=" + tid + " ]";
     }
 
 }

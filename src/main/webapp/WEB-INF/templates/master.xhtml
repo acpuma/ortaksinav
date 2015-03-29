@@ -16,7 +16,7 @@
 
         <!-- Basic Page Needs -->
         <meta charset="utf-8"/>
-        <title>Mezopotamya Koleji</title>
+        <title>Ortak Sınav</title>
         <meta name="description" content="ORS"/>
         <meta name="author" content="yazsoft"/>
 
@@ -42,7 +42,9 @@
 
             <div class="wrapcontent  ui-widget ui-content">
                 <ui:insert name="header">
-                    <ui:include src="/WEB-INF/templates/header.xhtml"/>
+                    <ui:include src="/WEB-INF/templates/header.xhtml">
+                        <ui:param name="headerTitle" value="#{title}" />
+                    </ui:include>
                 </ui:insert>
 
                 <hr style="box-shadow: 0 1px 3px #ccc; color: #eeeeee;" />

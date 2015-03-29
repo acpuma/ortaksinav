@@ -156,9 +156,4 @@ public class AnswersCancelType extends BaseEntity implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "net.yazsoft.ors.entities.AnswersCancelType[ tid=" + tid + " ]";
-    }
-
 }

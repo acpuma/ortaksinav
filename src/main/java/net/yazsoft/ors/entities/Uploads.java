@@ -3,7 +3,6 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -12,28 +11,28 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MenusType.findAll", query = "SELECT m FROM MenusType m")})
-public class MenusType extends BaseEntity implements Serializable {
+    @NamedQuery(name = "Uploads.findAll", query = "SELECT u FROM Uploads u")})
+public class Uploads extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Integer active;
+    private Boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -41,23 +40,30 @@ public class MenusType extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(nullable = false, length = 255)
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refMenutype", fetch = FetchType.LAZY)
-    private Collection<Menus> menusCollection;
+    @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Exams refExam;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
+    @JoinColumn(name = "ref_upload_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UploadsType refUploadType;
 
-    public MenusType() {
+    public Uploads() {
     }
 
-    public MenusType(Long tid) {
+    public Uploads(Long tid) {
         this.tid = tid;
     }
 
-    public MenusType(Long tid, int version, String name) {
+    public Uploads(Long tid, int version, String name) {
         this.tid = tid;
         this.version = version;
         this.name = name;
@@ -71,11 +77,11 @@ public class MenusType extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Integer getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(Integer active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
@@ -111,13 +117,28 @@ public class MenusType extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    @XmlTransient
-    public Collection<Menus> getMenusCollection() {
-        return menusCollection;
+    public Exams getRefExam() {
+        return refExam;
     }
 
-    public void setMenusCollection(Collection<Menus> menusCollection) {
-        this.menusCollection = menusCollection;
+    public void setRefExam(Exams refExam) {
+        this.refExam = refExam;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
+    }
+
+    public UploadsType getRefUploadType() {
+        return refUploadType;
+    }
+
+    public void setRefUploadType(UploadsType refUploadType) {
+        this.refUploadType = refUploadType;
     }
 
     @Override
@@ -130,10 +151,10 @@ public class MenusType extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof MenusType)) {
+        if (!(object instanceof Uploads)) {
             return false;
         }
-        MenusType other = (MenusType) object;
+        Uploads other = (Uploads) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }

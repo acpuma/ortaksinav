@@ -144,5 +144,4 @@ public class ExamsAnswerType extends BaseEntity implements Serializable {
         return true;
     }
 
-
 }
