@@ -140,6 +140,7 @@
       <foreign-key name="fk_exams_season" columns="ref_exam_season" ref-table="examsseason" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="fk_examsparameter_exam" table="ExamsParameters" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="fk_lessons_exam" table="Lessons" schema="" catalog="orsdb" columns="ref_exam"/>
+      <exported-key name="fk_uploads_exam" table="Uploads" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="FK_5m0so8vm7g0j97cik834gksm0" table="Users" schema="" catalog="orsdb" columns="ref_active_exam"/>
       <index name="fk_exams_answertype_idx" unique="false" columns="ref_answer_type"/>
       <index name="fk_exams_booklettype_idx" unique="false" columns="ref_booklet_type"/>
@@ -374,6 +375,7 @@
       <exported-key name="fk_albums_school" table="Albums" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_exams_school" table="Exams" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_images_schools" table="Images" schema="" catalog="orsdb" columns="ref_schools"/>
+      <exported-key name="fk_uploads_school" table="Uploads" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_users_activeschool" table="Users" schema="" catalog="orsdb" columns="ref_active_school"/>
       <exported-key name="fk_usersschools_school" table="UsersSchools" schema="" catalog="orsdb" columns="ref_school"/>
       <index name="fk_schools_city_idx" unique="false" columns="ref_city"/>
@@ -391,6 +393,35 @@
       <foreign-key name="fk_towns_city" columns="ref_city" ref-table="Cities" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="fk_schools_town" table="Schools" schema="" catalog="orsdb" columns="ref_town"/>
       <index name="fk_towns_city_idx" unique="false" columns="ref_city"/>
+    </table>
+    <table name="Uploads" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="name_tr" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="name_en" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="ref_school" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_upload_type" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_uploads_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_uploads_school" columns="ref_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_uploads_uploadtype" columns="ref_upload_type" ref-table="UploadsType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="fk_uploads_exam_idx" unique="false" columns="ref_exam"/>
+      <index name="fk_uploads_school_idx" unique="false" columns="ref_school"/>
+      <index name="fk_uploads_uploadtype_idx" unique="false" columns="ref_upload_type"/>
+    </table>
+    <table name="UploadsType" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <exported-key name="fk_uploads_uploadtype" table="Uploads" schema="" catalog="orsdb" columns="ref_upload_type"/>
     </table>
     <table name="Users" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
