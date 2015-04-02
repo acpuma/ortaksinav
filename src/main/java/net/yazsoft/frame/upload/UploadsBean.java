@@ -49,7 +49,7 @@ public class UploadsBean implements Serializable{
             File deleteFile=new File(upload.getTid().toString()+".DAT");
 
             String uploadsFolder = Util.getUploadsFolder();
-            String extension=getFileExtension(upload.getName());
+            String extension=UploadsDao.getFileExtension(upload.getName());
             String dirName = uploadsFolder + "/DAT/" + upload.getRefSchool().getTid().toString();
             dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
 
@@ -60,6 +60,7 @@ public class UploadsBean implements Serializable{
                 logger.info("DELETING : " + dirName + "/" + upload.getTid().toString()+"."+extension);
                 logger.info("Delete operation is failed.");
             }
+            uploadsDao.setUploads(null);
             //deleting
             Util.setFacesMessage("Deleted file id : " );
         } catch (Exception e) {
@@ -95,6 +96,8 @@ public class UploadsBean implements Serializable{
         return targetFolder;
     }
 
+
+
     @Transactional
     public void handleFileUpload(FileUploadEvent event) {
         logger.info("UPLOADING FILE.......");
@@ -105,13 +108,14 @@ public class UploadsBean implements Serializable{
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         try {
             String filenameOriginal=event.getFile().getFileName();
-            String extension=getFileExtension(filenameOriginal);
+            String extension=UploadsDao.getFileExtension(filenameOriginal);
 
             Long tid=1L;
             Uploads upload=new Uploads();
             upload.setActive(Boolean.TRUE);
             upload.setRefSchool(Util.getActiveSchool());
             upload.setRefExam(Util.getActiveExam());
+            upload.setRefUser(Util.getActiveUser());
             upload.setName(filenameOriginal);
             upload.setRefUploadType(uploadsTypeDao.getById(1L)); //DAT
             tid=uploadsDao.create(upload);
@@ -137,6 +141,8 @@ public class UploadsBean implements Serializable{
             out.flush();
             out.close();
 
+            uploadsDao.setUploads(null); //for refresh grid
+
             Util.setFacesMessage("ID : " + tid.toString() + " ,file name: "
                     + event.getFile().getFileName() + " File size: "
                     + event.getFile().getSize() / 1024 + " Kb Content type: "
@@ -147,9 +153,7 @@ public class UploadsBean implements Serializable{
         }
     }
 
-    public String getFileExtension(String filename) {
-        return filename.substring(filename.lastIndexOf(".")+1).toUpperCase();
-    }
+
 
     @PreDestroy 
     public void Destroy() {

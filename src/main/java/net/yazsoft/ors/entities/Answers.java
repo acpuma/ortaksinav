@@ -3,6 +3,7 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -76,6 +77,8 @@ public class Answers extends BaseEntity implements Serializable {
     @Size(max = 1)
     @Column(length = 1)
     private String ansH;
+    @Column(name = "ref_exam")
+    private BigInteger refExam;
     @JoinColumn(name = "ref_answer_cancel", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private AnswersCancelType refAnswerCancel;
@@ -222,6 +225,14 @@ public class Answers extends BaseEntity implements Serializable {
 
     public void setAnsH(String ansH) {
         this.ansH = ansH;
+    }
+
+    public BigInteger getRefExam() {
+        return refExam;
+    }
+
+    public void setRefExam(BigInteger refExam) {
+        this.refExam = refExam;
     }
 
     public AnswersCancelType getRefAnswerCancel() {

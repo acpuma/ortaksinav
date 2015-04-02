@@ -4,7 +4,8 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <cc:interface>
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
     <cc:attribute default="false"     required="false"   name="draggableColumns" />
@@ -28,6 +29,7 @@
     <cc:attribute default="widgetUploads"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
+
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
@@ -71,6 +73,7 @@
                      selection="#{uploadsDao.item}"
                      rowKey="#{gridVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
+                     selectionMode="single"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
@@ -79,6 +82,7 @@
                     process="@all"
                     listener="#{uploadsDao.select}"
                     />
+            <p:ajax event="rowSelect" listener="#{uploadsDao.onRowSelect}" />
 
             <f:facet name="header" >
                 #{msg.global_files}
@@ -86,8 +90,12 @@
 
             <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
 
-            <p:column headerText="#{msg.global_name}" width="580" filterBy="#{gridVar.name}">
+            <p:column headerText="#{msg.global_name}" width="420" filterBy="#{gridVar.name}">
                     #{gridVar.name}
+            </p:column>
+
+            <p:column headerText="#{msg.username}" width="160" filterBy="#{gridVar.refUser.name}">
+                #{gridVar.refUser.name} #{gridVar.refUser.surname}
             </p:column>
 
             <p:column width="40">
@@ -97,7 +105,13 @@
                                  actionListener="#{uploadsBean.deleteUpload(gridVar)}">
                 </p:commandButton>
             </p:column>
-
+            <f:facet name="footer">
+                <components:inputUploadDat update="@widgetVar(uploadsGridWidget)" />
+                <p:commandButton value="Aktar"
+                                 action="#{operationsDao.transfer()}"
+                                 update=":messages"
+                        />
+            </f:facet>
         </p:dataTable>
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />

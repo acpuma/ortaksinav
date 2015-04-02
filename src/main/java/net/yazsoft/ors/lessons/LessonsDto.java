@@ -15,7 +15,8 @@ public class LessonsDto {
     private Date updated;
     private int rank;
     private int questionCount;
-    private int start;
+    private Integer start;
+    private Integer length;
     private Exams refExam;
     private LessonsName refLessonName;
 
@@ -99,12 +100,20 @@ public class LessonsDto {
         this.id = id;
     }
 
-    public int getStart() {
+    public Integer getStart() {
         return start;
     }
 
-    public void setStart(int start) {
+    public void setStart(Integer start) {
         this.start = start;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
     }
 
     @Override

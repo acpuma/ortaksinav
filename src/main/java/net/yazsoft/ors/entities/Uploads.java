@@ -40,21 +40,24 @@ public class Uploads extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "name", nullable = false, length = 255)
+    @Column(nullable = false, length = 255)
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    @JoinColumn(name = "ref_upload_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UploadsType refUploadType;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refExam;
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
-    @JoinColumn(name = "ref_upload_type", referencedColumnName = "tid")
+    @JoinColumn(name = "ref_user", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
-    private UploadsType refUploadType;
+    private Users refUser;
 
     public Uploads() {
     }
@@ -117,6 +120,14 @@ public class Uploads extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
+    public UploadsType getRefUploadType() {
+        return refUploadType;
+    }
+
+    public void setRefUploadType(UploadsType refUploadType) {
+        this.refUploadType = refUploadType;
+    }
+
     public Exams getRefExam() {
         return refExam;
     }
@@ -133,12 +144,12 @@ public class Uploads extends BaseEntity implements Serializable {
         this.refSchool = refSchool;
     }
 
-    public UploadsType getRefUploadType() {
-        return refUploadType;
+    public Users getRefUser() {
+        return refUser;
     }
 
-    public void setRefUploadType(UploadsType refUploadType) {
-        this.refUploadType = refUploadType;
+    public void setRefUser(Users refUser) {
+        this.refUser = refUser;
     }
 
     @Override

@@ -66,6 +66,8 @@ public class Exams extends BaseEntity implements Serializable {
     private Collection<Uploads> uploadsCollection;
     @OneToMany(mappedBy = "refActiveExam", fetch = FetchType.LAZY)
     private Collection<Users> usersCollection;
+    @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<StudentsAnswers> studentsAnswersCollection;
     @JoinColumn(name = "ref_answer_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private ExamsAnswerType refAnswerType;
@@ -94,6 +96,8 @@ public class Exams extends BaseEntity implements Serializable {
     private Collection<ExamsParameters> examsParametersCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
     private Collection<Lessons> lessonsCollection;
+    @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<Results> resultsCollection;
 
     public Exams() {
     }
@@ -207,6 +211,15 @@ public class Exams extends BaseEntity implements Serializable {
         this.usersCollection = usersCollection;
     }
 
+    @XmlTransient
+    public Collection<StudentsAnswers> getStudentsAnswersCollection() {
+        return studentsAnswersCollection;
+    }
+
+    public void setStudentsAnswersCollection(Collection<StudentsAnswers> studentsAnswersCollection) {
+        this.studentsAnswersCollection = studentsAnswersCollection;
+    }
+
     public ExamsAnswerType getRefAnswerType() {
         return refAnswerType;
     }
@@ -287,6 +300,15 @@ public class Exams extends BaseEntity implements Serializable {
 
     public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
         this.lessonsCollection = lessonsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Results> getResultsCollection() {
+        return resultsCollection;
+    }
+
+    public void setResultsCollection(Collection<Results> resultsCollection) {
+        this.resultsCollection = resultsCollection;
     }
 
     @Override

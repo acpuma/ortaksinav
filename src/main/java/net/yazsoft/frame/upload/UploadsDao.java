@@ -8,6 +8,7 @@ import net.yazsoft.ors.entities.Uploads;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -43,6 +44,25 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
         }
         uploads=list;
         return list;
+    }
+
+    public void onRowSelect(SelectEvent event) {
+        selected=(Uploads) event.getObject();
+    }
+
+    public static String getUploadedFilePath(Uploads upload){
+        logger.info("UploadedFilePath file: " + upload.getName() );
+        String filepath=null;
+        filepath=Util.getUploadsFolder();
+        filepath=filepath.concat("/DAT/" + upload.getRefSchool().getTid().toString());
+        filepath=filepath.concat("/" + upload.getRefExam().getTid().toString());
+        filepath=filepath.concat("/" + upload.getTid() + "." + getFileExtension(upload.getName()));
+        logger.info("UPLOAD FILE PATH : " + filepath);
+        return filepath;
+    }
+
+    public static String getFileExtension(String filename) {
+        return filename.substring(filename.lastIndexOf(".")+1).toUpperCase();
     }
 
     public UploadsDao() {

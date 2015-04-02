@@ -68,6 +68,8 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<Albums> albumsCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<Students> studentsCollection;
     @JoinColumn(name = "ref_city", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cities refCity;
@@ -76,6 +78,8 @@ public class Schools extends BaseEntity implements Serializable {
     private Towns refTown;
     @OneToMany(mappedBy = "refSchools", fetch = FetchType.LAZY)
     private Collection<Images> imagesCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<SchoolsClass> schoolsClassCollection;
 
     public Schools() {
     }
@@ -191,6 +195,15 @@ public class Schools extends BaseEntity implements Serializable {
         this.examsCollection = examsCollection;
     }
 
+    @XmlTransient
+    public Collection<Students> getStudentsCollection() {
+        return studentsCollection;
+    }
+
+    public void setStudentsCollection(Collection<Students> studentsCollection) {
+        this.studentsCollection = studentsCollection;
+    }
+
     public Cities getRefCity() {
         return refCity;
     }
@@ -214,6 +227,15 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setImagesCollection(Collection<Images> imagesCollection) {
         this.imagesCollection = imagesCollection;
+    }
+
+    @XmlTransient
+    public Collection<SchoolsClass> getSchoolsClassCollection() {
+        return schoolsClassCollection;
+    }
+
+    public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
+        this.schoolsClassCollection = schoolsClassCollection;
     }
 
     @Override

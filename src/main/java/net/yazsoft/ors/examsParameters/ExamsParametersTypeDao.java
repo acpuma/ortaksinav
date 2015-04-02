@@ -10,11 +10,13 @@ import org.primefaces.event.SelectEvent;
 
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.List;
 
 @Named
 @ViewScoped
 public class ExamsParametersTypeDao extends BaseGridDao<ExamsParametersType> implements Serializable{
     ExamsParametersType selected;
+    List<ExamsParametersType> parametersTypes;
 
     public ExamsParametersTypeDao() {
         super(ExamsParametersType.class);
@@ -62,5 +64,13 @@ public class ExamsParametersTypeDao extends BaseGridDao<ExamsParametersType> imp
 
     public void setSelected(ExamsParametersType selected) {
         this.selected = selected;
+    }
+
+    public List<ExamsParametersType> getParametersTypes() {
+        return parametersTypes;
+    }
+
+    public void setParametersTypes(List<ExamsParametersType> parametersTypes) {
+        this.parametersTypes = parametersTypes;
     }
 }

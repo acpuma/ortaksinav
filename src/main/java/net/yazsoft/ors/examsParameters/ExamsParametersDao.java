@@ -9,6 +9,7 @@ import net.yazsoft.ors.entities.ExamsParametersType;
 import net.yazsoft.ors.exams.ExamsDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.RowEditEvent;
@@ -142,6 +143,7 @@ public class ExamsParametersDao extends BaseGridDao<ExamsParameters> implements 
             c.add(Restrictions.eq("refExam", exam));
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
+            c.addOrder(Order.asc("start"));
             list = c.list();
         } catch (Exception e) {
             logger.error(e.getMessage());

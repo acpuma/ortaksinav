@@ -53,6 +53,7 @@
       <column name="ref_answer_subject" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_answer_question" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
       <column name="ref_answer_cancel" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
+      <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_answer_answercancel" columns="ref_answer_cancel" ref-table="AnswersCancelType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_answer_answerquestion" columns="ref_answer_question" ref-table="AnswersQuestionType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
@@ -61,6 +62,7 @@
       <index name="fk_answer_answercancel_idx" unique="false" columns="ref_answer_cancel"/>
       <index name="fk_answer_answerquestion_idx" unique="false" columns="ref_answer_question"/>
       <index name="fk_answer_answersubject_idx" unique="false" columns="ref_answer_subject"/>
+      <index name="fk_answer_exam_idx" unique="false" columns="ref_exam"/>
       <index name="fk_answers_lesson_idx" unique="false" columns="ref_lesson"/>
     </table>
     <table name="AnswersCancelType" schema="" catalog="orsdb" type="TABLE">
@@ -140,6 +142,8 @@
       <foreign-key name="fk_exams_season" columns="ref_exam_season" ref-table="examsseason" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="fk_examsparameter_exam" table="ExamsParameters" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="fk_lessons_exam" table="Lessons" schema="" catalog="orsdb" columns="ref_exam"/>
+      <exported-key name="fk_results_exam" table="Results" schema="" catalog="orsdb" columns="ref_exam"/>
+      <exported-key name="fk_studentanswers_exam" table="StudentsAnswers" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="fk_uploads_exam" table="Uploads" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="FK_5m0so8vm7g0j97cik834gksm0" table="Users" schema="" catalog="orsdb" columns="ref_active_exam"/>
       <index name="fk_exams_answertype_idx" unique="false" columns="ref_answer_type"/>
@@ -196,6 +200,7 @@
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_examsparameter_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_examsparameter_parametertype" columns="ref_parameter" ref-table="ExamsParametersType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fk_results_examparameter" table="Results" schema="" catalog="orsdb" columns="ref_parameter"/>
       <index name="fk_examsparameter_exam_idx" unique="false" columns="ref_exam"/>
       <index name="fk_examsparameter_parametertype_idx" unique="false" columns="ref_parameter"/>
     </table>
@@ -285,10 +290,13 @@
       <column name="ref_lesson_name" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
       <column name="question_count" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="start" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="length" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_lessons_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_lessons_lessonname" columns="ref_lesson_name" ref-table="LessonsName" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="fk_answer_lesson" table="Answers" schema="" catalog="orsdb" columns="ref_lesson"/>
+      <exported-key name="fk_results_lesson" table="Results" schema="" catalog="orsdb" columns="ref_lesson"/>
+      <exported-key name="fk_studentanswers_lesson" table="StudentsAnswers" schema="" catalog="orsdb" columns="ref_lesson"/>
       <index name="fk_lessons_exam_idx" unique="false" columns="ref_exam"/>
       <index name="fk_lessons_lessonname_idx" unique="false" columns="ref_lesson_name"/>
     </table>
@@ -349,6 +357,27 @@
       <primary-key name="PRIMARY" columns="tid"/>
       <exported-key name="fk_menus_menustype" table="Menus" schema="" catalog="orsdb" columns="ref_menutype"/>
     </table>
+    <table name="Results" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_student" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_parameter" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_lesson" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="value" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12" remarks="aWYgcGFyYW1ldGVyLCBpdCBpcyBwYXJhbWV0ZXIgdmFsdWUuIGlmIGxlc3NvbiA6IGxlc3NvbiBhbnN3ZXJz"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_results_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_results_examparameter" columns="ref_parameter" ref-table="ExamsParameters" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_results_lesson" columns="ref_lesson" ref-table="Lessons" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_results_student" columns="ref_student" ref-table="Students" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="fk_results_exam_idx" unique="false" columns="ref_exam"/>
+      <index name="fk_results_examparameter_idx" unique="false" columns="ref_parameter"/>
+      <index name="fk_results_lesson_idx" unique="false" columns="ref_lesson"/>
+      <index name="fk_results_student_idx" unique="false" columns="ref_student"/>
+    </table>
     <table name="Roles" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
       <column name="active" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7"/>
@@ -375,11 +404,70 @@
       <exported-key name="fk_albums_school" table="Albums" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_exams_school" table="Exams" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_images_schools" table="Images" schema="" catalog="orsdb" columns="ref_schools"/>
+      <exported-key name="fk_schoolclass_school" table="SchoolsClass" schema="" catalog="orsdb" columns="ref_school"/>
+      <exported-key name="fk_students_school" table="Students" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_uploads_school" table="Uploads" schema="" catalog="orsdb" columns="ref_school"/>
       <exported-key name="fk_users_activeschool" table="Users" schema="" catalog="orsdb" columns="ref_active_school"/>
       <exported-key name="fk_usersschools_school" table="UsersSchools" schema="" catalog="orsdb" columns="ref_school"/>
       <index name="fk_schools_city_idx" unique="false" columns="ref_city"/>
       <index name="fk_schools_town_idx" unique="false" columns="ref_town"/>
+    </table>
+    <table name="SchoolsClass" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="ref_school" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_schoolclass_school" columns="ref_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fk_students_school_class" table="Students" schema="" catalog="orsdb" columns="ref_school_class"/>
+      <index name="fk_schoolclass_school_idx" unique="false" columns="ref_school"/>
+    </table>
+    <table name="Students" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="surname" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="ref_school" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_school_class" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="username" sqlType="VARCHAR" precision="45" scale="0" nullable="true" jdbcType="12"/>
+      <column name="password" sqlType="VARCHAR" precision="45" scale="0" nullable="true" jdbcType="12"/>
+      <column name="fullname" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="gender" sqlType="VARCHAR" precision="1" scale="0" nullable="true" jdbcType="12"/>
+      <column name="school_no" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="mernis" sqlType="VARCHAR" precision="11" scale="0" nullable="true" jdbcType="12"/>
+      <column name="phone" sqlType="VARCHAR" precision="20" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_students_school" columns="ref_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_students_school_class" columns="ref_school_class" ref-table="SchoolsClass" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fk_results_student" table="Results" schema="" catalog="orsdb" columns="ref_student"/>
+      <exported-key name="fk_studentanswers_student" table="StudentsAnswers" schema="" catalog="orsdb" columns="ref_student"/>
+      <index name="fk_students_school_class_idx" unique="false" columns="ref_school_class"/>
+      <index name="fk_students_school_idx" unique="false" columns="ref_school"/>
+    </table>
+    <table name="StudentsAnswers" schema="" catalog="orsdb" type="TABLE">
+      <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
+      <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
+      <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
+      <column name="ref_student" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_lesson" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="booklet" sqlType="VARCHAR" precision="1" scale="0" nullable="true" jdbcType="12"/>
+      <column name="answers" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
+      <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="fk_studentanswers_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_studentanswers_lesson" columns="ref_lesson" ref-table="Lessons" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_studentanswers_student" columns="ref_student" ref-table="Students" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="fk_studentanswers_exam_idx" unique="false" columns="ref_exam"/>
+      <index name="fk_studentanswers_lesson" unique="false" columns="ref_lesson"/>
+      <index name="fk_studentanswers_student_idx" unique="false" columns="ref_student"/>
     </table>
     <table name="Towns" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
@@ -398,20 +486,22 @@
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
       <column name="active" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6" def="MQ=="/>
       <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
-      <column name="name_tr" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
-      <column name="name_en" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="name" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
       <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="ref_school" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_upload_type" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_user" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="PRIMARY" columns="tid"/>
+      <foreign-key name="FK_o6lk07qqbyai9ychl6kmkayrr" columns="ref_upload_type" ref-table="UploadsType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_uploads_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_uploads_school" columns="ref_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_uploads_uploadtype" columns="ref_upload_type" ref-table="UploadsType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_uploads_uploadtype" columns="ref_user" ref-table="Users" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <index name="fk_uploads_exam_idx" unique="false" columns="ref_exam"/>
       <index name="fk_uploads_school_idx" unique="false" columns="ref_school"/>
       <index name="fk_uploads_uploadtype_idx" unique="false" columns="ref_upload_type"/>
+      <index name="fk_uploads_uploadtype_idx1" unique="false" columns="ref_user"/>
     </table>
     <table name="UploadsType" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
@@ -421,7 +511,7 @@
       <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <primary-key name="PRIMARY" columns="tid"/>
-      <exported-key name="fk_uploads_uploadtype" table="Uploads" schema="" catalog="orsdb" columns="ref_upload_type"/>
+      <exported-key name="FK_o6lk07qqbyai9ychl6kmkayrr" table="Uploads" schema="" catalog="orsdb" columns="ref_upload_type"/>
     </table>
     <table name="Users" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
@@ -444,6 +534,7 @@
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="FK_5m0so8vm7g0j97cik834gksm0" columns="ref_active_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_users_activeschool" columns="ref_active_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fk_uploads_uploadtype" table="Uploads" schema="" catalog="orsdb" columns="ref_user"/>
       <exported-key name="fk_usersroles_user" table="UsersRoles" schema="" catalog="orsdb" columns="ref_user"/>
       <exported-key name="fk_usersschools_user" table="UsersSchools" schema="" catalog="orsdb" columns="ref_user"/>
       <exported-key name="FK_q0i68mu44ojfsgpp6h2ul38ks" table="ZL_REVINFO" schema="" catalog="orsdb" columns="ref_user"/>

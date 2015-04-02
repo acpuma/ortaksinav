@@ -3,6 +3,7 @@ package net.yazsoft.frame.utils;
 import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.ors.entities.Exams;
 import net.yazsoft.ors.entities.Schools;
+import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.imgscalr.Scalr;
@@ -80,6 +81,9 @@ public class Util implements Serializable{
     }
     public static Exams getActiveExam() {
         return getSessionInfo().getExam();
+    }
+    public static Users getActiveUser() {
+        return getSessionInfo().getUser();
     }
     
     public static Locale getLocale() {
@@ -166,19 +170,19 @@ public class Util implements Serializable{
                                     if (pd.getPropertyType()==int.class) {
                                             propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==Integer.class) {
-                                            propertyValue=String.valueOf((Integer)mget.invoke(beanInstance));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==Long.class) {
-                                            propertyValue=String.valueOf((Long)mget.invoke(beanInstance));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==Boolean.class) {
-                                            propertyValue=String.valueOf((Boolean)mget.invoke(beanInstance));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==String.class) {
                                             propertyValue=(String)mget.invoke(beanInstance);
                                     } else if (pd.getPropertyType()==Double.class) {
-                                            propertyValue=String.valueOf(((Double)mget.invoke(beanInstance)));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==Float.class) {
-                                            propertyValue=String.valueOf(((Float)mget.invoke(beanInstance)));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==BigDecimal.class) {
-                                            propertyValue=String.valueOf(((BigDecimal)mget.invoke(beanInstance)));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else if (pd.getPropertyType()==Class.class){
                                             propertyValue=pd.getPropertyType().getName();
                                     } else if (pd.getPropertyType()==Date.class){
@@ -196,7 +200,7 @@ public class Util implements Serializable{
                                                     propertyValue=newTimestamp.toString();
                                             }
                                     } else if (pd.getPropertyType()==Locale.class) {
-                                            propertyValue=String.valueOf(((Locale)mget.invoke(beanInstance)));
+                                            propertyValue=String.valueOf(mget.invoke(beanInstance));
                                     } else {
                                             propertyValue="property type to get value NOT DEFINED : ";
                                             propertyValue+=pd.getPropertyType().getName();

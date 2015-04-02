@@ -17,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -80,6 +81,8 @@ public class Users extends BaseEntity implements Serializable {
     private Collection<Roles> rolesCollection;
     @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
     private Collection<Schools> schoolsCollection;
+    @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
+    private Collection<Uploads> uploadsCollection;
     @JoinColumn(name = "ref_active_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refActiveExam;
@@ -236,6 +239,15 @@ public class Users extends BaseEntity implements Serializable {
 
     public void setSchoolsCollection(Collection<Schools> schoolsCollection) {
         this.schoolsCollection = schoolsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Uploads> getUploadsCollection() {
+        return uploadsCollection;
+    }
+
+    public void setUploadsCollection(Collection<Uploads> uploadsCollection) {
+        this.uploadsCollection = uploadsCollection;
     }
 
     public Exams getRefActiveExam() {

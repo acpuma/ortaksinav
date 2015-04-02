@@ -121,4 +121,20 @@ public class ExamsParametersDto {
     public void setRefParameter(ExamsParametersType refParameter) {
         this.refParameter = refParameter;
     }
+
+    @Override
+    public String toString() {
+        return "ExamsParametersDto{" +
+                "tid=" + tid +
+                ", active=" + active +
+                ", version=" + version +
+                ", start=" + start +
+                ", length=" + length +
+                ", direction=" + direction +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", refExam=" + refExam +
+                ", refParameter=" + refParameter +
+                '}';
+    }
 }

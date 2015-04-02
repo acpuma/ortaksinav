@@ -56,6 +56,9 @@ public class Lessons extends BaseEntity implements Serializable {
     @Column(name = "question_count", nullable = false)
     private int questionCount;
     private Integer start;
+    private Integer length;
+    @OneToMany(mappedBy = "refLesson", fetch = FetchType.LAZY)
+    private Collection<StudentsAnswers> studentsAnswersCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLesson", fetch = FetchType.LAZY)
     private Collection<Answers> answersCollection;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid", nullable = false)
@@ -64,6 +67,8 @@ public class Lessons extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_lesson_name", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private LessonsName refLessonName;
+    @OneToMany(mappedBy = "refLesson", fetch = FetchType.LAZY)
+    private Collection<Results> resultsCollection;
 
     public Lessons() {
     }
@@ -144,6 +149,23 @@ public class Lessons extends BaseEntity implements Serializable {
         this.start = start;
     }
 
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    @XmlTransient
+    public Collection<StudentsAnswers> getStudentsAnswersCollection() {
+        return studentsAnswersCollection;
+    }
+
+    public void setStudentsAnswersCollection(Collection<StudentsAnswers> studentsAnswersCollection) {
+        this.studentsAnswersCollection = studentsAnswersCollection;
+    }
+
     @XmlTransient
     public Collection<Answers> getAnswersCollection() {
         return answersCollection;
@@ -167,6 +189,15 @@ public class Lessons extends BaseEntity implements Serializable {
 
     public void setRefLessonName(LessonsName refLessonName) {
         this.refLessonName = refLessonName;
+    }
+
+    @XmlTransient
+    public Collection<Results> getResultsCollection() {
+        return resultsCollection;
+    }
+
+    public void setResultsCollection(Collection<Results> resultsCollection) {
+        this.resultsCollection = resultsCollection;
     }
 
     @Override
