@@ -7,6 +7,7 @@ import net.yazsoft.ors.entities.Exams;
 import net.yazsoft.ors.entities.StudentsAnswers;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import javax.inject.Named;
@@ -26,6 +27,7 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
             Criteria c = getCriteria();
             c.add(Restrictions.eq("refExam", exam));
             c.add(Restrictions.eq("active", true));
+            //c.addOrder(Order.desc("score"));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
         } catch (Exception e) {

@@ -25,7 +25,7 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetStudents"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetStudentsAnswers"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
@@ -33,11 +33,11 @@
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
-        <p:dataTable id="studentsGrid"
-                     var="studentsVar"
+        <p:dataTable id="studentsAnswersGrid"
+                     var="studentsAnswersVar"
 
                      filterEvent="enter"
-                     value="#{operationsDao.answersViewDto}"
+                     value="#{resultsDao.answersDto}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -68,76 +68,81 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selection="#{studentsDao.item}"
-                     rowKey="#{studentsVar.id}"
+                     selection="#{studentsAnswersDao.item}"
+                     rowKey="#{studentsAnswersVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
-
-                     rowStyleClass="#{studentsVar.tid eq null ? 'bgYellow' : null}"
-
                 >
 
             <f:facet name="header">
-                #{msg.students}
+                #{msg.answers}
             </f:facet>
 
             <p:column headerText="#{msg.global_id}" width="20" rendered="true" style="display:none;" >
-                #{studentsVar.tid}
+                #{studentsAnswersVar.tid}
             </p:column>
-            <p:column headerText="#{msg.school}" width="120" rendered="false" >
-                #{studentsVar.refSchool.name}
+            <p:column headerText="#{msg.student}" width="120" >
+                #{studentsAnswersVar.refStudent.fullname}
             </p:column>
-            <p:column headerText="#{msg.students_school_no}" width="50" >
-                #{studentsVar.schoolNo}
+            <p:column headerText="#{msg.exam}" width="50" rendered="false">
+                #{studentsAnswersVar.refExam.nameTr}
             </p:column>
-            <p:column headerText="#{msg.class}" width="50" >
-                #{studentsVar.refSchoolClass.name}
+            <p:column headerText="#{msg.class}" width="50"
+                    filterBy="#{studentsAnswersVar.refStudent.refSchoolClass}"
+                    sortBy="#{studentsAnswersVar.refStudent.refSchoolClass.name}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{resultsDao.classes}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                #{studentsAnswersVar.refStudent.refSchoolClass.name}
             </p:column>
-            <p:column headerText="#{msg.global_name_surname}" width="120" >
-                #{studentsVar.fullname}
+            <p:column headerText="#{msg.lesson}" width="70"
+                      filterBy="#{studentsAnswersVar.refLesson}"
+                      sortBy="#{studentsAnswersVar.refLesson.refLessonName.nameTr}" >
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{resultsDao.lessons}" var="man"
+                                       itemLabel="#{man.refLessonName.nameTr}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                #{studentsAnswersVar.refLesson.refLessonName.nameTr}
             </p:column>
-            <p:column headerText="#{msg.global_name}" width="60" >
-                #{studentsVar.name}
-            </p:column>
-            <p:column headerText="#{msg.global_surname}" width="60" >
-                #{studentsVar.surname}
-            </p:column>
-            <p:column headerText="#{msg.global_gender}" width="20" >
-                #{studentsVar.gender}
-            </p:column>
-            <p:column headerText="#{msg.global_phone}" width="60" >
-                #{studentsVar.phone}
-            </p:column>
-            <p:column headerText="#{msg.global_mernis}" width="60" >
-                #{studentsVar.mernis}
-            </p:column>
-
             <p:column headerText="#{msg.global_booklet}" width="10" >
-                #{studentsVar.booklet}
+                #{studentsAnswersVar.booklet}
+            </p:column>
+            <p:column headerText="#{msg.answers}" width="250" rendered="false">
+                #{studentsAnswersVar.answers}
+            </p:column>
+            <p:column headerText="#{msg.results_true}" width="30" >
+                #{studentsAnswersVar.trues}
+            </p:column>
+            <p:column headerText="#{msg.results_false}" width="30" >
+                #{studentsAnswersVar.falses}
+            </p:column>
+            <p:column headerText="#{msg.results_net}" width="30" >
+                #{studentsAnswersVar.nets}
+            </p:column>
+            <p:column headerText="#{msg.results_score}" width="30" sortBy="#{studentsAnswersVar.score}">
+                #{studentsAnswersVar.score}
+            </p:column>
+            <p:column headerText="#{msg.results_rank_class}" width="30" sortBy="#{studentsAnswersVar.rankClass}">
+                #{studentsAnswersVar.rankClass}
+            </p:column>
+            <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{studentsAnswersVar.rankSchool}">
+                #{studentsAnswersVar.rankSchool}
             </p:column>
 
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 0}">
-                #{studentsVar.answers.get(0)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 1}">
-                #{studentsVar.answers.get(1)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 2}">
-                #{studentsVar.answers.get(2)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 3}">
-                #{studentsVar.answers.get(3)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 4}">
-                #{studentsVar.answers.get(4)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 5}">
-                #{studentsVar.answers.get(5)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 6}">
-                #{studentsVar.answers.get(6)}
-            </p:column>
-            <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 7}">
-                #{studentsVar.answers.get(7)}
+            <p:column width="40" rendered="false">
+                <p:commandButton value="" update=" :messages studentsAnswersGrid"
+                                 icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{studentsAnswersDao.deleteSchoolClass(studentsAnswersGrid)}">
+                </p:commandButton>
             </p:column>
 
         </p:dataTable>
