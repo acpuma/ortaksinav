@@ -34,10 +34,10 @@
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
         <p:dataTable id="studentsGrid"
-                     var="studentsGrid"
+                     var="studentsVar"
 
                      filterEvent="enter"
-                     value="#{studentsDao.all}"
+                     value="#{operationsDao.studentsDto}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -69,44 +69,46 @@
                      widgetVar="#{cc.attrs.widgetVar}"
 
                      selection="#{studentsDao.item}"
-                     rowKey="#{studentsGrid.tid}"
+                     rowKey="#{studentsVar.id}"
                      tableStyle="#{cc.attrs.tableStyle}"
-                     selectionMode="single"
+
+                     rowStyleClass="#{studentsVar.tid eq null ? 'bgYellow' : null}"
+
                 >
 
             <f:facet name="header">
                 #{msg.students}
             </f:facet>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  >
-                #{studentsGrid.tid}
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true" style="display:none;" >
+                #{studentsVar.tid}
             </p:column>
-            <p:column headerText="#{msg.school}" width="120" >
-                #{studentsGrid.refSchool.name}
+            <p:column headerText="#{msg.school}" width="120" rendered="false" >
+                #{studentsVar.refSchool.name}
             </p:column>
             <p:column headerText="#{msg.students_school_no}" width="50" >
-                #{studentsGrid.schoolNo}
+                #{studentsVar.schoolNo}
             </p:column>
             <p:column headerText="#{msg.class}" width="50" >
-                #{studentsGrid.refSchoolClass.name}
+                #{studentsVar.refSchoolClass.name}
             </p:column>
             <p:column headerText="#{msg.global_name_surname}" width="120" >
-                #{studentsGrid.fullname}
+                #{studentsVar.fullname}
             </p:column>
             <p:column headerText="#{msg.global_name}" width="60" >
-                #{studentsGrid.name}
+                #{studentsVar.name}
             </p:column>
             <p:column headerText="#{msg.global_surname}" width="60" >
-                #{studentsGrid.surname}
+                #{studentsVar.surname}
             </p:column>
             <p:column headerText="#{msg.global_gender}" width="20" >
-                #{studentsGrid.gender}
+                #{studentsVar.gender}
             </p:column>
             <p:column headerText="#{msg.global_phone}" width="60" >
-                #{studentsGrid.phone}
+                #{studentsVar.phone}
             </p:column>
             <p:column headerText="#{msg.global_mernis}" width="60" >
-                #{studentsGrid.mernis}
+                #{studentsVar.mernis}
             </p:column>
 
             <p:column width="40" rendered="false">

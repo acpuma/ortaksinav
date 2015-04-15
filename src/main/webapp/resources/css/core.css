@@ -13,9 +13,18 @@
 	display: box;
 	box-orient: horizontal;
 	box-pack: center;
-	box-align: center
+	box-align: center;
 }
 
 .ui-widget {
     /*font-size: 12px !important;*/
 }
+
+.bgYellow {
+	background-color: lightyellow !important;
+}
+
+.bgGreen {
+	background-color: lightgreen !important;
+}
+

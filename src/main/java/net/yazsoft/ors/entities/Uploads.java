@@ -46,6 +46,7 @@ public class Uploads extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    private Boolean processed;
     @JoinColumn(name = "ref_upload_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private UploadsType refUploadType;
@@ -118,6 +119,14 @@ public class Uploads extends BaseEntity implements Serializable {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Boolean getProcessed() {
+        return processed;
+    }
+
+    public void setProcessed(Boolean processed) {
+        this.processed = processed;
     }
 
     public UploadsType getRefUploadType() {

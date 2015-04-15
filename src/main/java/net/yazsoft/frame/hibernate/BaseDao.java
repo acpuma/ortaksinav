@@ -121,9 +121,11 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 		return c.list();
 	}
 
+    /*
 	public void hardDelete(final T t) {
 		getSession().delete(t);
 	}
+	*/
 	
 	protected Criteria getCriteria(){
 		return getSession().createCriteria(type);
@@ -320,7 +322,7 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 
     public Session getSession() {
         Session session1=sessionFactory.getCurrentSession();
-        logger.info(session1.isOpen());
+        //logger.info(session1.isOpen());
         session=session1;
         return session1;
     }

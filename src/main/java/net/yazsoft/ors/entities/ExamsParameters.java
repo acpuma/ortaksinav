@@ -4,7 +4,6 @@ package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -17,12 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
@@ -63,8 +60,6 @@ public class ExamsParameters extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_parameter", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private ExamsParametersType refParameter;
-    @OneToMany(mappedBy = "refParameter", fetch = FetchType.LAZY)
-    private Collection<Results> resultsCollection;
 
     public ExamsParameters() {
     }
@@ -167,15 +162,6 @@ public class ExamsParameters extends BaseEntity implements Serializable {
 
     public void setRefParameter(ExamsParametersType refParameter) {
         this.refParameter = refParameter;
-    }
-
-    @XmlTransient
-    public Collection<Results> getResultsCollection() {
-        return resultsCollection;
-    }
-
-    public void setResultsCollection(Collection<Results> resultsCollection) {
-        this.resultsCollection = resultsCollection;
     }
 
     @Override

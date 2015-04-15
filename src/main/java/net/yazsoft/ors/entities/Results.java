@@ -18,7 +18,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -41,15 +40,24 @@ public class Results extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @Size(max = 255)
-    @Column(length = 255)
-    private String value;
+    private Integer trues;
+    private Integer falses;
+    private Integer nulls;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(precision = 12)
+    private Float nets;
+    @Column(name = "rank_school")
+    private Integer rankSchool;
+    @Column(name = "rank_class")
+    private Integer rankClass;
+    @Column(precision = 12)
+    private Float score;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refExam;
-    @JoinColumn(name = "ref_parameter", referencedColumnName = "tid")
+    @JoinColumn(name = "ref_false_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ExamsParameters refParameter;
+    private ExamsFalseType refFalseType;
     @JoinColumn(name = "ref_lesson", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Lessons refLesson;
@@ -109,12 +117,60 @@ public class Results extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    public String getValue() {
-        return value;
+    public Integer getTrues() {
+        return trues;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setTrues(Integer trues) {
+        this.trues = trues;
+    }
+
+    public Integer getFalses() {
+        return falses;
+    }
+
+    public void setFalses(Integer falses) {
+        this.falses = falses;
+    }
+
+    public Integer getNulls() {
+        return nulls;
+    }
+
+    public void setNulls(Integer nulls) {
+        this.nulls = nulls;
+    }
+
+    public Float getNets() {
+        return nets;
+    }
+
+    public void setNets(Float nets) {
+        this.nets = nets;
+    }
+
+    public Integer getRankSchool() {
+        return rankSchool;
+    }
+
+    public void setRankSchool(Integer rankSchool) {
+        this.rankSchool = rankSchool;
+    }
+
+    public Integer getRankClass() {
+        return rankClass;
+    }
+
+    public void setRankClass(Integer rankClass) {
+        this.rankClass = rankClass;
+    }
+
+    public Float getScore() {
+        return score;
+    }
+
+    public void setScore(Float score) {
+        this.score = score;
     }
 
     public Exams getRefExam() {
@@ -125,12 +181,12 @@ public class Results extends BaseEntity implements Serializable {
         this.refExam = refExam;
     }
 
-    public ExamsParameters getRefParameter() {
-        return refParameter;
+    public ExamsFalseType getRefFalseType() {
+        return refFalseType;
     }
 
-    public void setRefParameter(ExamsParameters refParameter) {
-        this.refParameter = refParameter;
+    public void setRefFalseType(ExamsFalseType refFalseType) {
+        this.refFalseType = refFalseType;
     }
 
     public Lessons getRefLesson() {

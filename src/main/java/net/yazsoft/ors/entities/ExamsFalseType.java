@@ -49,6 +49,8 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
     private Date updated;
     @OneToMany(mappedBy = "refFalseType", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
+    @OneToMany(mappedBy = "refFalseType", fetch = FetchType.LAZY)
+    private Collection<Results> resultsCollection;
 
     public ExamsFalseType() {
     }
@@ -118,6 +120,15 @@ public class ExamsFalseType extends BaseEntity implements Serializable {
 
     public void setExamsCollection(Collection<Exams> examsCollection) {
         this.examsCollection = examsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Results> getResultsCollection() {
+        return resultsCollection;
+    }
+
+    public void setResultsCollection(Collection<Results> resultsCollection) {
+        this.resultsCollection = resultsCollection;
     }
 
     @Override

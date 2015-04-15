@@ -2,8 +2,30 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
 
 <display-name>ORS</display-name>
+    <filter>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
 
-<!-- JSF mapping -->
+    <!-- Spring security -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>
+            org.springframework.web.filter.DelegatingFilterProxy
+        </filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <!-- JSF mapping -->
 <servlet>
     <servlet-name>Faces Servlet</servlet-name>
     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -31,6 +53,15 @@
         <param-value>1048576</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+        <param-value>/WEB-INF/springsec.taglib.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>
+        <param-value>commons</param-value>
+    </context-param>
 
 <!-- for omnifaces -->
 <servlet-mapping>
@@ -65,23 +96,8 @@
     <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
 </listener>
 
-<!-- Spring security -->
-<filter>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <filter-class>
-        org.springframework.web.filter.DelegatingFilterProxy
-    </filter-class>
-</filter>
 
-<filter-mapping>
-    <filter-name>springSecurityFilterChain</filter-name>
-    <url-pattern>/*</url-pattern>
-</filter-mapping>
 
-<context-param>
-    <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
-    <param-value>/WEB-INF/springsec.taglib.xml</param-value>
-</context-param>
 
 <!-- Welcome page -->
 <welcome-file-list>

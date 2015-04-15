@@ -28,57 +28,105 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class StudentsDto extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    Long id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
-    private Long tid;
-    private Boolean active;
+    Long tid;
+    Boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private int version;
+    int version;
     @Size(max = 255)
     @Column(length = 255)
-    private String name;
+    String name;
     @Size(max = 255)
     @Column(length = 255)
-    private String surname;
+    String surname;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    Date created;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date updated;
+    Date updated;
     @Size(max = 45)
     @Column(length = 45)
-    private String username;
+    String username;
     @Size(max = 45)
     @Column(length = 45)
-    private String password;
+    String password;
     @Size(max = 255)
     @Column(length = 255)
-    private String fullname;
+    String fullname;
     @Size(max = 1)
     @Column(length = 1)
-    private String gender;
+    String gender;
     @Column(name = "school_no")
-    private Integer schoolNo;
+    Integer schoolNo;
     @Size(max = 11)
     @Column(length = 11)
-    private String mernis;
+    String mernis;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
     @Size(max = 20)
     @Column(length = 20)
-    private String phone;
+    String phone;
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
-    private Collection<StudentsAnswers> studentsAnswersCollection;
+    Collection<StudentsAnswers> studentsAnswersCollection;
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Schools refSchool;
+    Schools refSchool;
     @JoinColumn(name = "ref_school_class", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
-    private SchoolsClass refSchoolClass;
+    SchoolsClass refSchoolClass;
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
-    private Collection<Results> resultsCollection;
+    Collection<Results> resultsCollection;
+
+    public Students toEntity() {
+        Students entity=new Students();
+        entity.setTid(this.tid);
+        entity.setActive(this.active);
+        entity.setVersion(this.version);
+        entity.setName(this.name);
+        entity.setSurname(this.surname);
+        entity.setCreated(this.created);
+        entity.setUpdated(this.updated);
+        entity.setUsername(this.username);
+        entity.setPassword(this.password);
+        entity.setFullname(this.fullname);
+        entity.setGender(this.gender);
+        entity.setSchoolNo(this.schoolNo);
+        entity.setMernis(this.mernis);
+        entity.setPhone(this.phone);
+        entity.setStudentsAnswersCollection(this.studentsAnswersCollection);
+        entity.setRefSchool(this.refSchool);
+        entity.setRefSchoolClass(this.refSchoolClass);
+        entity.setResultsCollection(this.resultsCollection);
+        return entity;
+    }
+
+    public StudentsDto(Students entity) {
+        fromEntity(entity);
+    }
+    public void fromEntity(Students entity) {
+        this.tid=entity.getTid();
+        this.active=entity.getActive();
+        this.version=entity.getVersion();
+        this.name=entity.getName();
+        this.surname=entity.getSurname();
+        this.created=entity.getCreated();
+        this.updated=entity.getCreated();
+        this.username=entity.getUsername();
+        this.password=entity.getPassword();
+        this.fullname=entity.getFullname();
+        this.gender=entity.getGender();
+        this.schoolNo=entity.getSchoolNo();
+        this.mernis=entity.getMernis();
+        this.phone=entity.getPhone();
+        this.studentsAnswersCollection=entity.getStudentsAnswersCollection();
+        this.refSchool=entity.getRefSchool();
+        this.refSchoolClass=entity.getRefSchoolClass();
+        this.resultsCollection=entity.getResultsCollection();
+    }
 
     public StudentsDto() {
     }
@@ -258,4 +306,11 @@ public class StudentsDto extends BaseEntity implements Serializable {
         return true;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

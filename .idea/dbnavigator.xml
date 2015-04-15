@@ -39,6 +39,9 @@
     </execution-history>
     <argument-values-cache />
   </component>
+  <component name="DBNavigator.Project.ObjectDependencyManager">
+    <last-used-dependency-type value="INCOMING" />
+  </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
       <connection id="488529cd-f90c-43ed-a6e6-d9a0bfecd1f0">
@@ -52,7 +55,7 @@
           <user value="ors" />
           <password value="b3J0YWsyMQ==" />
           <driver-library value="$PROJECT_DIR$/../../libs/mysql-connector-java-5.1.34/mysql-connector-java-5.1.34-bin.jar" />
-          <driver value="com.mysql.fabric.jdbc.FabricMySQLDriver" />
+          <driver value="com.mysql.jdbc.Driver" />
           <url value="jdbc:mysql://localhost:3306/orsdb" />
         </database>
         <details>
@@ -62,6 +65,7 @@
           <database-logging value="false" />
           <environment-type value="development" />
           <idle-time-to-disconnect value="30" />
+          <password-expiry-time value="10" />
           <max-connection-pool-size value="7" />
           <alternative-statement-delimiter value="" />
           <connect-automatically value="true" />
@@ -254,6 +258,10 @@
         <show-object-navigation-gutter value="false" />
         <show-spec-declaration-navigation-gutter value="true" />
       </general>
+      <confirmations>
+        <save-changes value="false" />
+        <revert-changes value="true" />
+      </confirmations>
     </code-editor-settings>
     <code-completion-settings>
       <filters>

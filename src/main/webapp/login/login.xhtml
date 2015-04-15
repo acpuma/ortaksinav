@@ -19,12 +19,12 @@
 
             <p:panelGrid columns="2">
                 <h:outputLabel for="username" value="#{msg.username}:" />
-                <p:inputText id="username" required="true"
+                <p:inputText id="username" required="true" at:autofocus="true"
                              value="#{loginSer.username}">
                 </p:inputText>
 
                 <h:outputLabel for="password" value="#{msg.password}:" />
-                <p:password id="password" required="true" at:autofocus="true"
+                <p:password id="password" required="true"
                             value="#{loginSer.password}">
                 </p:password>
 

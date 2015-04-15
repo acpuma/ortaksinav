@@ -30,7 +30,7 @@ import java.io.Serializable;
 @ViewScoped
 public class LoginSer implements Serializable{
     private static final Logger logger = Logger.getLogger(LoginSer.class);
-    private String username="a";
+    private String username; //="a";
     private String password; //="b";
     private boolean rememberMe = false;
     private boolean loggedIn = false;

@@ -94,6 +94,8 @@ public class Exams extends BaseEntity implements Serializable {
     private ExamsSeason refExamSeason;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
     private Collection<ExamsParameters> examsParametersCollection;
+    @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<Answers> answersCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refExam", fetch = FetchType.LAZY)
     private Collection<Lessons> lessonsCollection;
     @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
@@ -291,6 +293,15 @@ public class Exams extends BaseEntity implements Serializable {
 
     public void setExamsParametersCollection(Collection<ExamsParameters> examsParametersCollection) {
         this.examsParametersCollection = examsParametersCollection;
+    }
+
+    @XmlTransient
+    public Collection<Answers> getAnswersCollection() {
+        return answersCollection;
+    }
+
+    public void setAnswersCollection(Collection<Answers> answersCollection) {
+        this.answersCollection = answersCollection;
     }
 
     @XmlTransient

@@ -35,6 +35,9 @@
         <property name="maxPoolSize" value="2" />
         <property name="maxStatements" value="0" />
         <property name="minPoolSize" value="1" />
+        <property name="preferredTestQuery"  value="select 1" />
+        <property name="testConnectionOnCheckin" value="false" />
+        <property name="testConnectionOnCheckout" value="true" />
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
@@ -53,7 +56,7 @@
 		        <prop key="org.hibernate.envers.store_data_at_delete">true</prop>
 		        <prop key="org.hibernate.envers.revision_on_collection_change">false</prop>
 		        <prop key="org.hibernate.envers.do_not_audit_optimistic_locking_field">false</prop>
-                <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/orsdb</prop>
+                <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/orsdb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8</prop>
                 <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
                 <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
             </props>

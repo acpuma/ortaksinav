@@ -34,10 +34,10 @@
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
         <p:dataTable id="studentsAnswersGrid"
-                     var="studentsAnswersGrid"
+                     var="studentsAnswersVar"
 
                      filterEvent="enter"
-                     value="#{studentsAnswersDao.all}"
+                     value="#{operationsDao.answersDto}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -69,9 +69,8 @@
                      widgetVar="#{cc.attrs.widgetVar}"
 
                      selection="#{studentsAnswersDao.item}"
-                     rowKey="#{studentsAnswersGrid.tid}"
+                     rowKey="#{studentsAnswersVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
-                     selectionMode="single"
                 >
 
             <f:facet name="header">
@@ -79,22 +78,22 @@
             </f:facet>
 
             <p:column headerText="#{msg.global_id}" width="20" rendered="true"  >
-                #{studentsAnswersGrid.tid}
+                #{studentsAnswersVar.tid}
             </p:column>
             <p:column headerText="#{msg.student}" width="120" >
-                #{studentsAnswersGrid.refStudent.fullname}
+                #{studentsAnswersVar.refStudent.fullname}
             </p:column>
-            <p:column headerText="#{msg.exam}" width="50" >
-                #{studentsAnswersGrid.refExam.nameTr}
+            <p:column headerText="#{msg.exam}" width="50" rendered="false">
+                #{studentsAnswersVar.refExam.nameTr}
             </p:column>
-            <p:column headerText="#{msg.lesson}" width="50" >
-                #{studentsAnswersGrid.refLesson.refLessonName.nameTr}
+            <p:column headerText="#{msg.lesson}" width="70" >
+                #{studentsAnswersVar.refLesson.refLessonName.nameTr}
             </p:column>
             <p:column headerText="#{msg.global_booklet}" width="10" >
-                #{studentsAnswersGrid.booklet}
+                #{studentsAnswersVar.booklet}
             </p:column>
-            <p:column headerText="#{msg.answers}" width="100" >
-                #{studentsAnswersGrid.answers}
+            <p:column headerText="#{msg.answers}" width="250" >
+                #{studentsAnswersVar.answers}
             </p:column>
 
             <p:column width="40" rendered="false">

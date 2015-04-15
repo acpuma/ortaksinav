@@ -49,6 +49,18 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    private Integer trues;
+    private Integer falses;
+    private Integer nulls;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(precision = 12)
+    private Float nets;
+    @Column(name = "rank_school")
+    private Integer rankSchool;
+    @Column(name = "rank_class")
+    private Integer rankClass;
+    @Column(precision = 12)
+    private Float score;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refExam;
@@ -126,6 +138,62 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public Integer getTrues() {
+        return trues;
+    }
+
+    public void setTrues(Integer trues) {
+        this.trues = trues;
+    }
+
+    public Integer getFalses() {
+        return falses;
+    }
+
+    public void setFalses(Integer falses) {
+        this.falses = falses;
+    }
+
+    public Integer getNulls() {
+        return nulls;
+    }
+
+    public void setNulls(Integer nulls) {
+        this.nulls = nulls;
+    }
+
+    public Float getNets() {
+        return nets;
+    }
+
+    public void setNets(Float nets) {
+        this.nets = nets;
+    }
+
+    public Integer getRankSchool() {
+        return rankSchool;
+    }
+
+    public void setRankSchool(Integer rankSchool) {
+        this.rankSchool = rankSchool;
+    }
+
+    public Integer getRankClass() {
+        return rankClass;
+    }
+
+    public void setRankClass(Integer rankClass) {
+        this.rankClass = rankClass;
+    }
+
+    public Float getScore() {
+        return score;
+    }
+
+    public void setScore(Float score) {
+        this.score = score;
     }
 
     public Exams getRefExam() {

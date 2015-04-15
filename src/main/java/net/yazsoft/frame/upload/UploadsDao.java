@@ -51,6 +51,10 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
     }
 
     public static String getUploadedFilePath(Uploads upload){
+        if (upload==null) {
+            logger.error("ERROR getUploadedFilePath: upload is null ");
+            return null;
+        }
         logger.info("UploadedFilePath file: " + upload.getName() );
         String filepath=null;
         filepath=Util.getUploadsFolder();

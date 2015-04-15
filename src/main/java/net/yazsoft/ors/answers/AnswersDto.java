@@ -126,7 +126,7 @@ public class AnswersDto extends BaseEntity implements Serializable {
     }
 
     public Answers toEntity(Answers entity){
-        logger.info("lesson tid : " + getTid());
+        logger.info("answer.toEntity lesson tid : " + getTid());
         //Answers entity = new Answers();
         entity.setRefAnswerSubject(getRefAnswerSubject());
         entity.setRefAnswerQuestion(getRefAnswerQuestion());
@@ -143,6 +143,7 @@ public class AnswersDto extends BaseEntity implements Serializable {
         entity.setAnsH(getAnsH());
         return entity;
     }
+
 
 
     public Long getTid() {

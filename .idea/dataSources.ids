@@ -39,6 +39,7 @@
       <column name="version" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MQ=="/>
       <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_lesson" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
       <column name="rank" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="score" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MA=="/>
@@ -53,11 +54,11 @@
       <column name="ref_answer_subject" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_answer_question" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
       <column name="ref_answer_cancel" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5"/>
-      <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_answer_answercancel" columns="ref_answer_cancel" ref-table="AnswersCancelType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_answer_answerquestion" columns="ref_answer_question" ref-table="AnswersQuestionType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_answer_answersubject" columns="ref_answer_subject" ref-table="AnswersSubjectType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_answer_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_answer_lesson" columns="ref_lesson" ref-table="Lessons" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <index name="fk_answer_answercancel_idx" unique="false" columns="ref_answer_cancel"/>
       <index name="fk_answer_answerquestion_idx" unique="false" columns="ref_answer_question"/>
@@ -140,6 +141,7 @@
       <foreign-key name="fk_exams_falsetype" columns="ref_false_type" ref-table="ExamsFalseType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_exams_school" columns="ref_school" ref-table="Schools" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_exams_season" columns="ref_exam_season" ref-table="examsseason" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fk_answer_exam" table="Answers" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="fk_examsparameter_exam" table="ExamsParameters" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="fk_lessons_exam" table="Lessons" schema="" catalog="orsdb" columns="ref_exam"/>
       <exported-key name="fk_results_exam" table="Results" schema="" catalog="orsdb" columns="ref_exam"/>
@@ -184,6 +186,7 @@
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <exported-key name="fk_exams_falsetype" table="Exams" schema="" catalog="orsdb" columns="ref_false_type"/>
+      <exported-key name="fk_results_examsfalsetype" table="Results" schema="" catalog="orsdb" columns="ref_false_type"/>
     </table>
     <table name="ExamsParameters" schema="" catalog="orsdb" type="TABLE">
       <column name="tid" sqlType="BIGINT" precision="19" scale="0" nullable="false" jdbcType="-5" autoIncrement="true"/>
@@ -200,7 +203,6 @@
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_examsparameter_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_examsparameter_parametertype" columns="ref_parameter" ref-table="ExamsParametersType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
-      <exported-key name="fk_results_examparameter" table="Results" schema="" catalog="orsdb" columns="ref_parameter"/>
       <index name="fk_examsparameter_exam_idx" unique="false" columns="ref_exam"/>
       <index name="fk_examsparameter_parametertype_idx" unique="false" columns="ref_parameter"/>
     </table>
@@ -365,16 +367,22 @@
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_student" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
-      <column name="ref_parameter" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="ref_false_type" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_lesson" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
-      <column name="value" sqlType="VARCHAR" precision="255" scale="0" nullable="true" jdbcType="12" remarks="aWYgcGFyYW1ldGVyLCBpdCBpcyBwYXJhbWV0ZXIgdmFsdWUuIGlmIGxlc3NvbiA6IGxlc3NvbiBhbnN3ZXJz"/>
+      <column name="trues" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4" remarks="aWYgcGFyYW1ldGVyLCBpdCBpcyBwYXJhbWV0ZXIgdmFsdWUuIGlmIGxlc3NvbiA6IGxlc3NvbiBhbnN3ZXJz"/>
+      <column name="falses" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="nulls" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="nets" sqlType="FLOAT" precision="12" scale="0" nullable="true" jdbcType="7"/>
+      <column name="rank_school" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="rank_class" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="score" sqlType="FLOAT" precision="12" scale="0" nullable="true" jdbcType="7"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_results_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_results_examparameter" columns="ref_parameter" ref-table="ExamsParameters" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="fk_results_examsfalsetype" columns="ref_false_type" ref-table="ExamsFalseType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_results_lesson" columns="ref_lesson" ref-table="Lessons" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_results_student" columns="ref_student" ref-table="Students" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <index name="fk_results_exam_idx" unique="false" columns="ref_exam"/>
-      <index name="fk_results_examparameter_idx" unique="false" columns="ref_parameter"/>
+      <index name="fk_results_examsfalsetype_idx" unique="false" columns="ref_false_type"/>
       <index name="fk_results_lesson_idx" unique="false" columns="ref_lesson"/>
       <index name="fk_results_student_idx" unique="false" columns="ref_student"/>
     </table>
@@ -461,6 +469,13 @@
       <column name="answers" sqlType="VARCHAR" precision="255" scale="0" nullable="false" jdbcType="12"/>
       <column name="created" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
       <column name="updated" sqlType="DATETIME" precision="19" scale="0" nullable="true" jdbcType="93"/>
+      <column name="trues" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="falses" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="nulls" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="nets" sqlType="FLOAT" precision="12" scale="0" nullable="true" jdbcType="7"/>
+      <column name="rank_school" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="rank_class" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="score" sqlType="FLOAT" precision="12" scale="0" nullable="true" jdbcType="7"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="fk_studentanswers_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_studentanswers_lesson" columns="ref_lesson" ref-table="Lessons" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
@@ -493,6 +508,7 @@
       <column name="ref_exam" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_upload_type" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="ref_user" sqlType="BIGINT" precision="19" scale="0" nullable="true" jdbcType="-5"/>
+      <column name="processed" sqlType="BIT" precision="1" scale="0" nullable="true" jdbcType="-7"/>
       <primary-key name="PRIMARY" columns="tid"/>
       <foreign-key name="FK_o6lk07qqbyai9ychl6kmkayrr" columns="ref_upload_type" ref-table="UploadsType" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="fk_uploads_exam" columns="ref_exam" ref-table="Exams" ref-schema="" ref-catalog="orsdb" ref-columns="tid" update-rule="3" delete-rule="3" deferrability="2"/>

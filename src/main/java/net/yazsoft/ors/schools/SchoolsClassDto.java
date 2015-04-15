@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class SchoolsClassDto extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    private Long id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -55,6 +56,34 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
+
+    public SchoolsClass toEntity(){
+        SchoolsClass tempClass=new SchoolsClass();
+        tempClass.setTid(this.tid);
+        tempClass.setVersion(this.version);
+        tempClass.setActive(this.active);
+        tempClass.setName(this.name);
+        tempClass.setCreated(this.created);
+        tempClass.setUpdated(this.updated);
+        tempClass.setStudentsCollection(this.studentsCollection);
+        tempClass.setRefSchool(this.refSchool);
+        return tempClass;
+    }
+
+    public SchoolsClassDto(SchoolsClass schoolsClass) {
+        fromEntity(schoolsClass);
+    }
+
+    public void fromEntity(SchoolsClass schoolsClass) {
+        this.tid=schoolsClass.getTid();
+        this.version=schoolsClass.getVersion();
+        this.active=schoolsClass.getActive();
+        this.name=schoolsClass.getName();
+        this.created=schoolsClass.getCreated();
+        this.updated=schoolsClass.getUpdated();
+        this.studentsCollection=schoolsClass.getStudentsCollection();
+        this.refSchool=schoolsClass.getRefSchool();
+    }
 
     public SchoolsClassDto() {
     }
@@ -154,4 +183,11 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
         return true;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

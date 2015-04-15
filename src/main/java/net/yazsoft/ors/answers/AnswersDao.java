@@ -9,15 +9,14 @@ import net.yazsoft.ors.lessons.LessonsDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.event.RowEditEvent;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Named
 @ViewScoped
@@ -75,14 +74,15 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
     }
 
     public void onLessonChange() {
-        logger.info("LESSON CHANGE : " + lesson.getRefLessonName().getNameTr());
+        logger.info("LESSON CHANGE : " + lesson.getTid() + " : " +lesson.getRefLessonName().getNameTr());
+        logger.info("LESSON EXAM : "+ exam.getTid() + " : " + exam.getNameTr());
         subjects=answersSubjectTypeDao.getLessonSubjects(lesson.getRefLessonName());
         questionCount=lesson.getQuestionCount();
         bookletCount=exam.getRefBookletType().getTid().intValue();
         answerTypes=examsAnswerTypeDao.getExamAnswerTypes(exam);
         logger.info("LESSON QUESTION COUNT : "+ questionCount);
         logger.info("EXAM BOOKLET COUNT : " + bookletCount);
-        getLessonAnswers(lesson);
+        getLessonAnswers(exam, lesson);
         if (answersDtos.size()==0) {
             AnswersDto dto;
             //AnswersSubjectType subjectType=answersSubjectTypeDao.getById(1L);
@@ -101,13 +101,14 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
         }
     }
 
-    public List<Answers> getLessonAnswers(Lessons lesson) {
+    public List<Answers> getLessonAnswers(Exams exam1,Lessons lesson1) {
         answersDtos=new ArrayList<>();
-        logger.info("LESSON : "+ lesson);
+        //logger.info("EXAM,LESSON : "+ exam1+","+lesson1);
         List list=null;
         try {
             Criteria c = getCriteria();
-            c.add(Restrictions.eq("refLesson", lesson));
+            c.add(Restrictions.eq("refExam", exam1));
+            c.add(Restrictions.eq("refLesson", lesson1));
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
@@ -121,8 +122,76 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
             AnswersDto dto=new AnswersDto(answer);
             answersDtos.add(dto);
         }
-        logger.info("ANSWERS :" + answersDtos);
+        //logger.info("ANSWERS :" + answersDtos);
         return list;
+    }
+
+    /**
+     * Gets lessons answers as map which includes booklet number and booklet answers as string
+     * @param exam1
+     * @param lesson1
+     * @return
+     */
+    public Map<Integer,String> getLessonAnswersMap(Exams exam1,Lessons lesson1) {
+        getLessonAnswers(exam1, lesson1);
+        Map<Integer,String> answersMap = new LinkedHashMap<>();
+        String answers;
+        for (int i=0; i<exam1.getRefBookletType().getTid();i++) {
+            answers="";
+            for (AnswersDto dto : answersDtos) {
+                switch (i){
+                    case 0: answers = answers.concat(dto.getAnsA());break;
+                    case 1: answers = answers.concat(dto.getAnsB());break;
+                    case 2: answers = answers.concat(dto.getAnsC());break;
+                    case 3: answers = answers.concat(dto.getAnsD());break;
+                    case 4: answers = answers.concat(dto.getAnsE());break;
+                    case 5: answers = answers.concat(dto.getAnsF());break;
+                    case 6: answers = answers.concat(dto.getAnsG());break;
+                    case 7: answers = answers.concat(dto.getAnsH());break;
+                }
+            }
+            answersMap.put(i,answers);
+        }
+        /*
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsB());
+        }
+        answersMap.put(2,answers);
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsC());
+        }
+        answersMap.put(3,answers);
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsD());
+        }
+        answersMap.put(4,answers);
+
+        /*
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsE());
+        }
+        answersMap.put(5,answers);
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsF());
+        }
+        answersMap.put(6,answers);
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsG());
+        }
+        answersMap.put(7,answers);
+        answers = "";
+        for (AnswersDto dto : answersDtos) {
+            answers = answers.concat(dto.getAnsH());
+        }
+        answersMap.put(8,answers);
+        */
+        return answersMap;
     }
 
     public void DtosToEntities(Lessons lesson) {
@@ -135,6 +204,7 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
                 entity=new Answers();
             }
             entity=dto.toEntity(entity);
+            entity.setRefExam(exam);
             entity.setRefLesson(lesson);
             entity.setActive(Boolean.TRUE);
             logger.info("ANSWER ENTITY :" + entity);
@@ -253,7 +323,6 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
     }
 
     public List<AnswersSubjectType> getSubjects() {
-        logger.info("SUBJECTS : " + subjects);
         return subjects;
     }
 

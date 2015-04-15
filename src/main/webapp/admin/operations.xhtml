@@ -14,18 +14,82 @@
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.exams}" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
-    <components:uploadsGrid rows="30" scrollable="true" scrollHeight="150" widgetVar="uploadsGridWidget" />
+    <components:uploadsGrid rows="30" scrollable="true" scrollHeight="250" widgetVar="uploadsGridWidget" />
+    <p:outputPanel style="text-align: center;" >
+        <components:inputUploadDat update="@widgetVar(uploadsGridWidget)" />
+        <p:commandButton value="#{msg.files_show}"
+                         action="#{operationsDao.show}"
+                         update=":messages fileContent"
+                         oncomplete="PF('showFileDialogWidget').show()"
+                />
+        <p:commandButton value="#{msg.transfer}"
+                         action="#{operationsDao.transfer}"
+                         update=":messages
+                                        @widgetVar(schoolsClassGridWidget)
+                                        @widgetVar(studentsAnswersViewGridWidget)"
+                         oncomplete="PF('transferDialogWidget').show()"
+                />
+        <p:commandButton value="#{msg.operation_count}"
+                         action="#{operationsDao.count}"
+                         update=":messages "
+                         oncomplete="PF('countDialogWidget').show()"
+                />
+
+    </p:outputPanel>
 
     <h:form id="pageForm">
         <p:panelGrid columns="2" id="pagePanel">
         </p:panelGrid>
         <h:messages />
     </h:form>
+    <p:dialog id="transferDialog" header="#{msg.global_confirmation}" widgetVar="transferDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="false" closable="true"
+            closeOnEscape="true">
 
-    <components:schoolsClassGrid rows="50" scrollable="true" scrollHeight="150"/>
-    <components:studentsGrid rows="200" scrollable="true" scrollHeight="150"/>
-    <components:studentsAnswersGrid rows="200" scrollable="true" scrollHeight="150"/>
+        <p:outputPanel style="width: 100%;height: 40px; text-align: right;">
+            <h:form id="confirmForm">
+                <p:selectBooleanCheckbox itemLabel="#{msg.transfer_delete_old}" style="margin: 3px 15px;"
+                                         value="#{operationsDao.deleteOld}"/>
 
+                <p:commandButton value="#{msg.global_confirmation}" style="margin: 5px;"
+                             action="#{operationsDao.confirmTransfer}"
+                             update=":messages
+                                                @widgetVar(uploadsGridWidget)
+                                                @widgetVar(schoolsClassGridWidget)
+                                                @widgetVar(studentsAnswersViewGridWidget)"
+                             oncomplete="PF('transferDialogWidget').hide()"
+                    />
+            <p:commandButton value="X" oncomplete="PF('transferDialogWidget').hide()"
+                             immediate="true" process="@none" style="margin: 5px;"/>
+            </h:form>
+        </p:outputPanel>
+        <p:panelGrid columns="2">
+            <p:outputPanel style="width: 60px;">
+                <components:schoolsClassGrid rows="500" scrollable="true" scrollHeight="400"
+                                     widgetVar="schoolsClassGridWidget" paginator="false" />
+            </p:outputPanel>
+            <p:outputPanel style="width: 1050px;">
+            <components:studentsAnswersViewGrid rows="5000" scrollable="true" scrollHeight="400"
+                                            widgetVar="studentsAnswersViewGridWidget" paginator="false"/>
+            </p:outputPanel>
+
+        </p:panelGrid>
+
+    </p:dialog>
+
+    <p:dialog id="showFileDialog" header="#{msg.files_show}" widgetVar="showFileDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
+              closeOnEscape="true">
+        <p:outputPanel id="fileContent" style="width: 1000px; font-size: 12px; height:500px; overflow: scroll">
+            <ui:repeat value="#{operationsDao.lines}" var="line">
+            #{line} <br/>
+            </ui:repeat>
+        </p:outputPanel>
+    </p:dialog>
+    <p:dialog id="countDialog" header="#{msg.files_show}" widgetVar="countDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
+              closeOnEscape="true">
+    </p:dialog>
 </p:outputPanel>
 </ui:decorate>
 </f:view>

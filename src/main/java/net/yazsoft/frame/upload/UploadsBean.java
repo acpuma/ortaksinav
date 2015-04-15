@@ -103,10 +103,9 @@ public class UploadsBean implements Serializable{
         logger.info("UPLOADING FILE.......");
         activeSchool=Util.getActiveSchool();
 
-        getUploadDirectory(Util.getActiveExam().getTid().toString());
-
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         try {
+            getUploadDirectory(Util.getActiveExam().getTid().toString());
             String filenameOriginal=event.getFile().getFileName();
             String extension=UploadsDao.getFileExtension(filenameOriginal);
 
@@ -148,8 +147,8 @@ public class UploadsBean implements Serializable{
                     + event.getFile().getSize() / 1024 + " Kb Content type: "
                     + event.getFile().getContentType() + " the file was uploaded.");
         } catch(Exception e){
+            Util.setFacesMessageError(" the files were not uploaded : " + e.getMessage());
             e.printStackTrace();
-            Util.setFacesMessageError(" the files were not uploaded!");
         }
     }
 
