@@ -67,8 +67,6 @@ public class Lessons extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_lesson_name", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private LessonsName refLessonName;
-    @OneToMany(mappedBy = "refLesson", fetch = FetchType.LAZY)
-    private Collection<Results> resultsCollection;
 
     public Lessons() {
     }
@@ -189,15 +187,6 @@ public class Lessons extends BaseEntity implements Serializable {
 
     public void setRefLessonName(LessonsName refLessonName) {
         this.refLessonName = refLessonName;
-    }
-
-    @XmlTransient
-    public Collection<Results> getResultsCollection() {
-        return resultsCollection;
-    }
-
-    public void setResultsCollection(Collection<Results> resultsCollection) {
-        this.resultsCollection = resultsCollection;
     }
 
     @Override

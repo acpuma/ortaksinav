@@ -22,8 +22,10 @@
         <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
         <h:messages />
     </h:form>
-    <components:resultsGrid rows="5000" scrollable="true" scrollHeight="400"
+    <components:resultsLessonGrid rows="5000" scrollable="true" scrollHeight="400"
                                         widgetVar="resultsGridWidget" paginator="false"/>
+    <components:resultsExamGrid rows="5000" scrollable="true" scrollHeight="400"
+                                  widgetVar="resultsExamGridWidget" paginator="false"/>
 
     <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >

@@ -74,6 +74,8 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
     private Integer rankClass;
     @Column(precision = 12)
     private Float score;
+    private Integer rankExamClass;
+    private Integer rankExamSchool;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refExam;
@@ -90,9 +92,12 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
     }
 
     public static class Comparators {
-        public static final Comparator<StudentsAnswersDto> SCORE = (StudentsAnswersDto o1, StudentsAnswersDto o2) -> o1.score.compareTo(o2.score);
-        //public static final Comparator<Student> AGE = (Student o1, Student o2) -> Integer.compare(o1.age, o2.age);
-        //public static final Comparator<Student> NAMEANDAGE = (Student o1, Student o2) -> NAME.thenComparing(AGE).compare(o1, o2);
+        public static final Comparator<StudentsAnswersDto> SCORE =
+                (StudentsAnswersDto o1, StudentsAnswersDto o2) -> o1.score.compareTo(o2.score);
+        //public static final Comparator<Student> AGE =
+        // (Student o1, Student o2) -> Integer.compare(o1.age, o2.age);
+        //public static final Comparator<Student> NAMEANDAGE =
+        // (Student o1, Student o2) -> NAME.thenComparing(AGE).compare(o1, o2);
     }
 
     public StudentsAnswers toEntity() {
@@ -327,5 +332,19 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
         this.score = score;
     }
 
+    public Integer getRankExamClass() {
+        return rankExamClass;
+    }
 
+    public void setRankExamClass(Integer rankExamClass) {
+        this.rankExamClass = rankExamClass;
+    }
+
+    public Integer getRankExamSchool() {
+        return rankExamSchool;
+    }
+
+    public void setRankExamSchool(Integer rankExamSchool) {
+        this.rankExamSchool = rankExamSchool;
+    }
 }

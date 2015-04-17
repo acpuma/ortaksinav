@@ -13,6 +13,8 @@ import net.yazsoft.ors.examsParameters.ExamsParametersDto;
 import net.yazsoft.ors.examsParameters.ExamsParametersTypeDao;
 import net.yazsoft.ors.lessons.LessonsDao;
 import net.yazsoft.ors.lessons.LessonsDto;
+import net.yazsoft.ors.results.ResultsDao;
+import net.yazsoft.ors.results.ResultsDto;
 import net.yazsoft.ors.schools.SchoolsClassDao;
 import net.yazsoft.ors.schools.SchoolsClassDto;
 import net.yazsoft.ors.students.*;
@@ -49,9 +51,12 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     List<StudentsAnswersDto> answersDto;
     List<StudentsAnswersDto> newAnswersDto;
     List<StudentsAnswersViewDto> answersViewDto;
+    List<Results> results;
+    List<ResultsDto> resultsDtos;
     List<String> lines;
     Boolean deleteOld;
     Integer lessonsCount;
+    Map<Lessons,Map<Integer,String>> lessonAnswerMap;
 
     @Inject UploadsDao uploadsDao;
     @Inject UploadsBean uploadsBean;
@@ -62,6 +67,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject SchoolsClassDao schoolsClassDao;
     @Inject AnswersDao answersDao;
+    @Inject ResultsDao resultsDao;
 
     @PostConstruct
     public void init() {
@@ -80,8 +86,26 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
         answersDto=new ArrayList<>();
         newAnswersDto=new ArrayList<>();
         answersViewDto=new ArrayList<>();
+        results=new ArrayList<>();
+        resultsDtos=new ArrayList<>();
+
         lines = new ArrayList<>();
+        lessonAnswerMap=new LinkedHashMap<>();
         //TODO: Get parameter ids from db
+    }
+
+    public Map<Integer,String> getLessonAnswersMap(Lessons lesson1) {
+        Map<Integer,String> answersMap;
+        if (!lessonAnswerMap.containsKey(lesson1)) {
+            answersMap=answersDao.getLessonAnswersMap(Util.getActiveExam(),lesson1);
+            lessonAnswerMap.put(lesson1,answersMap);
+            logger.info("NEW LESSON : " + lesson1);
+        } else {
+            answersMap=lessonAnswerMap.get(lesson1);
+            logger.info("OLD LESSON ! : " + lesson1);
+        }
+        logger.info("lessonAnswerMap : " + lessonAnswerMap);
+        return answersMap;
     }
 
     public void count() {
@@ -92,14 +116,18 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             Float score;
             Float questionScore;
             Lessons lesson;
+            Map<Integer,String> answersMap;
             //Map<Long,>
+
+            //find trues,falses,nulls,score
             for (StudentsAnswersDto dto:answersDto) {
                 Integer falseType=Integer.parseInt(Util.getActiveExam().getRefFalseType().getName());
                 logger.info("FALSETYPE : " + falseType);
                 trues=0; falses=0; nulls=0; nets=0f;
                 lesson=dto.getRefLesson();
             //for (Lessons lesson:Util.getActiveExam().getLessonsCollection()){
-                Map<Integer,String> answersMap=answersDao.getLessonAnswersMap(Util.getActiveExam(),lesson);
+                //Map<Integer,String> answersMap=answersDao.getLessonAnswersMap(Util.getActiveExam(),lesson);
+                answersMap=getLessonAnswersMap(lesson);
                 logger.info("answersMap : " + answersMap);
                 //StudentsAnswersDto dto=answersDto.get(0);
                     logger.info("studentAnswers : " + dto.getTid() + ", " + dto.getRefStudent() + ", " + dto.getAnswers());
@@ -144,7 +172,83 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                     dto.setNets(nets);
                     dto.setScore(score);
             }
+            Collections.sort(answersDto);
+            Collections.reverse(answersDto);
 
+            ResultsDto result;
+            for (Students student:students) {
+                result=findStudentResult(student);
+                if (result==null) {
+                    result=new ResultsDto();
+                }
+                List<StudentsAnswersDto> studentsAnswersDtos=findStudentAnswers(student);
+                score=0f; trues=0; falses=0; nulls=0; nets=0f;
+                for (StudentsAnswersDto dto:studentsAnswersDtos) {
+                    score+=dto.getScore();
+                    trues+=dto.getTrues();
+                    falses+=dto.getFalses();
+                    nulls+=dto.getNulls();
+                    nets+=dto.getNets();
+                }
+                lessonsCount=Util.getActiveExam().getLessonsCollection().size();
+                score=score/lessonsCount;
+                result.setRefStudent(student);
+                result.setRefExam(Util.getActiveExam());
+                result.setScore(score);
+                result.setTrues(trues);
+                result.setFalses(falses);
+                result.setNulls(nulls);
+                result.setNets(nets);
+                resultsDtos.add(result);
+            }
+            Collections.sort(resultsDtos);
+            Collections.reverse(resultsDtos);
+
+            //sort by score all students in the exam
+            int i = 1;
+            ResultsDto oldResultDto=new ResultsDto();
+            for (ResultsDto dto : resultsDtos) {
+                //dto.setRankSchool(i);
+                if (i>1) {
+                    if (!dto.getScore().equals(oldResultDto.getScore())){
+                        i++;
+                    }
+                } else {
+                    i++;
+                }
+                dto.setRankSchool(i - 1);
+                oldResultDto=dto;
+            }
+
+            //sort students by score in the class
+            for (SchoolsClass schoolsClass:classes) {
+                //logger.info("SCHOOLCLASS : " + schoolsClass);
+                List<ResultsDto>  classStudentsDto= resultsDtos.stream()
+                        .filter(a -> a.getRefStudent().getRefSchoolClass().equals(schoolsClass)).collect(Collectors.toList());
+                //logger.info("class students : " + classStudentsDto );
+                Collections.sort(classStudentsDto);
+                Collections.reverse(classStudentsDto);
+                i=1;
+                oldResultDto=new ResultsDto();
+                for (ResultsDto dto:classStudentsDto) {
+                    //dto.setRankClass(index);
+                    dto.setRankClass(i);
+                    //logger.info("INDEX : " + index);
+                    if (i>1) {
+                        if (!dto.getScore().equals(oldResultDto.getScore())) {
+                            i++;
+                        }
+                    } else { //index=1
+                        i++;
+                    }
+                    dto.setRankClass(i-1);
+                    oldResultDto=dto;
+                }
+            }
+
+            resultsDao.DtosToEntities(resultsDtos);
+
+            //find ranks
             for (Lessons lesson1:Util.getActiveExam().getLessonsCollection()) {
                 List<StudentsAnswersDto>  lessonStudents= answersDto.stream()
                         .filter(p -> p.getRefLesson().equals(lesson1)).collect(Collectors.toList());
@@ -159,23 +263,49 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                     //logger.info("class students : " + classStudentsDto );
                     Collections.sort(classStudentsDto);
                     Collections.reverse(classStudentsDto);
-                    int index=1;
+                    i=1;
+                    StudentsAnswersDto oldDto=new StudentsAnswersDto();
+                    StudentsAnswersDto realDto;
                     for (StudentsAnswersDto dto:classStudentsDto) {
                         //dto.setRankClass(index);
-                        answersDto.get(answersDto.indexOf(dto)).setRankClass(index);
-                        index++;
+                        dto.setRankClass(i);
+                        //logger.info("INDEX : " + index);
+                        realDto=answersDto.get(answersDto.indexOf(dto));
+                        if (i>1) {
+                            if (!realDto.getScore().equals(oldDto.getScore())) {
+                                i++;
+                            }
+                        } else { //index=1
+                            i++;
+                        }
+                        answersDto.get(answersDto.indexOf(dto)).setRankClass(i-1);
+                        oldDto=dto;
                     }
                 }
 
                 //sort students by score in the exam
                 //Collections.sort(answersDto, StudentsAnswersDto.Comparators.SCORE);
-                int i = 1;
+                i = 1;
+                StudentsAnswersDto oldDto=new StudentsAnswersDto();
+                StudentsAnswersDto realDto;
                 for (StudentsAnswersDto dto : lessonStudents) {
                     //dto.setRankSchool(i);
-                    answersDto.get(answersDto.indexOf(dto)).setRankSchool(i);
-                    i++;
+                    realDto=answersDto.get(answersDto.indexOf(dto));
+                    if (i>1) {
+                        if (!realDto.getScore().equals(oldDto.getScore())){
+                            i++;
+                        }
+                    } else {
+                        i++;
+                    }
+                    answersDto.get(answersDto.indexOf(dto)).setRankSchool(i-1);
+                    oldDto=dto;
                 }
             }
+
+
+
+            //save
             StudentsAnswers answer;
             for (StudentsAnswersDto dto : answersDto) {
                 answer = (StudentsAnswers) getSession().load(StudentsAnswers.class, dto.getTid());
@@ -294,6 +424,13 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
         for (StudentsAnswers answer:answers) {
             answersDto.add(new StudentsAnswersDto(answer));
         }
+
+        //get results
+        results=resultsDao.findByExam(Util.getActiveExam());
+        for (Results result:results) {
+            resultsDtos.add(new ResultsDto(result));
+        }
+        logger.info("RESULTS COUNT : " + results.size());
     }
 
     public void show() {
@@ -471,6 +608,17 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
         return null;
     }
 
+    private List<StudentsAnswersDto> findStudentAnswers(Students student) {
+        List<StudentsAnswersDto> studentsAnswersDtos=new ArrayList<>();
+        for (StudentsAnswersDto answer:answersDto) {
+            if (answer.getRefStudent().equals(student)) {
+                studentsAnswersDtos.add(answer);
+            }
+        }
+        return studentsAnswersDtos;
+    }
+
+
     private SchoolsClass findSchoolClassByName(String name) {
         for (SchoolsClassDto dto:classesDto) {
             if (dto.getName().equals(name)) {
@@ -480,7 +628,14 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
         return null;
     }
 
-
+    private ResultsDto findStudentResult(Students student) {
+        for (ResultsDto result:resultsDtos) {
+            if ( (result.getRefStudent().equals(student))
+                    )
+                return result;
+        }
+        return null;
+    }
 
     public List<Integer> getSchoolNos(List<StudentsDto> studentsDto) {
         List<Integer> nos=new ArrayList<>();

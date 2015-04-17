@@ -1,8 +1,11 @@
 /* *  YAZSOFT  */
 /** @author fec */
-package net.yazsoft.ors.entities;
+package net.yazsoft.ors.results;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import net.yazsoft.ors.entities.*;
+
+import java.util.Comparator;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,11 +23,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@Entity
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Results.findAll", query = "SELECT r FROM Results r")})
-public class Results extends BaseEntity implements Serializable {
+public class ResultsDto extends BaseEntity implements Comparable<ResultsDto>,Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,14 +58,74 @@ public class Results extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
 
-    public Results() {
+    public void fromEntity(Results entity) {
+        this.tid=entity.getTid();
+        this.active=entity.getActive();
+        this.version=entity.getVersion();
+        this.updated=entity.getUpdated();
+        this.created=entity.getCreated();
+        this.trues=entity.getTrues();
+        this.falses=entity.getFalses();
+        this.nulls=entity.getNulls();
+        this.score=entity.getScore();
+        this.rankClass=entity.getRankClass();
+        this.rankSchool=entity.getRankSchool();
+        this.nets=entity.getNets();
+        this.refExam=entity.getRefExam();
+        this.refStudent=entity.getRefStudent();
     }
 
-    public Results(Long tid) {
+    public Results toEntity() {
+        return toEntity(null);
+    }
+
+    public Results toEntity(Results entity) {
+        if ((entity==null) || (entity.getTid()==null)) {
+            entity=new Results();
+        }
+        entity.setTid(this.tid);
+        entity.setActive(this.active);
+        entity.setVersion(this.version);
+        entity.setCreated(this.created);
+        entity.setUpdated(this.updated);
+        entity.setRefExam(this.refExam);
+        entity.setRefStudent(this.refStudent);
+        entity.setTrues(this.trues);
+        entity.setFalses(this.falses);
+        entity.setNulls(this.nulls);
+        entity.setNets(this.nets);
+        entity.setScore(this.score);
+        entity.setRankClass(this.rankClass);
+        entity.setRankSchool(this.rankSchool);
+        return entity;
+    }
+
+    @Override
+    public int compareTo(ResultsDto o) {
+        return Comparators.SCORE.compare(this, o);
+    }
+
+    public static class Comparators {
+        public static final Comparator<ResultsDto> SCORE =
+                (ResultsDto o1, ResultsDto o2) -> o1.score.compareTo(o2.score);
+        //public static final Comparator<Student> AGE =
+        // (Student o1, Student o2) -> Integer.compare(o1.age, o2.age);
+        //public static final Comparator<Student> NAMEANDAGE =
+        // (Student o1, Student o2) -> NAME.thenComparing(AGE).compare(o1, o2);
+    }
+
+    public ResultsDto(Results entity) {
+        fromEntity(entity);
+    }
+
+    public ResultsDto() {
+    }
+
+    public ResultsDto(Long tid) {
         this.tid = tid;
     }
 
-    public Results(Long tid, int version) {
+    public ResultsDto(Long tid, int version) {
         this.tid = tid;
         this.version = version;
     }
@@ -193,10 +252,10 @@ public class Results extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Results)) {
+        if (!(object instanceof ResultsDto)) {
             return false;
         }
-        Results other = (Results) object;
+        ResultsDto other = (ResultsDto) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }

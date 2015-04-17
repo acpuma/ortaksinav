@@ -152,50 +152,10 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
             }
             answersMap.put(i,answers);
         }
-        /*
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsB());
-        }
-        answersMap.put(2,answers);
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsC());
-        }
-        answersMap.put(3,answers);
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsD());
-        }
-        answersMap.put(4,answers);
-
-        /*
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsE());
-        }
-        answersMap.put(5,answers);
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsF());
-        }
-        answersMap.put(6,answers);
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsG());
-        }
-        answersMap.put(7,answers);
-        answers = "";
-        for (AnswersDto dto : answersDtos) {
-            answers = answers.concat(dto.getAnsH());
-        }
-        answersMap.put(8,answers);
-        */
         return answersMap;
     }
 
     public void DtosToEntities(Lessons lesson) {
-        
         Answers entity;
         for (AnswersDto dto:answersDtos) {
             if (dto.getTid()!=null) {
