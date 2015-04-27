@@ -1,11 +1,14 @@
 package net.yazsoft.ors.lessons;
 
 import net.yazsoft.ors.entities.Exams;
+import net.yazsoft.ors.entities.Lessons;
 import net.yazsoft.ors.entities.LessonsName;
 
+import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
 
-public class LessonsDto {
+public class LessonsDto implements Comparable<LessonsDto>,Serializable{
     private static final long serialVersionUID = 1L;
     private Long id;
     private Long tid;
@@ -16,9 +19,43 @@ public class LessonsDto {
     private int rank;
     private int questionCount;
     private Integer start;
-    private Integer length;
     private Exams refExam;
     private LessonsName refLessonName;
+
+    public Lessons toEntity() {
+        return toEntity(null);
+    }
+
+    public Lessons toEntity(Lessons entity) {
+        if ((entity==null) || (entity.getTid()==null)) {
+            entity=new Lessons();
+        }
+        entity.setTid(this.tid);
+        entity.setActive(this.active);
+        entity.setVersion(this.version);
+        entity.setCreated(this.created);
+        entity.setUpdated(this.updated);
+        entity.setRefExam(this.refExam);
+        entity.setRank(this.rank);
+        entity.setQuestionCount(this.questionCount);
+        entity.setStart(this.start);
+        entity.setRefLessonName(this.refLessonName);
+        return entity;
+    }
+
+    @Override
+    public int compareTo(LessonsDto o) {
+        return Comparators.START.compare(this, o);
+    }
+
+    public static class Comparators {
+        public static final Comparator<LessonsDto> START =
+                (LessonsDto o1, LessonsDto o2) -> o1.start.compareTo(o2.start);
+        //public static final Comparator<Student> AGE =
+        // (Student o1, Student o2) -> Integer.compare(o1.age, o2.age);
+        //public static final Comparator<Student> NAMEANDAGE =
+        // (Student o1, Student o2) -> NAME.thenComparing(AGE).compare(o1, o2);
+    }
 
     public Long getTid() {
         return tid;
@@ -106,14 +143,6 @@ public class LessonsDto {
 
     public void setStart(Integer start) {
         this.start = start;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
     }
 
     @Override

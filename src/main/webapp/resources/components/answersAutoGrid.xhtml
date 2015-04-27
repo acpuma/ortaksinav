@@ -25,7 +25,7 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetExamsParametersType"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetAnswersAutos"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
@@ -33,16 +33,16 @@
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
-        <p:dataTable id="examsParametersTypeGrid"
-                     var="gridVar"
+        <p:dataTable id="answersAutosGrid"
+                     var="answersAutosVar"
 
                      filterEvent="enter"
-                     value="#{examsParametersTypeDao.all}"
+                     value="#{answersDao.answersAutos}"
                      emptyMessage=" #{msg['global_no_data']}"
-                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                     paginatorTemplate=" {FirstPageLink}
                  {PreviousPageLink} 
                  {PageLinks} {NextPageLink} 
-                 {LastPageLink} {RowsPerPageDropdown}"
+                 {LastPageLink} "
 
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
@@ -68,75 +68,26 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selection="#{examsParametersTypeDao.item}"
-                     rowKey="#{gridVar.tid}"
+                     rowKey="#{answersAutosVar.id}"
                      tableStyle="#{cc.attrs.tableStyle}"
+
                 >
 
-            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
-                    onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
-                    process="@all"
-                    listener="#{examsParametersTypeDao.select}"
-                    />
-
-            <p:ajax event="rowEdit" listener="#{examsParametersTypeDao.onRowEdit}"
-                    update=":messages "  />
-            <p:ajax event="rowEditCancel" listener="#{examsParametersTypeDao.onRowCancel}"
-                    update=":messages " />
-
-            <f:facet name="header" >
-                #{msg.parameters}
+            <f:facet name="header">
+                #{msg.answer_keys}
             </f:facet>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
-
-
-            <p:column headerText="#{msg.global_name}" width="520" filterBy="#{gridVar.nameTr}">
-                <p:cellEditor>
-                    <f:facet name="output"><p:outputLabel value="#{gridVar.nameTr}" /></f:facet>
-                    <f:facet name="input"><p:inputText value="#{gridVar.nameTr}"
-                                                       style="width:100%"/></f:facet>
-                </p:cellEditor>
-            </p:column>
-            <p:column headerText="#{msg.show_default}" width="80">
-                <p:cellEditor>
-                    <f:facet name="output">
-                        <p:outputLabel value="#{gridVar.showDefault?msg.global_yes:null}" />
-                    </f:facet>
-                    <f:facet name="input">
-                        <p:inputSwitch value="#{gridVar.showDefault}" rendered="false"/>
-                        <h:selectOneMenu value="#{gridVar.showDefault}" style="width:100%"
-                                >
-                            <f:selectItem itemLabel="#{msg.global_no}" itemValue="false"
-                                          />
-                            <f:selectItem itemLabel="#{msg.global_yes}" itemValue="true"
-                                          />
-                        </h:selectOneMenu>
-                    </f:facet>
-                </p:cellEditor>
-            </p:column>
-            <p:column headerText="#{msg.global_id}" width="40" rendered="false"
-                      filterBy="#{gridVar.refLessonName.tid}">
-                #{gridVar.refLessonName.tid}
+            <p:column headerText="#{msg.lesson}" width="50" rendered="true"
+                      sortBy="#{answersAutosVar.lesson.refLessonName.nameTr}">
+                #{answersAutosVar.lesson.refLessonName.nameTr}
             </p:column>
 
-            <p:column width="40">
-                <p:rowEditor />
+            <p:column headerText="#{msg.global_booklet}" width="20" sortBy="#{answersAutosVar.booklet}">
+                    #{answersAutosVar.booklet}
             </p:column>
-            <p:column width="40" rendered="false">
-                <p:commandButton value="" update=" :messages examsParametersTypeGrid"
-                                 icon="ui-icon-trash"
-                                 style="height: 36px; width: 36px;"
-                                 actionListener="#{examsParametersTypeDao.deleteParameterType(gridVar)}">
-                </p:commandButton>
+            <p:column headerText="#{msg.answers}" width="200">
+                #{answersAutosVar.answers}
             </p:column>
-            <f:facet name="footer">
-                <p:commandButton value="Ekle" onclick="PF('parameterDialogWidget').show()"
-                                 actionListener="#{examsParametersTypeDao.reset}"
-                                 update="@widgetVar(examsParametersTypeGridWidget)"
-                        />
-            </f:facet>
 
         </p:dataTable>
     </h:form>

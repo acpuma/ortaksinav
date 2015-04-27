@@ -10,6 +10,7 @@
 <f:view>
     <h:head>
         <title>#{msg.upload_file}</title>
+        <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.exams}" />
@@ -48,8 +49,18 @@
 
         <p:outputPanel style="width: 100%;height: 40px; text-align: right;">
             <h:form id="confirmForm">
+                <p:outputPanel rendered="#{answersDao.answersAutos.size() gt 0 }" layout="inline">
+                    <p:commandButton value="#{msg.transfer_show_auto}"
+                                     onclick="jQuery('#answersAutoDiv').toggle(); return false;"
+                                     immediate="true" />
+
+                    <p:selectBooleanCheckbox itemLabel="#{msg.transfer_auto_answers}" style="margin: 3px 15px;"
+                                             value="#{operationsDao.autoAddAnswers}"/>
+
+                </p:outputPanel>
                 <p:selectBooleanCheckbox itemLabel="#{msg.transfer_delete_old}" style="margin: 3px 15px;"
                                          value="#{operationsDao.deleteOld}"/>
+
 
                 <p:commandButton value="#{msg.global_confirmation}" style="margin: 5px;"
                              action="#{operationsDao.confirmTransfer}"
@@ -62,6 +73,11 @@
             <p:commandButton value="X" oncomplete="PF('transferDialogWidget').hide()"
                              immediate="true" process="@none" style="margin: 5px;"/>
             </h:form>
+        </p:outputPanel>
+        <p:outputPanel style="width: 300px;text-align: center; display:none; height:300px; "
+                       id="answersAutoDiv">
+            <components:answersAutoGrid rows="500" scrollable="true" scrollHeight="250"
+                                         widgetVar="answersAutoGridWidget" paginator="false" />
         </p:outputPanel>
         <p:panelGrid columns="2">
             <p:outputPanel style="width: 60px;">
@@ -86,9 +102,10 @@
             </ui:repeat>
         </p:outputPanel>
     </p:dialog>
-    <p:dialog id="countDialog" header="#{msg.files_show}" widgetVar="countDialogWidget"
+    <p:dialog id="countDialog" header="#{msg.result}" widgetVar="countDialogWidget"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
               closeOnEscape="true">
+        Hesaplama bitti
     </p:dialog>
 </p:outputPanel>
 </ui:decorate>

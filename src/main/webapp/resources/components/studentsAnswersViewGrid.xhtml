@@ -116,31 +116,48 @@
             </p:column>
 
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 0}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(0)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 1}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(1)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 2}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(2)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 3}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(3)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 4}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(4)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 5}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(5)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 6}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(6)}
+                </h:outputLabel>
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="#{operationsDao.lessonsCount > 7}">
+                <h:outputLabel rendered="#{not empty studentsVar.answers}">
                 #{studentsVar.answers.get(7)}
+                </h:outputLabel>
             </p:column>
 
         </p:dataTable>
+        
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
 

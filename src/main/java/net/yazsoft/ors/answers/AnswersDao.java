@@ -9,6 +9,8 @@ import net.yazsoft.ors.lessons.LessonsDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -34,6 +36,7 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
     List<Lessons> lessons;
     List<AnswersSubjectType> subjects;
     List<ExamsAnswerType> answerTypes;
+    List<AnswersAuto> answersAutos; //for reading answers from file
 
     @Inject LessonsDao lessonsDao;
     @Inject AnswersSubjectTypeDao answersSubjectTypeDao;
@@ -51,6 +54,7 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
         deletedDtos=new ArrayList<>();
         subjects=new ArrayList<>();
         answerTypes=new ArrayList<>();
+        answersAutos=new ArrayList<>();
         getItem().setRefAnswerSubject(new AnswersSubjectType());
         getItem().setRefAnswerQuestion(new AnswersQuestionType());
         getItem().setRefAnswerCancel(new AnswersCancelType());
@@ -80,7 +84,7 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
         questionCount=lesson.getQuestionCount();
         bookletCount=exam.getRefBookletType().getTid().intValue();
         answerTypes=examsAnswerTypeDao.getExamAnswerTypes(exam);
-        logger.info("LESSON QUESTION COUNT : "+ questionCount);
+        logger.info("LESSON QUESTION COUNT : " + questionCount);
         logger.info("EXAM BOOKLET COUNT : " + bookletCount);
         getLessonAnswers(exam, lesson);
         if (answersDtos.size()==0) {
@@ -122,8 +126,112 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
             AnswersDto dto=new AnswersDto(answer);
             answersDtos.add(dto);
         }
-        //logger.info("ANSWERS :" + answersDtos);
+        logger.info("ANSWERS SIZE :" + answersDtos.size());
         return list;
+    }
+
+    public List<Answers> getExamAnswers(Exams exam1) {
+        answersDtos=new ArrayList<>();
+        //logger.info("EXAM,LESSON : "+ exam1+","+lesson1);
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refExam", exam1));
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        List<Answers> answers=list;
+        for (Answers answer:answers) {
+            AnswersDto dto=new AnswersDto(answer);
+            answersDtos.add(dto);
+        }
+        logger.info("ANSWERS SIZE :" + answersDtos.size());
+        return list;
+    }
+
+    private AnswersDto findAnswer(Long exam1,Long lesson1,int rank) {
+        for (AnswersDto dto:answersDtos) {
+            Long examTid=exam1;
+            Long dtoTid=dto.getRefExam().getTid();
+            Long lessonTid=dto.getRefLesson().getTid();
+            if (dtoTid.equals(exam1) &&
+                    (lessonTid.equals(lesson1))
+                    && (dto.getRank()==rank)){
+                //logger.info("ANSWER FOUND : " + dto);
+                return dto;
+            }
+        }
+        //logger.info("ANSWER NOT FOUND");
+        return null;
+    }
+
+    public void prepareAutoAnswers(Exams exam1, Lessons lesson1,String booklet,String answersStr){
+        AnswersAuto auto=new AnswersAuto();
+        auto.setExam(exam1);
+        auto.setLesson(lesson1);
+        auto.setBooklet(booklet);
+        auto.setAnswers(answersStr);
+        answersAutos.add(auto);
+        logger.info("AUTO ANSWER : " + auto);
+    }
+
+    @Transactional
+    public void saveAutoAnswers(Exams exam1) {
+        getExamAnswers(exam1);
+        for (AnswersAuto auto:answersAutos) {
+            setLessonAnswers(auto.getExam(),auto.getLesson(),auto.getBooklet(),auto.getAnswers());
+        }
+        Answers entity=null;
+        for (AnswersDto dto:answersDtos) {
+            if (dto.getTid() != null) {
+                entity = (Answers) getSession().load(Answers.class, dto.getTid());
+            }
+            saveOrUpdate(dto.toEntity(entity));
+        }
+        answersAutos.clear();
+        answersDtos.clear();
+    }
+
+    @Transactional
+    public void setLessonAnswers(Exams exam1, Lessons lesson1,String booklet,String answersStr) {
+        List<AnswersDto> dtoList;
+        AnswersDto dto;
+        Boolean addDto;
+        for (int i=0; i<lesson1.getQuestionCount(); i++) {
+            addDto=false;
+            if (answersDtos==null) {
+                dto=new AnswersDto();
+                addDto=true;
+            } else {
+                dto=findAnswer(exam1.getTid(),lesson1.getTid(),i+1);
+                if (dto==null) {
+                    dto=new AnswersDto();
+                    addDto=true;
+                }
+            }
+            dto.setRank(i + 1);
+            dto.setRefExam( (Exams) getSession().load(Exams.class, exam1.getTid()) );
+            dto.setRefLesson( (Lessons) getSession().load(Lessons.class, lesson1.getTid()) );
+            switch (booklet) {
+                case "A" : dto.setAnsA(String.valueOf(answersStr.charAt(i))); break;
+                case "B" : dto.setAnsB(String.valueOf(answersStr.charAt(i))); break;
+                case "C" : dto.setAnsC(String.valueOf(answersStr.charAt(i))); break;
+                case "D" : dto.setAnsD(String.valueOf(answersStr.charAt(i))); break;
+                case "E" : dto.setAnsE(String.valueOf(answersStr.charAt(i))); break;
+                case "F" : dto.setAnsF(String.valueOf(answersStr.charAt(i))); break;
+                case "G" : dto.setAnsG(String.valueOf(answersStr.charAt(i))); break;
+                case "H" : dto.setAnsH(String.valueOf(answersStr.charAt(i))); break;
+            }
+            dto.setActive(Boolean.TRUE);
+            if (addDto){
+                answersDtos.add(dto);
+            }
+        }
     }
 
     /**
@@ -297,4 +405,13 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
     public void setAnswerTypes(List<ExamsAnswerType> answerTypes) {
         this.answerTypes = answerTypes;
     }
+
+    public List<AnswersAuto> getAnswersAutos() {
+        return answersAutos;
+    }
+
+    public void setAnswersAutos(List<AnswersAuto> answersAutos) {
+        this.answersAutos = answersAutos;
+    }
 }
+

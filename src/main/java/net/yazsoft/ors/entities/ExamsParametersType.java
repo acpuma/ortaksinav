@@ -54,6 +54,8 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    @Column(name = "show_default")
+    private Boolean showDefault;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refParameter", fetch = FetchType.LAZY)
     private Collection<ExamsParameters> examsParametersCollection;
 
@@ -134,6 +136,14 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
 
     public void setExamsParametersCollection(Collection<ExamsParameters> examsParametersCollection) {
         this.examsParametersCollection = examsParametersCollection;
+    }
+
+    public Boolean getShowDefault() {
+        return showDefault;
+    }
+
+    public void setShowDefault(Boolean showDefault) {
+        this.showDefault = showDefault;
     }
 
     @Override

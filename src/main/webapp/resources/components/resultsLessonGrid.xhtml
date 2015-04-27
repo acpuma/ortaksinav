@@ -33,16 +33,16 @@
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+
         <p:dataTable id="studentsAnswersGrid"
                      var="studentsAnswersVar"
 
                      filterEvent="enter"
                      value="#{resultsDao.answersDto}"
                      emptyMessage=" #{msg['global_no_data']}"
-                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
-                 {PreviousPageLink} 
-                 {PageLinks} {NextPageLink} 
-                 {LastPageLink} {RowsPerPageDropdown}"
+                     paginatorTemplate="{CurrentPageReport}"
+
+                     currentPageReportTemplate="{totalRecords} #{msg['global_record']}"
 
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
@@ -77,14 +77,14 @@
                 #{msg.lesson} #{msg.results}
             </f:facet>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true" style="display:none;" >
-                #{studentsAnswersVar.tid}
+            <p:column headerText="#{msg.global_id}" width="20" style="display:none;" exportable="false">
+                <p:outputLabel value="#{studentsAnswersVar.tid}" />
             </p:column>
             <p:column headerText="#{msg.student}" width="120" >
-                #{studentsAnswersVar.refStudent.fullname}
+                <p:outputLabel value="#{studentsAnswersVar.refStudent.fullname}" />
             </p:column>
             <p:column headerText="#{msg.exam}" width="50" rendered="false">
-                #{studentsAnswersVar.refExam.nameTr}
+                <p:outputLabel value="#{studentsAnswersVar.refExam.nameTr}" />
             </p:column>
             <p:column headerText="#{msg.class}" width="50"
                     filterBy="#{studentsAnswersVar.refStudent.refSchoolClass}"
@@ -97,7 +97,7 @@
                                        itemLabel="#{man.name}" itemValue="#{man}"/>
                     </p:selectOneMenu>
                 </f:facet>
-                #{studentsAnswersVar.refStudent.refSchoolClass.name}
+                <p:outputLabel value="#{studentsAnswersVar.refStudent.refSchoolClass.name}" />
             </p:column>
             <p:column headerText="#{msg.lesson}" width="70"
                       filterBy="#{studentsAnswersVar.refLesson}"
@@ -110,31 +110,33 @@
                                        itemLabel="#{man.refLessonName.nameTr}" itemValue="#{man}"/>
                     </p:selectOneMenu>
                 </f:facet>
-                #{studentsAnswersVar.refLesson.refLessonName.nameTr}
+                <p:outputLabel value="#{studentsAnswersVar.refLesson.refLessonName.nameTr}" />
             </p:column>
             <p:column headerText="#{msg.global_booklet}" width="10" >
-                #{studentsAnswersVar.booklet}
+                <p:outputLabel value="#{studentsAnswersVar.booklet}" />
             </p:column>
             <p:column headerText="#{msg.answers}" width="250" rendered="false">
-                #{studentsAnswersVar.answers}
+                <p:outputLabel value="#{studentsAnswersVar.answers}" />
             </p:column>
             <p:column headerText="#{msg.results_true}" width="30" >
-                #{studentsAnswersVar.trues}
+                <p:outputLabel value="#{studentsAnswersVar.trues}" />
             </p:column>
             <p:column headerText="#{msg.results_false}" width="30" >
-                #{studentsAnswersVar.falses}
+                <p:outputLabel value="#{studentsAnswersVar.falses}" />
             </p:column>
             <p:column headerText="#{msg.results_net}" width="30" >
-                #{studentsAnswersVar.nets}
+                <p:outputLabel value="#{studentsAnswersVar.nets}" />
             </p:column>
             <p:column headerText="#{msg.results_score}" width="30" sortBy="#{studentsAnswersVar.score}">
-                #{studentsAnswersVar.score}
+                <p:outputLabel value="#{studentsAnswersVar.score}">
+                    <f:convertNumber pattern="#0.00" />
+                </p:outputLabel>
             </p:column>
             <p:column headerText="#{msg.results_rank_class}" width="30" sortBy="#{studentsAnswersVar.rankClass}">
-                #{studentsAnswersVar.rankClass}
+                <p:outputLabel value="#{studentsAnswersVar.rankClass}" />
             </p:column>
             <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{studentsAnswersVar.rankSchool}">
-                #{studentsAnswersVar.rankSchool}
+                <p:outputLabel value="#{studentsAnswersVar.rankSchool}" />
             </p:column>
 
             <p:column width="40" rendered="false">
@@ -144,8 +146,19 @@
                                  actionListener="#{studentsAnswersDao.deleteSchoolClass(studentsAnswersGrid)}">
                 </p:commandButton>
             </p:column>
-
+            <f:facet name="footer">
+                <h:commandLink>
+                    <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
+                    <p:dataExporter type="pdf" target="studentsAnswersGrid" fileName="sonuclar" pageOnly="true"
+                                    encoding="iso-8859-9"/>
+                </h:commandLink>
+                <h:commandLink>
+                    <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>
+                    <p:dataExporter type="xls" target="studentsAnswersGrid" fileName="sonuclar" pageOnly="true"/>
+                </h:commandLink>
+            </f:facet>
         </p:dataTable>
+
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
 

@@ -91,6 +91,9 @@ public class AnswersDto extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_lesson", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Lessons refLesson;
+    @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Exams refExam;
 
     public AnswersDto() {
     }
@@ -123,10 +126,19 @@ public class AnswersDto extends BaseEntity implements Serializable {
         this.setAnsF(answer.getAnsF());
         this.setAnsG(answer.getAnsG());
         this.setAnsH(answer.getAnsH());
+        this.setRefExam(answer.getRefExam());
+        this.setRefLesson(answer.getRefLesson());
+    }
+
+    public Answers toEntity(){
+        return toEntity(null);
     }
 
     public Answers toEntity(Answers entity){
-        logger.info("answer.toEntity lesson tid : " + getTid());
+        if ((entity==null) || (entity.getTid()==null)) {
+            entity=new Answers();
+        }
+        //logger.info("answer.toEntity lesson tid : " + getTid());
         //Answers entity = new Answers();
         entity.setRefAnswerSubject(getRefAnswerSubject());
         entity.setRefAnswerQuestion(getRefAnswerQuestion());
@@ -141,10 +153,14 @@ public class AnswersDto extends BaseEntity implements Serializable {
         entity.setAnsF(getAnsF());
         entity.setAnsG(getAnsG());
         entity.setAnsH(getAnsH());
+        entity.setRefExam(getRefExam());
+        entity.setRefLesson(getRefLesson());
+        entity.setActive(getActive());
+        entity.setVersion(getVersion());
+        entity.setCreated(getCreated());
+        entity.setUpdated(getUpdated());
         return entity;
     }
-
-
 
     public Long getTid() {
         return tid;
@@ -324,6 +340,14 @@ public class AnswersDto extends BaseEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Exams getRefExam() {
+        return refExam;
+    }
+
+    public void setRefExam(Exams refExam) {
+        this.refExam = refExam;
     }
 
     @Override

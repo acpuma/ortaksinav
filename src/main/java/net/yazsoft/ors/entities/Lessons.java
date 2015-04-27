@@ -56,7 +56,6 @@ public class Lessons extends BaseEntity implements Serializable {
     @Column(name = "question_count", nullable = false)
     private int questionCount;
     private Integer start;
-    private Integer length;
     @OneToMany(mappedBy = "refLesson", fetch = FetchType.LAZY)
     private Collection<StudentsAnswers> studentsAnswersCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLesson", fetch = FetchType.LAZY)
@@ -145,14 +144,6 @@ public class Lessons extends BaseEntity implements Serializable {
 
     public void setStart(Integer start) {
         this.start = start;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
     }
 
     @XmlTransient

@@ -4,7 +4,8 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 <cc:interface>
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
     <cc:attribute default="false"     required="false"   name="draggableColumns" />
@@ -39,10 +40,9 @@
                      filterEvent="enter"
                      value="#{resultsDao.resultsDto}"
                      emptyMessage=" #{msg['global_no_data']}"
-                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
-                 {PreviousPageLink} 
-                 {PageLinks} {NextPageLink} 
-                 {LastPageLink} {RowsPerPageDropdown}"
+                     paginatorTemplate="{CurrentPageReport}"
+
+                     currentPageReportTemplate="{totalRecords} #{msg['global_record']}"
 
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
@@ -77,11 +77,12 @@
                 #{msg.exam} #{msg.results}
             </f:facet>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true" style="display:none;" >
-                #{resultsExamVar.tid}
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"
+                      style="display:none;" exportable="false">
+                <p:outputLabel value="#{resultsExamVar.tid}" />
             </p:column>
             <p:column headerText="#{msg.student}" width="120" >
-                #{resultsExamVar.refStudent.fullname}
+                <p:outputLabel value="#{resultsExamVar.refStudent.fullname}" />
             </p:column>
             <p:column headerText="#{msg.class}" width="50"
                     filterBy="#{resultsExamVar.refStudent.refSchoolClass}"
@@ -94,25 +95,27 @@
                                        itemLabel="#{man.name}" itemValue="#{man}"/>
                     </p:selectOneMenu>
                 </f:facet>
-                #{resultsExamVar.refStudent.refSchoolClass.name}
+                <p:outputLabel value="#{resultsExamVar.refStudent.refSchoolClass.name}" />
             </p:column>
             <p:column headerText="#{msg.results_true}" width="30" >
-                #{resultsExamVar.trues}
+                <p:outputLabel value="#{resultsExamVar.trues}" />
             </p:column>
             <p:column headerText="#{msg.results_false}" width="30" >
-                #{resultsExamVar.falses}
+                <p:outputLabel value="#{resultsExamVar.falses}" />
             </p:column>
             <p:column headerText="#{msg.results_net}" width="30" >
-                #{resultsExamVar.nets}
+                <p:outputLabel value="#{resultsExamVar.nets}" />
             </p:column>
             <p:column headerText="#{msg.results_score}" width="30" sortBy="#{resultsExamVar.score}">
-                #{resultsExamVar.score}
+                <p:outputLabel value="#{resultsExamVar.score}">
+                    <f:convertNumber pattern="#0.00" />
+                </p:outputLabel>
             </p:column>
             <p:column headerText="#{msg.results_rank_class}" width="30" sortBy="#{resultsExamVar.rankClass}">
-                #{resultsExamVar.rankClass}
+                <p:outputLabel value="#{resultsExamVar.rankClass}" />
             </p:column>
             <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{resultsExamVar.rankSchool}">
-                #{resultsExamVar.rankSchool}
+                <p:outputLabel value="#{resultsExamVar.rankSchool}" />
             </p:column>
 
             <p:column width="40" rendered="false">
@@ -123,6 +126,16 @@
                 </p:commandButton>
             </p:column>
 
+            <f:facet name="footer">
+                <h:commandLink>
+                    <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
+                    <p:dataExporter type="pdf" target="resultsExamGrid" fileName="sonuclar" pageOnly="true"/>
+                </h:commandLink>
+                <h:commandLink>
+                    <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>
+                    <p:dataExporter type="xls" target="resultsExamGrid" fileName="sonuclar" pageOnly="true"/>
+                </h:commandLink>
+            </f:facet>
         </p:dataTable>
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />

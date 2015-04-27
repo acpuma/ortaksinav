@@ -6,6 +6,7 @@ import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.examsParameters.ExamsParametersDao;
+import net.yazsoft.ors.examsParameters.ExamsParametersTypeDao;
 import net.yazsoft.ors.lessons.LessonsDao;
 import net.yazsoft.ors.lessons.LessonsDto;
 import org.apache.log4j.Logger;
@@ -27,18 +28,15 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
 
     List<Exams> filteredExams;
 
-    @Inject
-    LessonsDao lessonsDao;
-
     //@Inject
     SessionInfo sessionInfo;
 
-    @Inject
-    ExamsAnswerTypeDao examsAnswerTypeDao;
-    @Inject
-    ExamsBookletTypeDao examsBookletTypeDao;
-    @Inject
-    ExamsFalseTypeDao examsFalseTypeDao;
+    @Inject LessonsDao lessonsDao;
+    @Inject ExamsAnswerTypeDao examsAnswerTypeDao;
+    @Inject ExamsBookletTypeDao examsBookletTypeDao;
+    @Inject ExamsFalseTypeDao examsFalseTypeDao;
+    @Inject ExamsParametersTypeDao examsParametersTypeDao;
+    @Inject ExamsParametersDao examsParametersDao;
 
     public ExamsDao() {
         super(Exams.class);
@@ -53,11 +51,24 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         //filteredExams=new ArrayList<Exams>();
     }
 
+    public Long save() {
+        logger.info("SAVINGGGGG");
+        //Util.toString(item);
+        Long pk=null;
+        if (status== Status.UPDATE) {
+            update();
+        } else {
+            pk=create();
+        }
+        //reset();
+        return pk;
+    }
+
     @Override
     public void reset() {
         logger.info("EXAMSDAO RESET");
         super.reset();
-        getItem().setRefAnswerType(examsAnswerTypeDao.getById(4L)); //E
+        getItem().setRefAnswerType(examsAnswerTypeDao.getById(5L)); //E
         getItem().setRefBookletType(examsBookletTypeDao.getById(2L)); //B
         getItem().setRefFalseType(examsFalseTypeDao.getById(1L)); //0
         lessonsDao.reset();
@@ -74,6 +85,14 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             getItem().setRefSchool(Util.getActiveSchool());
             pk = super.create();
             lessonsDao.DtosToEntities(new Exams(pk));
+            ExamsParameters parameter;
+            for (ExamsParametersType type:examsParametersTypeDao.getDefaultParameters()){
+                parameter=new ExamsParameters();
+                parameter.setActive(Boolean.TRUE);
+                parameter.setRefParameter(type);
+                parameter.setRefExam((Exams)getSession().load(Exams.class,pk));
+                examsParametersDao.create(parameter);
+            }
             reset();
         } catch (Exception e) {
             logger.error("EXCEPTION", e);
@@ -88,7 +107,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         deleteLessons();
         super.update();
         lessonsDao.DtosToEntities(getItem());
-        reset();
+        //reset();
         return null;
     }
 

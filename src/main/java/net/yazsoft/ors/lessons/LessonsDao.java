@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Named
@@ -55,7 +56,6 @@ public class LessonsDao extends BaseGridDao<Lessons> implements Serializable{
             entity.setRefLessonName(dto.getRefLessonName());
             entity.setQuestionCount(dto.getQuestionCount());
             entity.setRank(dto.getRank());
-            entity.setLength(dto.getLength());
             entity.setRefExam(exam);
             entity.setActive(Boolean.TRUE);
             entity.setStart(dto.getStart());
@@ -134,7 +134,6 @@ public class LessonsDao extends BaseGridDao<Lessons> implements Serializable{
             LessonsDto dto=new LessonsDto();
             dto.setTid(lesson.getTid());
             dto.setRank(lesson.getRank());
-            dto.setLength(lesson.getLength());
             dto.setQuestionCount(lesson.getQuestionCount());
             dto.setRefLessonName(lesson.getRefLessonName());
             dto.setRefExam(lesson.getRefExam());
