@@ -274,6 +274,7 @@ public class Util implements Serializable{
     
     public static String getUploadsFolder() {
         File homeDir = new File(System.getProperty("user.home"));
+        //File homeDir = new File("/home/admin/");
         //String imagesFolder=settings.getSetting("ImagesFolder");
         //File homeDir = new File(imagesFolder);
         

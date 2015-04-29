@@ -20,6 +20,7 @@ import net.yazsoft.ors.schools.SchoolsClassDao;
 import net.yazsoft.ors.schools.SchoolsClassDto;
 import net.yazsoft.ors.students.*;
 import org.apache.log4j.Logger;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -55,8 +56,8 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     List<Results> results;
     List<ResultsDto> resultsDtos;
     List<String> lines;
-    Boolean deleteOld;
-    Boolean autoAddAnswers;
+    Boolean deleteOld=Boolean.FALSE;
+    Boolean autoAddAnswers=Boolean.FALSE;
     Integer lessonsCount;
     Map<Lessons,Map<Integer,String>> lessonAnswerMap;
 
@@ -70,6 +71,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     @Inject SchoolsClassDao schoolsClassDao;
     @Inject AnswersDao answersDao;
     @Inject ResultsDao resultsDao;
+    @Inject private BCryptPasswordEncoder encoder;
 
     @PostConstruct
     public void init() {
@@ -547,6 +549,8 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                             }
                             //logger.info(parameterName + " : " + parameterValue);
                         }
+                        studentDto.setUsername(Util.getActiveSchool().getMebCode().concat(schoolNo.toString()));
+                        studentDto.setPassword(encoder.encode(schoolNo.toString()));
                         studentsDto.add(studentDto);
                         newStudentsDto.add(studentDto);
                         answerView = new StudentsAnswersViewDto(studentDto);

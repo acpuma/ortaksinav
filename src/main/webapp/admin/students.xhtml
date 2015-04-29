@@ -30,7 +30,7 @@
                 <p:outputLabel value="#{msg.username}" for="username" />
                 <p:inputText id="username" value="#{studentsDao.item.username}" title="username"/>
                 <p:outputLabel value="#{msg.password}:" for="password" />
-                <p:inputText id="password" value="#{studentsDao.item.password}" title="Password" />
+                <p:inputText id="password" value="#{studentsDao.item.password}" converter="password" title="Password" />
 
                 <p:outputLabel value="#{msg.class}:" for="refSchoolClass" />
                 <p:selectOneMenu value="#{studentsDao.item.refSchoolClass}"  rendered="true" id="refSchoolClass">

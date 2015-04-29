@@ -50,11 +50,11 @@ public class Students extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @Size(max = 45)
-    @Column(length = 45)
+    @Size(max = 255)
+    @Column(length = 255)
     private String username;
-    @Size(max = 45)
-    @Column(length = 45)
+    @Size(max = 255)
+    @Column(length = 255)
     private String password;
     @Size(max = 255)
     @Column(length = 255)

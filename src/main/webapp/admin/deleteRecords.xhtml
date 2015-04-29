@@ -15,56 +15,62 @@
     <ui:param name="title" value="#{msg.delete_records}" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:10px; padding: 0px;width: 100%;" >
     <h:form id="pageForm">
-        <p:outputPanel style="display: inline; position: relative;" >
-        <p:outputLabel value="#{msg.exam}" style="font-size: 28px;display:block;" />
-        <p:panelGrid columns="1" id="pagePanel1" style="display: inline;">
-            <p:commandButton value="#{msg.delete_records_exam}"
-                             action="#{deleteRecordsDao.deleteResultsExam}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_answers_exam}"
-                             action="#{deleteRecordsDao.deleteStudentsAnswersExam}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_students_exam}"
-                             action="#{deleteRecordsDao.deleteStudentsExam}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_classes_exam}"
-                             action="#{deleteRecordsDao.deleteClassesExam}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_all}"
-                             action="#{deleteRecordsDao.deleteAllSchool}"
-                             update=":messages"
-                    />
-        </p:panelGrid>
-        </p:outputPanel>
-        <p:outputPanel style="display: inline; position: relative;" >
-        <p:outputLabel value="#{msg.school}" style="font-size: 28px;display: block;" />
-        <p:panelGrid columns="1" id="pagePanel2" style="display: inline;">
-            <p:commandButton value="#{msg.delete_records_school}"
-                             action="#{deleteRecordsDao.deleteResultsSchool}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_answers_school}"
-                             action="#{deleteRecordsDao.deleteStudentsAnswersSchool}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_students_school}"
-                             action="#{deleteRecordsDao.deleteStudentsSchool}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_classes_school}"
-                             action="#{deleteRecordsDao.deleteClassesSchool}"
-                             update=":messages"
-                    />
-            <p:commandButton value="#{msg.delete_records_all}"
-                             action="#{deleteRecordsDao.deleteAllExam}"
-                             update=":messages"
-                    />
-        </p:panelGrid>
-        </p:outputPanel>
+        <table>
+            <tr><td>
+                <p:outputPanel style="display: inline; position: relative;" >
+                <p:outputLabel value="#{msg.exam}" style="font-size: 28px;display:block;" />
+                <p:panelGrid columns="1" id="pagePanel1" style="display: inline;">
+                    <p:commandButton value="#{msg.delete_records_exam}"
+                                     action="#{deleteRecordsDao.deleteResultsExam}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_answers_exam}"
+                                     action="#{deleteRecordsDao.deleteStudentsAnswersExam}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_students_exam}"
+                                     action="#{deleteRecordsDao.deleteStudentsExam}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_classes_exam}"
+                                     action="#{deleteRecordsDao.deleteClassesExam}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_all}"
+                                     action="#{deleteRecordsDao.deleteAllSchool}"
+                                     update=":messages"
+                            />
+                </p:panelGrid>
+                </p:outputPanel>
+            </td>
+            <td>
+                <p:outputPanel style="display: inline; position: relative;" >
+                <p:outputLabel value="#{msg.school}" style="font-size: 28px;display: block;" />
+                <p:panelGrid columns="1" id="pagePanel2" style="display: inline;">
+                    <p:commandButton value="#{msg.delete_records_school}"
+                                     action="#{deleteRecordsDao.deleteResultsSchool}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_answers_school}"
+                                     action="#{deleteRecordsDao.deleteStudentsAnswersSchool}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_students_school}"
+                                     action="#{deleteRecordsDao.deleteStudentsSchool}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_classes_school}"
+                                     action="#{deleteRecordsDao.deleteClassesSchool}"
+                                     update=":messages"
+                            />
+                    <p:commandButton value="#{msg.delete_records_all}"
+                                     action="#{deleteRecordsDao.deleteAllExam}"
+                                     update=":messages"
+                            />
+                </p:panelGrid>
+                </p:outputPanel>
+            </td></tr>
+        </table>
         <h:inputHidden id="status" value="#{schoolsDao.status}"  />
         <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
         <h:messages />

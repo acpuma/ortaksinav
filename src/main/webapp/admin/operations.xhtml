@@ -9,11 +9,11 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>#{msg.upload_file}</title>
+        <title>#{msg.operations}</title>
         <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
-    <ui:param name="title" value="#{msg.exams}" />
+    <ui:param name="title" value="#{msg.operations}" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <components:uploadsGrid rows="30" scrollable="true" scrollHeight="250" widgetVar="uploadsGridWidget" />
     <p:outputPanel style="text-align: center;" >
