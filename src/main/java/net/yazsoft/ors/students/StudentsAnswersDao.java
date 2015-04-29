@@ -4,6 +4,8 @@ import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Exams;
+import net.yazsoft.ors.entities.SchoolsClass;
+import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.entities.StudentsAnswers;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -12,6 +14,8 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.inject.Named;
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -36,6 +40,44 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
             e.printStackTrace();
         }
         return list;
+    }
+
+    public List findExamClasses(Exams exam) {
+        logger.info("EXAM : " + exam);
+        List<StudentsAnswers> list=null;
+        List<SchoolsClass> classes=new ArrayList<>();
+        try {
+            list=findByExam(exam);
+            for (StudentsAnswers answer:list) {
+                if (!classes.contains(answer.getRefStudent().getRefSchoolClass())) {
+                    classes.add(answer.getRefStudent().getRefSchoolClass());
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return classes;
+    }
+
+    public List findExamStudents(Exams exam) {
+        logger.info("EXAM : " + exam);
+        List<StudentsAnswers> list=null;
+        List<Students> students=new ArrayList<>();
+        try {
+            list=findByExam(exam);
+            for (StudentsAnswers answer:list) {
+                if (!students.contains(answer.getRefStudent())) {
+                    students.add(answer.getRefStudent());
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return students;
     }
 
     public void deleteExamAnswers(Exams exam) {

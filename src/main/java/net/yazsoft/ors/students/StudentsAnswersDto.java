@@ -6,10 +6,7 @@ import java.io.Serializable;
 
 import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.frame.hibernate.BaseEntity;
-import net.yazsoft.ors.entities.Exams;
-import net.yazsoft.ors.entities.Lessons;
-import net.yazsoft.ors.entities.Students;
-import net.yazsoft.ors.entities.StudentsAnswers;
+import net.yazsoft.ors.entities.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
@@ -85,6 +82,9 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
     @JoinColumn(name = "ref_student", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
     @Override
     public int compareTo(StudentsAnswersDto o) {
@@ -125,6 +125,7 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
         entity.setRankSchool(this.rankSchool);
         entity.setRankClass(this.rankClass);
         entity.setScore(this.score);
+        entity.setRefSchool(this.refSchool);
         return entity;
     }
 
@@ -146,10 +147,8 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
         this.rankSchool=entity.getRankSchool();
         this.rankClass=entity.getRankClass();
         this.score=entity.getScore();
+        this.refSchool=entity.getRefSchool();
     }
-
-
-
 
     public StudentsAnswersDto(StudentsAnswers entity) {
         fromEntity(entity);
@@ -346,5 +345,13 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
 
     public void setRankExamSchool(Integer rankExamSchool) {
         this.rankExamSchool = rankExamSchool;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
     }
 }

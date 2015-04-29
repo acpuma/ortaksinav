@@ -61,8 +61,6 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
     private Integer rankClass;
     @Column(precision = 12)
     private Float score;
-    private Integer rankExamClass;
-    private Integer rankExamSchool;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refExam;
@@ -72,6 +70,9 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_student", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
     public StudentsAnswers() {
     }
@@ -222,6 +223,14 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
         this.refStudent = refStudent;
     }
 
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -242,19 +251,4 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
         return true;
     }
 
-    public Integer getRankExamClass() {
-        return rankExamClass;
-    }
-
-    public void setRankExamClass(Integer rankExamClass) {
-        this.rankExamClass = rankExamClass;
-    }
-
-    public Integer getRankExamSchool() {
-        return rankExamSchool;
-    }
-
-    public void setRankExamSchool(Integer rankExamSchool) {
-        this.rankExamSchool = rankExamSchool;
-    }
 }

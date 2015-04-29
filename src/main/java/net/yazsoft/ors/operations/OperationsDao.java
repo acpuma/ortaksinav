@@ -225,6 +225,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 result.setFalses(falses.intValue());
                 result.setNulls(nulls.intValue());
                 result.setNets(nets);
+                result.setRefSchool(Util.getActiveSchool());
                 resultsDtos.add(result);
             }
             Collections.sort(resultsDtos);
@@ -356,6 +357,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 for (StudentsAnswersDto dto : answersDto) {
                     schoolsClassDao.saveOrUpdate(dto.getRefStudent().getRefSchoolClass());
                     studentsDao.saveOrUpdate(dto.getRefStudent());
+                    dto.setRefSchool(Util.getActiveSchool());
                     tid = studentsAnswersDao.create(dto.toEntity());
                     dto.setTid(tid);
                 }
@@ -369,6 +371,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                         dto.getRefStudent().setRefSchoolClass(schoolsClass);
                     }
                     studentsDao.saveOrUpdate(dto.getRefStudent());
+                    dto.setRefSchool(Util.getActiveSchool());
                     tid = studentsAnswersDao.create(dto.toEntity());
                     dto.setTid(tid);
                 }
@@ -598,6 +601,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                         }
                         if (answer == null) {
                             answer = new StudentsAnswersDto();
+                            answer.setRefSchool(Util.getActiveSchool());
                             answer.setRefExam(Util.getActiveExam());
                             answer.setRefLesson(lessonsDao.getById(lesson.getTid()));
                             answer.setBooklet(booklet);

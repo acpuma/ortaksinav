@@ -58,6 +58,9 @@ public class Results extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_student", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
     public Results() {
     }
@@ -181,6 +184,14 @@ public class Results extends BaseEntity implements Serializable {
 
     public void setRefStudent(Students refStudent) {
         this.refStudent = refStudent;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
     }
 
     @Override

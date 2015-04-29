@@ -80,6 +80,10 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<Images> imagesCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<SchoolsClass> schoolsClassCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<Results> resultsCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<StudentsAnswers> studentsAnswersCollection;
 
     public Schools() {
     }
@@ -236,6 +240,24 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
         this.schoolsClassCollection = schoolsClassCollection;
+    }
+
+    @XmlTransient
+    public Collection<Results> getResultsCollection() {
+        return resultsCollection;
+    }
+
+    public void setResultsCollection(Collection<Results> resultsCollection) {
+        this.resultsCollection = resultsCollection;
+    }
+
+    @XmlTransient
+    public Collection<StudentsAnswers> getStudentsAnswersCollection() {
+        return studentsAnswersCollection;
+    }
+
+    public void setStudentsAnswersCollection(Collection<StudentsAnswers> studentsAnswersCollection) {
+        this.studentsAnswersCollection = studentsAnswersCollection;
     }
 
     @Override

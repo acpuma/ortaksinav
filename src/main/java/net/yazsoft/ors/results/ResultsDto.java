@@ -57,6 +57,9 @@ public class ResultsDto extends BaseEntity implements Comparable<ResultsDto>,Ser
     @JoinColumn(name = "ref_student", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
     public void fromEntity(Results entity) {
         this.tid=entity.getTid();
@@ -73,6 +76,7 @@ public class ResultsDto extends BaseEntity implements Comparable<ResultsDto>,Ser
         this.nets=entity.getNets();
         this.refExam=entity.getRefExam();
         this.refStudent=entity.getRefStudent();
+        this.refSchool=entity.getRefSchool();
     }
 
     public Results toEntity() {
@@ -97,6 +101,7 @@ public class ResultsDto extends BaseEntity implements Comparable<ResultsDto>,Ser
         entity.setScore(this.score);
         entity.setRankClass(this.rankClass);
         entity.setRankSchool(this.rankSchool);
+        entity.setRefSchool(this.refSchool);
         return entity;
     }
 
@@ -240,6 +245,14 @@ public class ResultsDto extends BaseEntity implements Comparable<ResultsDto>,Ser
 
     public void setRefStudent(Students refStudent) {
         this.refStudent = refStudent;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
     }
 
     @Override

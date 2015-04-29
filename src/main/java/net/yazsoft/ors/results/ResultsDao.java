@@ -84,6 +84,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
             }
             entity=dto.toEntity(entity);
             entity.setRefExam(Util.getActiveExam());
+            entity.setRefSchool(Util.getActiveSchool());
             entity.setActive(Boolean.TRUE);
             //logger.info("RESULT ENTITY :" + entity);
             saveOrUpdate(entity);
