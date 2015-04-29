@@ -4,11 +4,14 @@ import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Schools;
+import net.yazsoft.ors.entities.SchoolsClass;
 import net.yazsoft.ors.entities.Students;
+import net.yazsoft.ors.schools.SchoolsClassDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
@@ -19,6 +22,10 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     private static final Logger logger = Logger.getLogger(StudentsDao.class);
     Students selected;
     List<Students> students;
+    List<SchoolsClass> schoolsClasses;
+    List<Students> gridStudents;
+
+    @Inject SchoolsClassDao schoolsClassDao;
 
     public List findBySchool(Schools school) {
         logger.info("SCHOOL : " + school);
@@ -73,5 +80,27 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
 
     public void setStudents(List<Students> students) {
         this.students = students;
+    }
+
+    public List<SchoolsClass> getSchoolsClasses() {
+        if (schoolsClasses==null) {
+            schoolsClasses=schoolsClassDao.findBySchool(Util.getActiveSchool());
+        }
+        return schoolsClasses;
+    }
+
+    public void setSchoolsClasses(List<SchoolsClass> schoolsClasses) {
+        this.schoolsClasses = schoolsClasses;
+    }
+
+    public List<Students> getGridStudents() {
+        if (gridStudents==null) {
+            gridStudents=findBySchool(Util.getActiveSchool());
+        }
+        return gridStudents;
+    }
+
+    public void setGridStudents(List<Students> gridStudents) {
+        this.gridStudents = gridStudents;
     }
 }

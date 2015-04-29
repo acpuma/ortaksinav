@@ -37,7 +37,7 @@
                      var="studentsVar"
 
                      filterEvent="enter"
-                     value="#{operationsDao.studentsDto}"
+                     value="#{studentsDao.gridStudents}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
@@ -69,12 +69,19 @@
                      widgetVar="#{cc.attrs.widgetVar}"
 
                      selection="#{studentsDao.item}"
-                     rowKey="#{studentsVar.id}"
+                     rowKey="#{studentsVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
 
                      rowStyleClass="#{studentsVar.tid eq null ? 'bgYellow' : null}"
 
+                     selectionMode="single"
                 >
+            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
+                    onstart="PF('blockUIWidget1').block()"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('formDialogWidget').show();"
+                    process="@all"
+                    listener="#{studentsDao.select}"
+                    />
 
             <f:facet name="header">
                 #{msg.students}
@@ -86,11 +93,21 @@
             <p:column headerText="#{msg.school}" width="120" rendered="false" >
                 #{studentsVar.refSchool.name}
             </p:column>
+            <p:column headerText="#{msg.class}" width="50"
+                      filterBy="#{studentsVar.refSchoolClass}"
+                      sortBy="#{studentsVar.refSchoolClass.name}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{studentsDao.schoolsClasses}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                <p:outputLabel value="#{studentsVar.refSchoolClass.name}" />
+            </p:column>
             <p:column headerText="#{msg.students_school_no}" width="50" >
                 #{studentsVar.schoolNo}
-            </p:column>
-            <p:column headerText="#{msg.class}" width="50" >
-                #{studentsVar.refSchoolClass.name}
             </p:column>
             <p:column headerText="#{msg.global_name_surname}" width="120" >
                 #{studentsVar.fullname}
