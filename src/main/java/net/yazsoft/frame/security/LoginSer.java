@@ -2,9 +2,11 @@ package net.yazsoft.frame.security;
 
 
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.entities.Users;
 import net.yazsoft.ors.exams.ExamsDao;
 import net.yazsoft.ors.schools.SchoolsDao;
+import net.yazsoft.ors.students.StudentsDao;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,13 +37,57 @@ public class LoginSer implements Serializable{
     private boolean rememberMe = false;
     private boolean loggedIn = false;
 
-    @Inject
-    private AuthenticationManager authenticationManager;
+    @Inject private AuthenticationManager authenticationManager;
 
     @Inject SessionInfo sessionInfo;
     @Inject UsersDao usersDao;
     @Inject SchoolsDao schoolsDao;
     @Inject ExamsDao examsDao;
+    @Inject StudentsDao studentsDao;
+
+    public String loginStudent() throws IOException {
+        try {
+            logger.info("user / pass : " + this.getUsername() + " / " + this.getPassword());
+            Authentication authenticationRequest = new UsernamePasswordAuthenticationToken(
+                    this.getUsername(), this.getPassword());
+            Authentication result = authenticationManager
+                    .authenticate(authenticationRequest);
+
+            SecurityContextHolder.getContext().setAuthentication(result);
+            Students student=studentsDao.findByUserName(this.getUsername());
+            sessionInfo.setStudent(student);
+            sessionInfo.setSchool(student.getRefSchool());
+
+            // restore the request before the login-redirect, if any.
+            RequestCache requestCache = new HttpSessionRequestCache();
+            HttpServletRequest request = (HttpServletRequest) FacesContext
+                    .getCurrentInstance().getExternalContext().getRequest();
+            HttpServletResponse response = (HttpServletResponse) FacesContext
+                    .getCurrentInstance().getExternalContext().getResponse();
+            SavedRequest savedRequest = requestCache.getRequest(request,
+                    response);
+            ExternalContext ec = FacesContext.getCurrentInstance()
+                    .getExternalContext();
+            if (savedRequest!=null) {
+                logger.info("LOGIN REQUEST PAGE : " + savedRequest.getRedirectUrl());
+            }
+            if ((savedRequest != null) && (!savedRequest.getRedirectUrl().contains("login"))) {
+                // redirect to the page requested before login
+                ec.redirect(savedRequest.getRedirectUrl());
+            } else {
+                // login page requested directly, redirect to index after login
+                //ec.redirect("/index.html");
+                return "/";
+            }
+        } catch (AuthenticationException e) {
+            e.printStackTrace();
+        }
+
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                "Bad credentials", username);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        return null;
+    }
 
     public String login() throws IOException {
         try {
@@ -76,6 +122,7 @@ public class LoginSer implements Serializable{
             } else {
                 // login page requested directly, redirect to index after login
                 //ec.redirect("/index.html");
+                ec.redirect(ec.getRequestContextPath() + "/index.html");
                 return "/";
             }
         } catch (AuthenticationException e) {

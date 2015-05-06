@@ -85,6 +85,25 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
         getSession().createQuery(hql).setLong("exam", exam.getTid()).executeUpdate();
     }
 
+    public List findByExamAndStudent(Exams exam,Students student) {
+        logger.info("EXAM : " + exam+ ", STUDENT : " + student);
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refExam", exam));
+            c.add(Restrictions.eq("refStudent", student));
+            c.add(Restrictions.eq("active", true));
+            //c.addOrder(Order.desc("score"));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public StudentsAnswersDao() {
         super(StudentsAnswers.class);
     }

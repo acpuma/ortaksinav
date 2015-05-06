@@ -33,6 +33,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     List<Results> results;
     List<ResultsDto> resultsDto;
 
+
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject SchoolsClassDao schoolsClassDao;
 
@@ -109,6 +110,50 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         return list;
     }
 
+    public List findByStudent(Students student) {
+        logger.info("STUDENT  : " + student + " : " + student.getFullname());
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refStudent", student));
+            c.add(Restrictions.eq("active", true));
+            //c.addOrder(Order.desc("score"));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List findStudentExams(Students student) {
+        List list=new ArrayList<>();
+        ArrayList<Results> studentResults;
+        try {
+            studentResults=(ArrayList<Results>)findByStudent(student);
+            for (Results result:studentResults) {
+                list.add(result.getRefExam());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public void select() {
+        super.select();
+        //Util.getSessionInfo().setExam(getItem().getRefExam());
+            answers = studentsAnswersDao.findByExamAndStudent(getItem().getRefExam(),Util.getActiveStudent());
+            answersDto.clear();
+            for (StudentsAnswers answer:answers) {
+                answersDto.add(new StudentsAnswersDto(answer));
+            }
+    }
+
     public ResultsDao() {
         super(Results.class);
     }
@@ -131,7 +176,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     }
 
     public List<StudentsAnswersDto> getAnswersDto() {
-        fillGrids();
+        //fillGrids();
         return answersDto;
     }
 
@@ -162,5 +207,16 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
 
     public void setResultsDto(List<ResultsDto> resultsDto) {
         this.resultsDto = resultsDto;
+    }
+
+    public List<Results> getResults() {
+        if (results==null) {
+            results=findByStudent(Util.getActiveStudent());
+        }
+        return results;
+    }
+
+    public void setResults(List<Results> results) {
+        this.results = results;
     }
 }

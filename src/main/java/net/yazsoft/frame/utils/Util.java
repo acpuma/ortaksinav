@@ -3,6 +3,7 @@ package net.yazsoft.frame.utils;
 import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.ors.entities.Exams;
 import net.yazsoft.ors.entities.Schools;
+import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -85,6 +86,7 @@ public class Util implements Serializable{
     public static Users getActiveUser() {
         return getSessionInfo().getUser();
     }
+    public static Students getActiveStudent() {return  getSessionInfo().getStudent();}
     
     public static Locale getLocale() {
         return FacesContext.getCurrentInstance().getViewRoot().getLocale();

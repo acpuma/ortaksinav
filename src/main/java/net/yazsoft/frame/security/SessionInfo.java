@@ -1,9 +1,7 @@
 package net.yazsoft.frame.security;
 
 import net.yazsoft.frame.scopes.SessionScoped;
-import net.yazsoft.ors.entities.Exams;
-import net.yazsoft.ors.entities.Schools;
-import net.yazsoft.ors.entities.Users;
+import net.yazsoft.ors.entities.*;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,9 +11,11 @@ import java.io.Serializable;
 @SessionScoped
 public class SessionInfo implements Serializable{
 
+    Students student;
     Users user;
     Schools school;
     Exams exam;
+    SchoolsClass sclass;
 
     @Inject
     UsersDao usersDao;
@@ -34,9 +34,10 @@ public class SessionInfo implements Serializable{
 
     public void setSchool(Schools school) {
         this.school = school;
-        user.setRefActiveSchool(school);
-        usersDao.update(user);
-
+        if (user!=null) {
+            user.setRefActiveSchool(school);
+            usersDao.update(user);
+        }
     }
 
     public Exams getExam() {
@@ -47,5 +48,21 @@ public class SessionInfo implements Serializable{
         this.exam = exam;
         user.setRefActiveExam(exam);
         usersDao.update(user);
+    }
+
+    public Students getStudent() {
+        return student;
+    }
+
+    public void setStudent(Students student) {
+        this.student = student;
+    }
+
+    public SchoolsClass getSclass() {
+        return sclass;
+    }
+
+    public void setSclass(SchoolsClass sclass) {
+        this.sclass = sclass;
     }
 }

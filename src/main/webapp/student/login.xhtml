@@ -13,10 +13,11 @@
 <h:body style="background: #333;color:#fff;">
 
     <h:form id="loginForm" style="margin:100px auto;height:auto;" prependId="false">
-    <p:panel header="LOGIN" footer="© Copyright 2015 Ortak Sınav Merkezi" style="margin:auto; width: 400px; height:auto;text-align: center" >
+    <p:panel header="#{msg.student} LOGIN"
+             footer="© Copyright 2015 Ortak Sınav Merkezi"
+             style="margin:auto; width: 400px; height:auto;text-align: center" >
         <h:graphicImage library="images" name="orslogo.png" height="150" />
         <div class="centeredBox">
-
             <p:panelGrid columns="2">
                 <h:outputLabel for="username" value="#{msg.username}:" />
                 <p:inputText id="username" required="true" at:autofocus="true"
@@ -34,7 +35,7 @@
 
                 <f:facet name="footer">
                     <p:commandButton type="submit" id="login" ajax="false"
-                                     actionListener="#{loginSer.login}" value="#{msg.login}" />
+                                     actionListener="#{loginSer.loginStudent}" value="#{msg.login}" />
                 </f:facet>
             </p:panelGrid>
             <br/>

@@ -2,7 +2,9 @@ package net.yazsoft.frame.security;
 
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Roles;
+import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.entities.Users;
+import net.yazsoft.ors.students.StudentsDao;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,27 +22,33 @@ import java.util.Collection;
 @Named
 @ViewScoped
 @Transactional
-public class UsersSecuritySer implements UserDetailsService {
-    Logger logger= Logger.getLogger(UsersSecuritySer.class);
+public class StudentsSecuritySer implements UserDetailsService {
+    Logger logger= Logger.getLogger(StudentsSecuritySer.class);
 
     //get user from the database, via Hibernate
     @Inject
-    private UsersDao userDao;
+    private StudentsDao userDao;
 
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(final String username)
             throws UsernameNotFoundException {
-        Users user = userDao.findByUserName(username);
+        Students student = userDao.findByUserName(username);
+        Users user=new Users();
+        user.setTid(student.getTid());
+        user.setUsername(student.getUsername());
+        user.setPassword(student.getPassword());
         logger.info("USER : " + user);
-        if (user==null) throw new UsernameNotFoundException("Username not found");
         return new User(
                 user.getUsername(),
                 user.getPassword(),
+                true,true,true,true,
+                /*
                 user.getActive(),
                 user.getAccountNonExpired(),
                 user.getCredentialsNonExpired(),
                 user.getAccountNonLocked(),
+                */
                 getAuthorities(user)
         );
     }
@@ -50,23 +58,19 @@ public class UsersSecuritySer implements UserDetailsService {
         //Set<Roles> userRoles = user.getRoles();
         Collection<Roles> userRoles=user.getRolesCollection();
 
-        if(userRoles != null)
-        {
-            for (Roles role : userRoles) {
-                String roleName=role.getName();
-                logger.info("ROLE : " + roleName);
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roleName);
-                authorities.add(authority);
-            }
-        }
+        String roleName="STUDENT";
+        logger.info("ROLE : " + roleName);
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roleName);
+        authorities.add(authority);
+
         return authorities;
     }
 
-    public UsersDao getUserDao() {
+    public StudentsDao getUserDao() {
         return userDao;
     }
 
-    public void setUserDao(UsersDao userDao) {
+    public void setUserDao(StudentsDao userDao) {
         this.userDao = userDao;
     }
 }

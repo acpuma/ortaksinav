@@ -103,4 +103,18 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     public void setGridStudents(List<Students> gridStudents) {
         this.gridStudents = gridStudents;
     }
+
+    public Students findByUserName(String username) {
+        List<Students> users;
+        users = getSession()
+                .createQuery("from Students where username=?")
+                .setParameter(0, username)
+                .list();
+
+        if (users.size() > 0) {
+            return users.get(0);
+        } else {
+            return null;
+        }
+    }
 }
