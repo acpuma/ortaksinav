@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.exams}</title>
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.exams}" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <h:form id="pageForm">
+        <p:panelGrid columns="2" id="pagePanel">
+            <h:form enctype="multipart/form-data" id="uploadForm">
+                <p:fileUpload fileUploadListener="#{distribute.handleFileUpload}"
+                              mode="advanced"
+                              multiple="false"
+                              allowTypes="/(\.|\/)(xls|xlsx)$/"
+                              fileLimit="20000"
+                              label="#{msg.upload_select_file}"
+                              uploadLabel="#{msg.upload}"
+                              cancelLabel="#{msg.global_cancel}"
+                              process="uploadForm"
+                              update=":messages"
+                        />
+            </h:form>
+            <p:outputPanel style="text-align: center;">
+                <p:selectBooleanCheckbox itemLabel="Rastgele" style="margin: 3px 15px;"
+                                         value="#{distribute.randomize}"/>
+                <p:commandButton value="Dağıt" process="@this" actionListener="#{distribute.distribute}" ajax="false"/>
+                <br/>
+                <p:commandLink value="son upload indir" process="@this"
+                               actionListener="#{distribute.downloadExcelUpload}" ajax="false"/>
+                <br/>
+                <p:commandLink value="son download indir" process="@this"
+                               actionListener="#{distribute.downloadExcelDownload}" ajax="false"/>
+
+            </p:outputPanel>
+        </p:panelGrid>
+
+    </h:form>
+
+    <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+
+    </p:dialog>
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

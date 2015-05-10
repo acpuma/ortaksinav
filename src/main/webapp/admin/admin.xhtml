@@ -14,6 +14,16 @@
 
 <h:form id="pageForm">
     <p:outputPanel style="margin:10px; height:440px; overflow-y: scroll;">
+
+        <p:commandButton value="PDF" process="@this" actionListener="#{report.pdf}" ajax="false" rendered="false"/>
+
+        <br/>
+        <b>Versiyon 0.84 (2015.05.09 22.50) : </b>
+        <br/> - Sinav yerleri planlamaya rastgele secenegi eklendi.
+        <br/><br/>
+        <b>Versiyon 0.83 (2015.05.09 20.30) : </b>
+        <br/> - Ogrenciler Sinav Yerleri Planlama formu eklendi.
+        <br/><br/>
         <b>Versiyon 0.82 (2015.05.06 23.20) : </b>
         <br/> - Öğrenci login (Kullanıcı : mebkodu+ogrencino , sifre : ogrencino )
         <br/> - Öğrenci sonuç

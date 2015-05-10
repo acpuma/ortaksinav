@@ -35,7 +35,8 @@ import java.util.ResourceBundle;
 public class Util implements Serializable{
     static final Logger logger= Logger.getLogger(Util.class.getName());
 //    @Inject SettingsDao settings;
-
+    static final String HOMEDIR=System.getProperty("user.home");
+    //static final String HOMEDIR="/home/admin/";
 
     public Util() {}
 
@@ -275,8 +276,8 @@ public class Util implements Serializable{
     */
     
     public static String getUploadsFolder() {
-        File homeDir = new File(System.getProperty("user.home"));
-        //File homeDir = new File("/home/admin/");
+        //File homeDir = new File(System.getProperty("user.home"));
+        File homeDir = new File(HOMEDIR);
         //String imagesFolder=settings.getSetting("ImagesFolder");
         //File homeDir = new File(imagesFolder);
         

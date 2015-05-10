@@ -62,6 +62,23 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         return temp;
     }
 
+    public List<Students> findBySchoolClass(SchoolsClass sclass) {
+        logger.info("SCHOOLCLASS : " + sclass);
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("ref_school_class", sclass));
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public StudentsDao() {
         super(Students.class);
     }

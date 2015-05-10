@@ -33,7 +33,6 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     List<Results> results;
     List<ResultsDto> resultsDto;
 
-
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject SchoolsClassDao schoolsClassDao;
 
@@ -128,6 +127,25 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         return list;
     }
 
+    public Results findByExamAndStudent(Exams exam,Students student) {
+        logger.info("STUDENT  : " + student + " : " + student.getFullname());
+        Results temp=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refStudent", student));
+            c.add(Restrictions.eq("refExam", exam));
+            c.add(Restrictions.eq("active", true));
+            //c.addOrder(Order.desc("score"));
+            //c.add(Restrictions.eq("isDeleted", false));
+            temp = (Results)c.uniqueResult();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return temp;
+    }
+
     public List findStudentExams(Students student) {
         List list=new ArrayList<>();
         ArrayList<Results> studentResults;
@@ -176,7 +194,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     }
 
     public List<StudentsAnswersDto> getAnswersDto() {
-        //fillGrids();
+        fillGrids();
         return answersDto;
     }
 
