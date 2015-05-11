@@ -45,31 +45,33 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     }
 
     public void fillGrids() {
-        if (classes==null) {
-            classes = schoolsClassDao.findBySchool(Util.getActiveSchool());
-        }
-
-        if (lessons==null) {
-            lessons = (List)Util.getActiveExam().getLessonsCollection();
-        }
-
-        if (answers==null) {
-            answers = studentsAnswersDao.findByExam(Util.getActiveExam());
-        }
-
-        if (answersDto.isEmpty()){
-            for (StudentsAnswers answer:answers) {
-                answersDto.add(new StudentsAnswersDto(answer));
+        if (Util.getActiveExam()!=null) {
+            if (classes == null) {
+                classes = schoolsClassDao.findBySchool(Util.getActiveSchool());
             }
-        }
 
-        if (results==null) {
-            results=findByExam(Util.getActiveExam());
-        }
+            if (lessons == null) {
+                lessons = (List) Util.getActiveExam().getLessonsCollection();
+            }
 
-        if (resultsDto.isEmpty()){
-            for (Results result:results) {
-                resultsDto.add(new ResultsDto(result));
+            if (answers == null) {
+                answers = studentsAnswersDao.findByExam(Util.getActiveExam());
+            }
+
+            if (answersDto.isEmpty()) {
+                for (StudentsAnswers answer : answers) {
+                    answersDto.add(new StudentsAnswersDto(answer));
+                }
+            }
+
+            if (results == null) {
+                results = findByExam(Util.getActiveExam());
+            }
+
+            if (resultsDto.isEmpty()) {
+                for (Results result : results) {
+                    resultsDto.add(new ResultsDto(result));
+                }
             }
         }
     }

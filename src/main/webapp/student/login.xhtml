@@ -13,7 +13,7 @@
 <h:body style="background: #333;color:#fff;">
 
     <h:form id="loginForm" style="margin:100px auto;height:auto;" prependId="false">
-    <p:panel header="#{msg.student} LOGIN"
+    <p:panel header="#{msg.student} Login"
              footer="© Copyright 2015 Ortak Sınav Merkezi"
              style="margin:auto; width: 400px; height:auto;text-align: center" >
         <h:graphicImage library="images" name="orslogo.png" height="150" />
@@ -39,10 +39,9 @@
                 </f:facet>
             </p:panelGrid>
             <br/>
-        <p:messages id="messages" showDetail="false" autoUpdate="true"
-                    closable="false" />
-            <h:link outcome="/index" title="ANASAYFA" immediate="true"  value="ANASAYFA" />
         </div>
+        <p:messages id="messages" showDetail="false" autoUpdate="true" closable="false" />
+            <h:link outcome="/index" title="ANASAYFA" immediate="true"  value="ANASAYFA" />
         </p:panel>
     </h:form>
 </h:body>

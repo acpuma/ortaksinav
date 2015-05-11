@@ -35,8 +35,8 @@ import java.util.ResourceBundle;
 public class Util implements Serializable{
     static final Logger logger= Logger.getLogger(Util.class.getName());
 //    @Inject SettingsDao settings;
-    static final String HOMEDIR=System.getProperty("user.home");
-    //static final String HOMEDIR="/home/admin/";
+    //static final String HOMEDIR=System.getProperty("user.home");
+    static final String HOMEDIR="/home/admin/";
 
     public Util() {}
 

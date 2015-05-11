@@ -8,6 +8,7 @@ import net.yazsoft.ors.exams.ExamsAnswerTypeDao;
 import net.yazsoft.ors.lessons.LessonsDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,6 +115,7 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
             c.add(Restrictions.eq("refExam", exam1));
             c.add(Restrictions.eq("refLesson", lesson1));
             c.add(Restrictions.eq("active", true));
+            c.addOrder(Order.asc("rank"));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
         } catch (Exception e) {

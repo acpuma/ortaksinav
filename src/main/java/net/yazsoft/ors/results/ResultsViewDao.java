@@ -1,5 +1,7 @@
 package net.yazsoft.ors.results;
 
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfTable;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
@@ -11,8 +13,12 @@ import net.yazsoft.ors.students.StudentsDao;
 import org.apache.log4j.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,9 @@ public class ResultsViewDao extends BaseGridDao implements Serializable{
     List<Results> results;
     List<StudentsAnswers> answers;
     List<Lessons> lessons;
+    List<String> classes;
+    Integer lessonCount;
+
 
     @Inject StudentsDao studentsDao;
     @Inject ResultsDao resultsDao;
@@ -37,8 +46,37 @@ public class ResultsViewDao extends BaseGridDao implements Serializable{
     public void init() {
     }
 
+    public void postProcessPDF(Object document) {
+        Document table=(Document) document;
+        table.setMargins(0,0,0,0);
+
+    }
+
+    public void preProcessPDF(Object document) throws IOException, BadElementException, DocumentException {
+        Document pdf = (Document) document;
+        pdf.setPageSize(PageSize.A4.rotate());
+        //pdf.setMargins(0,0,0,0);
+        pdf.open();
+
+        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+        String logo = servletContext.getRealPath("") + File.separator + "resources"
+                + File.separator + "images" +File.separator + "orslogo.png";
+
+        Image image=Image.getInstance(logo);
+        image.scaleAbsolute(50, 50);
+        pdf.add(image);
+
+        Paragraph p = new Paragraph(Util.getActiveSchool().getName().toUpperCase());
+        p.setAlignment(Element.ALIGN_CENTER);
+        pdf.add(p);
+        p = new Paragraph(" Tarih : "+ Util.getActiveExam().getDate().toString());
+        p.setAlignment(Element.ALIGN_LEFT);
+        pdf.add(p);
+    }
+
     public void fillByExam(Exams exam) {
         resultsViewDtos=new ArrayList<>();
+        classes=new ArrayList<>();
         try {
             logger.info("LOG01210:FILLING GRID");
             //students=studentsDao.findBySchoolClass(sclass);
@@ -46,18 +84,22 @@ public class ResultsViewDao extends BaseGridDao implements Serializable{
             logger.info("LOG01220: Results :" + results);
             answers=studentsAnswersDao.findByExam(exam);
             logger.info("LOG01230: Answers : " + answers);
+
             ResultsViewDto dto;
             for(Results result:results) {
                 dto=new ResultsViewDto();
                 dto.setTid(result.getTid());
-                dto.setSchoolClass(result.getRefStudent().getRefSchoolClass());
+                dto.setSchoolClass(result.getRefStudent().getRefSchoolClass().getName());
+                if (!classes.contains(dto.getSchoolClass())){
+                    classes.add(dto.getSchoolClass());
+                }
                 dto.setStudent(result.getRefStudent());
                 dto.setResult(result);
                 dto.setAnswersList(findAnswers(result.getRefStudent()));
                 resultsViewDtos.add(dto);
-                for (StudentsAnswers answer:dto.getAnswersList()) {
+                //for (StudentsAnswers answer:dto.getAnswersList()) {
 
-                }
+                //}
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -79,15 +121,24 @@ public class ResultsViewDao extends BaseGridDao implements Serializable{
     List<StudentsAnswers> findAnswers(Students student) {
         List list=new ArrayList<>();
         for (StudentsAnswers answer:answers) {
-            if (answer.getRefStudent().equals(student)) {
+            if (answer.getRefStudent().getTid().equals(student.getTid())) {
                 list.add(answer);
             }
         }
+        logger.info("LOG01390: STUDENT : " + student + ", ANSWER LIST : " + list);
         return list;
     }
 
     public List<ResultsViewDto> getResultsViewDtos() {
-        if (resultsViewDtos==null) {
+        logger.info("LOG01370: GETTING RESULTVIEWDTOS");
+        if ( resultsViewDtos == null) {
+            logger.info("LOG01380: RESULTVIEWDTO NULL, FILLING...");
+            logger.info("LOG01360: LESSON COUNT : " + lessonCount);
+            if ( lessons == null ) {
+                lessons = lessonsDao.getExamLessons(Util.getActiveExam());
+                lessonCount = lessons.size();
+                logger.info("LOG01360: LESSON COUNT : " + lessonCount);
+            }
             fillByExam(Util.getActiveExam());
         }
         return resultsViewDtos;
@@ -122,9 +173,12 @@ public class ResultsViewDao extends BaseGridDao implements Serializable{
 
         for (Lessons lesson:lessons) {
             lessonName=lesson.getRefLessonName().getNameTr();
-            String[] columnKeys = new String[]{"D","Y","N","P","SS","OS"};
-            for(String columnKey : columnKeys) {
-                columns.add(new ColumnModel(columnKey.toUpperCase(), columnKey));
+            String[] columnKeys = new String[]{"D","Y","N","P"};
+            String[] columnProperties = new String[]{"trues","falses","nets","score"};
+            for(int i=0; i< columnKeys.length; i++) {
+                String columnKey=columnKeys[i];
+                String columnProperty=columnProperties[i];
+                columns.add(new ColumnModel(columnKey.toUpperCase(), columnProperty));
             }
             //columns.add(new ColumnModel(lessonName, lessonName));
         }
@@ -132,12 +186,37 @@ public class ResultsViewDao extends BaseGridDao implements Serializable{
 
     public List<ColumnModel> getColumns() {
         if (columns==null || columns.isEmpty()) {
-            populateColumns();
+            //populateColumns();
         }
         return columns;
     }
 
     public void setColumns(List<ColumnModel> columns) {
         this.columns = columns;
+    }
+
+
+    public List<Lessons> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lessons> lessons) {
+        this.lessons = lessons;
+    }
+
+    public Integer getLessonCount() {
+        return lessonCount;
+    }
+
+    public void setLessonCount(Integer lessonCount) {
+        this.lessonCount = lessonCount;
+    }
+
+    public List<String> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(List<String> classes) {
+        this.classes = classes;
     }
 }

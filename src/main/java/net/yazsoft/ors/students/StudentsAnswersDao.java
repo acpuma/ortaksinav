@@ -3,15 +3,14 @@ package net.yazsoft.ors.students;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
-import net.yazsoft.ors.entities.Exams;
-import net.yazsoft.ors.entities.SchoolsClass;
-import net.yazsoft.ors.entities.Students;
-import net.yazsoft.ors.entities.StudentsAnswers;
+import net.yazsoft.ors.answers.AnswersDao;
+import net.yazsoft.ors.entities.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -23,6 +22,53 @@ import java.util.List;
 public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements Serializable{
     private static final Logger logger = Logger.getLogger(StudentsAnswersDao.class);
     StudentsAnswers selected;
+    List studentAnswers;
+
+    @Inject AnswersDao answersDao;
+
+    public String getTrueAnswers() {
+        String answers="";
+        List<Answers> answersList=answersDao.getLessonAnswers(getItem().getRefExam(),getItem().getRefLesson());
+        logger.info("LOG01400: ANSWERSLIST :" + answersList);
+        for (Answers answer:answersList) {
+            char booklet=getItem().getBooklet().toUpperCase().charAt(0);
+            logger.info("LOG01420: BOOKLET : " + booklet);
+            logger.info("LOG01430: answer : " + answer.getAnsA());
+            switch (booklet) {
+                case 'A' : answers=answers.concat(answer.getAnsA()); break;
+                case 'B' : answers=answers.concat(answer.getAnsB()); break;
+                case 'C' : answers=answers.concat(answer.getAnsC()); break;
+                case 'D' : answers=answers.concat(answer.getAnsD()); break;
+                case 'E' : answers=answers.concat(answer.getAnsE()); break;
+            }
+        }
+        logger.info("LOG01410: ANSWERS : " + answers);
+        return answers;
+    }
+
+    /**
+     * For showing in the student homepage
+     * @param student
+     * @return
+     */
+    public List findByStudent(Students student) {
+        logger.info("STUDENT : " + student);
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refStudent", student));
+            c.add(Restrictions.eq("active", true));
+            //c.addOrder(Order.desc(""));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        studentAnswers=list;
+        return list;
+    }
 
     public List findByExam(Exams exam) {
         logger.info("EXAM : " + exam);
@@ -114,5 +160,14 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
 
     public void setSelected(StudentsAnswers selected) {
         this.selected = selected;
+    }
+
+    public List getStudentAnswers() {
+        if (studentAnswers==null) findByStudent(Util.getActiveStudent());
+        return studentAnswers;
+    }
+
+    public void setStudentAnswers(List studentAnswers) {
+        this.studentAnswers = studentAnswers;
     }
 }

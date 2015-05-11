@@ -22,8 +22,10 @@
         <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
         <h:messages />
     </h:form>
-    <components:resultsViewGrid rows="5000" scrollable="true" scrollHeight="400"
+    <p:outputPanel style="width: 795px; overflow-x: scroll;">
+    <components:resultsViewGrid rows="5000" scrollable="true" scrollHeight="400" scrollWidth="2000"
                                         widgetVar="resultsViewGridWidget" paginator="true"/>
+    </p:outputPanel>
 
     <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >

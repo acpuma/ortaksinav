@@ -13,42 +13,58 @@
     <ui:decorate template="/WEB-INF/templates/masterStudent.xhtml">
         <ui:param name="title" value="#{msg.student}" />
         <h:form id="pageForm">
+            <components:resultsStudentLessonsGrid rows="5000" scrollable="true" scrollHeight="450" update=":#{p:component('answersForm')}"
+                                                  widgetVar="resultsGridWidget" paginator="false"/>
             <p:panelGrid columns="2">
-            <p:outputPanel style="margin:10px; height:440px; overflow-y: scroll; width: 300px;" >
+            <p:outputPanel style="margin:10px; height:440px; overflow-y: scroll; width: 300px;" rendered="false">
                 #{msg.exam} #{msg.global_select}
                 <components:resultsStudent rows="5000" scrollable="true" scrollHeight="380" update=":#{p:component('resultPanel')}"
                                             widgetVar="resultsExamGridWidget" paginator="false"/>
 
             </p:outputPanel>
-            <p:outputPanel id="resultPanel"  style="width: 630px; text-align: center;">
-                    <h3>SINAV SONUCU</h3>
-                <p:outputLabel value="#{msg.results_score}" /> :
-                <p:outputLabel value="#{resultsDao.item.score}" />
-                <br/>
-                <hr width="150"/>
-                <p:panelGrid columns="4" style="margin:0 auto;">
-                    <p:outputLabel value="#{msg.results_true}" />
-                    <p:outputLabel value="#{resultsDao.item.trues}" />
-                    <p:outputLabel value="#{msg.results_false}" />
-                    <p:outputLabel value="#{resultsDao.item.falses}" />
-                    <p:outputLabel value="#{msg.results_null}" />
-                    <p:outputLabel value="#{resultsDao.item.nulls}" />
-                    <p:outputLabel value="#{msg.results_net}" />
-                    <p:outputLabel value="#{resultsDao.item.nets}" />
-                    <p:outputLabel value="#{msg.results_rank_class}" />
-                    <p:outputLabel value="#{resultsDao.item.rankClass}" />
-                    <p:outputLabel value="#{msg.results_rank_school}" />
-                    <p:outputLabel value="#{resultsDao.item.rankSchool}" />
 
-                </p:panelGrid>
-                <br/>
-                <components:resultsStudentLessonsGrid rows="5000" scrollable="true" scrollHeight="150"
-                                              widgetVar="resultsGridWidget" paginator="false"/>
 
-            </p:outputPanel>
             </p:panelGrid>
         </h:form>
 
+        <p:dialog id="answersDialog" header="#{msg.result}" widgetVar="answersDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)">
+            <h:form id="answersForm">
+                <p:outputPanel id="resultPanel"  style="width: 630px; text-align: center;" rendered="true">
+                    <h3> #{studentsAnswersDao.item.refLesson.refLessonName.nameTr}</h3>
+                    <p:outputLabel value="#{msg.results_score}" /> :
+                    <p:outputLabel value="#{studentsAnswersDao.item.score}" />
+                    <br/>
+                    <hr width="150"/>
+                    <p:panelGrid columns="2" style="margin:0 auto;">
+                        <p:outputLabel value="#{msg.results_true}" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.trues}" />
+                        <p:outputLabel value="#{msg.results_false}" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.falses}" />
+                        <p:outputLabel value="#{msg.results_null}" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.nulls}" />
+                        <p:outputLabel value="#{msg.results_net}" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.nets}" />
+                        <p:outputLabel value="#{msg.results_rank_class}" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.rankClass}" />
+                        <p:outputLabel value="#{msg.results_rank_school}" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.rankSchool}" />
+                    </p:panelGrid>
+                    <br/>
+
+                    <p:panelGrid columns="2" style="margin:0 auto;">
+                        <p:outputLabel value="#{msg.global_booklet} :" />
+                        <p:outputLabel value="#{studentsAnswersDao.item.booklet} " />
+                        <p:outputLabel value="#{msg.student} #{msg.answers} : " />
+                        <p:outputLabel value="#{studentsAnswersDao.item.answers} "/>
+                        <p:outputLabel value="#{msg.results_true} #{msg.answers} : "/>
+                        <p:outputLabel value="#{studentsAnswersDao.trueAnswers} "/>
+                    </p:panelGrid>
+
+
+                </p:outputPanel>
+            </h:form>
+        </p:dialog>
 
     </ui:decorate>
 </f:view>

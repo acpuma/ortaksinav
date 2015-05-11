@@ -4,7 +4,9 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+        >
 <cc:interface>
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
     <cc:attribute default="false"     required="false"   name="draggableColumns" />
@@ -71,89 +73,273 @@
                      selection="#{resultsViewDao.item}"
                      rowKey="#{resultsViewVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
+                     rowIndexVar="rowindex"
+                     selectionMode="single"
                 >
 
             <f:facet name="header">
-                #{msg.lesson} #{msg.results}
+                <h:outputLabel>
+                    #{msg.exam} #{msg.results}
+                </h:outputLabel>
             </f:facet>
 
-            <p:columnGroup type="header" rendered="false">
+            <p:columnGroup type="header" rendered="true">
                 <p:row>
-                    <p:column rowspan="2" headerText="Sinif" />
-                    <p:column rowspan="2" headerText="Ogrenci" />
-                    <p:column colspan="6" headerText="Genel Sonuc" />
+                    <p:column headerText="#{msg.global_number_short}" rowspan="2" width="5" />
+                    <p:column headerText="#{msg.class}" rowspan="2" width="5"
+                              filterBy="#{resultsViewVar.schoolClass}">
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                                <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                              noSelectionOption="true" />
+                                <f:selectItems value="#{resultsViewDao.classes}" var="man"
+                                               itemLabel="#{man}" itemValue="#{man}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                    </p:column>
+                    <p:column rowspan="2" headerText="#{msg.students_school_no}" width="10"
+                              sortBy="#{resultsViewVar.student.schoolNo}"/>
+                    <p:column rowspan="2" headerText="#{msg.student}" width="80"/>
+                    <p:column colspan="7" headerText="#{resultsViewDao.lessons.get(0).refLessonName.nameTr}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column colspan="7" headerText="#{resultsViewDao.lessons.get(1).refLessonName.nameTr}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column colspan="7" headerText="#{resultsViewDao.lessons.get(2).refLessonName.nameTr}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+
+                    <p:column colspan="7" headerText="Genel Sonuç" />
                 </p:row>
                 <p:row>
-                    <p:column headerText="Dogru" />
-                    <p:column headerText="Yanlis" />
-                    <p:column headerText="Net" />
-                    <p:column headerText="Puan" />
-                    <p:column headerText="Sinif Sirasi" />
-                    <p:column headerText="Okul Sirasi" />
+                    <p:column headerText="#{msg.results_true}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column headerText="#{msg.results_false}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column headerText="#{msg.results_null}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column headerText="#{msg.results_net}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column headerText="#{msg.results_score}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column headerText="#{msg.results_rank_class}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+                    <p:column headerText="#{msg.results_rank_school}"
+                              rendered="#{resultsViewDao.lessonCount > 0}"/>
+
+                    <p:column headerText="#{msg.results_true}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column headerText="#{msg.results_false}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column headerText="#{msg.results_null}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column headerText="#{msg.results_net}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column headerText="#{msg.results_score}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column headerText="#{msg.results_rank_class}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+                    <p:column headerText="#{msg.results_rank_school}"
+                              rendered="#{resultsViewDao.lessonCount > 1}"/>
+
+                    <p:column headerText="#{msg.results_true}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+                    <p:column headerText="#{msg.results_false}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+                    <p:column headerText="#{msg.results_null}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+                    <p:column headerText="#{msg.results_net}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+                    <p:column headerText="#{msg.results_score}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+                    <p:column headerText="#{msg.results_rank_class}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+                    <p:column headerText="#{msg.results_rank_school}"
+                              rendered="#{resultsViewDao.lessonCount > 2}"/>
+
+
+                    <p:column headerText="#{msg.results_true}" />
+                    <p:column headerText="#{msg.results_false}" />
+                    <p:column headerText="#{msg.results_net}" />
+                    <p:column headerText="#{msg.results_null}" />
+                    <p:column headerText="#{msg.results_score}" />
+                    <p:column headerText="#{msg.results_rank_class}" />
+                    <p:column headerText="#{msg.results_rank_school}" />
                 </p:row>
             </p:columnGroup>
 
-            <p:column headerText="#{msg.global_id}" width="20" style="display:none;" exportable="false">
+
+            <p:column width="5">
+                <p:outputLabel value="#{rowindex+1}" />
+            </p:column>
+            <p:column  width="20" style="display:none;" exportable="false">
                 <p:outputLabel value="#{resultsViewVar.tid}" />
             </p:column>
-            <p:column headerText="#{msg.class}" width="50"
-                      filterBy="#{resultsViewVar.schoolClass}"
-                      sortBy="#{resultsViewVar.schoolClass.name}">
-                <f:facet name="filter">
-                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
-                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
-                                      noSelectionOption="true" />
-                        <f:selectItems value="#{resultsDao.classes}" var="man"
-                                       itemLabel="#{man.name}" itemValue="#{man}"/>
-                    </p:selectOneMenu>
-                </f:facet>
-                <p:outputLabel value="#{resultsViewVar.schoolClass.name}" />
+            <p:column  width="20" exportable="false">
+                <p:outputLabel value="#{resultsViewVar.schoolClass}" />
             </p:column>
 
-            <p:column headerText="#{msg.student}" width="120" >
+            <p:column  width="25" >
+                <p:outputLabel value="#{resultsViewVar.student.schoolNo}" />
+            </p:column>
+
+            <p:column  width="120" >
                 <p:outputLabel value="#{resultsViewVar.student.fullname}" />
             </p:column>
 
-            <p:column headerText="#{msg.results_true}" width="30" >
+
+
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).trues}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).falses}
+                </h:outputLabel>
+            </p:column>
+            <p:column width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).nulls}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).nets}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).score}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).rankClass}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(0).rankSchool}
+                </h:outputLabel>
+            </p:column>
+
+
+
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).trues}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).falses}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).nulls}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).nets}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).score}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).rankClass}
+                </h:outputLabel>
+            </p:column>
+            <p:column width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(1).rankSchool}
+                </h:outputLabel>
+            </p:column>
+
+
+
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).trues}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).falses}
+                </h:outputLabel>
+            </p:column>
+            <p:column width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).nulls}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="100" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).nets}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).score}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).rankClass}
+                </h:outputLabel>
+            </p:column>
+            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+                <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
+                    #{resultsViewVar.answersList.get(2).rankSchool}
+                </h:outputLabel>
+            </p:column>
+
+
+
+
+            <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.trues}" />
             </p:column>
-            <p:column headerText="#{msg.results_false}" width="30" >
+            <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.falses}" />
             </p:column>
-            <p:column headerText="#{msg.results_net}" width="30" >
+            <p:column  >
+                <p:outputLabel value="#{resultsViewVar.result.nulls}" />
+            </p:column>
+            <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.nets}" />
             </p:column>
-            <p:column headerText="#{msg.results_score}" width="30" sortBy="#{resultsViewVar.result.score}">
+            <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.score}">
-                    <f:convertNumber pattern="#0.00" />
+
                 </p:outputLabel>
             </p:column>
-            <p:column headerText="#{msg.results_rank_class}" width="30" sortBy="#{resultsViewVar.result.rankClass}">
+            <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.rankClass}" />
             </p:column>
-            <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{resultsViewVar.result.rankSchool}">
+            <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.rankSchool}" />
             </p:column>
 
-            <p:columns value="#{resultsViewDao.columns}" var="column">
-                <f:facet name="header">
-                    #{column.header}
-                </f:facet>
-                <h:outputText value="#{resultsViewDao.resultsViewDtos}" />
-            </p:columns>
 
-            <f:facet name="footer">
-                <h:commandLink>
-                    <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
-                    <p:dataExporter type="pdf" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"
-                                    encoding="iso-8859-9"/>
-                </h:commandLink>
-                <h:commandLink>
-                    <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>
-                    <p:dataExporter type="xls" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"/>
-                </h:commandLink>
-            </f:facet>
+
         </p:dataTable>
+        <h:commandLink>
+            <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
+            <pe:exporter type="pdf" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"
+                            encoding="iso-8859-9" preProcessor="#{resultsViewDao.preProcessPDF}"
+                         postProcessor="#{resultsViewDao.postProcessPDF}"
+                    orientation="Landscape" />
+        </h:commandLink>
+        <h:commandLink>
+            <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>
+            <pe:exporter type="xlsx" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"/>
+        </h:commandLink>
 
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />

@@ -1,5 +1,6 @@
 package net.yazsoft.ors.results;
 
+import net.yazsoft.frame.hibernate.BaseEntity;
 import net.yazsoft.ors.entities.Results;
 import net.yazsoft.ors.entities.SchoolsClass;
 import net.yazsoft.ors.entities.Students;
@@ -8,9 +9,9 @@ import net.yazsoft.ors.entities.StudentsAnswers;
 import java.io.Serializable;
 import java.util.List;
 
-public class ResultsViewDto implements Serializable{
+public class ResultsViewDto extends BaseEntity implements Serializable{
     Long tid;
-    SchoolsClass schoolClass;
+    String schoolClass;
     Students student;
     Results result;
     List<StudentsAnswers> answersList;
@@ -47,11 +48,11 @@ public class ResultsViewDto implements Serializable{
         this.answersList = answersList;
     }
 
-    public SchoolsClass getSchoolClass() {
+    public String getSchoolClass() {
         return schoolClass;
     }
 
-    public void setSchoolClass(SchoolsClass schoolClass) {
+    public void setSchoolClass(String schoolClass) {
         this.schoolClass = schoolClass;
     }
 }

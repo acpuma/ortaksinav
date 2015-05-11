@@ -38,7 +38,7 @@
                      var="studentsAnswersVar"
 
                      filterEvent="enter"
-                     value="#{resultsDao.answersDto}"
+                     value="#{studentsAnswersDao.studentAnswers}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}"
 
@@ -71,10 +71,18 @@
                      selection="#{studentsAnswersDao.item}"
                      rowKey="#{studentsAnswersVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
+                     selectionMode="single"
                 >
 
+            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
+                    onstart="PF('blockUIWidget1').block()"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('answersDialogWidget').show();"
+                    process="@all"
+                    listener="#{studentsAnswersDao.select}"
+                    />
+
             <f:facet name="header">
-                #{msg.lessons}
+                #{msg.results}
             </f:facet>
 
             <p:column headerText="#{msg.global_id}" width="20" style="display:none;" exportable="false">
@@ -99,7 +107,7 @@
                 </f:facet>
                 <p:outputLabel value="#{studentsAnswersVar.refStudent.refSchoolClass.name}" />
             </p:column>
-            <p:column headerText="#{msg.lesson}" width="70">
+            <p:column headerText="#{msg.lesson}" width="70" sortBy="#{studentsAnswersVar.refLesson.refLessonName.nameTr}">
                 <p:outputLabel value="#{studentsAnswersVar.refLesson.refLessonName.nameTr}" />
             </p:column>
             <p:column headerText="#{msg.global_booklet}" width="10" rendered="false">
@@ -108,16 +116,16 @@
             <p:column headerText="#{msg.answers}" width="250" rendered="false">
                 <p:outputLabel value="#{studentsAnswersVar.answers}" />
             </p:column>
-            <p:column headerText="#{msg.results_true}" width="30" >
+            <p:column headerText="#{msg.results_true}" width="15" >
                 <p:outputLabel value="#{studentsAnswersVar.trues}" />
             </p:column>
-            <p:column headerText="#{msg.results_false}" width="30" >
+            <p:column headerText="#{msg.results_false}" width="15" >
                 <p:outputLabel value="#{studentsAnswersVar.falses}" />
             </p:column>
-            <p:column headerText="#{msg.results_net}" width="30" >
+            <p:column headerText="#{msg.results_net}" width="15" >
                 <p:outputLabel value="#{studentsAnswersVar.nets}" />
             </p:column>
-            <p:column headerText="#{msg.results_score}" width="30" sortBy="#{studentsAnswersVar.score}">
+            <p:column headerText="#{msg.results_score}" width="30" >
                 <p:outputLabel value="#{studentsAnswersVar.score}">
                     <f:convertNumber pattern="#0.00" />
                 </p:outputLabel>
@@ -128,14 +136,13 @@
             <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{studentsAnswersVar.rankSchool}">
                 <p:outputLabel value="#{studentsAnswersVar.rankSchool}" />
             </p:column>
-
-            <p:column width="40" rendered="false">
-                <p:commandButton value="" update=" :messages studentsAnswersGrid"
-                                 icon="ui-icon-trash"
-                                 style="height: 36px; width: 36px;"
-                                 actionListener="#{studentsAnswersDao.deleteSchoolClass(studentsAnswersGrid)}">
-                </p:commandButton>
+            <p:column headerText="#{msg.global_date}" width="60" sortBy="#{studentsAnswersVar.rankSchool}">
+                <p:outputLabel value="#{studentsAnswersVar.refExam.date}">
+                    <f:convertDateTime pattern="dd.MM.yyyy hh:mm" />
+                        </p:outputLabel>
             </p:column>
+
+
 
         </p:dataTable>
 
