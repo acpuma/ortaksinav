@@ -2,6 +2,8 @@ package net.yazsoft.ors.students;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.upload.UploadsBean;
+import net.yazsoft.frame.upload.UploadsDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.answers.AnswersDao;
 import net.yazsoft.ors.entities.*;
@@ -25,6 +27,29 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
     List studentAnswers;
 
     @Inject AnswersDao answersDao;
+    @Inject UploadsBean uploadsBean;
+    @Inject UploadsDao uploadsDao;
+
+    public Boolean getBookletReady() {
+        Uploads upload=uploadsDao.getExamBooklet(getItem().getRefExam(),getItem().getBooklet());
+        if (upload!=null) {
+            logger.info("LOG01510:BOOKLET READY");
+            return Boolean.TRUE;
+        }
+        logger.info("LOG01520:BOOKLET NOT READY");
+        return Boolean.FALSE;
+    }
+
+    public void downloadBooklet() {
+        try {
+            Uploads upload=uploadsDao.getExamBooklet(getItem().getRefExam(),getItem().getBooklet());
+            uploadsBean.downloadFile(upload);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     public String getTrueAnswers() {
         String answers="";

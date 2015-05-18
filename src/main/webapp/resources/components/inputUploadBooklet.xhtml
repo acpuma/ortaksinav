@@ -20,9 +20,9 @@
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <p:outputPanel id="uploadFilePanel" layout="inline">
+    <p:outputPanel id="uploadBookletPanel" layout="inline">
         #{cc.attrs.album.tid}
-        <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_file}"
+        <p:commandButton styleClass="module-button module-edit " value="#{msg.global_booklet} #{msg.upload}"
                          immediate="true" process="@none"
                          oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
                 >
@@ -31,18 +31,26 @@
     <p:dialog header="#{msg.upload_file}" modal="true"  widgetVar="uploadFileWidget_#{cc.id}"
               closeOnEscape="true" style="z-index: 1 !important;" appendTo="@(body)" dynamic="false">
         <p:outputPanel style="width: #{cc.attrs.width}px; margin: auto;">
-            <h:form enctype="multipart/form-data" id="uploadFormDat">
-                <p:fileUpload fileUploadListener="#{uploadsBean.handleDatUpload}"
+            <h:form enctype="multipart/form-data" id="uploadFormBooklet">
+                #{msg.global_booklet} :
+                <p:selectOneMenu value="#{uploadsBean.detail}">
+                    <p:ajax update="@widgetVar(examsGridWidget)"/>
+                    <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                  noSelectionOption="true"/>
+                    <f:selectItems value="#{examsBookletTypeDao.all}" var="man"
+                                   itemLabel="#{man.name}" itemValue="#{man.name}"/>
+                </p:selectOneMenu>
+                <p:fileUpload fileUploadListener="#{uploadsBean.handleBookletUpload}"
                               mode="advanced"
-                              multiple="true"
-                              allowTypes="/(\.|\/)(dat|DAT|txt|TXT)$/"
+                              multiple="false"
+                              allowTypes="/(\.|\/)(pdf|PDF)$/"
                               oncomplete="#{cc.attrs.oncomplete}; PF('uploadFileWidget_#{cc.id}').hide();"
                               update="#{cc.attrs.update} :messages"
                               fileLimit="20000"
                               label="#{msg.upload_select_file}"
                               uploadLabel="#{msg.upload}"
                               cancelLabel="#{msg.global_cancel}"
-                              process="uploadFormDat"
+                              process="uploadFormBooklet"
                         />
             </h:form>
         </p:outputPanel>

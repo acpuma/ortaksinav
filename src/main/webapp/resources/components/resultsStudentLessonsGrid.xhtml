@@ -74,7 +74,7 @@
                      selectionMode="single"
                 >
 
-            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
+            <p:ajax event="rowSelect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
                     oncomplete="PF('blockUIWidget1').unblock();PF('answersDialogWidget').show();"
                     process="@all"
@@ -141,8 +141,6 @@
                     <f:convertDateTime pattern="dd.MM.yyyy hh:mm" />
                         </p:outputLabel>
             </p:column>
-
-
 
         </p:dataTable>
 

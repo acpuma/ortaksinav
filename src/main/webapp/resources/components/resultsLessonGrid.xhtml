@@ -103,7 +103,8 @@
                       filterBy="#{studentsAnswersVar.refLesson}"
                       sortBy="#{studentsAnswersVar.refLesson.refLessonName.nameTr}" >
                 <f:facet name="filter">
-                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()"
+                                     value="#{resultsDao.selectedLesson}">
                         <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
                                       noSelectionOption="true" />
                         <f:selectItems value="#{resultsDao.lessons}" var="man"
@@ -147,10 +148,13 @@
                 </p:commandButton>
             </p:column>
             <f:facet name="footer">
+                <p:commandButton value="PDF" process="@this"
+                                 actionListener="#{resultsDao.reportLesson}" ajax="false" rendered="true"/>
+
                 <h:commandLink>
-                    <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
+                    <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="false"/>
                     <p:dataExporter type="pdf" target="studentsAnswersGrid" fileName="sonuclar" pageOnly="true"
-                                    encoding="iso-8859-9"/>
+                                    encoding="iso-8859-9" />
                 </h:commandLink>
                 <h:commandLink>
                     <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>

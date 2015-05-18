@@ -110,15 +110,16 @@
                     <p:column colspan="7" headerText="Genel Sonuç" />
                 </p:row>
                 <p:row>
-                    <p:column headerText="#{msg.results_true}"
+                    <p:column headerText="#{msg.results_true}" width="5"
                               rendered="#{resultsViewDao.lessonCount > 0}"/>
-                    <p:column headerText="#{msg.results_false}"
+                    <p:column headerText="#{msg.results_false}" width="25"
                               rendered="#{resultsViewDao.lessonCount > 0}"/>
-                    <p:column headerText="#{msg.results_null}"
+                    <p:column headerText="#{msg.results_null}" width="25"
                               rendered="#{resultsViewDao.lessonCount > 0}"/>
-                    <p:column headerText="#{msg.results_net}"
+                    <p:column headerText="#{msg.results_net}" width="25"
                               rendered="#{resultsViewDao.lessonCount > 0}"/>
                     <p:column headerText="#{msg.results_score}"
+                              sortBy="#{resultsViewVar.answersList.get(0).score}"
                               rendered="#{resultsViewDao.lessonCount > 0}"/>
                     <p:column headerText="#{msg.results_rank_class}"
                               rendered="#{resultsViewDao.lessonCount > 0}"/>
@@ -134,6 +135,7 @@
                     <p:column headerText="#{msg.results_net}"
                               rendered="#{resultsViewDao.lessonCount > 1}"/>
                     <p:column headerText="#{msg.results_score}"
+                              sortBy="#{resultsViewVar.answersList.get(1).score}"
                               rendered="#{resultsViewDao.lessonCount > 1}"/>
                     <p:column headerText="#{msg.results_rank_class}"
                               rendered="#{resultsViewDao.lessonCount > 1}"/>
@@ -149,18 +151,20 @@
                     <p:column headerText="#{msg.results_net}"
                               rendered="#{resultsViewDao.lessonCount > 2}"/>
                     <p:column headerText="#{msg.results_score}"
+                              sortBy="#{resultsViewVar.answersList.get(2).score}"
                               rendered="#{resultsViewDao.lessonCount > 2}"/>
                     <p:column headerText="#{msg.results_rank_class}"
                               rendered="#{resultsViewDao.lessonCount > 2}"/>
                     <p:column headerText="#{msg.results_rank_school}"
                               rendered="#{resultsViewDao.lessonCount > 2}"/>
-
 
                     <p:column headerText="#{msg.results_true}" />
                     <p:column headerText="#{msg.results_false}" />
                     <p:column headerText="#{msg.results_net}" />
                     <p:column headerText="#{msg.results_null}" />
-                    <p:column headerText="#{msg.results_score}" />
+                    <p:column headerText="#{msg.results_score}"
+                              sortBy="#{resultsViewVar.result.score}"
+                            />
                     <p:column headerText="#{msg.results_rank_class}" />
                     <p:column headerText="#{msg.results_rank_school}" />
                 </p:row>
@@ -187,22 +191,22 @@
 
 
 
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 0}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(0).trues}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 0}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(0).falses}
                 </h:outputLabel>
             </p:column>
-            <p:column width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+            <p:column width="20" rendered="#{resultsViewDao.lessonCount > 0}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(0).nulls}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 0}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 0}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(0).nets}
                 </h:outputLabel>
@@ -225,22 +229,22 @@
 
 
 
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 1}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(1).trues}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 1}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(1).falses}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 1}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(1).nulls}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 1}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 1}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(1).nets}
                 </h:outputLabel>
@@ -263,22 +267,22 @@
 
 
 
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 2}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(2).trues}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 2}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(2).falses}
                 </h:outputLabel>
             </p:column>
-            <p:column width="50" rendered="#{resultsViewDao.lessonCount > 2}">
+            <p:column width="20" rendered="#{resultsViewDao.lessonCount > 2}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(2).nulls}
                 </h:outputLabel>
             </p:column>
-            <p:column  width="100" rendered="#{resultsViewDao.lessonCount > 2}">
+            <p:column  width="20" rendered="#{resultsViewDao.lessonCount > 2}">
                 <h:outputLabel rendered="#{not empty resultsViewVar.answersList}">
                     #{resultsViewVar.answersList.get(2).nets}
                 </h:outputLabel>
@@ -298,7 +302,6 @@
                     #{resultsViewVar.answersList.get(2).rankSchool}
                 </h:outputLabel>
             </p:column>
-
 
 
 

@@ -1,6 +1,8 @@
 package net.yazsoft.ors.results;
 
+import net.sf.jasperreports.engine.JRParameter;
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
@@ -15,8 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -32,9 +33,12 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     List<Lessons> lessons;
     List<Results> results;
     List<ResultsDto> resultsDto;
+    Lessons selectedLesson;
+    SchoolsClass selectedClass;
 
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject SchoolsClassDao schoolsClassDao;
+    @Inject Report report;
 
     @PostConstruct
     public void init() {
@@ -42,6 +46,24 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         studentsDto=new ArrayList<>();
         answersDto=new ArrayList<>();
         resultsDto=new ArrayList<>();
+    }
+
+    public void reportLesson() {
+        if (selectedLesson==null) {
+            Util.setFacesMessageError("Ders Seciniz");
+            return;
+        }
+        logger.info("LOG01600: REPORT LESSON : " + selectedLesson.getRefLessonName().getNameTr());
+        Map<String, Object> params = new HashMap<>();
+        params.put("pSchoolName", Util.getActiveSchool().getName());
+        params.put("pexam", Util.getActiveExam().getTid());
+        params.put("plesson", selectedLesson.getTid());
+        params.put("pLessonName", selectedLesson.getRefLessonName().getNameTr());
+        params.put("pdate",Util.getActiveExam().getDate());
+        params.put("pnow",Calendar.getInstance().getTime());
+        Locale trlocale= Locale.forLanguageTag("tr-TR");
+        params.put(JRParameter.REPORT_LOCALE, trlocale);
+        report.pdf("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
     }
 
     public void fillGrids() {
@@ -238,5 +260,21 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
 
     public void setResults(List<Results> results) {
         this.results = results;
+    }
+
+    public SchoolsClass getSelectedClass() {
+        return selectedClass;
+    }
+
+    public void setSelectedClass(SchoolsClass selectedClass) {
+        this.selectedClass = selectedClass;
+    }
+
+    public Lessons getSelectedLesson() {
+        return selectedLesson;
+    }
+
+    public void setSelectedLesson(Lessons selectedLesson) {
+        this.selectedLesson = selectedLesson;
     }
 }

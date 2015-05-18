@@ -1,10 +1,10 @@
 package net.yazsoft.frame.upload;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
-import net.yazsoft.ors.entities.Albums;
-import net.yazsoft.ors.entities.Schools;
-import net.yazsoft.ors.entities.Uploads;
+import net.yazsoft.ors.entities.*;
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -17,6 +17,8 @@ import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
@@ -25,11 +27,16 @@ import java.io.*;
 public class UploadsBean implements Serializable{
     private static final Logger logger = Logger.getLogger(UploadsBean.class.getName());
     private static final int BUFFER_SIZE = 6124;
+    private static final long DAT = 1L;
+    private static final long IMAGE = 2L;
+    private static final long BOOKLET = 3L;
     private UploadedFile uploadedFile;
     Schools activeSchool;
     File uploadDirectory;
-    String fileType;
+    Long fileType;
     Albums album;
+    UploadsType uploadType;
+    String detail;
 
     @Inject UploadsDao uploadsDao;
     @Inject UploadsTypeDao uploadsTypeDao;
@@ -38,19 +45,89 @@ public class UploadsBean implements Serializable{
     public void init() {
         logger.info("UPLOAD CONSTRUCTOR");
         //album=activeSchool.getId();
-        fileType="DAT";
+        fileType=DAT;
     }
+
+
+    public void downloadFile(Uploads upload) throws IOException{
+        try {
+            //Uploads upload=uploadsDao.getExamBooklet(exam,detail);
+            //if (upload!=null) {
+
+            //}
+            if (upload==null) {
+                logger.info("LOG01490: UPLOAD IS NULL");
+                return;
+            }
+            fileType=upload.getRefUploadType().getTid();
+
+            String uploadsFolder = Util.getUploadsFolder();
+            String extension = UploadsDao.getFileExtension(upload.getName());
+            String dirName;
+            if (fileType.equals(DAT)) {
+                dirName = uploadsFolder + "/DAT/" + upload.getRefSchool().getTid().toString();
+            } else if (fileType.equals(BOOKLET)) {
+                dirName = uploadsFolder + "/BOOKLET/" + upload.getRefSchool().getTid().toString();
+            } else {
+                dirName = uploadsFolder + "/files/" + upload.getRefSchool().getTid().toString();
+            }
+
+            dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
+
+            File file = new File(dirName + "/" + upload.getTid().toString() + "." + extension);
+
+            HttpServletResponse httpServletResponse = (HttpServletResponse)
+                    FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            httpServletResponse.addHeader("Content-disposition", "attachment; filename=" + upload.getName());
+
+            FacesContext.getCurrentInstance().responseComplete();
+
+            ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+
+            BufferedInputStream input = null;
+            //BufferedOutputStream output = null;
+            input = new BufferedInputStream(new FileInputStream(file), BUFFER_SIZE);
+
+            // Write file contents to response.
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int length;
+            while ((length = input.read(buffer)) > 0) {
+                servletOutputStream.write(buffer, 0, length);
+            }
+
+            servletOutputStream.flush();
+            servletOutputStream.close();
+            input.close();
+            FacesContext.getCurrentInstance().responseComplete();
+        } catch (Exception e) {
+            logger.error("EXCEPTION: ", e);
+            Util.setFacesMessageError(e.getMessage());
+            throw e;
+        }
+    }
+
 
     @Transactional
     public void deleteUpload(Uploads upload) {
         try {
+            if (upload.getRefUploadType()==null) {
+                fileType=DAT;
+            } else {
+                fileType=upload.getRefUploadType().getTid();
+            }
             uploadsDao.delete(upload);
-
-            File deleteFile=new File(upload.getTid().toString()+".DAT");
 
             String uploadsFolder = Util.getUploadsFolder();
             String extension=UploadsDao.getFileExtension(upload.getName());
-            String dirName = uploadsFolder + "/DAT/" + upload.getRefSchool().getTid().toString();
+            String dirName;
+            if (fileType.equals(DAT)) {
+                dirName = uploadsFolder + "/DAT/" + upload.getRefSchool().getTid().toString();
+            } else if (fileType.equals(BOOKLET)) {
+                dirName = uploadsFolder + "/BOOKLET/" + upload.getRefSchool().getTid().toString();
+            } else {
+                dirName = uploadsFolder + "/files/" + upload.getRefSchool().getTid().toString();
+            }
+
             dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
 
             File file = new File(dirName + "/" + upload.getTid().toString()+"."+extension);
@@ -62,10 +139,11 @@ public class UploadsBean implements Serializable{
             }
             uploadsDao.setUploads(null);
             //deleting
-            Util.setFacesMessage("Deleted file id : " );
+            Util.setFacesMessage("Deleted file id : ");
         } catch (Exception e) {
             logger.error("EXCEPTION: ", e);
             Util.setFacesMessageError(e.getMessage());
+            throw e;
         }
         //ImagesDao imageDao=new ImagesDao();
     }
@@ -79,9 +157,12 @@ public class UploadsBean implements Serializable{
     public File getUploadDirectory(String subdir) {
         String dirName;
         File targetFolder;
-        if (fileType.equals("DAT")) {
+        if (fileType.equals(DAT)) {
             Util.createDirectory("DAT");
             dirName="/DAT/"+activeSchool.getTid().toString();
+        } else if (fileType.equals(BOOKLET)) {
+            Util.createDirectory("BOOKLET");
+            dirName="/BOOKLET/"+activeSchool.getTid().toString();
         } else {
             dirName="/files";
         }
@@ -97,6 +178,21 @@ public class UploadsBean implements Serializable{
     }
 
 
+
+
+    @Transactional
+    public void handleBookletUpload(FileUploadEvent event) {
+        fileType=BOOKLET;
+        uploadType=uploadsTypeDao.getById(BOOKLET);
+        handleFileUpload(event);
+    }
+
+    @Transactional
+    public void handleDatUpload(FileUploadEvent event) {
+        fileType=DAT;
+        uploadType=uploadsTypeDao.getById(DAT);
+        handleFileUpload(event);
+    }
 
     @Transactional
     public void handleFileUpload(FileUploadEvent event) {
@@ -116,12 +212,14 @@ public class UploadsBean implements Serializable{
             upload.setRefExam(Util.getActiveExam());
             upload.setRefUser(Util.getActiveUser());
             upload.setName(filenameOriginal);
-            upload.setRefUploadType(uploadsTypeDao.getById(1L)); //DAT
+            upload.setRefUploadType(uploadsTypeDao.getById(fileType));
+            upload.setDetail(detail);
             tid=uploadsDao.create(upload);
+            detail=null; //for next upload
 
             InputStream inputStream;
             inputStream = event.getFile().getInputstream();
-            if (fileType.equals("IMAGE")) {
+            if (fileType.equals(IMAGE)) {
                 BufferedImage bufferedImage= ImageIO.read(event.getFile().getInputstream());
                 Integer imageWidth=bufferedImage.getWidth();
                 if (imageWidth>1600) {
@@ -141,6 +239,7 @@ public class UploadsBean implements Serializable{
             out.close();
 
             uploadsDao.setUploads(null); //for refresh grid
+
 
             Util.setFacesMessage("ID : " + tid.toString() + " ,file name: "
                     + event.getFile().getFileName() + " File size: "
@@ -174,6 +273,14 @@ public class UploadsBean implements Serializable{
 
     public void setAlbum(Albums album) {
         this.album = album;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 }
 

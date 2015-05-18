@@ -59,6 +59,8 @@ public class Uploads extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_user", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users refUser;
+    @Size(min = 1, max = 255)
+    private String detail;
 
     public Uploads() {
     }
@@ -159,6 +161,14 @@ public class Uploads extends BaseEntity implements Serializable {
 
     public void setRefUser(Users refUser) {
         this.refUser = refUser;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     @Override

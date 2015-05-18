@@ -28,6 +28,25 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
 
     }
 
+    public Uploads getExamBooklet(Exams exam,String booklet) {
+        logger.info("UPLOADS, EXAM : " + exam);
+        Uploads upload=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("detail", booklet));
+            c.add(Restrictions.eq("refExam", exam));
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+             upload = (Uploads) c.uniqueResult();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        logger.info("LOG01500: BOOKLET UPLOAD : " + upload);
+        return upload;
+    }
+
     public List<Uploads> getExamUploads(Exams exam) {
         logger.info("UPLOADS, EXAM : " + exam);
         List list=null;

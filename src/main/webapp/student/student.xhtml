@@ -20,11 +20,11 @@
                 #{msg.exam} #{msg.global_select}
                 <components:resultsStudent rows="5000" scrollable="true" scrollHeight="380" update=":#{p:component('resultPanel')}"
                                             widgetVar="resultsExamGridWidget" paginator="false"/>
-
             </p:outputPanel>
-
-
             </p:panelGrid>
+            <p:outputLabel style="font-size: 12px;">
+            Detay için lütfen dersin satırına tıklayınız. Yüklenen ilgili soru kitapçıklarını detaydan indirebilirsiniz.
+            </p:outputLabel>
         </h:form>
 
         <p:dialog id="answersDialog" header="#{msg.result}" widgetVar="answersDialogWidget"
@@ -60,8 +60,14 @@
                         <p:outputLabel value="#{msg.results_true} #{msg.answers} : "/>
                         <p:outputLabel value="#{studentsAnswersDao.trueAnswers} "/>
                     </p:panelGrid>
-
-
+                    <br/>
+                    <p:outputPanel rendered="#{studentsAnswersDao.bookletReady}">
+                        <p:commandButton value="Soru Kitapçığını İndir"
+                                         action="#{studentsAnswersDao.downloadBooklet}"
+                                         ajax="false"
+                                />
+                    </p:outputPanel>
+                    <br/>
                 </p:outputPanel>
             </h:form>
         </p:dialog>

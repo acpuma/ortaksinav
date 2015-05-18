@@ -4,6 +4,7 @@ package net.yazsoft.frame.security;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.entities.Users;
+import net.yazsoft.ors.entities.ZlogLogin;
 import net.yazsoft.ors.exams.ExamsDao;
 import net.yazsoft.ors.schools.SchoolsDao;
 import net.yazsoft.ors.students.StudentsDao;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Calendar;
 
 @Named
 @ViewScoped
@@ -44,6 +46,7 @@ public class LoginSer implements Serializable{
     @Inject SchoolsDao schoolsDao;
     @Inject ExamsDao examsDao;
     @Inject StudentsDao studentsDao;
+    @Inject ZlogLoginDao zlogLoginDao;
 
     public String loginStudent() throws IOException {
         try {
@@ -57,6 +60,13 @@ public class LoginSer implements Serializable{
             Students student=studentsDao.findByUserName(this.getUsername());
             sessionInfo.setStudent(student);
             sessionInfo.setSchool(student.getRefSchool());
+            ZlogLogin zlog=new ZlogLogin();
+            zlog.setName(student.getUsername());
+            zlog.setRefStudent(student);
+            zlog.setRefSchool(student.getRefSchool());
+            zlog.setActive(true);
+            zlog.setCreated(Calendar.getInstance().getTime());
+            zlogLoginDao.create(zlog);
 
             // restore the request before the login-redirect, if any.
             RequestCache requestCache = new HttpSessionRequestCache();
@@ -84,7 +94,7 @@ public class LoginSer implements Serializable{
         }
 
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Bad credentials", username);
+                "Yanlış Kullanıcı Adı veya Şifre", username);
         FacesContext.getCurrentInstance().addMessage(null, message);
         return null;
     }
@@ -102,6 +112,14 @@ public class LoginSer implements Serializable{
             sessionInfo.setUser(user);
             sessionInfo.setSchool(user.getRefActiveSchool());
             sessionInfo.setExam(user.getRefActiveExam());
+
+            ZlogLogin zlog=new ZlogLogin();
+            zlog.setName(user.getUsername());
+            zlog.setRefUser(user);
+            zlog.setRefSchool(user.getRefActiveSchool());
+            zlog.setActive(true);
+            zlog.setCreated(Calendar.getInstance().getTime());
+            zlogLoginDao.create(zlog);
 
             // restore the request before the login-redirect, if any.
             RequestCache requestCache = new HttpSessionRequestCache();
@@ -130,7 +148,7 @@ public class LoginSer implements Serializable{
         }
 
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                "Bad credentials", username);
+                "Yanlış Kullanıcı Adı veya Şifre", username);
         FacesContext.getCurrentInstance().addMessage(null, message);
         return null;
     }

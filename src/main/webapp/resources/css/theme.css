@@ -76,3 +76,7 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.ui-datatable {
+    font-size: 14px !important;
+}

@@ -42,7 +42,7 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
         SchoolsClass temp=null;
         try {
             Criteria c = getCriteria();
-            //c.add(Restrictions.eq("refSchool", school));
+            c.add(Restrictions.eq("refSchool", school));
             c.add(Restrictions.eq("name", name));
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));

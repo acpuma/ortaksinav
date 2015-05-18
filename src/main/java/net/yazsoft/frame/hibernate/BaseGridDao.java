@@ -50,7 +50,7 @@ public abstract class BaseGridDao<T extends BaseEntity> extends BaseDao<T> {
 
     @PostConstruct
     public void postConstruct(){
-        logger.info("BASEGRIDDAO CONSTRUCTOR");
+        //logger.info("BASEGRIDDAO CONSTRUCTOR");
     }
      
     public T getItem() {

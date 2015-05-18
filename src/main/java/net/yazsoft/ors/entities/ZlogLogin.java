@@ -6,13 +6,14 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -26,8 +27,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsParametersType.findAll", query = "SELECT e FROM ExamsParametersType e")})
-public class ExamsParametersType extends BaseEntity implements Serializable {
+    @NamedQuery(name = "ZlogLogin.findAll", query = "SELECT t FROM ZlogLogin t")})
+public class ZlogLogin extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,42 +38,38 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
-    private boolean active;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
     private int version;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
-    @Column(name = "name_tr", nullable = false, length = 255)
-    private String nameTr;
-    @Size(max = 255)
-    @Column(name = "name_en", length = 255)
-    private String nameEn;
+    @Column(nullable = false, length = 255)
+    private String name;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @Column(name = "show_default")
-    private Boolean showDefault;
-    private Integer length;
-    private Integer start;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refParameter", fetch = FetchType.LAZY)
-    private Collection<ExamsParameters> examsParametersCollection;
+    private Boolean active;
+    @JoinColumn(name = "ref_student", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Students refStudent;
+    @JoinColumn(name = "ref_user", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Users refUser;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
-    public ExamsParametersType() {
+    public ZlogLogin() {
     }
 
-    public ExamsParametersType(Long tid) {
+    public ZlogLogin(Long tid) {
         this.tid = tid;
     }
 
-    public ExamsParametersType(Long tid, boolean active, int version, String nameTr) {
+    public ZlogLogin(Long tid, int version, String name) {
         this.tid = tid;
-        this.active = active;
         this.version = version;
-        this.nameTr = nameTr;
+        this.name = name;
     }
 
     public Long getTid() {
@@ -83,14 +80,6 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public boolean getActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public int getVersion() {
         return version;
     }
@@ -99,20 +88,12 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
         this.version = version;
     }
 
-    public String getNameTr() {
-        return nameTr;
+    public String getName() {
+        return name;
     }
 
-    public void setNameTr(String nameTr) {
-        this.nameTr = nameTr;
-    }
-
-    public String getNameEn() {
-        return nameEn;
-    }
-
-    public void setNameEn(String nameEn) {
-        this.nameEn = nameEn;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getCreated() {
@@ -131,38 +112,38 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    @XmlTransient
-    public Collection<ExamsParameters> getExamsParametersCollection() {
-        return examsParametersCollection;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setExamsParametersCollection(Collection<ExamsParameters> examsParametersCollection) {
-        this.examsParametersCollection = examsParametersCollection;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    public Boolean getShowDefault() {
-        return showDefault;
+    public Students getRefStudent() {
+        return refStudent;
     }
 
-    public void setShowDefault(Boolean showDefault) {
-        this.showDefault = showDefault;
+    public void setRefStudent(Students refStudent) {
+        this.refStudent = refStudent;
     }
 
-    public Integer getLength() {
-        return length;
+    public Users getRefUser() {
+        return refUser;
     }
 
-    public void setLength(Integer length) {
-        this.length = length;
+    public void setRefUser(Users refUser) {
+        this.refUser = refUser;
     }
 
-    public Integer getStart() {
-        return start;
+    public Schools getRefSchool() {
+        return refSchool;
     }
 
-    public void setStart(Integer start) {
-        this.start = start;
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
     }
+
 
     @Override
     public int hashCode() {
@@ -174,10 +155,10 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ExamsParametersType)) {
+        if (!(object instanceof ZlogLogin)) {
             return false;
         }
-        ExamsParametersType other = (ExamsParametersType) object;
+        ZlogLogin other = (ZlogLogin) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }

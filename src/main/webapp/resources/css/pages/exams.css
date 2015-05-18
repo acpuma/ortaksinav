@@ -1,0 +1,12 @@
+.filterPanelGrid tr, .filterPanelGrid td {
+    border: none !important;
+}
+
+.filterPanelMainGrid td {
+    padding: 2px 5px !important;
+}
+
+.filterPanelMainGrid {
+    width: 97%;
+    margin: 0 auto;
+}

@@ -34,6 +34,9 @@ public class StudentsSecuritySer implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username)
             throws UsernameNotFoundException {
         Students student = userDao.findByUserName(username);
+        if (student==null) {
+            throw new UsernameNotFoundException("Kullanıcı Bulunmadı");
+        }
         Users user=new Users();
         user.setTid(student.getTid());
         user.setUsername(student.getUsername());

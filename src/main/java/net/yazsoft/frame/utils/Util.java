@@ -35,10 +35,20 @@ import java.util.ResourceBundle;
 public class Util implements Serializable{
     static final Logger logger= Logger.getLogger(Util.class.getName());
 //    @Inject SettingsDao settings;
-    //static final String HOMEDIR=System.getProperty("user.home");
-    static final String HOMEDIR="/home/admin/";
+    //TODO: Get from db
+    static String HOMEDIR=System.getProperty("user.home");
+    //static final String HOMEDIR="/home/admin/";
 
-    public Util() {}
+    public Util() {
+    }
+
+    public static String getHomedir() {
+        if (HOMEDIR.indexOf("root")>-1 ) {
+            HOMEDIR="/home/admin/";
+        }
+        logger.info("LOG01590: HOMEDIR : " + HOMEDIR);
+        return HOMEDIR;
+    }
 
     public static HttpSession getSession() {
         return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
@@ -66,6 +76,7 @@ public class Util implements Serializable{
 
     public static SessionInfo getSessionInfo() {
         HttpSession session=getSession();
+        if (session==null) return null;
         return (SessionInfo) session.getAttribute("sessionInfo");
     }
 
@@ -79,7 +90,11 @@ public class Util implements Serializable{
     }
 
     public static Schools getActiveSchool() {
-        return getSessionInfo().getSchool();
+        if (getSessionInfo()!=null) {
+            return getSessionInfo().getSchool();
+        } else {
+            return null;
+        }
     }
     public static Exams getActiveExam() {
         return getSessionInfo().getExam();
@@ -277,7 +292,7 @@ public class Util implements Serializable{
     
     public static String getUploadsFolder() {
         //File homeDir = new File(System.getProperty("user.home"));
-        File homeDir = new File(HOMEDIR);
+        File homeDir = new File(getHomedir());
         //String imagesFolder=settings.getSetting("ImagesFolder");
         //File homeDir = new File(imagesFolder);
         

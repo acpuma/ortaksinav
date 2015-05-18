@@ -81,6 +81,8 @@ public class Students extends BaseEntity implements Serializable {
     private SchoolsClass refSchoolClass;
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
     private Collection<Results> resultsCollection;
+    @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
+    private Collection<ZlogLogin> zlogLoginCollection;
 
     public Students() {
     }
@@ -238,6 +240,14 @@ public class Students extends BaseEntity implements Serializable {
 
     public void setResultsCollection(Collection<Results> resultsCollection) {
         this.resultsCollection = resultsCollection;
+    }
+
+    public Collection<ZlogLogin> getZlogLoginCollection() {
+        return zlogLoginCollection;
+    }
+
+    public void setZlogLoginCollection(Collection<ZlogLogin> zlogLoginCollection) {
+        this.zlogLoginCollection = zlogLoginCollection;
     }
 
     @Override

@@ -92,10 +92,24 @@
             <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="520" filterBy="#{gridVar.nameTr}">
+            <p:column headerText="#{msg.global_name}" width="420" filterBy="#{gridVar.nameTr}">
                 <p:cellEditor>
                     <f:facet name="output"><p:outputLabel value="#{gridVar.nameTr}" /></f:facet>
                     <f:facet name="input"><p:inputText value="#{gridVar.nameTr}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.global_start}" width="50" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{gridVar.start}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{gridVar.start}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.global_length}" width="50" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{gridVar.length}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{gridVar.length}"
                                                        style="width:100%"/></f:facet>
                 </p:cellEditor>
             </p:column>

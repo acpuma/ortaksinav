@@ -4,8 +4,7 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 <cc:interface>
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
     <cc:attribute default="false"     required="false"   name="draggableColumns" />
@@ -26,29 +25,29 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetUploads"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetLogin"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
-    <cc:attribute  required="false" name="tableStyle" />
-
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
-        <p:dataTable id="uploadsGrid"
-                     var="gridVar"
+    <h:form>
+        <p:dataTable id="loginGrid"
+                     var="loginGrid"
 
                      filterEvent="enter"
-                     value="#{uploadsDao.uploads}"
+                     value="#{zlogLoginDao.logs}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
-                 {PreviousPageLink} 
-                 {PageLinks} {NextPageLink} 
+                 {PreviousPageLink}
+                 {PageLinks} {NextPageLink}
                  {LastPageLink} {RowsPerPageDropdown}"
 
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
+                     editMode="#{cc.attrs.editMode}"
+                     editingRow="#{cc.attrs.editingRow}"
                      expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
@@ -70,56 +69,64 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selection="#{uploadsDao.item}"
-                     rowKey="#{gridVar.tid}"
-                     tableStyle="#{cc.attrs.tableStyle}"
                      selectionMode="single"
+                     selection="#{zlogLoginDao.item}"
+
+                     rowKey="#{loginGrid.tid}"
+                     tableStyle="width:780px;"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
                     oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
                     process="@all"
-                    listener="#{uploadsDao.select}"
+                    listener="#{zlogLoginDao.select}"
                     />
-            <p:ajax event="rowSelect" listener="#{uploadsDao.onRowSelect}" />
 
-            <f:facet name="header" >
-                #{msg.global_files}
-            </f:facet>
+            <p:column headerText="#{msg.global_id}" width="25" rendered="true"  > #{loginGrid.tid}  </p:column>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
-
-            <p:column headerText="#{msg.global_name}" width="370" >
-                    #{gridVar.name}
+            <p:column headerText="#{msg.username}" width="60"
+                      filterBy="#{loginGrid.name}"  sortBy="#{loginGrid.name}">
+                #{loginGrid.name}
             </p:column>
-            <p:column headerText="#{msg.global_booklet}" width="45" >
-                <p:outputLabel value="#{gridVar.detail}" />
+            <p:column headerText="#{msg.global_name}" width="100"
+                      >
+                <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
+                    #{loginGrid.refStudent.fullname}
+                </p:outputLabel>
+                <p:outputLabel rendered="#{not empty loginGrid.refUser}">
+                    #{loginGrid.refUser.name} #{loginGrid.refUser.surname}
+                </p:outputLabel>
+            </p:column>
+            <p:column headerText="#{msg.school}" width="150"
+                      sortBy="#{loginGrid.refStudent.refSchool.name}"
+                      filterBy="#{loginGrid.refStudent.refSchool.name}"
+                      >
+                <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
+                    #{loginGrid.refStudent.refSchool.name}
+                </p:outputLabel>
+            </p:column>
+            <p:column headerText="#{msg.class}" width="20"
+                      sortBy="#{loginGrid.refStudent.refSchoolClass.name}"
+                      filterBy="#{loginGrid.refStudent.refSchoolClass.name}"
+                      >
+                <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
+                    #{loginGrid.refStudent.refSchoolClass.name}
+                </p:outputLabel>
             </p:column>
 
-            <p:column headerText="#{msg.username}" width="130" >
-                #{gridVar.refUser.name} #{gridVar.refUser.surname}
+            <p:column headerText="#{msg.global_date}" width="100"
+                      filterBy="#{loginGrid.created}"
+                        sortBy="#{loginGrid.created}">
+                <p:outputLabel value="#{loginGrid.created}" >
+                    <f:convertDateTime locale="tr" pattern="dd.MM.yyy HH:mm:ss" timeZone="Turkey"/>
+                </p:outputLabel>
             </p:column>
 
-            <p:column headerText="#{msg.transfer_transfered_short}" width="30" >
-                <p:outputPanel styleClass="#{gridVar.processed?'bgGreen':null}"
-                        style="width:20px; height:20px;border:1px solid;">
-                </p:outputPanel>
-            </p:column>
-
-            <p:column width="40">
-                <p:commandButton value="" update=" :messages uploadsGrid"
-                                 icon="ui-icon-trash"
-                                 style="height: 36px; width: 36px;"
-                                 actionListener="#{uploadsBean.deleteUpload(gridVar)}">
-                </p:commandButton>
-            </p:column>
-            <f:facet name="footer">
-
-            </f:facet>
         </p:dataTable>
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
 
 </cc:implementation>
 </html>
+

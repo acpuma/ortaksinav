@@ -15,8 +15,34 @@
 <h:form id="pageForm">
     <p:outputPanel style="margin:10px; height:440px; overflow-y: scroll;">
 
-        <p:commandButton value="PDF" process="@this" actionListener="#{report.pdf}" ajax="false" rendered="false"/>
+
+        <p:commandButton value="PDF" process="@this" actionListener="#{uploadsBean.downloadFile(47)}" ajax="false" rendered="false"/>
         <br/>
+        <b>Versiyon 0.94 (2015.05.18 11.50) : </b>
+        <br/> - Ders Puan Rapor tasarimi duzenlendi.
+        <br/><br/>
+        <b>Versiyon 0.93 (2015.05.17 21.35) : </b>
+        <br/> - Listeler -> Ders puanlari listesinde derse gore pdf raporu
+        <br/><br/>
+        <b>Versiyon 0.92 (2015.05.17 00.55) : </b>
+        <br/> - Default parametre ayarlarina baslangic ve uzunluk eklendi.
+        <br/><br/>
+        <b>Versiyon 0.91 (2015.05.15 01.10) : </b>
+        <br/> - Ogrenci Kitapcik Pdfi indirme
+        <br/><br/>
+        <b>Versiyon 0.90 (2015.05.14 22.45) : </b>
+        <br/> - Sinav islemlerinde Kitapcik Pdfi ekleme
+        <br/><br/>
+        <b>Versiyon 0.89 (2015.05.14 24.10) : </b>
+        <br/> - Sinavlar menusunde filtreler aktif hale getirildi.
+        <br/><br/>
+        <b>Versiyon 0.88 (2015.05.12 12.10) : </b>
+        <br/> - Kullanici girisleri loglama (Ayarlar -> Kullanıcı giris logları)
+        <br/><br/>
+        <b>Versiyon 0.87 (2015.05.11 11.20) : </b>
+        <br/> - Gercek uygulama ilk test.
+        <br/> - Cevap anahtari X olanlar herkes icin dogru kabul edildi.
+        <br/><br/>
         <b>Versiyon 0.86 (2015.05.11 11.20) : </b>
         <br/> - Ögrenci Sonuç ekranı yeniden tasarlandı.
         <br/><br/>

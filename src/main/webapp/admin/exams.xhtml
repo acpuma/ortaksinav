@@ -10,22 +10,74 @@
 <f:view>
     <h:head>
         <title>Sınavlar</title>
+        <h:outputStylesheet library="css" name="pages/exams.css" />
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.exams}" />
     <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
 
-        <p:commandButton icon="toolbar-add toolbar-icon" styleClass="toolbar-button"
-                         value="#{msg.toolbar_add}"
-                         actionListener="#{examsDao.reset}"
-                         update="@widgetVar(formDialogWidget)"
-                         oncomplete="PF('formDialogWidget').show();"
-                >
-        </p:commandButton>
+        <h:form >
+        <p:panelGrid columns="2" styleClass="filterPanelMainGrid" id="filterGrid">
+            <p:outputPanel style="font-size: 14px;">
+                <p:panelGrid style="padding: 5px;" columns="2" styleClass="filterPanelGrid">
+                    <p:outputLabel value="#{msg.school} :"/>
+                    <p:selectOneMenu value="#{examsDao.filterSchool}">
+                        <p:ajax update="@widgetVar(examsGridWidget)"/>
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true"/>
+                        <f:selectItems value="#{schoolsDao.all}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <p:panelGrid columns="6" styleClass="filterPanelGrid">
+                    <p:outputLabel value="#{msg.exam_year} :"/>
+                    <p:selectOneMenu value="#{examsDao.filterYear}" >
+                        <p:ajax update="@widgetVar(examsGridWidget)"/>
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true"/>
+                        <f:selectItems value="#{examsYearDao.all}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
 
 
-        <p:outputPanel style="margin: 10px; min-height: 400px;" >
-            <components:examsGrid rows="30"  scrollable="true" update=":#{p:component('pageForm')} " scrollHeight="310"
+                    <p:outputLabel value="#{msg.exam_season} :"/>
+                    <p:selectOneMenu value="#{examsDao.filterSeason}">
+                        <p:ajax update="@widgetVar(examsGridWidget)"/>
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true"/>
+                        <f:selectItems value="#{examsSeasonDao.all}" var="man"
+                                       itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="#{msg.exam} :"/>
+                    <p:selectOneMenu value="#{examsDao.filterSeasonNumber}">
+                        <p:ajax update="@widgetVar(examsGridWidget)"/>
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true"/>
+                        <f:selectItems value="#{examsSeasonNumberDao.all}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+
+                </p:panelGrid>
+            </p:outputPanel>
+
+            <p:outputPanel style="text-align: center;">
+                <p:commandButton icon="toolbar-add toolbar-icon"
+                                 styleClass="toolbar-button" style="padding:1px 5px;"
+                                 value="#{msg.toolbar_add}"
+                                 actionListener="#{examsDao.reset}"
+                                 update="@widgetVar(formDialogWidget)"
+                                 oncomplete="PF('formDialogWidget').show();"
+                        >
+                </p:commandButton>
+            </p:outputPanel>
+        </p:panelGrid>
+    </h:form>
+
+
+        <p:outputPanel style="margin:5px 10px; min-height: 400px;" >
+            <components:examsGrid rows="200"  scrollable="true" paginator="false"
+                                  update=":#{p:component('pageForm')} " scrollHeight="370"
                               widgetVar="examsGridWidget" sortMode="multiple"/>
         </p:outputPanel>
 

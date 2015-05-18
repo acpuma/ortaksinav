@@ -2,7 +2,6 @@ package net.yazsoft.ors.exams;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
-import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.examsParameters.ExamsParametersDao;
@@ -25,11 +24,11 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     ExamsYear filterYear;
     ExamsSeason filterSeason;
     ExamsSeasonNumber filterSeasonNumber;
+    Schools filterSchool;
 
     List<Exams> filteredExams;
 
-    //@Inject
-    SessionInfo sessionInfo;
+    //@Inject SessionInfo sessionInfo;
 
     @Inject LessonsDao lessonsDao;
     @Inject ExamsAnswerTypeDao examsAnswerTypeDao;
@@ -45,6 +44,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     @Override
     @PostConstruct
     public void init() {
+        //filterSchool=Util.getActiveSchool();
         logger.info("EXAMSDAO INIT");
         super.init();
 
@@ -90,6 +90,8 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
                 parameter=new ExamsParameters();
                 parameter.setActive(Boolean.TRUE);
                 parameter.setRefParameter(type);
+                parameter.setStart(type.getStart());
+                parameter.setLength(type.getLength());
                 parameter.setRefExam((Exams)getSession().load(Exams.class,pk));
                 examsParametersDao.create(parameter);
             }
@@ -122,11 +124,17 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     }
     @Override
     public void select() {
+        Util.getSessionInfo().setExam(getItem());
         lessonsDao.reset();
         if (lessonsDao!=null) {
             lessonsDao.getExamLessons(getItem());
         }
         super.select();
+    }
+
+    public void setActiveExam() {
+        Util.getSessionInfo().setSchool(getItem().getRefSchool());
+        Util.getSessionInfo().setExam(getItem());
     }
 
     public Exams getSelected() {
@@ -167,5 +175,13 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
 
     public void setFilteredExams(List<Exams> filteredExams) {
         this.filteredExams = filteredExams;
+    }
+
+    public Schools getFilterSchool() {
+        return filterSchool;
+    }
+
+    public void setFilterSchool(Schools filterSchool) {
+        this.filterSchool = filterSchool;
     }
 }

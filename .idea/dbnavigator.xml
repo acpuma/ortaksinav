@@ -42,21 +42,26 @@
   <component name="DBNavigator.Project.ObjectDependencyManager">
     <last-used-dependency-type value="INCOMING" />
   </component>
+  <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
+    <recently-used-interfaces />
+  </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="488529cd-f90c-43ed-a6e6-d9a0bfecd1f0" template-database-type="">
+      <connection id="488529cd-f90c-43ed-a6e6-d9a0bfecd1f0" active="true">
         <database>
-          <driver-library value="$PROJECT_DIR$/../../libs/mysql-connector-java-5.1.34/mysql-connector-java-5.1.34-bin.jar" />
-          <driver value="com.mysql.jdbc.Driver" />
           <name value="ors mysql" />
           <description value="" />
-          <active value="true" />
-          <os-authentication value="false" />
           <database-type value="MYSQL" />
           <database-version value="5.6" />
+          <driver-source value="EXTERNAL" />
+          <driver-library value="$PROJECT_DIR$/../../libs/mysql-connector-java-5.1.34/mysql-connector-java-5.1.34-bin.jar" />
+          <driver value="com.mysql.jdbc.Driver" />
+          <host value="localhost" />
+          <port value="3306" />
+          <database value="orsdb" />
+          <os-authentication value="false" />
           <user value="ors" />
           <password value="b3J0YWsyMQ==" />
-          <url value="jdbc:mysql://localhost:3306/orsdb" />
         </database>
         <properties>
           <auto-commit value="false" />
@@ -434,16 +439,14 @@
         <execution-timeout value="20" />
         <focus-result value="false" />
       </statement-execution>
+      <script-execution>
+        <command-line-interfaces />
+      </script-execution>
       <statement-execution>
         <execution-timeout value="20" />
         <debug-execution-timeout value="600" />
         <parameter-history-size value="10" />
       </statement-execution>
-      <compiler>
-        <compile-type value="KEEP" />
-        <compile-dependencies value="ASK" />
-        <always-show-controls value="false" />
-      </compiler>
     </execution-engine-settings>
     <operation-settings>
       <transactions>
@@ -462,6 +465,11 @@
         <kill-session value="ASK" />
         <reload-on-filter-change value="false" />
       </session-browser>
+      <compiler>
+        <compile-type value="KEEP" />
+        <compile-dependencies value="ASK" />
+        <always-show-controls value="false" />
+      </compiler>
     </operation-settings>
     <ddl-file-settings>
       <extensions>

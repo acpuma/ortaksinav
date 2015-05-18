@@ -54,11 +54,25 @@ public class ExamsLazy extends LazyDataModel<Exams> {
         sortMeta.setSortField("refExamSeasonNumber");
         sortMeta.setSortOrder(SortOrder.DESCENDING);
         multiSortMeta.add(sortMeta);
+        /*
         if (!filters.containsKey("refSchool")) {
             filters.put("refSchool", Util.getActiveSchool().getTid());
         }
+        */
+        if (examsDao.getFilterSchool()!=null) {
+            filters.put("refSchool",examsDao.getFilterSchool());
+        }
+        if (examsDao.getFilterYear()!=null) {
+            filters.put("refExamYear",examsDao.getFilterYear());
+        }
+        if (examsDao.getFilterSeason()!=null) {
+            filters.put("refExamSeason",examsDao.getFilterSeason());
+        }
+        if (examsDao.getFilterSeasonNumber()!=null) {
+            filters.put("refExamSeasonNumber",examsDao.getFilterSeasonNumber());
+        }
         logger.info("EXAMS FILTERS : " + filters);
-        filters.clear();
+        //filters.clear();
         return examsDao.load(first, pageSize, multiSortMeta, filters);
     }
 }

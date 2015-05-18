@@ -4,96 +4,80 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
+import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.security.UsersDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
+import org.hibernate.mapping.Component;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.*;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.sql.Connection;
+import java.util.*;
 
 @Named
 @ViewScoped
-public class Report {
+public class Report extends BaseDao{
     private static final Logger logger = Logger.getLogger(Report.class);
-    public static JasperDesign jasperDesign;
-    public static JasperPrint jasperPrint;
-    public static JasperReport jasperReport;
-    public static String reportTemplateUrl = "users.jrxml";
 
-    @Inject UsersDao usersDao;
+    @Inject DataSource dataSource;
 
-    public void print() {
-        try
-        {
-            String path = Util.getSession().getServletContext().getRealPath(reportTemplateUrl);
+    public void pdf(String jasperFile, Map<String, Object> params,String outputFile)  {
+        Connection connection=null;
+        try {
+            if (outputFile==null) outputFile="rapor";
+            String path = Util.getSession().getServletContext().getRealPath("/jasper/"+jasperFile + ".jasper");
             logger.info("LOG01170: PATH : " + path);
             InputStream input = new FileInputStream(new File(path));
 
-            //get report file and then load into jasperDesign
-            jasperDesign = JRXmlLoader.load(input);
-            //compile the jasperDesign
-            jasperReport = JasperCompileManager.compileReport(jasperDesign);
-            //fill the ready report with data and parameter
-            jasperPrint = JasperFillManager.fillReport(jasperReport, null,
-                    new JRBeanCollectionDataSource(
-                            findReportData() ));
+            HttpServletResponse response = (HttpServletResponse)
+                    FacesContext.getCurrentInstance().getExternalContext().getResponse();
 
-            JRPdfExporter exporter = new JRPdfExporter();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            BufferedOutputStream bos = new BufferedOutputStream(baos);
+            connection=dataSource.getConnection();
 
-            exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-            //exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(baos)); //"users.pdf"));
-            SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
-            exporter.setConfiguration(configuration);
-            exporter.exportReport();
-        } catch (JRException e) {
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
+            JasperPrint jasperPrint =
+                    JasperFillManager.fillReport(jasperReport, params, connection);
+
+            response.setContentType("application/x-pdf");
+            response.setHeader("Content-disposition", "inline; filename="+outputFile+".pdf");
+
+            final OutputStream outStream = response.getOutputStream();
+            JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+            //outStream.flush();
+            //outStream.close();
+            FacesContext.getCurrentInstance().responseComplete();
+
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
             e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } finally {
+            try {
+                if ((connection != null) && (!connection.isClosed())) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                Util.setFacesMessage(e.getMessage());
+                e.printStackTrace();
+            }
         }
     }
 
-    public void pdf() throws JRException, IOException{
-
-        HttpServletResponse httpServletResponse=(HttpServletResponse)
-                FacesContext.getCurrentInstance().getExternalContext().getResponse();
-        httpServletResponse.addHeader("Content-disposition", "attachment; filename="+"users.pdf");
-
-        FacesContext.getCurrentInstance().responseComplete();
-
-        ServletOutputStream servletOutputStream=httpServletResponse.getOutputStream();
-        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
-        System.out.println("All done the report is done");
-        servletOutputStream.flush();
-        servletOutputStream.close();
-        FacesContext.getCurrentInstance().responseComplete();
-    }
-
-    private static Collection findReportData()
-    {
-
-        //declare a list of object
-        List<Users> data = new LinkedList<Users>();
-        Users p1 = new Users();
-        p1.setName("John");
-        p1.setSurname("Smith");
-        p1.setUsername("jsmith");
-        data.add(p1);
-        return data;
-    }
 
 }
