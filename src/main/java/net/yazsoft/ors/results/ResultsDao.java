@@ -60,7 +60,13 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("plesson", selectedLesson.getTid());
         params.put("pLessonName", selectedLesson.getRefLessonName().getNameTr());
         params.put("pdate",Util.getActiveExam().getDate());
-        params.put("pnow",Calendar.getInstance().getTime());
+        Date now=Calendar.getInstance(new Locale("TR")).getTime();
+        params.put("pnow",now);
+        params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
+        params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
+        params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
+
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
         report.pdf("repLesson", params, selectedLesson.getRefLessonName().getNameTr());

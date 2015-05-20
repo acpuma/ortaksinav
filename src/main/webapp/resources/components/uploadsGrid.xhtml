@@ -90,7 +90,7 @@
 
             <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
 
-            <p:column headerText="#{msg.global_name}" width="370" >
+            <p:column headerText="#{msg.global_name}" width="330" >
                     #{gridVar.name}
             </p:column>
             <p:column headerText="#{msg.global_booklet}" width="45" >
@@ -105,6 +105,13 @@
                 <p:outputPanel styleClass="#{gridVar.processed?'bgGreen':null}"
                         style="width:20px; height:20px;border:1px solid;">
                 </p:outputPanel>
+            </p:column>
+            <p:column width="40">
+                <p:commandButton value="" update=" :messages uploadsGrid"
+                                 icon="ui-icon-arrowthick-1-s" ajax="false"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{uploadsBean.downloadFile(gridVar)}">
+                </p:commandButton>
             </p:column>
 
             <p:column width="40">
