@@ -73,12 +73,11 @@
                      selection="#{schoolsDao.item}"
                      lazy="true"
                      rowKey="#{schoolsGrid.tid}"
-                     tableStyle="width:900px;"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').show();"
                     process="@all"
                     listener="#{schoolsDao.select}"
                     />

@@ -71,6 +71,7 @@
                      selection="#{studentsAnswersDao.item}"
                      rowKey="#{studentsAnswersVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
+
                 >
 
             <f:facet name="header">
@@ -86,22 +87,21 @@
             <p:column headerText="#{msg.exam}" width="50" rendered="false">
                 <p:outputLabel value="#{studentsAnswersVar.refExam.nameTr}" />
             </p:column>
-            <p:column headerText="#{msg.class}" width="50"
-                    filterBy="#{studentsAnswersVar.refStudent.refSchoolClass}"
-                    sortBy="#{studentsAnswersVar.refStudent.refSchoolClass.name}">
+            <p:column  width="50"
+                    filterBy="#{studentsAnswersVar.refStudent.refSchoolClass.name}"
+                      filterMatchMode="in">
                 <f:facet name="filter">
-                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
-                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
-                                      noSelectionOption="true" />
+                    <p:selectCheckboxMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" label="Sınıflar"
+                            value="#{resultsDao.selectedClasses}">
                         <f:selectItems value="#{resultsDao.classes}" var="man"
-                                       itemLabel="#{man.name}" itemValue="#{man}"/>
-                    </p:selectOneMenu>
+                                       itemLabel="#{man.name}" itemValue="#{man.name}"/>
+                    </p:selectCheckboxMenu>
                 </f:facet>
                 <p:outputLabel value="#{studentsAnswersVar.refStudent.refSchoolClass.name}" />
             </p:column>
-            <p:column headerText="#{msg.lesson}" width="70"
+            <p:column  width="70"
                       filterBy="#{studentsAnswersVar.refLesson}"
-                      sortBy="#{studentsAnswersVar.refLesson.refLessonName.nameTr}" >
+                      >
                 <f:facet name="filter">
                     <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()"
                                      value="#{resultsDao.selectedLesson}">
@@ -150,6 +150,9 @@
             <f:facet name="footer">
                 <p:commandButton value="PDF" process="@this"
                                  actionListener="#{resultsDao.reportLesson}" ajax="false" rendered="true"/>
+                <p:commandButton value="Ortalama PDF" process="@this"
+                                 actionListener="#{resultsDao.reportLessonAverage}" ajax="false" rendered="true"/>
+
 
                 <h:commandLink>
                     <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="false"/>

@@ -40,7 +40,7 @@ public class Report extends BaseDao{
         Connection connection=null;
         try {
             if (outputFile==null) outputFile="rapor";
-            String path = Util.getSession().getServletContext().getRealPath("/jasper/"+jasperFile + ".jasper");
+            String path = Util.getSession().getServletContext().getRealPath("/WEB-INF/jasper/"+jasperFile + ".jasper");
             logger.info("LOG01170: PATH : " + path);
             InputStream input = new FileInputStream(new File(path));
 

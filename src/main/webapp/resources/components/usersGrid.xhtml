@@ -73,27 +73,26 @@
                      selection="#{usersDao.item}"
                      lazy="true"
                      rowKey="#{usersGrid.tid}"
-                     tableStyle="width:900px;"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').show();"
                     process="@all"
                     listener="#{usersDao.select}"
                     />
 
             <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{usersGrid.tid}  </p:column>
 
-            <p:column headerText="#{msg.username}" style="width:120px;" filterBy="#{usersGrid.username}"  >
+            <p:column headerText="#{msg.username}" width="120" filterBy="#{usersGrid.username}"  >
                 #{usersGrid.username} </p:column>
-            <p:column headerText="#{msg.global_name}" width="370" filterBy="#{usersGrid.name}">
+            <p:column headerText="#{msg.global_name}" width="120" filterBy="#{usersGrid.name}">
                 #{usersGrid.name}
             </p:column>
 
-            <p:column headerText="#{msg.global_surname}" rendered="true" filterBy="#{usersGrid.surname}">
+            <p:column headerText="#{msg.global_surname}" width="120" rendered="true" filterBy="#{usersGrid.surname}">
                 #{usersGrid.surname}  </p:column>
-            <p:column headerText="#{msg.global_email}" rendered="true" > #{usersGrid.email}  </p:column>
+            <p:column headerText="#{msg.global_email}" width="150" rendered="true" > #{usersGrid.email}  </p:column>
 
         </p:dataTable>
     </h:form>

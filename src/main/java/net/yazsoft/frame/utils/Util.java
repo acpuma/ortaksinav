@@ -312,6 +312,28 @@ public class Util implements Serializable{
         return homeDir+"/"+dirName;
     }
 
+    public static String getImagesFolder() {
+        //File homeDir = new File(System.getProperty("user.home"));
+        File homeDir = new File(getUploadsFolder());
+        //String imagesFolder=settings.getSetting("ImagesFolder");
+        //File homeDir = new File(imagesFolder);
+
+        //logger.info("HOME DIR : " +homeDir.toString());
+        String dirName="images";
+        File targetFolder = new File(homeDir,dirName);
+
+        // if the IMAGES directory does not exist, create it
+        if (!targetFolder.exists()) {
+            //logger.info("creating directory: " + targetFolder.toString());
+            boolean dirCreated = targetFolder.mkdir();
+
+            if(dirCreated) {
+                logger.info("DIR created");
+            }
+        }
+        return homeDir+"/"+dirName;
+    }
+
     public static File createDirectory(String newDirectory) {
         String uploadsFolder=Util.getUploadsFolder();
         File targetFolder = new File(uploadsFolder, newDirectory);

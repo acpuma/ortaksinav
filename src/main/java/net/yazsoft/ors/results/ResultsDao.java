@@ -34,7 +34,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     List<Results> results;
     List<ResultsDto> resultsDto;
     Lessons selectedLesson;
-    SchoolsClass selectedClass;
+    List<SchoolsClass> selectedClasses;
 
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject SchoolsClassDao schoolsClassDao;
@@ -46,6 +46,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         studentsDto=new ArrayList<>();
         answersDto=new ArrayList<>();
         resultsDto=new ArrayList<>();
+        selectedClasses=new ArrayList<>();
     }
 
     public void reportLesson() {
@@ -66,16 +67,53 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
         params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
         params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
+        params.put("plogo","http://www.ortaksinav.com.tr/images/logo/"+Util.getActiveSchool().getTid()+ ".png");
 
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
         report.pdf("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
     }
 
+    public void reportLessonAverage() {
+        if (selectedLesson==null) {
+            Util.setFacesMessageError("Ders Seciniz");
+            return;
+        }
+        if (selectedClasses==null) {
+            Util.setFacesMessageError("Sinif Seciniz");
+            return;
+        }
+
+        logger.info("LOG01610: selelectedClasses : " + selectedClasses);
+        //logger.info("LOG01610: CLASSESSTR : " + selectedClassesStr);
+        logger.info("LOG01600: REPORT LESSON : " + selectedLesson.getRefLessonName().getNameTr());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("pSchoolName", Util.getActiveSchool().getName());
+        params.put("pexam", Util.getActiveExam().getTid());
+        params.put("plesson", selectedLesson.getTid());
+        params.put("pLessonName", selectedLesson.getRefLessonName().getNameTr());
+        params.put("pclasses",selectedClasses);
+        params.put("pclassesstr",selectedClasses.toString());
+        params.put("pdate",Util.getActiveExam().getDate());
+        Date now=Calendar.getInstance(new Locale("TR")).getTime();
+        params.put("pnow",now);
+        params.put("pil",Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
+        params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
+        params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
+        params.put("plogo","http://www.ortaksinav.com.tr/images/logo/"+Util.getActiveSchool().getTid()+ ".png");
+
+        Locale trlocale= Locale.forLanguageTag("tr-TR");
+        params.put(JRParameter.REPORT_LOCALE, trlocale);
+        report.pdf("repLessonOrtalama", params, selectedLesson.getRefLessonName().getNameTr()+"Ortalama");
+    }
+
     public void fillGrids() {
         if (Util.getActiveExam()!=null) {
             if (classes == null) {
-                classes = schoolsClassDao.findBySchool(Util.getActiveSchool());
+                classes = schoolsClassDao.findByExam(Util.getActiveExam());
             }
 
             if (lessons == null) {
@@ -268,12 +306,12 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         this.results = results;
     }
 
-    public SchoolsClass getSelectedClass() {
-        return selectedClass;
+    public List<SchoolsClass> getSelectedClasses() {
+        return selectedClasses;
     }
 
-    public void setSelectedClass(SchoolsClass selectedClass) {
-        this.selectedClass = selectedClass;
+    public void setSelectedClasses(List<SchoolsClass> selectedClasses) {
+        this.selectedClasses = selectedClasses;
     }
 
     public Lessons getSelectedLesson() {

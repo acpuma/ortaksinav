@@ -5,6 +5,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.schools.SchoolsDao;
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -30,6 +31,7 @@ public class UploadsBean implements Serializable{
     private static final long DAT = 1L;
     private static final long IMAGE = 2L;
     private static final long BOOKLET = 3L;
+    private static final long LOGO = 4L;
     private UploadedFile uploadedFile;
     Schools activeSchool;
     File uploadDirectory;
@@ -40,6 +42,7 @@ public class UploadsBean implements Serializable{
 
     @Inject UploadsDao uploadsDao;
     @Inject UploadsTypeDao uploadsTypeDao;
+    @Inject SchoolsDao schoolsDao;
 
     @PostConstruct
     public void init() {
@@ -163,6 +166,10 @@ public class UploadsBean implements Serializable{
         } else if (fileType.equals(BOOKLET)) {
             Util.createDirectory("BOOKLET");
             dirName="/BOOKLET/"+activeSchool.getTid().toString();
+        } else if (fileType.equals(LOGO)) {
+            Util.createDirectory("images");
+            Util.createDirectory("images/logo");
+            dirName="/images/logo";
         } else {
             dirName="/files";
         }
@@ -178,8 +185,6 @@ public class UploadsBean implements Serializable{
     }
 
 
-
-
     @Transactional
     public void handleBookletUpload(FileUploadEvent event) {
         fileType=BOOKLET;
@@ -192,6 +197,45 @@ public class UploadsBean implements Serializable{
         fileType=DAT;
         uploadType=uploadsTypeDao.getById(DAT);
         handleFileUpload(event);
+    }
+    @Transactional
+    public void handleLogoUpload(FileUploadEvent event) {
+        logger.info("UPLOADING LOGO.......");
+        fileType=LOGO;
+        Long tid=schoolsDao.getItem().getTid();
+
+        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            getUploadDirectory(null);
+            String filenameOriginal=event.getFile().getFileName();
+            String extension=UploadsDao.getFileExtension(filenameOriginal);
+
+            InputStream inputStream;
+            inputStream = event.getFile().getInputstream();
+            BufferedImage bufferedImage= ImageIO.read(event.getFile().getInputstream());
+            Integer imageWidth=bufferedImage.getWidth();
+            if (imageWidth>256) {
+                inputStream = Util.imageResize(event.getFile().getInputstream(), extension, 256, 256);
+            }
+            String filename=tid.toString()+"."+extension.toLowerCase();
+            OutputStream out = new FileOutputStream(new File(uploadDirectory,filename));
+            int read = 0;
+            byte[] bytes = new byte[BUFFER_SIZE];
+
+            while ((read = inputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            inputStream.close();
+            out.flush();
+            out.close();
+
+            Util.setFacesMessage(" LOGO YUKLENDI ");
+
+        } catch (Exception e) {
+            logger.error("EXCEPTION: ", e);
+            Util.setFacesMessageError(e.getMessage());
+            //throw e;
+        }
     }
 
     @Transactional

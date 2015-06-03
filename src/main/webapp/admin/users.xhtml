@@ -15,6 +15,12 @@
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.users_header}" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:outputPanel style="width: 99%; margin:0 auto;">
+        <components:usersGrid rows="100"  scrollable="true" update=":#{p:component('pageForm')}"
+                          widgetVar="usersGridWidget" scrollHeight="310"/>
+    </p:outputPanel>
+    <p:dialog id="gridDialog" header="#{msg.users_header}" widgetVar="pageGrid"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
     <h:form id="pageForm">
         <p:outputPanel style="width: 160px; height: 160px;box-shadow: 0px 1px 3px 2px #eee; margin:20px auto;" >
             <p:outputLabel value="#{msg.global_image}" for="image"  rendered="false"/>
@@ -52,10 +58,8 @@
         <components:toolbar gridname="usersGrid" daobean="#{usersDao}" print="false"/>
     </h:form>
 
-    <p:dialog id="gridDialog" header="#{msg.users_header}" widgetVar="pageGrid"
-              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
-        <components:usersGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')}"
-                         widgetVar="usersGridWidget"/>
+
+
     </p:dialog>
 
 </p:outputPanel>

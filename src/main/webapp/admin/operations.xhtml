@@ -6,6 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
@@ -19,9 +20,9 @@
     <p:outputPanel style="text-align: center;" >
         <components:inputUploadDat update="@widgetVar(uploadsGridWidget)" />
 
-        <p:commandButton value="#{msg.files_show}"
+        <p:commandButton value="#{msg.global_edit}"
                          action="#{operationsDao.show}"
-                         update=":messages fileContent"
+                         update=":messages fileContentForm:fileContent"
                          oncomplete="PF('showFileDialogWidget').show()"
                 />
         <p:commandButton value="#{msg.transfer}"
@@ -85,7 +86,7 @@
         </p:outputPanel>
         <p:panelGrid columns="2">
             <p:outputPanel style="width: 60px;">
-                <components:schoolsClassGrid rows="500" scrollable="true" scrollHeight="400"
+                <components:schoolsClassGrid2 rows="500" scrollable="true" scrollHeight="400"
                                      widgetVar="schoolsClassGridWidget" paginator="false" />
             </p:outputPanel>
             <p:outputPanel style="width: 1050px;">
@@ -98,13 +99,22 @@
     </p:dialog>
 
     <p:dialog id="showFileDialog" header="#{msg.files_show}" widgetVar="showFileDialogWidget"
-              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
-              closeOnEscape="true">
-        <p:outputPanel id="fileContent" style="width: 1000px; font-size: 12px; height:500px; overflow: scroll">
-            <ui:repeat value="#{operationsDao.lines}" var="line">
-            #{line} <br/>
-            </ui:repeat>
-        </p:outputPanel>
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="false" closable="true"
+              closeOnEscape="true" minWidth="1000">
+        <h:form id="fileContentForm">
+            <p:outputPanel style="width: 100%; text-align: right; padding: 3px; ">
+                <p:commandButton actionListener="#{operationsDao.updateUpload}"
+                         value="#{msg.toolbar_save}" update=":messages"
+                        oncomplete="PF('showFileDialogWidget').hide()"/>
+                <p:commandButton value="X" oncomplete="PF('showFileDialogWidget').hide()"
+                                 immediate="true" process="@none" style="margin: 5px;"/>
+            </p:outputPanel>
+            <p:outputPanel style="height: 500px; max-width: 1000px; overflow-x: scroll;" id="fileContent"  >
+                <p:inputTextarea value="#{operationsDao.fileContent}" width="1200" id="contentArea"
+                             style="font-family: monospace;  font-size:11px; max-height: 500px;overflow:scroll;"
+                             cols="350"  rendered="true" onmouseup="contentCursor()"/>
+            </p:outputPanel>
+        </h:form>
     </p:dialog>
     <p:dialog id="countDialog" header="#{msg.result}" widgetVar="countDialogWidget"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"

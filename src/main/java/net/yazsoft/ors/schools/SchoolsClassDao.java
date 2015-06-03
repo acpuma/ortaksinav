@@ -3,14 +3,19 @@ package net.yazsoft.ors.schools;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
+import net.yazsoft.ors.entities.Exams;
+import net.yazsoft.ors.entities.Results;
 import net.yazsoft.ors.entities.Schools;
 import net.yazsoft.ors.entities.SchoolsClass;
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Named
@@ -53,6 +58,40 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
             e.printStackTrace();
         }
         return temp;
+    }
+
+    public List<SchoolsClass> findByExam(Exams exam) {
+        logger.info("EXAM : " + exam);
+        List<Results> list=null;
+        try {
+            Criteria c = getSession().createCriteria(Results.class);
+            c.add(Restrictions.eq("refExam", exam));
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = (List<Results>) c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        List<SchoolsClass> schoolsClasses=new ArrayList<>();
+        List<Long> classTids=new ArrayList<>();
+        for (Results result:list) {
+            if (!classTids.contains(result.getRefStudent().getRefSchoolClass().getTid())) {
+                classTids.add(result.getRefStudent().getRefSchoolClass().getTid());
+            }
+        }
+
+        logger.info("LOG01640: CLASS TIDS : " + classTids);
+        for (Long classTid:classTids) {
+            schoolsClasses.add((SchoolsClass)getSession().load(SchoolsClass.class,classTid));
+        }
+        BeanComparator fieldComparator=new BeanComparator("name");
+        Collections.sort(schoolsClasses, fieldComparator);
+        logger.info("LOG01650: EXAM CLASSES : " + schoolsClasses);
+
+        return schoolsClasses;
+
     }
 
     public SchoolsClassDao() {

@@ -43,6 +43,10 @@ public class ExamsLazy extends LazyDataModel<Exams> {
         this.setRowCount(examsDao.rowCount());
         multiSortMeta=new ArrayList<>();
         SortMeta sortMeta=new SortMeta();
+        sortMeta.setSortField("date");
+        sortMeta.setSortOrder(SortOrder.DESCENDING);
+        multiSortMeta.add(sortMeta);
+        /*
         sortMeta.setSortField("refExamYear");
         sortMeta.setSortOrder(SortOrder.DESCENDING);
         multiSortMeta.add(sortMeta);
@@ -54,6 +58,7 @@ public class ExamsLazy extends LazyDataModel<Exams> {
         sortMeta.setSortField("refExamSeasonNumber");
         sortMeta.setSortOrder(SortOrder.DESCENDING);
         multiSortMeta.add(sortMeta);
+        */
         /*
         if (!filters.containsKey("refSchool")) {
             filters.put("refSchool", Util.getActiveSchool().getTid());

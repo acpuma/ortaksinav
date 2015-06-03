@@ -120,7 +120,7 @@
                 #{examsGrid.nameTr}
             </p:column>
 
-            <p:column headerText="Tarih" rendered="true" width="100">
+            <p:column headerText="Tarih" rendered="true" width="100" sortBy="#{examsGrid.date}">
                 <h:outputText value="#{examsGrid.date}" >
                     <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
                 </h:outputText>

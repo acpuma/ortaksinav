@@ -60,6 +60,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     Boolean autoAddAnswers=Boolean.FALSE;
     Integer lessonsCount;
     Map<Lessons,Map<Integer,String>> lessonAnswerMap;
+    String fileContent;
 
     @Inject UploadsDao uploadsDao;
     @Inject UploadsBean uploadsBean;
@@ -839,11 +840,25 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             Path upload_path = Paths.get(UploadsDao.getUploadedFilePath(upload));
             Charset charset = Charset.forName("ISO-8859-9");
             lines = Files.readAllLines(upload_path, charset);
+            byte[] content=Files.readAllBytes(upload_path);
+            fileContent=new String(content,"ISO-8859-9");
+            logger.info("LOG01660: FILE : " + fileContent);
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
             e.printStackTrace();
         }
         return lines;
+    }
+
+    public void updateUpload() {
+        try {
+            Path upload_path = Paths.get(UploadsDao.getUploadedFilePath(upload));
+            Files.write(upload_path,fileContent.getBytes("ISO-8859-9"));
+            Util.setFacesMessage("KAYIT EDILDI");
+        } catch (Exception e) {
+            Util.setFacesMessageError(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
@@ -924,5 +939,13 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
     public void setAutoAddAnswers(Boolean autoAddAnswers) {
         this.autoAddAnswers = autoAddAnswers;
+    }
+
+    public String getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
     }
 }
