@@ -24,7 +24,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Uploads.findAll", query = "SELECT u FROM Uploads u")})
+    @NamedQuery(name = "Uploads.findAll", query = "SELECT u FROM Uploads u"),
+    @NamedQuery(name = "Uploads.findByTid", query = "SELECT u FROM Uploads u WHERE u.tid = :tid"),
+    @NamedQuery(name = "Uploads.findByActive", query = "SELECT u FROM Uploads u WHERE u.active = :active"),
+    @NamedQuery(name = "Uploads.findByVersion", query = "SELECT u FROM Uploads u WHERE u.version = :version"),
+    @NamedQuery(name = "Uploads.findByName", query = "SELECT u FROM Uploads u WHERE u.name = :name"),
+    @NamedQuery(name = "Uploads.findByCreated", query = "SELECT u FROM Uploads u WHERE u.created = :created"),
+    @NamedQuery(name = "Uploads.findByUpdated", query = "SELECT u FROM Uploads u WHERE u.updated = :updated"),
+    @NamedQuery(name = "Uploads.findByProcessed", query = "SELECT u FROM Uploads u WHERE u.processed = :processed"),
+    @NamedQuery(name = "Uploads.findByDetail", query = "SELECT u FROM Uploads u WHERE u.detail = :detail")})
 public class Uploads extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,6 +55,9 @@ public class Uploads extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
     private Boolean processed;
+    @Size(max = 255)
+    @Column(length = 255)
+    private String detail;
     @JoinColumn(name = "ref_upload_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private UploadsType refUploadType;
@@ -59,8 +70,6 @@ public class Uploads extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_user", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users refUser;
-    @Size(min = 1, max = 255)
-    private String detail;
 
     public Uploads() {
     }
@@ -131,6 +140,14 @@ public class Uploads extends BaseEntity implements Serializable {
         this.processed = processed;
     }
 
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
     public UploadsType getRefUploadType() {
         return refUploadType;
     }
@@ -161,14 +178,6 @@ public class Uploads extends BaseEntity implements Serializable {
 
     public void setRefUser(Users refUser) {
         this.refUser = refUser;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
     }
 
     @Override

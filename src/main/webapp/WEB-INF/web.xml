@@ -63,6 +63,11 @@
         <param-value>commons</param-value>
     </context-param>
 
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
 <!-- for omnifaces -->
 <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>

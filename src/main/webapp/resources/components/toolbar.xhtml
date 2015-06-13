@@ -16,6 +16,7 @@
         <cc:attribute default="true"     required="false"   name="print" />
         <cc:attribute default="false"     required="false"   name="help" />
         <cc:attribute default="true"     required="false"   name="gridname" />
+        <cc:attribute default=""     required="false"   name="oncomplete" />
         <cc:attribute default="#{p:component('pageForm')}" name="resetfields" />
         <cc:attribute name="daobean" /> 
     </cc:interface>
@@ -30,7 +31,7 @@
             <p:commandButton icon="toolbar-save toolbar-icon" styleClass="toolbar-button"
                              value="#{msg.toolbar_save}"
                              action="#{daobeann.save}"
-                            onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock()"
+                            onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock(); #{cc.attrs.oncomplete}; "
                              update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)}  :messages"
                              process="@this :#{p:component('pageForm')}" partialSubmit="true"
                              rendered="#{cc.attrs.save}">
@@ -66,6 +67,7 @@
                              action="#{daobeann.delete}"
                              update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)} :messages"
                              disabled="#{daobeann.disabledelete}" rendered="#{cc.attrs.delete}"
+                             oncomplete="#{cc.attrs.oncomplete};"
                              id="toolbarDelete">
                 <p:confirm header="#{msg.global_confirmation}" message="#{msg.toolbar_remove_confirm}"
                            icon="ui-icon-alert"/>

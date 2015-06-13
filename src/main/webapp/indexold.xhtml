@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<f:view>
+
+<h:body style="background: #eee;color:#333;text-align: center;">
+                <h2>ORTAK SINAV MERKEZİ</h2>
+    <p:outputPanel style="margin: 0 auto; width: 650px;">
+<h:form style="text-align: center">
+    <table>
+        <tr>
+            <td width="350">
+                <h:graphicImage library="images" name="orslogo.png" width="320" style="display: inline"/>
+            </td>
+            <td valign="middle">
+                <h:outputLink value="admin/admin.html" title="ADMIN" >
+                    <h:graphicImage library="images" name="manager.png" width="128" />
+                    <p:outputPanel layout="inline" style="font-size: 24px;">
+                    YÖNETİCİ
+                    </p:outputPanel>
+                </h:outputLink>
+                <br/>
+
+                <h:outputLink value="student/student.html" title="OGRENCI" >
+                    <h:graphicImage library="images" name="student.png" width="128" />
+                    <p:outputPanel layout="inline" style="font-size: 24px;">
+                    ÖĞRENCİ
+                    </p:outputPanel>
+                </h:outputLink>
+
+            </td>
+        </tr>
+    </table>
+</h:form>
+    </p:outputPanel>
+</h:body>
+</f:view>
+</html>

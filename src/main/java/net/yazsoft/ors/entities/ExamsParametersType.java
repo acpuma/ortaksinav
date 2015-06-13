@@ -26,7 +26,17 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsParametersType.findAll", query = "SELECT e FROM ExamsParametersType e")})
+    @NamedQuery(name = "ExamsParametersType.findAll", query = "SELECT e FROM ExamsParametersType e"),
+    @NamedQuery(name = "ExamsParametersType.findByTid", query = "SELECT e FROM ExamsParametersType e WHERE e.tid = :tid"),
+    @NamedQuery(name = "ExamsParametersType.findByActive", query = "SELECT e FROM ExamsParametersType e WHERE e.active = :active"),
+    @NamedQuery(name = "ExamsParametersType.findByVersion", query = "SELECT e FROM ExamsParametersType e WHERE e.version = :version"),
+    @NamedQuery(name = "ExamsParametersType.findByNameTr", query = "SELECT e FROM ExamsParametersType e WHERE e.nameTr = :nameTr"),
+    @NamedQuery(name = "ExamsParametersType.findByNameEn", query = "SELECT e FROM ExamsParametersType e WHERE e.nameEn = :nameEn"),
+    @NamedQuery(name = "ExamsParametersType.findByCreated", query = "SELECT e FROM ExamsParametersType e WHERE e.created = :created"),
+    @NamedQuery(name = "ExamsParametersType.findByUpdated", query = "SELECT e FROM ExamsParametersType e WHERE e.updated = :updated"),
+    @NamedQuery(name = "ExamsParametersType.findByShowDefault", query = "SELECT e FROM ExamsParametersType e WHERE e.showDefault = :showDefault"),
+    @NamedQuery(name = "ExamsParametersType.findByLength", query = "SELECT e FROM ExamsParametersType e WHERE e.length = :length"),
+    @NamedQuery(name = "ExamsParametersType.findByStart", query = "SELECT e FROM ExamsParametersType e WHERE e.start = :start")})
 public class ExamsParametersType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -131,15 +141,6 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    @XmlTransient
-    public Collection<ExamsParameters> getExamsParametersCollection() {
-        return examsParametersCollection;
-    }
-
-    public void setExamsParametersCollection(Collection<ExamsParameters> examsParametersCollection) {
-        this.examsParametersCollection = examsParametersCollection;
-    }
-
     public Boolean getShowDefault() {
         return showDefault;
     }
@@ -162,6 +163,15 @@ public class ExamsParametersType extends BaseEntity implements Serializable {
 
     public void setStart(Integer start) {
         this.start = start;
+    }
+
+    @XmlTransient
+    public Collection<ExamsParameters> getExamsParametersCollection() {
+        return examsParametersCollection;
+    }
+
+    public void setExamsParametersCollection(Collection<ExamsParameters> examsParametersCollection) {
+        this.examsParametersCollection = examsParametersCollection;
     }
 
     @Override

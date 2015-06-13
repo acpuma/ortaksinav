@@ -10,7 +10,6 @@
 <f:view>
     <h:head>
         <title>#{msg.schools}</title>
-        <h:outputStylesheet library="pages" name="admin/admin.css" rendered="false"/>
     </h:head>
     <ui:decorate template="/WEB-INF/templates/master.xhtml">
         <ui:param name="title" value="#{msg.schools}" />
@@ -21,7 +20,7 @@
               modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
 
         <p:outputPanel id="formPanel" >
-            <components:inputUploadLogo widgetVar="uploadLogoWidget"/>
+            <components:inputUploadImage widgetVar="uploadLogoWidget" imageType="school" daobean="#{schoolsDao}"/>
         <h:form id="pageForm">
 
             <p:panelGrid columns="4" id="pagePanel">

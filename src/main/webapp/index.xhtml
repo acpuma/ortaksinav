@@ -1,43 +1,676 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+        >
 <f:view>
+    <h:head>
+        <!-- Slider Revolution -->
+        <link rel="stylesheet" href="resources/theme/js/rs-plugin/css/settings.css" type="text/css"/>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/masterweb.xhtml">
+        <ui:param name="title" value="Ortak Sınav" />
 
-<h:body style="background: #eee;color:#333;text-align: center;">
-                <h2>ORTAK SINAV MERKEZİ</h2>
-    <p:outputPanel style="margin: 0 auto; width: 650px;">
-<h:form style="text-align: center">
-    <table>
-        <tr>
-            <td width="350">
-                <h:graphicImage library="images" name="orslogo.png" width="320" style="display: inline"/>
-            </td>
-            <td valign="middle">
-                <h:outputLink value="admin/admin.html" title="ADMIN" >
-                    <h:graphicImage library="images" name="manager.png" width="128" />
-                    <p:outputPanel layout="inline" style="font-size: 24px;">
-                    YÖNETİCİ
-                    </p:outputPanel>
-                </h:outputLink>
-                <br/>
+    <!--  ==========  -->
+    <!--  = Slider Revolution =  -->
+    <!--  ==========  -->
+    <div class="fullwidthbanner-container">
+        <div class="fullwidthbanner">
+            <ul>
+                <ui:repeat value="#{webSlidesDao.slides}" var="slide">
+                    <li data-transition="premium-random" data-slotamount="3">
+                        <p:graphicImage height="550" width="1400" style="height:550px; width: 1400px;"
+                                        value="/images/slide/#{slide.tid}.#{slide.refImage.extension}"
+                                />
+                    </li><!-- /slide -->
+                </ui:repeat>
+            </ul>
+            <div class="tp-bannertimer"></div>
+        </div>
+        <!--  ==========  -->
+        <!--  = Nav Arrows =  -->
+        <!--  ==========  -->
+        <div id="sliderRevLeft"><i class="icon-chevron-left"></i></div>
+        <div id="sliderRevRight"><i class="icon-chevron-right"></i></div>
+    </div> <!-- /slider revolution -->
 
-                <h:outputLink value="student/student.html" title="OGRENCI" >
-                    <h:graphicImage library="images" name="student.png" width="128" />
-                    <p:outputPanel layout="inline" style="font-size: 24px;">
-                    ÖĞRENCİ
-                    </p:outputPanel>
-                </h:outputLink>
+    <!--  ==========  -->
+    <!--  = Main container =  -->
+    <!--  ==========  -->
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <div class="push-up over-slider blocks-spacer">
 
-            </td>
-        </tr>
-    </table>
-</h:form>
-    </p:outputPanel>
-</h:body>
+                    <!--  ==========  -->
+                    <!--  = Three Banners =  -->
+                    <!--  ==========  -->
+                    <div class="row">
+                        <div class="span4">
+                            <a href="#" class="btn btn-block colored banner">
+                                <span class="title">OPTİK FORM</span>
+                                <em>Optik Form Basımı ve Değerlendirme</em>
+                            </a>
+                        </div>
+                        <div class="span4">
+                            <a href="#" class="btn btn-block colored banner">
+                                <span class="title">ORTAK SINAV DEĞERLENDİRME</span>
+                                <em>Ortak Sınav Hazırlama ve Değerlendirme</em>
+                            </a>
+                        </div>
+                        <div class="span4">
+                            <a href="#" class="btn btn-block colored banner">
+                                <span class="title">ÖZDEBİR<span class="light"> YAYINLARI</span></span>
+                                <em>Tüm Özdebir yayınları</em>
+                            </a>
+                        </div>
+                    </div> <!-- /three banners -->
+                </div>
+            </div>
+        </div>
+
+        <!--  ==========  -->
+        <!--  = Featured Items =  -->
+        <!--  ==========  -->
+        <div class="row featured-items blocks-spacer">
+            <div class="span12">
+
+                <!--  ==========  -->
+                <!--  = Title =  -->
+                <!--  ==========  -->
+                <div class="main-titles lined">
+                    <h2 class="title">Çok Satanlar</h2>
+                    <div class="arrows">
+                        <a href="#" class="icon-chevron-left" id="featuredItemsLeft"></a>
+                        <a href="#" class="icon-chevron-right" id="featuredItemsRight"></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="span12">
+                <!--  ==========  -->
+                <!--  = Carousel =  -->
+                <!--  ==========  -->
+                <div class="carouFredSel" data-autoplay="false" data-nav="featuredItems">
+                    <div class="slide">
+                        <div class="row">
+
+
+
+
+
+                            <!--  ==========  -->
+                            <!--  = Product =  -->
+                            <!--  ==========  -->
+                            <div class="span4">
+                                <div class="product">
+                                    <div class="product-img featured">
+                                        <div class="picture">
+                                            <img src="resources/theme/images/products/ingilizce.jpg" alt=""
+                                                 style="height:200px !important;"/>
+                                            <div class="img-overlay">
+                                                <a href="#" class="btn more btn-primary">Detay</a>
+                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="main-titles">
+                                        <h4 class="title">3.6 TL</h4>
+                                        <h5 class="no-margin">5.S. Poşetli Yaprak Test İngilizce</h5>
+                                    </div>
+                                    <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 12 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
+                                    <p class="center-align stars">
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+
+                                    </p>
+                                </div>
+                            </div> <!-- /product -->
+
+
+
+
+
+                            <!--  ==========  -->
+                            <!--  = Product =  -->
+                            <!--  ==========  -->
+                            <div class="span4">
+                                <div class="product">
+                                    <div class="product-img featured">
+                                        <div class="picture">
+                                            <img src="resources/theme/images/products/teog.png"
+                                                 style="height:200px !important;"/>
+                                            <div class="img-overlay">
+                                                <a href="#" class="btn more btn-primary">Detay</a>
+                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="main-titles">
+                                        <h4 class="title">9 TL</h4>
+                                        <h5 class="no-margin">8.S. 5'li TEOG 2 Deneme Sınav Seti</h5>
+                                    </div>
+                                    <p class="desc">Öğretim programının Nisan sonuna kadar işlenen konularından oluşan 5 deneme sınavı, Toplam 600 soru... 4 renkli , kuşe kapak, cevap kağıtlarıyla</p>
+                                    <p class="center-align stars">
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star"></span>
+                                        <span class="icon-star"></span>
+                                        <span class="icon-star"></span>
+                                        <span class="icon-star"></span>
+
+                                    </p>
+                                </div>
+                            </div> <!-- /product -->
+
+
+
+
+
+                            <!--  ==========  -->
+                            <!--  = Product =  -->
+                            <!--  ==========  -->
+                            <div class="span4">
+                                <div class="product">
+                                    <div class="product-img featured">
+                                        <div class="picture">
+                                            <img src="resources/theme/images/products/kimya.jpg"
+                                                 style="height:200px !important;"/>
+                                            <div class="img-overlay">
+                                                <a href="#" class="btn more btn-primary">Detay</a>
+                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="main-titles">
+                                        <h4 class="title">9 TL</h4>
+                                        <h5 class="no-margin">9. S. Konu Anl. Soru B. Kimya</h5>
+                                    </div>
+                                    <p class="desc">9. Sınıf Öğretim Programına göre hazırlanmış, okula yardımcı, sınavlara hazırlık... Özlü konu anlatımları, çözümlü sorularla, etkinliklerle ve 60 konu testiyle desteklenmiştir.</p>
+                                    <p class="center-align stars">
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star"></span>
+                                    </p>
+                                </div>
+                            </div> <!-- /product -->
+
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="row">
+
+
+                            <!--  ==========  -->
+                            <!--  = Product =  -->
+                            <!--  ==========  -->
+                            <div class="span4">
+                                <div class="product">
+                                    <div class="product-img featured">
+                                        <div class="picture">
+                                            <img src="resources/theme/images/products/sosyal.jpg"
+                                                 style="height:200px !important;"/>
+                                            <div class="img-overlay">
+                                                <a href="#" class="btn more btn-primary">Detay</a>
+                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="main-titles">
+                                        <h4 class="title">4.5 TL</h4>
+                                        <h5 class="no-margin">5.S. Poşetli Yaprak Test Sosyal Bilgiler</h5>
+                                    </div>
+                                    <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 24 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
+                                    <p class="center-align stars">
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+                                        <span class="icon-star stars-clr"></span>
+
+                                    </p>
+                                </div>
+                            </div> <!-- /product -->
+
+                        </div>
+                    </div>
+                </div> <!-- /carousel -->
+            </div>
+
+        </div>
+    </div> <!-- /container -->
+
+    <!--  ==========  -->
+    <!--  = New Products =  -->
+    <!--  ==========  -->
+    <div class="boxed-area blocks-spacer">
+        <div class="container">
+
+            <!--  ==========  -->
+            <!--  = Title =  -->
+            <!--  ==========  -->
+            <div class="row">
+                <div class="span12">
+                    <div class="main-titles lined">
+                        <h2 class="title"> Yeni Ürünler</h2>
+                    </div>
+                </div>
+            </div> <!-- /title -->
+
+            <div class="row popup-products blocks-spacer">
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/matematik.jpg"
+                                     style="height:200px !important;"/>
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">18 TL</h4>
+                            <h5 class="no-margin">9. S. Konu Anl. Soru B. Matematik</h5>
+                        </div>
+                        <p class="desc">9. Sınıf Öğretim Programına göre hazırlanmış, okula yardımcı, sınavlara hazırlık... Özlü konu anlatımları, çok sayıda çözümlü sorularla, ve 95 konu testinde 2000'i aşkın soruyla desteklenmiştir.</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star"></span>
+                            <span class="icon-star"></span>
+                            <span class="icon-star"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/biyoloji.jpg"
+                                     style="height:200px !important;"/>
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">19.8 TL</h4>
+                            <h5 class="no-margin">YGS-LYS Biyoloji Soru Bankası</h5>
+                        </div>
+                        <p class="desc">YGS-LYS Biyoloji Soru Bankası 10 Ünite 146 Test</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/fen.jpg"
+                                     style="height:200px !important;"/>
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">6.3 TL</h4>
+                            <h5 class="no-margin">7.S. Poşetli Yaprak Test Fen Bilimleri</h5>
+                        </div>
+                        <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 32 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/turkce.jpg"
+                                     style="height:200px !important;"/>
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">7.2 TL</h4>
+                            <h5 class="no-margin">6.S. Poşetli Yaprak Test Türkçe</h5>
+                        </div>
+                        <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 40 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+                <div class="clearfix"></div>
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/felsefe.jpg"
+                                     style="height:200px !important;" />
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">2.8 TL</h4>
+                            <h5 class="no-margin">Cep Kitabı YGS/LYS Felsefe</h5>
+                        </div>
+                        <p class="desc">YGS/LYS Felsefe Grubu Özetli Temel Konular Okula Yardımcı Üniversiteye hazırlık 9,5x13,5 cm Renkli kuşe kapak</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/deneme.jpg"
+                                     style="height:200px !important;" />
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">9 TL</h4>
+                            <h5 class="no-margin">5.S. 5'li Deneme Sınavı</h5>
+                        </div>
+                        <p class="desc">Okula Destek TEOG Sınavına Hazırlık, Yeni öğretim programına uygun;Türkçe, Matematik, Fen Bil., Sos. Bil., İngilizce Testleri... 70'er soruluk 5 deneme sınavı, toplam 350 soru... 4 renkli , kuşe kapak, cevap kağıtlarıyla</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star"></span>
+                            <span class="icon-star"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/geometri.jpg"
+                                     style="height:200px !important;" />
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">2.8 TL</h4>
+                            <h5 class="no-margin">Cep Kitabı YGS/LYS Geometri</h5>
+                        </div>
+                        <p class="desc">YGS/LYS Geometri Özetli Temel Konular Okula Yardımcı Üniversiteye hazırlık 9,5x13,5 cm Renkli kuşe kapak</p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star"></span>
+                            <span class="icon-star"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+
+                <!--  ==========  -->
+                <!--  = Product =  -->
+                <!--  ==========  -->
+                <div class="span3">
+                    <div class="product">
+                        <div class="product-img">
+                            <div class="picture">
+                                <img src="resources/theme/images/products/ilkokul.jpg"
+                                     style="height:200px !important;" />
+                                <div class="img-overlay">
+                                    <a href="#" class="btn more btn-primary">Detay</a>
+                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="main-titles no-margin">
+                            <h4 class="title">22.5 TL</h4>
+                            <h5 class="no-margin">4. S. Tüm Ders. K. Anl.Sb.</h5>
+                        </div>
+                        <p class="desc">Sayfa sayısı : 552
+                        </p>
+                        <p class="center-align stars">
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star stars-clr"></span>
+                            <span class="icon-star"></span>
+                            <span class="icon-star"></span>
+
+                        </p>
+                    </div>
+                </div> <!-- /product -->
+
+
+
+            </div>
+        </div>
+    </div> <!-- /new products -->
+
+
+    <!--  ==========  -->
+    <!--  = Lastest News =  -->
+    <!--  ==========  -->
+    <div class="darker-stripe blocks-spacer more-space latest-news with-shadows">
+        <div class="container">
+
+            <!--  ==========  -->
+            <!--  = Title =  -->
+            <!--  ==========  -->
+            <div class="row">
+                <div class="span12">
+                    <div class="main-titles center-align">
+                        <h2 class="title">
+                            <span class="clickable icon-chevron-left" id="tweetsLeft"></span>
+                            &#160;&#160;&#160;
+                            <span class="light">Müşterilerimizin Söyledikleri </span>
+                            &#160;&#160;&#160;
+                            <span class="clickable icon-chevron-right" id="tweetsRight"></span>
+                        </h2>
+                    </div>
+                </div>
+            </div> <!-- /title -->
+
+            <!--  ==========  -->
+            <!--  = News content =  -->
+            <!--  ==========  -->
+            <div class="row">
+                <div class="span12">
+                    <div class="carouFredSel" data-nav="tweets" data-autoplay="false">
+
+
+                        <!--  ==========  -->
+                        <!--  = Slide =  -->
+                        <!--  ==========  -->
+                        <div class="slide">
+                            <div class="row">
+                                <div class="span6">
+                                    <div class="news-item">
+                                        <div class="published">25. Mayıs, 2015</div>
+                                        <h6><a href="#">Muhteşem bir uygulama</a></h6>
+                                        <p>Ortak Sınav Merkezi'yle çalıştığımız için çok mutluyuz. Tüm okullar bu sistemi mutlaka denemeli. </p>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="news-item">
+                                        <div class="published">30. Mayıs, 2015</div>
+                                        <h6><a href="#">Sınavlarınız çok rahat geçecek</a></h6>
+                                        <p>Ortak Sınavlarımızı çok rahat bir şekilde yaptık. Baştan sona tüm aşamalar hatasız ve çok başarılı geçti.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- /slide -->
+
+
+                        <!--  ==========  -->
+                        <!--  = Slide =  -->
+                        <!--  ==========  -->
+                        <div class="slide">
+                            <div class="row">
+                                <div class="span6">
+                                    <div class="news-item">
+                                        <div class="published">15. Mayıs, 2015</div>
+                                        <h6><a href="#">Hemen sonuç</a></h6>
+                                        <p>Yaptığımız sınavlar aynı gün değerlendirildi ve öğrenciler notlarını hemen öğrendiler. Çok hızlı ve güzel bir uygulama.</p>
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div class="news-item">
+                                        <div class="published">22. Mayıs, 2015</div>
+                                        <h6><a href="#">Herkes çok sevdi</a></h6>
+                                        <p>Tüm öğretmenlerimiz ve öğrencilerimiz ortak sınavları çok sevdi. Sorunsuz ve çok hızlı bir şekilde sınavlarımızı yapıp sonuçlarını öğrendik. </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- /slide -->
+
+                    </div>
+                </div>
+            </div> <!-- /news content -->
+        </div>
+    </div> <!-- /latest news -->
+
+    <!--  ==========  -->
+    <!--  = Brands Carousel =  -->
+    <!--  ==========  -->
+    <div class="container blocks-spacer-last">
+
+        <!--  ==========  -->
+        <!--  = Title =  -->
+        <!--  ==========  -->
+        <div class="row">
+            <div class="span12">
+                <div class="main-titles lined">
+                    <h2 class="title"><span class="light"></span> </h2>
+                    <div class="arrows">
+                        <a href="#" class="icon-chevron-left" id="brandsLeft"></a>
+                        <a href="#" class="icon-chevron-right" id="brandsRight"></a>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- /title -->
+
+        <!--  ==========  -->
+        <!--  = Logos =  -->
+        <!--  ==========  -->
+        <div class="row">
+            <div class="span12">
+                <div class="brands carouFredSel" data-nav="brands" data-autoplay="true">
+                    <img src="resources/theme/images/links/meb.png" alt=""  height="104" />
+                    <img src="resources/theme/images/links/eokul.png" alt=""  height="104" />
+                    <img src="resources/theme/images/links/ozdebir.png" alt=""  height="104" />
+                    <img src="resources/theme/images/links/fsmal.png" alt=""  height="104" />
+                    <img src="resources/theme/images/links/vga.png" alt="" width="203" height="104" />
+                    <img src="resources/theme/images/links/kiptas.png" alt=""  height="104" />
+                    <img src="resources/theme/images/links/beyazkalem.png" alt="" width="203" height="104" />
+                    <img src="resources/theme/images/links/fehmiaksoy.png" alt="" width="203" height="104" />
+                    <img src="resources/theme/images/links/yargi.png" alt="" width="203" height="104" />
+                    <img src="resources/theme/images/links/yediiklim.png" alt="" width="203" height="104" />
+                </div>
+            </div>
+        </div> <!-- /logos -->
+    </div> <!-- /brands carousel -->
+
+        <!--  = Slider Revolution =  -->
+        <script src="resources/theme/js/rs-plugin/pluginsources/jquery.themepunch.plugins.min.js" type="text/javascript"></script>
+        <script src="resources/theme/js/rs-plugin/js/jquery.themepunch.revolution.min.js" type="text/javascript"></script>
+    </ui:decorate>
 </f:view>
 </html>
+
+

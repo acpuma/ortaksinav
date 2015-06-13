@@ -4,6 +4,7 @@ package net.yazsoft.frame.menus;
 
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Menus;
+import org.apache.log4j.Logger;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
@@ -21,15 +22,25 @@ import java.util.List;
 @ViewScoped
 @Transactional
 public class MenusBus implements Serializable{
+    private static final Logger logger = Logger.getLogger(MenusBus.class);
     private MenuModel model = new DefaultMenuModel();
     private List<Menus> menus;
+    private List<Menus> webmenus;
 
     @Autowired
     MenusDao menusDao;
-    
+
+    public List<Menus> getWebmenus() {
+        if (webmenus==null) {
+            webmenus=menusDao.getMenus(2L);
+        }
+        return webmenus;
+    }
+
     public MenuModel getMenuModel(Long menutype) {
         menus=menusDao.getMenus(menutype);
         getSubmenus(1L,null);
+        logger.info("LOG01690: MENUS: " + menus);
         return model;
     }
 
@@ -69,5 +80,7 @@ public class MenusBus implements Serializable{
         }
         return submenus;
     }
+
+
     
 }

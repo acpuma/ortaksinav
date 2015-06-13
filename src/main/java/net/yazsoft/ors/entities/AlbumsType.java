@@ -22,7 +22,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AlbumsType.findAll", query = "SELECT a FROM AlbumsType a")})
+    @NamedQuery(name = "AlbumsType.findAll", query = "SELECT a FROM AlbumsType a"),
+    @NamedQuery(name = "AlbumsType.findByTid", query = "SELECT a FROM AlbumsType a WHERE a.tid = :tid"),
+    @NamedQuery(name = "AlbumsType.findByName", query = "SELECT a FROM AlbumsType a WHERE a.name = :name")})
 public class AlbumsType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

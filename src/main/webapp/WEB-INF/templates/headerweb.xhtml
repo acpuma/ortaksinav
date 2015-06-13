@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+<ui:insert name="headerMenu">
+
+    <!--  ==========  -->
+    <!--  = Header =  -->
+    <!--  ==========  -->
+    <header id="header">
+        <div class="container">
+            <div class="row">
+
+                <!--  ==========  -->
+                <!--  = Logo =  -->
+                <!--  ==========  -->
+                <div class="span7">
+                    <a class="brand" href="index.html">
+                        <p:graphicImage library="images" name="orslogo.png" width="64" height="64"  />
+                        <span class="pacifico" style="position: relative; top:2px;">Ortak Sınav Merkezi</span>
+                        <span class="tagline" style="position: relative; top:2px;">Ortak sınavlarla ilgili aradağınız herşey</span>
+                    </a>
+                </div>
+
+                <!--  ==========  -->
+                <!--  = Social Icons =  -->
+                <!--  ==========  -->
+                <div class="span5">
+                    <div class="topmost-line">
+
+                    </div>
+                    <div class="top-right">
+                        <div class="icons">
+                            <a href="#"><span class="zocial-facebook"></span></a>
+                            <a href="#"><span class="zocial-twitter"></span></a>
+                            <a href="#"><span class="zocial-googleplus"></span></a>
+                            <a href="#"><span class="zocial-rss"></span></a>
+                        </div>
+                        <div class="register">
+                            <h:outputLink value="admin/admin.html" title="ADMIN" class="btn btn-info bold"
+                                    style="padding : 5px; margin:5px;">
+                                <h:graphicImage library="images" name="manager.png" width="24" />
+                                <p:outputPanel layout="inline" style="font-size: 12px;">
+                                    YETKİLİ
+                                </p:outputPanel>
+                            </h:outputLink>
+
+                            <h:outputLink value="student/student.html" title="OGRENCI" class="btn btn-primary bold"
+                                          style="padding : 5px; margin:5px;">
+                                <h:graphicImage library="images" name="student.png" width="24" />
+                                <p:outputPanel layout="inline" style="font-size: 12px;">
+                                    ÖĞRENCİ
+                                </p:outputPanel>
+                            </h:outputLink>
+
+                        </div>
+                    </div>
+                </div> <!-- /social icons -->
+            </div>
+        </div>
+    </header>
+
+
+</ui:insert>
+</ui:composition>
+

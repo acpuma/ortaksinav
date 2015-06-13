@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetSchool"     required="false"   name="widgetVar" />
+    <cc:attribute default=":pageForm" required="false" name="update" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form id="categoryform">
+        <p:treeTable value="#{productsCategoryDao.root}" var="item"
+                     selection="#{productsCategoryDao.selectedNode}"
+                     selectionMode="single" widgetVar="treetableWidget" id="treetable"
+                     style="width: 400px;"
+                     scrollable="true"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                >
+            <f:facet name="header">
+                Kategoriler
+            </f:facet>
+            <p:column headerText="Ad">
+                <h:outputText value="#{item.nameTr}" />
+            </p:column>
+            <p:column style="width:24px" >
+                <p:commandLink update="@composite:categoryform:detailPanel" oncomplete="PF('detailDialog').show()"
+                               title="Guncelle" styleClass="ui-icon ui-icon-refresh"
+                               rendered="#{item.tid gt 1}">
+                    <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
+                </p:commandLink>
+            </p:column>
+            <p:column style="width:24px" >
+                <p:commandLink update="@composite:categoryform:treetable :messages" rendered="#{item.tid gt 1}"
+                               title="Sil" styleClass="ui-icon ui-icon-minus"
+                               action="#{productsCategoryDao.delete}">
+                    <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
+                </p:commandLink>
+            </p:column>
+
+            <p:column style="width:24px">
+                <p:commandLink update="@composite:categoryform:addPanel" oncomplete="PF('addDialog').show()"
+                               title="Ekle" styleClass="ui-icon ui-icon-plus">
+                    <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
+                </p:commandLink>
+            </p:column>
+        </p:treeTable>
+
+        <p:dialog id="dialogDetail" header="Kategori Ekle" showEffect="fade"
+                  widgetVar="detailDialog" modal="true" resizable="false">
+            <p:outputPanel id="detailPanel">
+                <p:panelGrid  columns="2" columnClasses="label,value"
+                              rendered="#{not empty productsCategoryDao.selected}">
+                    <h:outputLabel for="name" value="Ad: " />
+                    <h:inputText id="name" value="#{productsCategoryDao.selected.nameTr}"
+                                 style="font-weight:bold"
+                                 required="true" requiredMessage="Ad alanı boş"/>
+                </p:panelGrid>
+                <p:commandButton value="Guncelle" actionListener="#{productsCategoryDao.update}"
+                                 oncomplete="PF('detailDialog').hide()"
+                                 update="@composite:categoryform:treetable :messages"/>
+            </p:outputPanel>
+        </p:dialog>
+
+        <p:dialog id="dialogAdd" header="Kategori Ekle" showEffect="fade"
+                  widgetVar="addDialog" modal="true" resizable="false">
+            <p:outputPanel id="addPanel">
+                <h:outputLabel value="Ust kategori : #{productsCategoryDao.selected.nameTr}" />
+                <p:panelGrid  columns="2" columnClasses="label,value"
+                              rendered="#{not empty productsCategoryDao.selected}">
+                    <h:outputLabel for="addname" value="Ad: " />
+                    <h:inputText id="addname" value="#{productsCategoryDao.newcategory}"
+                                 style="font-weight:bold"
+                                 required="true" requiredMessage="Ad alanı boş" />
+                </p:panelGrid>
+                <p:commandButton value="Ekle" actionListener="#{productsCategoryDao.create}"
+                                 oncomplete="PF('addDialog').hide()"
+                                 update="@composite:categoryform:treetable :messages" />
+            </p:outputPanel>
+        </p:dialog>
+
+    </h:form>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()"
+                   oncomplete="PF('blockUIWidget1').unblock();" />
+
+</cc:implementation>
+</html>

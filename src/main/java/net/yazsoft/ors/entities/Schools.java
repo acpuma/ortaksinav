@@ -30,7 +30,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Schools.findAll", query = "SELECT s FROM Schools s")})
+    @NamedQuery(name = "Schools.findAll", query = "SELECT s FROM Schools s"),
+    @NamedQuery(name = "Schools.findByTid", query = "SELECT s FROM Schools s WHERE s.tid = :tid"),
+    @NamedQuery(name = "Schools.findByVersion", query = "SELECT s FROM Schools s WHERE s.version = :version"),
+    @NamedQuery(name = "Schools.findByName", query = "SELECT s FROM Schools s WHERE s.name = :name"),
+    @NamedQuery(name = "Schools.findByCreated", query = "SELECT s FROM Schools s WHERE s.created = :created"),
+    @NamedQuery(name = "Schools.findByUpdated", query = "SELECT s FROM Schools s WHERE s.updated = :updated"),
+    @NamedQuery(name = "Schools.findByActive", query = "SELECT s FROM Schools s WHERE s.active = :active"),
+    @NamedQuery(name = "Schools.findByMebCode", query = "SELECT s FROM Schools s WHERE s.mebCode = :mebCode")})
 public class Schools extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -66,26 +73,29 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<Users> usersCollection1;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Albums> albumsCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<StudentsAnswers> studentsAnswersCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Students> studentsCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<ZlogLogin> zlogLoginCollection;
     @JoinColumn(name = "ref_city", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cities refCity;
     @JoinColumn(name = "ref_town", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Towns refTown;
-    @OneToMany(mappedBy = "refSchools", fetch = FetchType.LAZY)
-    private Collection<Images> imagesCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
-    private Collection<SchoolsClass> schoolsClassCollection;
+    private Collection<Images> imagesCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Results> resultsCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
-    private Collection<StudentsAnswers> studentsAnswersCollection;
-    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
-    private Collection<ZlogLogin> zlogLoginCollection;
+    private Collection<SchoolsClass> schoolsClassCollection;
+    @JoinColumn(name = "ref_image", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Images refImage;
 
     public Schools() {
     }
@@ -193,6 +203,15 @@ public class Schools extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
+    public Collection<StudentsAnswers> getStudentsAnswersCollection() {
+        return studentsAnswersCollection;
+    }
+
+    public void setStudentsAnswersCollection(Collection<StudentsAnswers> studentsAnswersCollection) {
+        this.studentsAnswersCollection = studentsAnswersCollection;
+    }
+
+    @XmlTransient
     public Collection<Exams> getExamsCollection() {
         return examsCollection;
     }
@@ -208,6 +227,15 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setStudentsCollection(Collection<Students> studentsCollection) {
         this.studentsCollection = studentsCollection;
+    }
+
+    @XmlTransient
+    public Collection<ZlogLogin> getZlogLoginCollection() {
+        return zlogLoginCollection;
+    }
+
+    public void setZlogLoginCollection(Collection<ZlogLogin> zlogLoginCollection) {
+        this.zlogLoginCollection = zlogLoginCollection;
     }
 
     public Cities getRefCity() {
@@ -235,14 +263,6 @@ public class Schools extends BaseEntity implements Serializable {
         this.imagesCollection = imagesCollection;
     }
 
-    @XmlTransient
-    public Collection<SchoolsClass> getSchoolsClassCollection() {
-        return schoolsClassCollection;
-    }
-
-    public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
-        this.schoolsClassCollection = schoolsClassCollection;
-    }
 
     @XmlTransient
     public Collection<Results> getResultsCollection() {
@@ -254,20 +274,20 @@ public class Schools extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
-    public Collection<StudentsAnswers> getStudentsAnswersCollection() {
-        return studentsAnswersCollection;
+    public Collection<SchoolsClass> getSchoolsClassCollection() {
+        return schoolsClassCollection;
     }
 
-    public void setStudentsAnswersCollection(Collection<StudentsAnswers> studentsAnswersCollection) {
-        this.studentsAnswersCollection = studentsAnswersCollection;
+    public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
+        this.schoolsClassCollection = schoolsClassCollection;
     }
 
-    public Collection<ZlogLogin> getZlogLoginCollection() {
-        return zlogLoginCollection;
+    public Images getRefImage() {
+        return refImage;
     }
 
-    public void setZlogLoginCollection(Collection<ZlogLogin> zlogLoginCollection) {
-        this.zlogLoginCollection = zlogLoginCollection;
+    public void setRefImage(Images refImage) {
+        this.refImage = refImage;
     }
 
     @Override

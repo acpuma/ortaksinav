@@ -4,7 +4,7 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components"
       xmlns:p="http://primefaces.org/ui"
-
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
@@ -16,13 +16,22 @@
     <cc:attribute name="oncomplete" default="" required="false"    />
     <cc:attribute name="widgetVar" default="" required="false"  />
     <cc:attribute name="input" default=""  />
+    <cc:attribute name="imageType" shortDescription="school,user,student,slide,product" />
+    <cc:attribute name="daobean" />
+    <cc:attribute name="showImage" default="true" />
+    <cc:attribute name="imageWidth" />
+    <cc:attribute name="imageHeight" />
+
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <p:outputPanel styleClass="image150" id="schoolLogo">
+    <c:set var="daobeann" value="#{cc.attrs.daobean}" />
+
+    <p:outputPanel styleClass="image150" id="schoolLogo" rendered="#{cc.attrs.showImage}">
+        <p:outputLabel value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}" rendered="false"/>
         <p:graphicImage height="150" width="150" style="height:150px; width: 150px;" cache="false"
-                        rendered="true" value="/images/logo/#{schoolsDao.item.tid}.png"
+                        value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
                 />
     </p:outputPanel>
     <p:outputPanel id="uploadFilePanel"  style="margin:0 auto 10px; text-align: center;">
@@ -36,18 +45,21 @@
     <p:dialog header="#{msg.upload_file}" modal="true"  widgetVar="uploadFileWidget_#{cc.id}"
               closeOnEscape="true" style="z-index: 1 !important;" appendTo="@(body)" dynamic="false">
         <p:outputPanel style="width: #{cc.attrs.width}px; margin: auto;">
-            <h:form enctype="multipart/form-data" id="uploadFormLogo" >
-                <p:fileUpload fileUploadListener="#{uploadsBean.handleLogoUpload}"
+            <h:form enctype="multipart/form-data" id="uploadFormImage" >
+                #{uploadsBean.setImageType(cc.attrs.imageType)}
+                #{uploadsBean.setImageHeight(cc.attrs.imageHeight)}
+                #{uploadsBean.setImageWidth(cc.attrs.imageWidth)}
+                <p:fileUpload fileUploadListener="#{uploadsBean.handleImageUpload}"
                               mode="advanced"
                               multiple="false"
-                              allowTypes="/(\.|\/)(png|PNG)$/"
+                              allowTypes="/(\.|\/)(jpg|JPG|jpeg|JPEG|png|PNG)$/"
                               oncomplete="#{cc.attrs.oncomplete}; PF('uploadFileWidget_#{cc.id}').hide();"
                               update="#{cc.attrs.update} @composite:schoolLogo  :messages"
                               fileLimit="20000"
                               label="#{msg.upload_select_file}"
                               uploadLabel="#{msg.upload}"
                               cancelLabel="#{msg.global_cancel}"
-                              process="uploadFormLogo"
+                              process="uploadFormImage"
                         />
             </h:form>
         </p:outputPanel>

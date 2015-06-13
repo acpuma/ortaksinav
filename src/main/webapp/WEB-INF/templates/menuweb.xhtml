@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!--  ==========  -->
+    <!--  = Main Menu / navbar =  -->
+    <!--  ==========  -->
+    <div class="navbar navbar-static-top" id="stickyNavbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="row">
+                    <div class="span9">
+                        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                        <!--  ==========  -->
+                        <!--  = Menu =  -->
+                        <!--  ==========  -->
+                        <div class="nav-collapse collapse">
+                            <ul class="nav" id="mainNavigation">
+                                <ui:repeat value="#{menusBus.webmenus}" var="menu">
+                                    <li><a href="#">#{menu.nameTr}</a></li>
+                                </ui:repeat>
+                            </ul>
+
+                            <!--  ==========  -->
+                            <!--  = Search form =  -->
+                            <!--  ==========  -->
+                            <form class="navbar-form pull-right" action="#" method="get">
+                                <button type="submit"><span class="icon-search"></span></button>
+                                <input type="text" class="span1" name="search" id="navSearchInput"/>
+                            </form>
+                        </div><!-- /.nav-collapse -->
+                    </div>
+
+                    <!--  ==========  -->
+                    <!--  = Cart =  -->
+                    <!--  ==========  -->
+                    <div class="span3">
+                        <div class="cart-container" id="cartContainer">
+                            <div class="cart">
+                                <p class="items">SEPET <span class="dark-clr">(0)</span></p>
+                                <p class="dark-clr hidden-tablet">0.00 TL</p>
+                                <a href="checkout-step-1.html" class="btn btn-danger">
+                                    <!-- <span class="icon icons-cart"></span> -->
+                                    <i class="icon-shopping-cart"></i>
+                                </a>
+                            </div>
+                            <div class="open-panel">
+
+
+                                <div class="summary">
+                                    <div class="line">
+                                        <div class="row-fluid">
+                                            <div class="span6">Kargo :</div>
+                                            <div class="span6 align-right">0 TL</div>
+                                        </div>
+                                    </div>
+                                    <div class="line">
+                                        <div class="row-fluid">
+                                            <div class="span6">Ara Toplam :</div>
+                                            <div class="span6 align-right size-16">0 TL</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="proceed">
+                                    <a href="checkout-step-1.html" class="btn btn-danger pull-right bold higher">SİPARİŞİ TAMAMLA
+                                        <i class="icon-shopping-cart"></i></a>
+                                    <small>Kargo ücreti yere göre hesaplanır. <a href="#">Detaylı Bilgi</a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- /cart -->
+                </div>
+            </div>
+        </div>
+    </div> <!-- /main menu -->
+
+</ui:composition>
+

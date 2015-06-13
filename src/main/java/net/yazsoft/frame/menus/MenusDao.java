@@ -5,6 +5,7 @@ package net.yazsoft.frame.menus;
 import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.ors.entities.Menus;
 import net.yazsoft.ors.entities.MenusType;
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -22,6 +23,7 @@ import net.yazsoft.frame.scopes.*;
 @ViewScoped
 public class MenusDao extends BaseDao<Menus> implements Serializable{
 
+    private static final Logger logger = Logger.getLogger(MenusDao.class);
     @Inject
     protected SessionFactory sessionFactory;
 
@@ -64,6 +66,7 @@ public class MenusDao extends BaseDao<Menus> implements Serializable{
         } catch (HibernateException ex) {
             ex.printStackTrace();
         }
+        logger.info("LOG01670: MENUS : " + list.size());
         return list;
     }
 

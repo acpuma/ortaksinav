@@ -6,7 +6,6 @@ import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +25,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AnswersQuestionType.findAll", query = "SELECT a FROM AnswersQuestionType a")})
+    @NamedQuery(name = "AnswersQuestionType.findAll", query = "SELECT a FROM AnswersQuestionType a"),
+    @NamedQuery(name = "AnswersQuestionType.findByTid", query = "SELECT a FROM AnswersQuestionType a WHERE a.tid = :tid"),
+    @NamedQuery(name = "AnswersQuestionType.findByActive", query = "SELECT a FROM AnswersQuestionType a WHERE a.active = :active"),
+    @NamedQuery(name = "AnswersQuestionType.findByVersion", query = "SELECT a FROM AnswersQuestionType a WHERE a.version = :version"),
+    @NamedQuery(name = "AnswersQuestionType.findByNameTr", query = "SELECT a FROM AnswersQuestionType a WHERE a.nameTr = :nameTr"),
+    @NamedQuery(name = "AnswersQuestionType.findByNameEn", query = "SELECT a FROM AnswersQuestionType a WHERE a.nameEn = :nameEn"),
+    @NamedQuery(name = "AnswersQuestionType.findByCreated", query = "SELECT a FROM AnswersQuestionType a WHERE a.created = :created"),
+    @NamedQuery(name = "AnswersQuestionType.findByUpdated", query = "SELECT a FROM AnswersQuestionType a WHERE a.updated = :updated")})
 public class AnswersQuestionType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -54,7 +60,7 @@ public class AnswersQuestionType extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refAnswerQuestion", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "refAnswerQuestion", fetch = FetchType.LAZY)
     private Collection<Answers> answersCollection;
 
     public AnswersQuestionType() {

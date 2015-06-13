@@ -26,7 +26,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "LessonsGroup.findAll", query = "SELECT l FROM LessonsGroup l")})
+    @NamedQuery(name = "LessonsGroup.findAll", query = "SELECT l FROM LessonsGroup l"),
+    @NamedQuery(name = "LessonsGroup.findByTid", query = "SELECT l FROM LessonsGroup l WHERE l.tid = :tid"),
+    @NamedQuery(name = "LessonsGroup.findByActive", query = "SELECT l FROM LessonsGroup l WHERE l.active = :active"),
+    @NamedQuery(name = "LessonsGroup.findByVersion", query = "SELECT l FROM LessonsGroup l WHERE l.version = :version"),
+    @NamedQuery(name = "LessonsGroup.findByNameTr", query = "SELECT l FROM LessonsGroup l WHERE l.nameTr = :nameTr"),
+    @NamedQuery(name = "LessonsGroup.findByNameEn", query = "SELECT l FROM LessonsGroup l WHERE l.nameEn = :nameEn"),
+    @NamedQuery(name = "LessonsGroup.findByCreated", query = "SELECT l FROM LessonsGroup l WHERE l.created = :created"),
+    @NamedQuery(name = "LessonsGroup.findByUpdated", query = "SELECT l FROM LessonsGroup l WHERE l.updated = :updated")})
 public class LessonsGroup extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

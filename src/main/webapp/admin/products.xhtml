@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.exams}</title>
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.exams}" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:outputPanel style="text-align: right;">
+        <p:commandButton icon="toolbar-add toolbar-icon"
+                         styleClass="toolbar-button" style="padding:1px 5px;"
+                         value="#{msg.toolbar_add}"
+                         actionListener="#{productsDao.addProduct}"
+                         update="@widgetVar(productsGridWidget)"
+                         rendered="true"
+                >
+        </p:commandButton>
+    </p:outputPanel>
+    <components:productsGrid rows="200"  scrollable="true"
+                                 widgetVar="productsGridWidget" scrollHeight="450"/>
+    <p:dialog id="gridDialog" header="#{msg.product}" widgetVar="formDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+
+        <p:outputPanel id="formPanel" >
+            <components:inputUploadImage widgetVar="uploadImageWidget" imageType="product" daobean="#{productsDao}"
+                    update="@widgetVar(productsGridWidget)"/>
+            <h:form id="pageForm">
+
+                <p:panelGrid columns="4" id="pagePanel">
+
+                    <h:outputLabel value="#{msg.global_name}:" for="name" />
+                    <h:inputTextarea id="name" value="#{productsDao.item.nameTr}"
+                                 required="true" requiredMessage="Ad alani gereklidir" rows="5" cols="50"/>
+
+                    <h:outputLabel value="Aciklama : " for="detail" />
+                    <h:inputTextarea id="detail" value="#{productsDao.item.detailTr}"
+                                 required="true" requiredMessage="Aciklama alani gereklidir" rows="5" cols="50"/>
+
+                    <h:outputLabel value="Liste Fiyati:" for="price" />
+                    <h:inputText id="price" value="#{productsDao.item.price}"
+                                 required="true" requiredMessage="Liste fiyati alani gereklidir" size="10"/>
+
+                    <h:outputLabel value="Indirimli Fiyati :" for="priceReal" />
+                    <h:inputText id="priceReal" value="#{productsDao.item.priceReal}"
+                                 required="true" requiredMessage="Indirimli fiyat gereklidir" size="10"/>
+
+                    <h:outputLabel value="Kategori:" for="category" />
+                    <p:selectOneMenu value="#{productsDao.item.refProductCategory}"  rendered="true" id="category"
+                            >
+                        <f:selectItems value="#{productsCategoryDao.all}" var="sitem"
+                                       itemValue="#{sitem}" itemLabel="#{sitem.nameTr}" />
+                    </p:selectOneMenu>
+                    <h:outputLabel value="Turu :" for="productType" />
+                    <p:selectOneMenu value="#{productsDao.item.refProductType}"  rendered="true" id="productType"
+                            >
+                        <f:selectItems value="#{productsTypeDao.all}" var="sitem"
+                                       itemValue="#{sitem}" itemLabel="#{sitem.nameTr}" />
+                    </p:selectOneMenu>
+                    <h:outputLabel value="Sipariş Formunda:" for="showOrderForm" />
+                    <h:selectBooleanCheckbox id="showOrderForm" value="#{productsDao.item.showOrderForm}" title="Evet"
+                                 />
+
+
+                </p:panelGrid>
+                <h:inputHidden id="tid" value="#{productsDao.item.tid}"/>
+                <h:inputHidden id="status" value="#{productsDao.status}"  />
+                <h:inputHidden id="disabledelete" value="#{productsDao.disabledelete}" />
+                <h:messages />
+                <components:toolbar gridname="productsGrid" daobean="#{productsDao}"
+                                    print="false" search="false" new="false"
+                        oncomplete="PF('formDialogWidget').hide()"/>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

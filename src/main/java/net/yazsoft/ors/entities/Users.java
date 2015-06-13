@@ -32,7 +32,22 @@ import javax.xml.bind.annotation.XmlTransient;
     @UniqueConstraint(columnNames = {"username"})})
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u")})
+    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
+    @NamedQuery(name = "Users.findByTid", query = "SELECT u FROM Users u WHERE u.tid = :tid"),
+    @NamedQuery(name = "Users.findByActive", query = "SELECT u FROM Users u WHERE u.active = :active"),
+    @NamedQuery(name = "Users.findByVersion", query = "SELECT u FROM Users u WHERE u.version = :version"),
+    @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username"),
+    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password"),
+    @NamedQuery(name = "Users.findByAccountNonExpired", query = "SELECT u FROM Users u WHERE u.accountNonExpired = :accountNonExpired"),
+    @NamedQuery(name = "Users.findByAccountNonLocked", query = "SELECT u FROM Users u WHERE u.accountNonLocked = :accountNonLocked"),
+    @NamedQuery(name = "Users.findByCredentialsNonExpired", query = "SELECT u FROM Users u WHERE u.credentialsNonExpired = :credentialsNonExpired"),
+    @NamedQuery(name = "Users.findByCreated", query = "SELECT u FROM Users u WHERE u.created = :created"),
+    @NamedQuery(name = "Users.findByUpdated", query = "SELECT u FROM Users u WHERE u.updated = :updated"),
+    @NamedQuery(name = "Users.findByName", query = "SELECT u FROM Users u WHERE u.name = :name"),
+    @NamedQuery(name = "Users.findBySurname", query = "SELECT u FROM Users u WHERE u.surname = :surname"),
+    @NamedQuery(name = "Users.findByPhone", query = "SELECT u FROM Users u WHERE u.phone = :phone"),
+    @NamedQuery(name = "Users.findByEmail", query = "SELECT u FROM Users u WHERE u.email = :email"),
+    @NamedQuery(name = "Users.findByImage", query = "SELECT u FROM Users u WHERE u.image = :image")})
 public class Users extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -89,9 +104,11 @@ public class Users extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_active_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refActiveSchool;
-
     @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
     private Collection<ZlogLogin> zlogLoginCollection;
+    @JoinColumn(name = "ref_image", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Images refImage;
 
     public Users() {
     }
@@ -269,12 +286,21 @@ public class Users extends BaseEntity implements Serializable {
         this.refActiveSchool = refActiveSchool;
     }
 
+    @XmlTransient
     public Collection<ZlogLogin> getZlogLoginCollection() {
         return zlogLoginCollection;
     }
 
     public void setZlogLoginCollection(Collection<ZlogLogin> zlogLoginCollection) {
         this.zlogLoginCollection = zlogLoginCollection;
+    }
+
+    public Images getRefImage() {
+        return refImage;
+    }
+
+    public void setRefImage(Images refImage) {
+        this.refImage = refImage;
     }
 
     @Override

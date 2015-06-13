@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:of="http://omnifaces.org/functions"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+        >
+
+<ui:composition >
+    <h:head>
+        <base href="#{request.contextPath}/" />
+
+        <!-- Basic Page Needs -->
+        <meta charset="utf-8"/>
+        <title>Ortak Sınav Merkezi</title>
+        <meta name="description" content="ORS"/>
+        <meta name="author" content="yazsoft"/>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <!--  Google Fonts  -->
+        <link href='http://fonts.googleapis.com/css?family=Pacifico|Open+Sans:400,700,400italic,700italic&amp;subset=latin,latin-ext,greek' rel='stylesheet' type='text/css'/>
+
+        <!-- Twitter Bootstrap -->
+        <link href="resources/theme/stylesheets/bootstrap.css" rel="stylesheet"/>
+        <link href="resources/theme/stylesheets/responsive.css" rel="stylesheet"/>
+        <!-- Slider Revolution -->
+        <link rel="stylesheet" href="resources/theme/js/rs-plugin/css/settings.css" type="text/css"/>
+        <!-- jQuery UI -->
+        <link rel="stylesheet" href="resources/theme/js/jquery-ui-1.10.3/css/smoothness/jquery-ui-1.10.3.custom.min.css" type="text/css"/>
+        <!-- PrettyPhoto -->
+        <link rel="stylesheet" href="resources/theme/js/prettyphoto/css/prettyPhoto.css" type="text/css"/>
+        <!-- main styles -->
+
+        <link href="resources/theme/stylesheets/main.css" rel="stylesheet"/>
+
+
+
+        <!-- Modernizr -->
+        <script src="resources/theme/js/modernizr.custom.56918.js"></script>
+
+        <!-- Fav and touch icons -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="resources/theme/images/apple-touch/144.png"/>
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="resources/theme/images/apple-touch/114.png"/>
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="resources/theme/images/apple-touch/72.png"/>
+        <link rel="apple-touch-icon-precomposed" href="resources/theme/images/apple-touch/57.png"/>
+        <link rel="shortcut icon" href="resources/images/orslogo.png"/>
+    </h:head>
+<h:body>
+    <ui:debug hotkey="x" />
+        <div class="master-wrapper">
+
+                <ui:insert name="header">
+                    <ui:include src="/WEB-INF/templates/headerweb.xhtml">
+                        <ui:param name="headerTitle" value="#{title}" />
+                    </ui:include>
+                </ui:insert>
+
+            <ui:include src="/WEB-INF/templates/menuweb.xhtml"/>
+
+                <hr style="box-shadow: 0 1px 3px #ccc; color: #eeeeee;" />
+                <ui:insert />
+                <p:outputPanel id="block" layout="block" style="height:100%;">
+                <p:outputPanel styleClass="pageFormDiv clear" style="margin:0px; padding: 0px;" >
+                    </p:outputPanel>
+                </p:outputPanel>
+
+
+            <ui:insert name="footer">
+                <ui:include src="/WEB-INF/templates/footerweb.xhtml"/>
+            </ui:insert>
+            </div>
+
+    <p:growl id="messages" showDetail="true" life="5000" />
+    <p:ajaxExceptionHandler type="java.lang.NullPointerException"
+                            update="exceptionDialog"
+                            onexception="PF('exceptionDialog').show();" />
+
+    <p:dialog id="exceptionDialog" header="Exception '#{pfExceptionHandler.type}' occured!"
+              widgetVar="exceptionDialog"
+              height="500px">
+        Message: #{pfExceptionHandler.message} <br/>
+        StackTrace: <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /> <br />
+
+
+        <p:button onclick="document.location.href = document.location.href;"
+                  value="Reload!"
+                  />
+    </p:dialog>
+
+    <pe:blockUI target="block"  widgetVar="blockUIWidget1"   >
+        <p:graphicImage library="images" name="loading.gif"  />
+        <p:spacer height="0" width="15" />
+        <h:outputText value="#{msg.global_loading}" style="white-space: nowrap;"/>
+    </pe:blockUI>
+
+        </h:body>
+</ui:composition>
+    
+</html>

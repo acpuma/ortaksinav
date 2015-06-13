@@ -24,7 +24,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "StudentsAnswers.findAll", query = "SELECT s FROM StudentsAnswers s")})
+    @NamedQuery(name = "StudentsAnswers.findAll", query = "SELECT s FROM StudentsAnswers s"),
+    @NamedQuery(name = "StudentsAnswers.findByTid", query = "SELECT s FROM StudentsAnswers s WHERE s.tid = :tid"),
+    @NamedQuery(name = "StudentsAnswers.findByActive", query = "SELECT s FROM StudentsAnswers s WHERE s.active = :active"),
+    @NamedQuery(name = "StudentsAnswers.findByVersion", query = "SELECT s FROM StudentsAnswers s WHERE s.version = :version"),
+    @NamedQuery(name = "StudentsAnswers.findByBooklet", query = "SELECT s FROM StudentsAnswers s WHERE s.booklet = :booklet"),
+    @NamedQuery(name = "StudentsAnswers.findByAnswers", query = "SELECT s FROM StudentsAnswers s WHERE s.answers = :answers"),
+    @NamedQuery(name = "StudentsAnswers.findByCreated", query = "SELECT s FROM StudentsAnswers s WHERE s.created = :created"),
+    @NamedQuery(name = "StudentsAnswers.findByUpdated", query = "SELECT s FROM StudentsAnswers s WHERE s.updated = :updated"),
+    @NamedQuery(name = "StudentsAnswers.findByTrues", query = "SELECT s FROM StudentsAnswers s WHERE s.trues = :trues"),
+    @NamedQuery(name = "StudentsAnswers.findByFalses", query = "SELECT s FROM StudentsAnswers s WHERE s.falses = :falses"),
+    @NamedQuery(name = "StudentsAnswers.findByNulls", query = "SELECT s FROM StudentsAnswers s WHERE s.nulls = :nulls"),
+    @NamedQuery(name = "StudentsAnswers.findByNets", query = "SELECT s FROM StudentsAnswers s WHERE s.nets = :nets"),
+    @NamedQuery(name = "StudentsAnswers.findByScore", query = "SELECT s FROM StudentsAnswers s WHERE s.score = :score"),
+    @NamedQuery(name = "StudentsAnswers.findByRankSchool", query = "SELECT s FROM StudentsAnswers s WHERE s.rankSchool = :rankSchool"),
+    @NamedQuery(name = "StudentsAnswers.findByRankClass", query = "SELECT s FROM StudentsAnswers s WHERE s.rankClass = :rankClass"),
+    @NamedQuery(name = "StudentsAnswers.findByRateClass", query = "SELECT s FROM StudentsAnswers s WHERE s.rateClass = :rateClass"),
+    @NamedQuery(name = "StudentsAnswers.findByRateSchool", query = "SELECT s FROM StudentsAnswers s WHERE s.rateSchool = :rateSchool"),
+    @NamedQuery(name = "StudentsAnswers.findByRateClassAll", query = "SELECT s FROM StudentsAnswers s WHERE s.rateClassAll = :rateClassAll"),
+    @NamedQuery(name = "StudentsAnswers.findByRateSchoolAll", query = "SELECT s FROM StudentsAnswers s WHERE s.rateSchoolAll = :rateSchoolAll")})
 public class StudentsAnswers extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -55,12 +73,23 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(precision = 12)
     private Float nets;
+    @Column(precision = 12)
+    private Float score;
     @Column(name = "rank_school")
     private Integer rankSchool;
     @Column(name = "rank_class")
     private Integer rankClass;
-    @Column(precision = 12)
-    private Float score;
+    @Column(name = "rate_class", precision = 12)
+    private Float rateClass;
+    @Column(name = "rate_school", precision = 12)
+    private Float rateSchool;
+    @Column(name = "rate_class_all", precision = 12)
+    private Float rateClassAll;
+    @Column(name = "rate_school_all", precision = 12)
+    private Float rateSchoolAll;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
     @JoinColumn(name = "ref_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refExam;
@@ -70,9 +99,6 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_student", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
-    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Schools refSchool;
 
     public StudentsAnswers() {
     }
@@ -175,6 +201,14 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
         this.nets = nets;
     }
 
+    public Float getScore() {
+        return score;
+    }
+
+    public void setScore(Float score) {
+        this.score = score;
+    }
+
     public Integer getRankSchool() {
         return rankSchool;
     }
@@ -191,12 +225,44 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
         this.rankClass = rankClass;
     }
 
-    public Float getScore() {
-        return score;
+    public Float getRateClass() {
+        return rateClass;
     }
 
-    public void setScore(Float score) {
-        this.score = score;
+    public void setRateClass(Float rateClass) {
+        this.rateClass = rateClass;
+    }
+
+    public Float getRateSchool() {
+        return rateSchool;
+    }
+
+    public void setRateSchool(Float rateSchool) {
+        this.rateSchool = rateSchool;
+    }
+
+    public Float getRateClassAll() {
+        return rateClassAll;
+    }
+
+    public void setRateClassAll(Float rateClassAll) {
+        this.rateClassAll = rateClassAll;
+    }
+
+    public Float getRateSchoolAll() {
+        return rateSchoolAll;
+    }
+
+    public void setRateSchoolAll(Float rateSchoolAll) {
+        this.rateSchoolAll = rateSchoolAll;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
     }
 
     public Exams getRefExam() {
@@ -221,14 +287,6 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
 
     public void setRefStudent(Students refStudent) {
         this.refStudent = refStudent;
-    }
-
-    public Schools getRefSchool() {
-        return refSchool;
-    }
-
-    public void setRefSchool(Schools refSchool) {
-        this.refSchool = refSchool;
     }
 
     @Override
