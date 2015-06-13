@@ -27,7 +27,14 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r")})
+    @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r"),
+    @NamedQuery(name = "Roles.findByTid", query = "SELECT r FROM Roles r WHERE r.tid = :tid"),
+    @NamedQuery(name = "Roles.findByActive", query = "SELECT r FROM Roles r WHERE r.active = :active"),
+    @NamedQuery(name = "Roles.findByVersion", query = "SELECT r FROM Roles r WHERE r.version = :version"),
+    @NamedQuery(name = "Roles.findByName", query = "SELECT r FROM Roles r WHERE r.name = :name"),
+    @NamedQuery(name = "Roles.findByNameTr", query = "SELECT r FROM Roles r WHERE r.nameTr = :nameTr"),
+    @NamedQuery(name = "Roles.findByCreated", query = "SELECT r FROM Roles r WHERE r.created = :created"),
+    @NamedQuery(name = "Roles.findByUpdated", query = "SELECT r FROM Roles r WHERE r.updated = :updated")})
 public class Roles extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,6 +52,11 @@ public class Roles extends BaseEntity implements Serializable {
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(nullable = false, length = 255)
+    private String nameTr;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -62,10 +74,11 @@ public class Roles extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Roles(Long tid, int version, String name) {
+    public Roles(Long tid, int version, String name, String nameTr) {
         this.tid = tid;
         this.version = version;
         this.name = name;
+        this.nameTr = nameTr;
     }
 
     public Long getTid() {
@@ -98,6 +111,14 @@ public class Roles extends BaseEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNameTr() {
+        return nameTr;
+    }
+
+    public void setNameTr(String nameTr) {
+        this.nameTr = nameTr;
     }
 
     public Date getCreated() {

@@ -85,7 +85,7 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
     }
 
     public static String getFileExtension(String filename) {
-        return filename.substring(filename.lastIndexOf(".")+1).toUpperCase();
+        return filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
     }
 
     public UploadsDao() {

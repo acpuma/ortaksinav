@@ -24,7 +24,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Answers.findAll", query = "SELECT a FROM Answers a")})
+    @NamedQuery(name = "Answers.findAll", query = "SELECT a FROM Answers a"),
+    @NamedQuery(name = "Answers.findByTid", query = "SELECT a FROM Answers a WHERE a.tid = :tid"),
+    @NamedQuery(name = "Answers.findByActive", query = "SELECT a FROM Answers a WHERE a.active = :active"),
+    @NamedQuery(name = "Answers.findByVersion", query = "SELECT a FROM Answers a WHERE a.version = :version"),
+    @NamedQuery(name = "Answers.findByCreated", query = "SELECT a FROM Answers a WHERE a.created = :created"),
+    @NamedQuery(name = "Answers.findByUpdated", query = "SELECT a FROM Answers a WHERE a.updated = :updated"),
+    @NamedQuery(name = "Answers.findByRank", query = "SELECT a FROM Answers a WHERE a.rank = :rank"),
+    @NamedQuery(name = "Answers.findByScore", query = "SELECT a FROM Answers a WHERE a.score = :score"),
+    @NamedQuery(name = "Answers.findByAnsA", query = "SELECT a FROM Answers a WHERE a.ansA = :ansA"),
+    @NamedQuery(name = "Answers.findByAnsB", query = "SELECT a FROM Answers a WHERE a.ansB = :ansB"),
+    @NamedQuery(name = "Answers.findByAnsC", query = "SELECT a FROM Answers a WHERE a.ansC = :ansC"),
+    @NamedQuery(name = "Answers.findByAnsD", query = "SELECT a FROM Answers a WHERE a.ansD = :ansD"),
+    @NamedQuery(name = "Answers.findByAnsE", query = "SELECT a FROM Answers a WHERE a.ansE = :ansE"),
+    @NamedQuery(name = "Answers.findByAnsF", query = "SELECT a FROM Answers a WHERE a.ansF = :ansF"),
+    @NamedQuery(name = "Answers.findByAnsG", query = "SELECT a FROM Answers a WHERE a.ansG = :ansG"),
+    @NamedQuery(name = "Answers.findByAnsH", query = "SELECT a FROM Answers a WHERE a.ansH = :ansH")})
 public class Answers extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -76,11 +91,11 @@ public class Answers extends BaseEntity implements Serializable {
     @Size(max = 1)
     @Column(length = 1)
     private String ansH;
-    @JoinColumn(name = "ref_answer_cancel", referencedColumnName = "tid", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ref_answer_cancel", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
     private AnswersCancelType refAnswerCancel;
-    @JoinColumn(name = "ref_answer_question", referencedColumnName = "tid", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "ref_answer_question", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
     private AnswersQuestionType refAnswerQuestion;
     @JoinColumn(name = "ref_answer_subject", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)

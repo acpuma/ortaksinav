@@ -25,7 +25,13 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MenusType.findAll", query = "SELECT m FROM MenusType m")})
+    @NamedQuery(name = "MenusType.findAll", query = "SELECT m FROM MenusType m"),
+    @NamedQuery(name = "MenusType.findByTid", query = "SELECT m FROM MenusType m WHERE m.tid = :tid"),
+    @NamedQuery(name = "MenusType.findByActive", query = "SELECT m FROM MenusType m WHERE m.active = :active"),
+    @NamedQuery(name = "MenusType.findByVersion", query = "SELECT m FROM MenusType m WHERE m.version = :version"),
+    @NamedQuery(name = "MenusType.findByName", query = "SELECT m FROM MenusType m WHERE m.name = :name"),
+    @NamedQuery(name = "MenusType.findByCreated", query = "SELECT m FROM MenusType m WHERE m.created = :created"),
+    @NamedQuery(name = "MenusType.findByUpdated", query = "SELECT m FROM MenusType m WHERE m.updated = :updated")})
 public class MenusType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

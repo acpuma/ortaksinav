@@ -28,7 +28,17 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Exams.findAll", query = "SELECT e FROM Exams e")})
+    @NamedQuery(name = "Exams.findAll", query = "SELECT e FROM Exams e"),
+    @NamedQuery(name = "Exams.findByTid", query = "SELECT e FROM Exams e WHERE e.tid = :tid"),
+    @NamedQuery(name = "Exams.findByActive", query = "SELECT e FROM Exams e WHERE e.active = :active"),
+    @NamedQuery(name = "Exams.findByVersion", query = "SELECT e FROM Exams e WHERE e.version = :version"),
+    @NamedQuery(name = "Exams.findByNameTr", query = "SELECT e FROM Exams e WHERE e.nameTr = :nameTr"),
+    @NamedQuery(name = "Exams.findByNameEn", query = "SELECT e FROM Exams e WHERE e.nameEn = :nameEn"),
+    @NamedQuery(name = "Exams.findByCreated", query = "SELECT e FROM Exams e WHERE e.created = :created"),
+    @NamedQuery(name = "Exams.findByUpdated", query = "SELECT e FROM Exams e WHERE e.updated = :updated"),
+    @NamedQuery(name = "Exams.findByDate", query = "SELECT e FROM Exams e WHERE e.date = :date"),
+    @NamedQuery(name = "Exams.findByTime", query = "SELECT e FROM Exams e WHERE e.time = :time"),
+    @NamedQuery(name = "Exams.findByNumber", query = "SELECT e FROM Exams e WHERE e.number = :number")})
 public class Exams extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -56,12 +66,12 @@ public class Exams extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @Size(max = 45)
-    @Column(length = 45)
-    private String number;
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
     private Integer time;
+    @Size(max = 45)
+    @Column(length = 45)
+    private String number;
     @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
     private Collection<Uploads> uploadsCollection;
     @OneToMany(mappedBy = "refActiveExam", fetch = FetchType.LAZY)
@@ -171,14 +181,6 @@ public class Exams extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
     public Date getDate() {
         return date;
     }
@@ -193,6 +195,14 @@ public class Exams extends BaseEntity implements Serializable {
 
     public void setTime(Integer time) {
         this.time = time;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     @XmlTransient

@@ -24,7 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsParameters.findAll", query = "SELECT e FROM ExamsParameters e")})
+    @NamedQuery(name = "ExamsParameters.findAll", query = "SELECT e FROM ExamsParameters e"),
+    @NamedQuery(name = "ExamsParameters.findByTid", query = "SELECT e FROM ExamsParameters e WHERE e.tid = :tid"),
+    @NamedQuery(name = "ExamsParameters.findByActive", query = "SELECT e FROM ExamsParameters e WHERE e.active = :active"),
+    @NamedQuery(name = "ExamsParameters.findByVersion", query = "SELECT e FROM ExamsParameters e WHERE e.version = :version"),
+    @NamedQuery(name = "ExamsParameters.findByStart", query = "SELECT e FROM ExamsParameters e WHERE e.start = :start"),
+    @NamedQuery(name = "ExamsParameters.findByLength", query = "SELECT e FROM ExamsParameters e WHERE e.length = :length"),
+    @NamedQuery(name = "ExamsParameters.findByDirection", query = "SELECT e FROM ExamsParameters e WHERE e.direction = :direction"),
+    @NamedQuery(name = "ExamsParameters.findByCreated", query = "SELECT e FROM ExamsParameters e WHERE e.created = :created"),
+    @NamedQuery(name = "ExamsParameters.findByUpdated", query = "SELECT e FROM ExamsParameters e WHERE e.updated = :updated"),
+    @NamedQuery(name = "ExamsParameters.findById", query = "SELECT e FROM ExamsParameters e WHERE e.id = :id")})
 public class ExamsParameters extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

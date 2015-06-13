@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="false"     required="false"   name="disabledSelection"  />
+    <cc:attribute default="false"     required="false"   name="draggableColumns" />
+    <cc:attribute default="false"     required="false"   name="editable" />
+    <cc:attribute default="false"     required="false"   name="editMode" />
+    <cc:attribute default="false"     required="false"   name="editingRow" />
+    <cc:attribute default="false"     required="false"   name="expandedRow" />
+    <cc:attribute default="true"      required="false"   name="paginator" />
+    <cc:attribute default="bottom"    required="false"   name="paginatorPosition" />
+    <cc:attribute default="true"      required="false"   name="paginatorAlwaysVisible" />
+    <cc:attribute default="true"      required="false"   name="resizableColumns" />
+    <cc:attribute default="0"         required="false"   name="rows" />
+    <cc:attribute default="true"      required="false"   name="rendered" />
+    <cc:attribute default="true"      required="false"   name="scrollable" />
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetProductsType"     required="false"   name="widgetVar" />
+    <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute  required="false" name="tableStyle" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }" id="productTypeForm">
+        <p:dataTable id="productsTypeGrid"
+                     var="productsTypeVar"
+
+                     filterEvent="enter"
+                     value="#{productsTypeDao.all}"
+                     emptyMessage=" #{msg['global_no_data']}"
+                     paginatorTemplate=" {FirstPageLink}
+                 {PreviousPageLink} 
+                 {PageLinks} {NextPageLink} 
+                 {LastPageLink} "
+
+                     draggableColumns="#{cc.attrs.draggableColumns}"
+
+                     editable="#{cc.attrs.editable}"
+                     expandedRow="#{cc.attrs.expandedRow}"
+
+                     paginator="#{cc.attrs.paginator}"
+                     paginatorPosition="#{cc.attrs.paginatorPosition}"
+                     paginatorAlwaysVisible="#{cc.attrs.paginatorAlwaysVisible}"
+
+                     resizableColumns="#{cc.attrs.resizableColumns}"
+                     rows="#{cc.attrs.rows}"
+                     rendered="#{cc.attrs.rendered}"
+
+                     scrollable="#{cc.attrs.scrollable}"
+                     sortOrder="#{cc.attrs.sortOrder}"
+                     sortMode="#{cc.attrs.sortMode}"
+                     stickyHeader="#{cc.attrs.stickyHeader}"
+                     scrollWidth="#{cc.attrs.scrollWidth}"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                     liveResize="true"
+
+                     transient="#{cc.attrs.transient}"
+                     widgetVar="#{cc.attrs.widgetVar}"
+
+                     selectionMode="single"
+                     selection="#{productsTypeDao.item}"
+                     rowKey="#{productsTypeVar.tid}"
+                     tableStyle="#{cc.attrs.tableStyle}"
+                >
+
+            <f:facet name="header">
+                #{msg.product} Türleri
+            </f:facet>
+
+            <p:column headerText="#{msg.global_id}" width="20" rendered="false"  style="display: none">
+                #{productsTypeVar.tid}
+            </p:column>
+
+            <p:column headerText="#{msg.global_name}" width="50" rendered="true">
+                <p:outputLabel value="#{productsTypeVar.nameTr}" />
+            </p:column>
+
+            <p:column width="10" >
+                <p:commandButton update="@composite:typeDetailForm:typeDetailPanel" oncomplete="PF('typeDetailWidget').show()"
+                                 title="Guncelle"  icon="ui-icon-refresh"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{productsTypeDao.setSelected(productsTypeVar)}"
+                                 immediate="true" value=""
+                               >
+                </p:commandButton>
+            </p:column>
+
+            <p:column width="10" rendered="true">
+                <p:commandButton value="" update=" :messages productsTypeGrid"
+                                 icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{productsTypeDao.delete(productsTypeVar)}">
+                </p:commandButton>
+            </p:column>
+            <f:facet name="footer">
+                <p:column style="width:24px">
+                    <p:commandButton update="@composite:productTypeForm:addTypePanel"
+                                     oncomplete="PF('addTypeDialogWidget').show()"
+                                   value="Ekle" >
+                    </p:commandButton>
+                </p:column>
+            </f:facet>
+
+        </p:dataTable>
+        <p:dialog id="addTypeDialog" header="Tür Ekle" showEffect="fade"
+                  widgetVar="addTypeDialogWidget" modal="true" resizable="false">
+            <p:outputPanel id="addTypePanel">
+                <p:panelGrid  columns="2" columnClasses="label,value">
+                    <h:outputLabel for="addname" value="Ad: " />
+                    <h:inputText id="addname" value="#{productsTypeDao.newtype}"
+                                 style="font-weight:bold"
+                                 required="true" requiredMessage="Ad alanı boş" />
+                </p:panelGrid>
+                <p:commandButton value="Ekle" actionListener="#{productsTypeDao.create}"
+                                 oncomplete="PF('addTypeDialogWidget').hide()"
+                                 update="@composite:productTypeForm:productsTypeGrid :messages" />
+            </p:outputPanel>
+        </p:dialog>
+    </h:form>
+
+    <p:dialog id="typeDetailDialog" header="Tür Güncelle" showEffect="fade"
+              widgetVar="typeDetailWidget" modal="true" resizable="false">
+        <h:form id="typeDetailForm">
+            <p:outputPanel id="typeDetailPanel">
+                <p:panelGrid  columns="2" columnClasses="label,value">
+                    <h:outputLabel for="typeName" value="Ad: " />
+                    <h:inputText id="typeName" value="#{productsTypeDao.selected.nameTr}"
+                                 style="font-weight:bold"
+                                 required="true" requiredMessage="Ad alanı boş"/>
+                </p:panelGrid>
+                <p:commandButton value="Guncelle" actionListener="#{productsTypeDao.update}"
+                                 oncomplete="PF('typeDetailWidget').hide()"
+                                 update="@composite:productTypeForm:productsTypeGrid :messages"/>
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
+
+
+</cc:implementation>
+</html>

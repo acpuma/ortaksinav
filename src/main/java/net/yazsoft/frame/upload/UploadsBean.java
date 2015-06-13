@@ -1,11 +1,16 @@
 package net.yazsoft.frame.upload;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
+import net.yazsoft.frame.hibernate.BaseDao;
+import net.yazsoft.frame.images.ImagesDao;
+import net.yazsoft.frame.images.ImagesTypeDao;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.security.UsersDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.products.ProductsDao;
 import net.yazsoft.ors.schools.SchoolsDao;
+import net.yazsoft.ors.students.StudentsDao;
+import net.yazsoft.ors.webslides.WebSlidesDao;
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -25,13 +30,17 @@ import java.io.*;
 
 @Named
 @ViewScoped
-public class UploadsBean implements Serializable{
+public class UploadsBean extends BaseDao implements Serializable{
     private static final Logger logger = Logger.getLogger(UploadsBean.class.getName());
     private static final int BUFFER_SIZE = 6124;
     private static final long DAT = 1L;
     private static final long IMAGE = 2L;
     private static final long BOOKLET = 3L;
-    private static final long LOGO = 4L;
+    private static final String IMAGE_SCHOOL = "school";
+    private static final String IMAGE_USER ="user";
+    private static final String IMAGE_STUDENT ="student";
+    private static final String IMAGE_SLIDE ="slide";
+    private static final String IMAGE_PRODUCT ="product";
     private UploadedFile uploadedFile;
     Schools activeSchool;
     File uploadDirectory;
@@ -39,16 +48,118 @@ public class UploadsBean implements Serializable{
     Albums album;
     UploadsType uploadType;
     String detail;
+    String imageType;
+    Integer imageWidth;
+    Integer imageHeight;
 
     @Inject UploadsDao uploadsDao;
     @Inject UploadsTypeDao uploadsTypeDao;
+    @Inject ImagesDao imagesDao;
+    @Inject ImagesTypeDao imagesTypeDao;
+
     @Inject SchoolsDao schoolsDao;
+    @Inject UsersDao usersDao;
+    @Inject StudentsDao studentsDao;
+    @Inject WebSlidesDao webSlidesDao;
+    @Inject ProductsDao productsDao;
+
+
 
     @PostConstruct
     public void init() {
         logger.info("UPLOAD CONSTRUCTOR");
         //album=activeSchool.getId();
         fileType=DAT;
+    }
+
+    @Transactional
+    public void handleImageUpload(FileUploadEvent event) {
+        logger.info("UPLOADING IMAGE.......");
+        fileType=IMAGE;
+        Long tid=null;
+        switch (imageType){
+            case IMAGE_SCHOOL: tid=schoolsDao.getItem().getTid();break;
+            case IMAGE_USER: tid=usersDao.getItem().getTid();break;
+            case IMAGE_STUDENT: tid=studentsDao.getItem().getTid();break;
+            case IMAGE_SLIDE: tid=webSlidesDao.getItem().getTid();break;
+            case IMAGE_PRODUCT: tid=productsDao.getItem().getTid();break;
+        }
+
+        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            getUploadDirectory(null);
+            String filenameOriginal=event.getFile().getFileName();
+            String extension=UploadsDao.getFileExtension(filenameOriginal);
+
+            InputStream inputStream;
+            inputStream = event.getFile().getInputstream();
+            BufferedImage bufferedImage= ImageIO.read(event.getFile().getInputstream());
+            Integer imgWidth=bufferedImage.getWidth();
+            if (imageWidth==null) {
+                imageWidth=256; imageHeight=256;
+            }
+
+            if (imgWidth>imageWidth) {
+                inputStream = Util.imageResize(event.getFile().getInputstream(), extension, imageWidth, imageHeight);
+            }
+            String filename=tid.toString()+"."+extension.toLowerCase();
+            OutputStream out = new FileOutputStream(new File(uploadDirectory,filename));
+            int read = 0;
+            byte[] bytes = new byte[BUFFER_SIZE];
+
+            while ((read = inputStream.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            inputStream.close();
+            out.flush();
+            out.close();
+
+            //Util.setFacesMessage(" RESIM YUKLENDI ");
+
+            ImagesType imagesType=null;
+            switch (imageType) {
+                case (IMAGE_USER) :
+                    imagesType=(ImagesType)getSession().load(ImagesType.class,1L);break;
+                case (IMAGE_SCHOOL) :
+                    imagesType=(ImagesType)getSession().load(ImagesType.class,2L);break;
+                case (IMAGE_STUDENT) :
+                    imagesType=(ImagesType)getSession().load(ImagesType.class,3L);break;
+                case (IMAGE_SLIDE) :
+                    imagesType=(ImagesType)getSession().load(ImagesType.class,4L);break;
+                case (IMAGE_PRODUCT) :
+                    imagesType=(ImagesType)getSession().load(ImagesType.class,5L);break;
+            }
+
+            Images image=null;
+            image=imagesDao.findImageByTidAndType(tid,imagesType);
+            if (image==null) {
+                image=new Images();
+            }
+            image.setName(filenameOriginal);
+            image.setExtension(extension);
+            image.setRefSchool(Util.getActiveSchool());
+            image.setActive(true);
+            image.setRefTid(tid);
+            image.setRefImageType(imagesType);
+
+            imagesDao.saveOrUpdate(image);
+            switch (imageType) {
+                case (IMAGE_USER) :
+                    usersDao.getItem().setRefImage(image); usersDao.update();break;
+                case (IMAGE_SCHOOL) :
+                    schoolsDao.getItem().setRefImage(image); schoolsDao.update();break;
+                case (IMAGE_STUDENT) :
+                    studentsDao.getItem().setRefImage(image); studentsDao.update();break;
+                case (IMAGE_SLIDE) :
+                    webSlidesDao.getItem().setRefImage(image); webSlidesDao.update();break;
+                case (IMAGE_PRODUCT) :
+                    productsDao.getItem().setRefImage(image); productsDao.update();break;
+            }
+        } catch (Exception e) {
+            logger.error("EXCEPTION: ", e);
+            Util.setFacesMessageError(e.getMessage());
+            //throw e;
+        }
     }
 
 
@@ -158,7 +269,7 @@ public class UploadsBean implements Serializable{
      * @return UploadDirectory name
      */
     public File getUploadDirectory(String subdir) {
-        String dirName;
+        String dirName="";
         File targetFolder;
         if (fileType.equals(DAT)) {
             Util.createDirectory("DAT");
@@ -166,10 +277,23 @@ public class UploadsBean implements Serializable{
         } else if (fileType.equals(BOOKLET)) {
             Util.createDirectory("BOOKLET");
             dirName="/BOOKLET/"+activeSchool.getTid().toString();
-        } else if (fileType.equals(LOGO)) {
+        } else if (fileType.equals(IMAGE)) {
             Util.createDirectory("images");
-            Util.createDirectory("images/logo");
-            dirName="/images/logo";
+            Util.createDirectory("images/"+imageType);
+            dirName="/images/"+imageType;
+            /*
+            switch (imageType) {
+                case (IMAGE_SCHOOL) :
+                    Util.createDirectory("images/school");
+                    dirName="/images/school"; break;
+                case (IMAGE_USER) :
+                    Util.createDirectory("images/users/");
+                    dirName="/images/user"; break;
+                case (IMAGE_STUDENT) :
+                    Util.createDirectory("images/students/");
+                    dirName="/images/student"; break;
+            }
+            */
         } else {
             dirName="/files";
         }
@@ -198,45 +322,7 @@ public class UploadsBean implements Serializable{
         uploadType=uploadsTypeDao.getById(DAT);
         handleFileUpload(event);
     }
-    @Transactional
-    public void handleLogoUpload(FileUploadEvent event) {
-        logger.info("UPLOADING LOGO.......");
-        fileType=LOGO;
-        Long tid=schoolsDao.getItem().getTid();
 
-        ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
-        try {
-            getUploadDirectory(null);
-            String filenameOriginal=event.getFile().getFileName();
-            String extension=UploadsDao.getFileExtension(filenameOriginal);
-
-            InputStream inputStream;
-            inputStream = event.getFile().getInputstream();
-            BufferedImage bufferedImage= ImageIO.read(event.getFile().getInputstream());
-            Integer imageWidth=bufferedImage.getWidth();
-            if (imageWidth>256) {
-                inputStream = Util.imageResize(event.getFile().getInputstream(), extension, 256, 256);
-            }
-            String filename=tid.toString()+"."+extension.toLowerCase();
-            OutputStream out = new FileOutputStream(new File(uploadDirectory,filename));
-            int read = 0;
-            byte[] bytes = new byte[BUFFER_SIZE];
-
-            while ((read = inputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            inputStream.close();
-            out.flush();
-            out.close();
-
-            Util.setFacesMessage(" LOGO YUKLENDI ");
-
-        } catch (Exception e) {
-            logger.error("EXCEPTION: ", e);
-            Util.setFacesMessageError(e.getMessage());
-            //throw e;
-        }
-    }
 
     @Transactional
     public void handleFileUpload(FileUploadEvent event) {
@@ -325,6 +411,30 @@ public class UploadsBean implements Serializable{
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
+    public Integer getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(Integer imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public Integer getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(Integer imageHeight) {
+        this.imageHeight = imageHeight;
     }
 }
 

@@ -18,6 +18,9 @@
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/security.xml</file>
           <file>file://$MODULE_DIR$/src/main/webapp/WEB-INF/applicationContext.xml</file>
         </fileset>
+        <fileset id="fileset2" name="Spring Application Context (2)" removed="false">
+          <file>file://$MODULE_DIR$/src/main/java/net/yazsoft/frame/scopes/ScopeConfigurer.java</file>
+        </fileset>
       </configuration>
     </facet>
     <facet type="hibernate" name="Hibernate">
@@ -33,8 +36,8 @@
         <option name="autosync" value="false" />
         <option name="deleteUnindexed" value="true" />
         <option name="httpAuthEnabled" value="false" />
-        <option name="httpPassword" />
-        <option name="httpUsername" />
+        <option name="httpPassword" value="" />
+        <option name="httpUsername" value="" />
         <option name="manualXML" value="false" />
         <option name="masterModuleName" />
         <option name="remotingEnabled" value="false" />

@@ -3,7 +3,6 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,18 +15,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ZlogLogin.findAll", query = "SELECT t FROM ZlogLogin t")})
+    @NamedQuery(name = "ZlogLogin.findAll", query = "SELECT z FROM ZlogLogin z"),
+    @NamedQuery(name = "ZlogLogin.findByTid", query = "SELECT z FROM ZlogLogin z WHERE z.tid = :tid"),
+    @NamedQuery(name = "ZlogLogin.findByActive", query = "SELECT z FROM ZlogLogin z WHERE z.active = :active"),
+    @NamedQuery(name = "ZlogLogin.findByCreated", query = "SELECT z FROM ZlogLogin z WHERE z.created = :created"),
+    @NamedQuery(name = "ZlogLogin.findByName", query = "SELECT z FROM ZlogLogin z WHERE z.name = :name"),
+    @NamedQuery(name = "ZlogLogin.findByUpdated", query = "SELECT z FROM ZlogLogin z WHERE z.updated = :updated"),
+    @NamedQuery(name = "ZlogLogin.findByVersion", query = "SELECT z FROM ZlogLogin z WHERE z.version = :version")})
 public class ZlogLogin extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -35,29 +38,29 @@ public class ZlogLogin extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private int version;
+    private Boolean active;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
-    @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    private Boolean active;
+    @Basic(optional = false)
+    @NotNull
+    @Column(nullable = false)
+    private int version;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
     @JoinColumn(name = "ref_student", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
     @JoinColumn(name = "ref_user", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users refUser;
-    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Schools refSchool;
 
     public ZlogLogin() {
     }
@@ -66,10 +69,10 @@ public class ZlogLogin extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public ZlogLogin(Long tid, int version, String name) {
+    public ZlogLogin(Long tid, String name, int version) {
         this.tid = tid;
-        this.version = version;
         this.name = name;
+        this.version = version;
     }
 
     public Long getTid() {
@@ -80,20 +83,12 @@ public class ZlogLogin extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public int getVersion() {
-        return version;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     public Date getCreated() {
@@ -104,6 +99,14 @@ public class ZlogLogin extends BaseEntity implements Serializable {
         this.created = created;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Date getUpdated() {
         return updated;
     }
@@ -112,12 +115,20 @@ public class ZlogLogin extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    public Boolean getActive() {
-        return active;
+    public int getVersion() {
+        return version;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
     }
 
     public Students getRefStudent() {
@@ -135,15 +146,6 @@ public class ZlogLogin extends BaseEntity implements Serializable {
     public void setRefUser(Users refUser) {
         this.refUser = refUser;
     }
-
-    public Schools getRefSchool() {
-        return refSchool;
-    }
-
-    public void setRefSchool(Schools refSchool) {
-        this.refSchool = refSchool;
-    }
-
 
     @Override
     public int hashCode() {
