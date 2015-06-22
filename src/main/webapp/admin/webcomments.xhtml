@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>Yorumlar</title>
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="Yorumlar" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+
+    <p:outputPanel style="text-align: right;">
+        <p:commandButton icon="toolbar-add toolbar-icon"
+                         styleClass="toolbar-button" style="padding:1px 5px;"
+                         value="#{msg.toolbar_add}"
+                         actionListener="#{webCommentsDao.addComment}"
+                         update="@widgetVar(formDialogWidget) @widgetVar(webCommentsGridWidget)"
+                         rendered="true"
+                >
+        </p:commandButton>
+    </p:outputPanel>
+    <components:webCommentsGrid rows="100"  scrollable="true" update=":#{p:component('formPanel')}"
+                            widgetVar="webCommentsGridWidget" scrollHeight="450" paginator="false"
+            />
+    <p:dialog id="gridDialog" header="#{msg.global_comment}" widgetVar="formDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"
+              onHide="PF('webCommentsGridWidget').filter()">
+    <p:outputPanel id="formPanel" >
+
+    <h:form id="pageForm">
+        <p:outputPanel style="width: 620px; height: 330px; margin: 0 auto;">
+            <p:panelGrid columns="2" id="pagePanel">
+                <h:outputLabel value="#{msg.global_name} :" for="nametr" styleClass="bold"/>
+                <h:inputText id="nametr" value="#{webCommentsDao.item.name}" size="50"/>
+                <h:outputLabel value="#{msg.global_title} :" for="titletr" styleClass="bold"/>
+                <h:inputText id="titletr" value="#{webCommentsDao.item.titleTr}" size="50" required="true"
+                             requiredMessage="#{msg.global_title} #{msg.validation_required}"/>
+                <h:outputLabel value="#{msg.global_rank} :" for="rank" styleClass="bold" />
+                <h:inputText id="rank" value="#{webCommentsDao.item.rank}"
+                             requiredMessage="#{msg.global_rank} #{msg.validation_required}"/>
+                <h:outputLabel value="#{msg.global_date} :" for="date" styleClass="bold" />
+                <p:calendar id="date" value="#{webCommentsDao.item.date}" locale="tr"/>
+                <h:outputLabel value="#{msg.global_comment} :" for="comment"  styleClass="bold"/>
+                <h:inputTextarea id="comment" value="#{webCommentsDao.item.commentTr}" rows="7" cols="75"
+                             requiredMessage="#{msg.global_rank} #{msg.validation_required}"/>
+            </p:panelGrid>
+            <h:inputHidden id="tid" value="#{webCommentsDao.item.tid}"/>
+            <h:inputHidden id="status" value="#{webCommentsDao.status}"  />
+            <h:inputHidden id="disabledelete" value="#{webCommentsDao.disabledelete}" />
+            <h:messages />
+            <components:toolbar gridname="webCommentsGrid" daobean="#{webCommentsDao}"
+                                print="false" new="false" search="false"
+                                oncomplete="PF('formDialogWidget').hide()"
+                    />
+        </p:outputPanel>
+    </h:form>
+</p:outputPanel>
+</p:dialog>
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

@@ -23,19 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Results.findAll", query = "SELECT r FROM Results r"),
-    @NamedQuery(name = "Results.findByTid", query = "SELECT r FROM Results r WHERE r.tid = :tid"),
-    @NamedQuery(name = "Results.findByActive", query = "SELECT r FROM Results r WHERE r.active = :active"),
-    @NamedQuery(name = "Results.findByVersion", query = "SELECT r FROM Results r WHERE r.version = :version"),
-    @NamedQuery(name = "Results.findByCreated", query = "SELECT r FROM Results r WHERE r.created = :created"),
-    @NamedQuery(name = "Results.findByUpdated", query = "SELECT r FROM Results r WHERE r.updated = :updated"),
-    @NamedQuery(name = "Results.findByTrues", query = "SELECT r FROM Results r WHERE r.trues = :trues"),
-    @NamedQuery(name = "Results.findByFalses", query = "SELECT r FROM Results r WHERE r.falses = :falses"),
-    @NamedQuery(name = "Results.findByNulls", query = "SELECT r FROM Results r WHERE r.nulls = :nulls"),
-    @NamedQuery(name = "Results.findByNets", query = "SELECT r FROM Results r WHERE r.nets = :nets"),
-    @NamedQuery(name = "Results.findByRankSchool", query = "SELECT r FROM Results r WHERE r.rankSchool = :rankSchool"),
-    @NamedQuery(name = "Results.findByRankClass", query = "SELECT r FROM Results r WHERE r.rankClass = :rankClass"),
-    @NamedQuery(name = "Results.findByScore", query = "SELECT r FROM Results r WHERE r.score = :score")})
+    @NamedQuery(name = "Results.findAll", query = "SELECT r FROM Results r")})
 public class Results extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -24,13 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ZlogLogin.findAll", query = "SELECT z FROM ZlogLogin z"),
-    @NamedQuery(name = "ZlogLogin.findByTid", query = "SELECT z FROM ZlogLogin z WHERE z.tid = :tid"),
-    @NamedQuery(name = "ZlogLogin.findByActive", query = "SELECT z FROM ZlogLogin z WHERE z.active = :active"),
-    @NamedQuery(name = "ZlogLogin.findByCreated", query = "SELECT z FROM ZlogLogin z WHERE z.created = :created"),
-    @NamedQuery(name = "ZlogLogin.findByName", query = "SELECT z FROM ZlogLogin z WHERE z.name = :name"),
-    @NamedQuery(name = "ZlogLogin.findByUpdated", query = "SELECT z FROM ZlogLogin z WHERE z.updated = :updated"),
-    @NamedQuery(name = "ZlogLogin.findByVersion", query = "SELECT z FROM ZlogLogin z WHERE z.version = :version")})
+    @NamedQuery(name = "ZlogLogin.findAll", query = "SELECT z FROM ZlogLogin z")})
 public class ZlogLogin extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -30,14 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Schools.findAll", query = "SELECT s FROM Schools s"),
-    @NamedQuery(name = "Schools.findByTid", query = "SELECT s FROM Schools s WHERE s.tid = :tid"),
-    @NamedQuery(name = "Schools.findByVersion", query = "SELECT s FROM Schools s WHERE s.version = :version"),
-    @NamedQuery(name = "Schools.findByName", query = "SELECT s FROM Schools s WHERE s.name = :name"),
-    @NamedQuery(name = "Schools.findByCreated", query = "SELECT s FROM Schools s WHERE s.created = :created"),
-    @NamedQuery(name = "Schools.findByUpdated", query = "SELECT s FROM Schools s WHERE s.updated = :updated"),
-    @NamedQuery(name = "Schools.findByActive", query = "SELECT s FROM Schools s WHERE s.active = :active"),
-    @NamedQuery(name = "Schools.findByMebCode", query = "SELECT s FROM Schools s WHERE s.mebCode = :mebCode")})
+    @NamedQuery(name = "Schools.findAll", query = "SELECT s FROM Schools s")})
 public class Schools extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -81,6 +74,9 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<Students> studentsCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<ZlogLogin> zlogLoginCollection;
+    @JoinColumn(name = "ref_image", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Images refImage;
     @JoinColumn(name = "ref_city", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Cities refCity;
@@ -93,9 +89,6 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<Results> resultsCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<SchoolsClass> schoolsClassCollection;
-    @JoinColumn(name = "ref_image", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Images refImage;
 
     public Schools() {
     }
@@ -238,6 +231,14 @@ public class Schools extends BaseEntity implements Serializable {
         this.zlogLoginCollection = zlogLoginCollection;
     }
 
+    public Images getRefImage() {
+        return refImage;
+    }
+
+    public void setRefImage(Images refImage) {
+        this.refImage = refImage;
+    }
+
     public Cities getRefCity() {
         return refCity;
     }
@@ -263,7 +264,6 @@ public class Schools extends BaseEntity implements Serializable {
         this.imagesCollection = imagesCollection;
     }
 
-
     @XmlTransient
     public Collection<Results> getResultsCollection() {
         return resultsCollection;
@@ -280,14 +280,6 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
         this.schoolsClassCollection = schoolsClassCollection;
-    }
-
-    public Images getRefImage() {
-        return refImage;
-    }
-
-    public void setRefImage(Images refImage) {
-        this.refImage = refImage;
     }
 
     @Override

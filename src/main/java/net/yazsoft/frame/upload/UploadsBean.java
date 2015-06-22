@@ -95,11 +95,13 @@ public class UploadsBean extends BaseDao implements Serializable{
             inputStream = event.getFile().getInputstream();
             BufferedImage bufferedImage= ImageIO.read(event.getFile().getInputstream());
             Integer imgWidth=bufferedImage.getWidth();
+            Integer imgHeight=bufferedImage.getHeight();
             if (imageWidth==null) {
-                imageWidth=256; imageHeight=256;
+                imageWidth=256;
             }
 
             if (imgWidth>imageWidth) {
+                imageHeight=imgHeight*(imageWidth/imgWidth); //scale
                 inputStream = Util.imageResize(event.getFile().getInputstream(), extension, imageWidth, imageHeight);
             }
             String filename=tid.toString()+"."+extension.toLowerCase();

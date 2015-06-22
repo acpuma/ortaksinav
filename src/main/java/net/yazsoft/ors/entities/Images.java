@@ -3,6 +3,7 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -27,15 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Images.findAll", query = "SELECT i FROM Images i"),
-    @NamedQuery(name = "Images.findByTid", query = "SELECT i FROM Images i WHERE i.tid = :tid"),
-    @NamedQuery(name = "Images.findByActive", query = "SELECT i FROM Images i WHERE i.active = :active"),
-    @NamedQuery(name = "Images.findByVersion", query = "SELECT i FROM Images i WHERE i.version = :version"),
-    @NamedQuery(name = "Images.findByName", query = "SELECT i FROM Images i WHERE i.name = :name"),
-    @NamedQuery(name = "Images.findByCreated", query = "SELECT i FROM Images i WHERE i.created = :created"),
-    @NamedQuery(name = "Images.findByUpdated", query = "SELECT i FROM Images i WHERE i.updated = :updated"),
-    @NamedQuery(name = "Images.findByTitleTr", query = "SELECT i FROM Images i WHERE i.titleTr = :titleTr"),
-    @NamedQuery(name = "Images.findByTitleEn", query = "SELECT i FROM Images i WHERE i.titleEn = :titleEn")})
+    @NamedQuery(name = "Images.findAll", query = "SELECT i FROM Images i")})
 public class Images extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,7 +36,7 @@ public class Images extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private boolean active;
+    private Boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -53,7 +46,6 @@ public class Images extends BaseEntity implements Serializable {
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
-    private String extension;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -64,10 +56,25 @@ public class Images extends BaseEntity implements Serializable {
     @Size(max = 1000)
     @Column(name = "title_en", length = 1000)
     private String titleEn;
+    @Size(max = 255)
+    @Column(length = 255)
+    private String extension;
+    @Column(name = "ref_tid")
+    private Long refTid;
     @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
     private Collection<Products> productsCollection;
     @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<Users> usersCollection;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
     private Collection<Albums> albumsCollection;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<WebLinks> webLinksCollection;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<Students> studentsCollection;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<WebClients> webClientsCollection;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<Schools> schoolsCollection;
     @JoinColumn(name = "ref_album", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Albums refAlbum;
@@ -78,15 +85,9 @@ public class Images extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
     @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
+    private Collection<WebCompanies> webCompaniesCollection;
+    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
     private Collection<WebSlides> webSlidesCollection;
-    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
-    private Collection<Schools> schoolsCollection;
-    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
-    private Collection<Users> usersCollection;
-    @OneToMany(mappedBy = "refImage", fetch = FetchType.LAZY)
-    private Collection<Students> studentsCollection;
-    @Column(name = "ref_tid", length = 1000)
-    private Long refTid;
 
     public Images() {
     }
@@ -109,11 +110,10 @@ public class Images extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public boolean getActive() {
+    public Boolean getActive() {
         return active;
     }
-
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
@@ -165,6 +165,22 @@ public class Images extends BaseEntity implements Serializable {
         this.titleEn = titleEn;
     }
 
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    public Long getRefTid() {
+        return refTid;
+    }
+
+    public void setRefTid(Long refTid) {
+        this.refTid = refTid;
+    }
+
     @XmlTransient
     public Collection<Products> getProductsCollection() {
         return productsCollection;
@@ -172,6 +188,15 @@ public class Images extends BaseEntity implements Serializable {
 
     public void setProductsCollection(Collection<Products> productsCollection) {
         this.productsCollection = productsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Users> getUsersCollection() {
+        return usersCollection;
+    }
+
+    public void setUsersCollection(Collection<Users> usersCollection) {
+        this.usersCollection = usersCollection;
     }
 
     @XmlTransient
@@ -183,6 +208,41 @@ public class Images extends BaseEntity implements Serializable {
         this.albumsCollection = albumsCollection;
     }
 
+    @XmlTransient
+    public Collection<WebLinks> getWebLinksCollection() {
+        return webLinksCollection;
+    }
+
+    public void setWebLinksCollection(Collection<WebLinks> webLinksCollection) {
+        this.webLinksCollection = webLinksCollection;
+    }
+
+    @XmlTransient
+    public Collection<Students> getStudentsCollection() {
+        return studentsCollection;
+    }
+
+    public void setStudentsCollection(Collection<Students> studentsCollection) {
+        this.studentsCollection = studentsCollection;
+    }
+
+    @XmlTransient
+    public Collection<WebClients> getWebClientsCollection() {
+        return webClientsCollection;
+    }
+
+    public void setWebClientsCollection(Collection<WebClients> webClientsCollection) {
+        this.webClientsCollection = webClientsCollection;
+    }
+
+    @XmlTransient
+    public Collection<Schools> getSchoolsCollection() {
+        return schoolsCollection;
+    }
+
+    public void setSchoolsCollection(Collection<Schools> schoolsCollection) {
+        this.schoolsCollection = schoolsCollection;
+    }
 
     public Albums getRefAlbum() {
         return refAlbum;
@@ -209,52 +269,21 @@ public class Images extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
+    public Collection<WebCompanies> getWebCompaniesCollection() {
+        return webCompaniesCollection;
+    }
+
+    public void setWebCompaniesCollection(Collection<WebCompanies> webCompaniesCollection) {
+        this.webCompaniesCollection = webCompaniesCollection;
+    }
+
+    @XmlTransient
     public Collection<WebSlides> getWebSlidesCollection() {
         return webSlidesCollection;
     }
 
     public void setWebSlidesCollection(Collection<WebSlides> webSlidesCollection) {
         this.webSlidesCollection = webSlidesCollection;
-    }
-
-    public Collection<Schools> getSchoolsCollection() {
-        return schoolsCollection;
-    }
-
-    public void setSchoolsCollection(Collection<Schools> schoolsCollection) {
-        this.schoolsCollection = schoolsCollection;
-    }
-
-    public Collection<Users> getUsersCollection() {
-        return usersCollection;
-    }
-
-    public void setUsersCollection(Collection<Users> usersCollection) {
-        this.usersCollection = usersCollection;
-    }
-
-    public Collection<Students> getStudentsCollection() {
-        return studentsCollection;
-    }
-
-    public void setStudentsCollection(Collection<Students> studentsCollection) {
-        this.studentsCollection = studentsCollection;
-    }
-
-    public String getExtension() {
-        return extension;
-    }
-
-    public void setExtension(String extension) {
-        this.extension = extension;
-    }
-
-    public Long getRefTid() {
-        return refTid;
-    }
-
-    public void setRefTid(Long refTid) {
-        this.refTid = refTid;
     }
 
     @Override

@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -358,5 +359,9 @@ public class Util implements Serializable{
     public static String toProperCase(String s) {
         return s.substring(0, 1).toUpperCase()
                 + s.substring(1).toLowerCase();
+    }
+
+    public static Date getNow() {
+        return Calendar.getInstance(new Locale("TR")).getTime();
     }
 }

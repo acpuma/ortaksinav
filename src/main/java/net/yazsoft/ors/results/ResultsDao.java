@@ -63,11 +63,14 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
-        params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        if (Util.getActiveSchool().getRefTown()!=null) {
+            params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        }
         params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
         params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
         params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
-        params.put("plogo","http://www.ortaksinav.com.tr/images/logo/"+Util.getActiveSchool().getTid()+ ".png");
+        params.put("plogo","http://www.ortaksinav.com.tr/images/logo/"+Util.getActiveSchool().getTid()
+                + "."+ Util.getActiveSchool().getRefImage().getExtension());
 
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
@@ -99,12 +102,14 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
         params.put("pil",Util.getActiveSchool().getRefCity().getName().toUpperCase());
-        params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        if (Util.getActiveSchool().getRefTown()!=null) {
+            params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        }
         params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
         params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
         params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
-        params.put("plogo","http://www.ortaksinav.com.tr/images/school/"+Util.getActiveSchool().getTid()+ ".png");
-
+        params.put("plogo","http://www.ortaksinav.com.tr/images/school/"+Util.getActiveSchool().getTid()
+                + "."+ Util.getActiveSchool().getRefImage().getExtension());
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
         report.pdf("repLessonOrtalama", params, selectedLesson.getRefLessonName().getNameTr()+"Ortalama");

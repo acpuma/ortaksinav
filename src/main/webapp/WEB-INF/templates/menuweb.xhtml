@@ -23,7 +23,11 @@
                         <div class="nav-collapse collapse">
                             <ul class="nav" id="mainNavigation">
                                 <ui:repeat value="#{menusBus.webmenus}" var="menu">
-                                    <li><a href="#">#{menu.nameTr}</a></li>
+                                    <li>
+                                        <h:link outcome="#{menu.form}" >
+                                            #{menu.nameTr}
+                                        </h:link>
+                                    </li>
                                 </ui:repeat>
                             </ul>
 

@@ -90,8 +90,8 @@
             </p:column>
 
             <p:column headerText="Resim" width="15" >
-                <p:outputPanel style="height:70px; width: 70px;">
-                    <p:graphicImage height="70" width="70"  cache="false"
+                <p:outputPanel style="height:70px; text-align: center;">
+                    <p:graphicImage height="70"   cache="false"
                                 value="/images/product/#{productsVar.tid}.#{productsVar.refImage.extension}"
                         />
                 </p:outputPanel>
@@ -102,11 +102,33 @@
             <p:column headerText="Aciklama" width="130" >
                 #{productsVar.detailTr}
             </p:column>
-            <p:column headerText="Liste Fiyati" width="10" >
+            <p:column headerText="Liste Fiyati" width="20" >
                 #{productsVar.price}
             </p:column>
-            <p:column headerText="Indirimli" width="10" >
+            <p:column headerText="Indirimli" width="20" >
                 #{productsVar.priceReal}
+            </p:column>
+            <p:column headerText="Tür" width="60" filterBy="#{productsVar.refProductType}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{productsTypeDao.all}" var="man"
+                                       itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                #{productsVar.refProductType.nameTr}
+            </p:column>
+            <p:column headerText="Kategori" width="60" filterBy="#{productsVar.refProductCategory}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItems value="#{productsCategoryDao.all}" var="man"
+                                       itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                #{productsVar.refProductCategory.nameTr}
             </p:column>
 
 

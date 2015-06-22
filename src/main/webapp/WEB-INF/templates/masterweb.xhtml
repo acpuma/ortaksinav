@@ -60,6 +60,7 @@
                 </ui:insert>
 
             <ui:include src="/WEB-INF/templates/menuweb.xhtml"/>
+            <p:outputPanel styleClass="pagepanel">
 
                 <hr style="box-shadow: 0 1px 3px #ccc; color: #eeeeee;" />
                 <ui:insert />
@@ -68,7 +69,7 @@
                     </p:outputPanel>
                 </p:outputPanel>
 
-
+            </p:outputPanel>
             <ui:insert name="footer">
                 <ui:include src="/WEB-INF/templates/footerweb.xhtml"/>
             </ui:insert>

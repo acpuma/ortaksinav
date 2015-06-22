@@ -572,52 +572,47 @@
             <div class="row">
                 <div class="span12">
                     <div class="carouFredSel" data-nav="tweets" data-autoplay="false">
-
-
-                        <!--  ==========  -->
-                        <!--  = Slide =  -->
-                        <!--  ==========  -->
-                        <div class="slide">
+                        <ui:repeat value="#{webCommentsDao.comments}" var="comment" varStatus="index">
+                            <p:outputPanel rendered="#{index.index%2==0}"  styleClass="slide">
                             <div class="row">
+                            <p:outputPanel rendered="#{not empty comment.titleTr}">
                                 <div class="span6">
                                     <div class="news-item">
-                                        <div class="published">25. Mayıs, 2015</div>
-                                        <h6><a href="#">Muhteşem bir uygulama</a></h6>
-                                        <p>Ortak Sınav Merkezi'yle çalıştığımız için çok mutluyuz. Tüm okullar bu sistemi mutlaka denemeli. </p>
-                                    </div>
-                                </div>
-                                <div class="span6">
-                                    <div class="news-item">
-                                        <div class="published">30. Mayıs, 2015</div>
-                                        <h6><a href="#">Sınavlarınız çok rahat geçecek</a></h6>
-                                        <p>Ortak Sınavlarımızı çok rahat bir şekilde yaptık. Baştan sona tüm aşamalar hatasız ve çok başarılı geçti.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> <!-- /slide -->
+                                        <div class="published">
+                                            <h:outputText rendered="#{not empty comment.name}"
+                                                value="#{comment.name} - "
+                                            />
+                                            <h:outputText value="#{comment.date}">
+                                                <f:convertDateTime pattern="d. MMMMM, yyyy" locale="tr"/>
+                                            </h:outputText>
 
-
-                        <!--  ==========  -->
-                        <!--  = Slide =  -->
-                        <!--  ==========  -->
-                        <div class="slide">
-                            <div class="row">
-                                <div class="span6">
-                                    <div class="news-item">
-                                        <div class="published">15. Mayıs, 2015</div>
-                                        <h6><a href="#">Hemen sonuç</a></h6>
-                                        <p>Yaptığımız sınavlar aynı gün değerlendirildi ve öğrenciler notlarını hemen öğrendiler. Çok hızlı ve güzel bir uygulama.</p>
+                                        </div>
+                                        <h6>#{comment.titleTr}</h6>
+                                        <p>#{comment.commentTr}</p>
                                     </div>
                                 </div>
+                                </p:outputPanel>
+                                <p:outputPanel rendered="#{not empty webCommentsDao.comments[index.index+1]}">
                                 <div class="span6">
                                     <div class="news-item">
-                                        <div class="published">22. Mayıs, 2015</div>
-                                        <h6><a href="#">Herkes çok sevdi</a></h6>
-                                        <p>Tüm öğretmenlerimiz ve öğrencilerimiz ortak sınavları çok sevdi. Sorunsuz ve çok hızlı bir şekilde sınavlarımızı yapıp sonuçlarını öğrendik. </p>
+                                        <div class="published">
+                                            <h:outputText
+                                                    rendered="#{not empty webCommentsDao.comments[index.index+1].name}"
+                                                    value="#{webCommentsDao.comments[index.index+1].name} - "
+                                                    />
+                                            <h:outputText value="#{webCommentsDao.comments[index.index+1].date}">
+                                                <f:convertDateTime pattern="d. MMMMM, yyyy" locale="tr"/>
+                                            </h:outputText>
+                                        </div>
+                                        <h6>#{webCommentsDao.comments[index.index+1].titleTr}</h6>
+                                        <p>#{webCommentsDao.comments[index.index+1].commentTr}</p>
                                     </div>
                                 </div>
+                                </p:outputPanel>
                             </div>
-                        </div> <!-- /slide -->
+
+                            </p:outputPanel>
+                        </ui:repeat>
 
                     </div>
                 </div>

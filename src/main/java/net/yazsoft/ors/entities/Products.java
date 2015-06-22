@@ -3,8 +3,10 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,27 +17,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p"),
-    @NamedQuery(name = "Products.findByTid", query = "SELECT p FROM Products p WHERE p.tid = :tid"),
-    @NamedQuery(name = "Products.findByActive", query = "SELECT p FROM Products p WHERE p.active = :active"),
-    @NamedQuery(name = "Products.findByVersion", query = "SELECT p FROM Products p WHERE p.version = :version"),
-    @NamedQuery(name = "Products.findByNameTr", query = "SELECT p FROM Products p WHERE p.nameTr = :nameTr"),
-    @NamedQuery(name = "Products.findByNameEn", query = "SELECT p FROM Products p WHERE p.nameEn = :nameEn"),
-    @NamedQuery(name = "Products.findByCreated", query = "SELECT p FROM Products p WHERE p.created = :created"),
-    @NamedQuery(name = "Products.findByUpdated", query = "SELECT p FROM Products p WHERE p.updated = :updated"),
-    @NamedQuery(name = "Products.findByDetailTr", query = "SELECT p FROM Products p WHERE p.detailTr = :detailTr"),
-    @NamedQuery(name = "Products.findByDetailEn", query = "SELECT p FROM Products p WHERE p.detailEn = :detailEn"),
-    @NamedQuery(name = "Products.findByPrice", query = "SELECT p FROM Products p WHERE p.price = :price"),
-    @NamedQuery(name = "Products.findByPriceReal", query = "SELECT p FROM Products p WHERE p.priceReal = :priceReal")})
+    @NamedQuery(name = "Products.findAll", query = "SELECT p FROM Products p")})
 public class Products extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,7 +37,6 @@ public class Products extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private Long tid;
     private Boolean active;
-    private Boolean showOrderForm;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -72,15 +64,19 @@ public class Products extends BaseEntity implements Serializable {
     private Float price;
     @Column(name = "price_real", precision = 12)
     private Float priceReal;
+    private Boolean showOrderForm;
+    private Boolean showShop;
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Images refImage;
-    @JoinColumn(name = "ref_product_type", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ProductsType refProductType;
     @JoinColumn(name = "ref_product_category", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductsCategory refProductCategory;
+    @JoinColumn(name = "ref_product_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProductsType refProductType;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refProduct", fetch = FetchType.LAZY)
+    private Collection<OrderFormProducts> orderFormProductsCollection;
 
     public Products() {
     }
@@ -183,20 +179,28 @@ public class Products extends BaseEntity implements Serializable {
         this.priceReal = priceReal;
     }
 
+    public Boolean getShowOrderForm() {
+        return showOrderForm;
+    }
+
+    public void setShowOrderForm(Boolean showOrderForm) {
+        this.showOrderForm = showOrderForm;
+    }
+
+    public Boolean getShowShop() {
+        return showShop;
+    }
+
+    public void setShowShop(Boolean showShop) {
+        this.showShop = showShop;
+    }
+
     public Images getRefImage() {
         return refImage;
     }
 
     public void setRefImage(Images refImage) {
         this.refImage = refImage;
-    }
-
-    public ProductsType getRefProductType() {
-        return refProductType;
-    }
-
-    public void setRefProductType(ProductsType refProductType) {
-        this.refProductType = refProductType;
     }
 
     public ProductsCategory getRefProductCategory() {
@@ -207,12 +211,21 @@ public class Products extends BaseEntity implements Serializable {
         this.refProductCategory = refProductCategory;
     }
 
-    public Boolean getShowOrderForm() {
-        return showOrderForm;
+    public ProductsType getRefProductType() {
+        return refProductType;
     }
 
-    public void setShowOrderForm(Boolean showOrderForm) {
-        this.showOrderForm = showOrderForm;
+    public void setRefProductType(ProductsType refProductType) {
+        this.refProductType = refProductType;
+    }
+
+    @XmlTransient
+    public Collection<OrderFormProducts> getOrderFormProductsCollection() {
+        return orderFormProductsCollection;
+    }
+
+    public void setOrderFormProductsCollection(Collection<OrderFormProducts> orderFormProductsCollection) {
+        this.orderFormProductsCollection = orderFormProductsCollection;
     }
 
     @Override

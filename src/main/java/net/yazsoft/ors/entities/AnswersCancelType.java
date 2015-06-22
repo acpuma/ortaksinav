@@ -25,14 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "AnswersCancelType.findAll", query = "SELECT a FROM AnswersCancelType a"),
-    @NamedQuery(name = "AnswersCancelType.findByTid", query = "SELECT a FROM AnswersCancelType a WHERE a.tid = :tid"),
-    @NamedQuery(name = "AnswersCancelType.findByActive", query = "SELECT a FROM AnswersCancelType a WHERE a.active = :active"),
-    @NamedQuery(name = "AnswersCancelType.findByVersion", query = "SELECT a FROM AnswersCancelType a WHERE a.version = :version"),
-    @NamedQuery(name = "AnswersCancelType.findByNameTr", query = "SELECT a FROM AnswersCancelType a WHERE a.nameTr = :nameTr"),
-    @NamedQuery(name = "AnswersCancelType.findByNameEn", query = "SELECT a FROM AnswersCancelType a WHERE a.nameEn = :nameEn"),
-    @NamedQuery(name = "AnswersCancelType.findByCreated", query = "SELECT a FROM AnswersCancelType a WHERE a.created = :created"),
-    @NamedQuery(name = "AnswersCancelType.findByUpdated", query = "SELECT a FROM AnswersCancelType a WHERE a.updated = :updated")})
+    @NamedQuery(name = "AnswersCancelType.findAll", query = "SELECT a FROM AnswersCancelType a")})
 public class AnswersCancelType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

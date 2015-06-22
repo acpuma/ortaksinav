@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+        >
+<f:view>
+    <h:head>
+        <title>Sipariş Formu</title>
+        <h:outputStylesheet library="css" name="pages/orderForm.css" />
+        <h:outputScript library="js" name="pages/orderForm.js" />
+        <link href='http://fonts.googleapis.com/css?family=Cuprum' rel='stylesheet' type='text/css'/>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/masterweb.xhtml">
+        <ui:param name="title" value="Sipariş Formu"/>
+<p:outputPanel style="width:800px; margin:0 auto;" >
+<h2>Yayın Ön Sipariş Formu</h2>
+<h:form id="orderForm" prependId="false">
+<div id="ys">
+    <div class="ys_title">
+        <table width="100%" cellpadding="3" cellspacing="0" border="0">
+            <tr>
+                <td>Kategoriler</td>
+                <td width="100" class="ys_sp" align="center">Sipariş Adedi</td>
+                <td width="70" class="ys_sp" align="center">1 Tk. Fiyatı</td>
+                <td width="70" class="ys_sp" align="center">Toplam</td>
+                <td width="30">&#160;</td>
+            </tr>
+        </table>
+    </div>
+    <ui:repeat value="#{productsCategoryDao.all}" var="category" >
+        <p:outputPanel rendered="#{productsDao.findCategoryCount(category) ge 1}">
+            <div class="ys_cat_title">
+                <table width="100%" cellpadding="3" cellspacing="0" border="0">
+                    <tr>
+                        <td>#{category.nameTr}</td>
+                        <td width="100" class="ys_sp" align="center">
+                            <input type="text" value="0" name="ys_gr_count_2"
+                                   style="width: auto !important; margin:0px !important;"
+                                   rel="gr#{category.tid}" class="count_input_gr" size="4"/>
+                        </td>
+                        <td width="70" class="ys_sp cat_pr_field" align="center">
+                            #{productsDao.findCategoryPrice(category)} TL
+                        </td>
+                        <td width="75" class="ys_sp cat_sum" id="gr#{category.tid}" align="center">0 TL</td>
+                        <td width="30" class="ys_sp" rel="gr#{category.tid}" align="center">
+                            <img src="resources/images/go-bottom.png" width="24"
+                                 height="24" border="0"
+                                 class="openlist" rel="o#{category.tid}"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="ys_sublist" id="s#{category.tid}">
+                <ui:repeat value="#{productsDao.findByCategory(category)}" var="product">
+                <div class="ys_subline">
+                    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+                        <tr>
+                            <td class="book_names">#{product.nameTr}</td>
+                            <td width="100" class="ys_sp" align="center">
+                                <h:inputText style="width: auto !important;"
+                                             name="ys_gr_count_2_2"
+                                             value="#{orderFormDao.products[product.tid]}"
+                                             class="gr#{category.tid} count_input" size="4"/>
+                            </td>
+                            <td width="70" class="ys_sp pr_field" align="center">#{product.price} TL</td>
+                            <td width="70" class="ys_sp line_sum line_gr#{category.tid}"
+                                rel="gr#{category.tid}" align="center">0 TL</td>
+                            <td width="30">&#160;</td>
+                        </tr>
+                    </table>
+                </div>
+                </ui:repeat>
+            </div>
+        </p:outputPanel>
+    </ui:repeat>
+</div>
+
+<div class="ys_title" style="background: #2f505d; color:white;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td>Toplam</td>
+            <td width="100" class="ys_sp" id="sumcn" align="center">0</td>
+            <td width="70" class="ys_sp" align="center">&#160;</td>
+            <td width="70" class="ys_sp" id="sumpr" align="center">0 TL</td>
+            <td width="30">&#160;</td>
+        </tr>
+    </table>
+</div>
+
+<div class="ys_title" style="float: right;color:white;padding: 0 10px;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="120" align="right">İskonto Oranı (%)</td>
+            <td width="40" class="ys_sp" align="center">
+                <p:inputText value="#{orderFormDao.orderForm.discount}" name="ys_alt_min"
+                             id="ys_alt_min" size="2" style="width: 30px;"/>
+            </td>
+            <td width="120" align="right">İskonto Tutarı</td>
+            <td width="106" class="ys_sp" id="io_rs" align="center">O TL</td>
+        </tr>
+    </table>
+</div>
+
+<div class="clear"></div>
+
+
+<div class="clear"></div>
+<div class="ys_title" style="float: right;color:white;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="140">Sipariş Tutarı</td>
+            <td width="106" class="ys_sp" id="ys_st" align="center">0 TL</td>
+        </tr>
+    </table>
+</div>
+
+<div class="clear"></div>
+
+<div class="ys_title" style="float: right;color:white;padding: 0 10px;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="140">Taksit Günü</td>
+            <td width="106" class="ys_sp" align="center">
+                <h:selectOneMenu name="ys_taksit_gun" id="ys_taksit_gun" style="width: 80px;"
+                                 value="#{orderFormDao.orderForm.installmentDay}">
+                <f:selectItem itemValue="1" itemLabel="1"/>
+                <f:selectItem itemValue="2" itemLabel="2"/>
+                <f:selectItem itemValue="3" itemLabel="3"/>
+                <f:selectItem itemValue="4" itemLabel="4"/>
+                <f:selectItem itemValue="5" itemLabel="5"/>
+                <f:selectItem itemValue="6" itemLabel="6"/>
+                <f:selectItem itemValue="7" itemLabel="7"/>
+                <f:selectItem itemValue="8" itemLabel="8"/>
+                <f:selectItem itemValue="9" itemLabel="9"/>
+                <f:selectItem itemValue="10" itemLabel="10"/>
+                <f:selectItem itemValue="11" itemLabel="11"/>
+                <f:selectItem itemValue="12" itemLabel="12"/>
+                <f:selectItem itemValue="13" itemLabel="13"/>
+                <f:selectItem itemValue="14" itemLabel="14"/>
+                <f:selectItem itemValue="15" itemLabel="15"/>
+                <f:selectItem itemValue="16" itemLabel="16"/>
+                <f:selectItem itemValue="17" itemLabel="17"/>
+                <f:selectItem itemValue="18" itemLabel="18"/>
+                <f:selectItem itemValue="19" itemLabel="19"/>
+                <f:selectItem itemValue="20" itemLabel="20"/>
+                <f:selectItem itemValue="21" itemLabel="21"/>
+                <f:selectItem itemValue="22" itemLabel="22"/>
+                <f:selectItem itemValue="23" itemLabel="23"/>
+                <f:selectItem itemValue="24" itemLabel="24"/>
+                <f:selectItem itemValue="25" itemLabel="25"/>
+                <f:selectItem itemValue="26" itemLabel="26"/>
+                <f:selectItem itemValue="27" itemLabel="27"/>
+                <f:selectItem itemValue="28" itemLabel="28"/>
+                <f:selectItem itemValue="29" itemLabel="29"/>
+                <f:selectItem itemValue="30" itemLabel="30"/>
+            </h:selectOneMenu></td>
+        </tr>
+    </table>
+</div>
+
+    <div class="ys_title" style="float: right;color:white; padding: 0 10px;">
+        <table width="100%" cellpadding="3" cellspacing="0" border="0">
+            <tr>
+                <td width="140">Taksit Sayısı</td>
+                <td width="106" class="ys_sp" align="center">
+                    <h:selectOneMenu name="ys_taksit" id="ys_taksit" style="width: 100px;"
+                                     value="#{orderFormDao.orderForm.installment}">
+                        <f:selectItem itemValue="1" itemLabel="Taksit Yok"/>
+                        <f:selectItem itemValue="2" itemLabel="2 Taksit"/>
+                        <f:selectItem itemValue="3" itemLabel="3 Taksit"/>
+                        <f:selectItem itemValue="4" itemLabel="4 Taksit"/>
+                        <f:selectItem itemValue="5" itemLabel="5 Taksit"/>
+                        <f:selectItem itemValue="6" itemLabel="6 Taksit"/>
+                        <f:selectItem itemValue="7" itemLabel="7 Taksit"/>
+                        <f:selectItem itemValue="8" itemLabel="8 Taksit"/>
+                    </h:selectOneMenu>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+<div class="clear"></div>
+<div class="ys_extra" style="color:white;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="140">Kişi/Kurum Adı</td>
+            <td class="ys_sp">
+                <p:inputText value="#{orderFormDao.orderForm.name}" style="width: 350px;"
+                             name="ys_ext_name" id="ys_ext_name" size="90"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="ys_extra" style="color:white;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="140">Adres</td>
+            <td class="ys_sp">
+                <p:inputText value="#{orderFormDao.orderForm.address}" style="width: 350px;"
+                             name="ys_ext_addr" id="ys_ext_addr" size="90"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="clear"></div>
+<div class="ys_extra" style="color:white;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="140">Telefon</td>
+            <td class="ys_sp">
+                <p:inputText value="#{orderFormDao.orderForm.phone}" style="width: 350px;"
+                             name="ys_ext_phone" id="ys_ext_phone" size="90"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="clear"></div>
+<div class="ys_extra" style="color:white;">
+    <table width="100%" cellpadding="3" cellspacing="0" border="0">
+        <tr>
+            <td width="140">E-posta adresi</td>
+            <td class="ys_sp">
+                <p:inputText value="#{orderFormDao.orderForm.email}" style="width: 350px;"
+                             name="ys_ext_mail" id="ys_ext_mail" size="90"/>
+            </td>
+        </tr>
+    </table>
+</div>
+    <div class="clear"></div>
+    <div class="ys_extra" style="color:white;">
+        <table width="100%" cellpadding="3" cellspacing="0" border="0">
+            <tr>
+                <td width="140">Açıklama</td>
+                <td class="ys_sp">
+                    <p:inputText value="#{orderFormDao.orderForm.comment}" style="width: 350px;"
+                                 name="ys_ext_comment" id="ys_ext_comment" size="90"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+<div class="clear"></div>
+<input type="hidden" name="books" id="books"/>
+
+<p style="text-align: right">
+    <p:commandButton value="Siparişi Tamamla" actionListener="#{orderFormDao.submitOrder}"
+                     class="btn btn-info btn-large bold ys_op" style="font-size: 14px;"
+                     onstart="PF('blockUIWidget1').block()"
+            oncomplete="PF('blockUIWidget1').unblock(); $('#printOrderForm').click(); "
+            update="orderForm :messages">
+        <p:confirm header="#{msg.global_confirmation}"
+                   message="SİPARİŞİ ONAYLIYORMUSUNUZ?" icon="ui-icon-alert"/>
+    </p:commandButton>
+    <p:commandButton action="#{orderFormDao.reportOrderForm}" ajax="false" value="Yazdir"
+                     id="printOrderForm" style="display: none;"/>
+
+</p>
+
+<div class="clear"></div>
+
+    <p:confirmDialog global="true">
+        <p:commandButton value="#{msg.global_yes}" type="button"
+                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+        <p:commandButton value="#{msg.global_no}" type="button"
+                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+    </p:confirmDialog>
+</h:form>
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+        </html>

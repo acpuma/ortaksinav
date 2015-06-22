@@ -27,14 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ProductsCategory.findAll", query = "SELECT p FROM ProductsCategory p"),
-    @NamedQuery(name = "ProductsCategory.findByTid", query = "SELECT p FROM ProductsCategory p WHERE p.tid = :tid"),
-    @NamedQuery(name = "ProductsCategory.findByActive", query = "SELECT p FROM ProductsCategory p WHERE p.active = :active"),
-    @NamedQuery(name = "ProductsCategory.findByVersion", query = "SELECT p FROM ProductsCategory p WHERE p.version = :version"),
-    @NamedQuery(name = "ProductsCategory.findByNameTr", query = "SELECT p FROM ProductsCategory p WHERE p.nameTr = :nameTr"),
-    @NamedQuery(name = "ProductsCategory.findByNameEn", query = "SELECT p FROM ProductsCategory p WHERE p.nameEn = :nameEn"),
-    @NamedQuery(name = "ProductsCategory.findByCreated", query = "SELECT p FROM ProductsCategory p WHERE p.created = :created"),
-    @NamedQuery(name = "ProductsCategory.findByUpdated", query = "SELECT p FROM ProductsCategory p WHERE p.updated = :updated")})
+    @NamedQuery(name = "ProductsCategory.findAll", query = "SELECT p FROM ProductsCategory p")})
 public class ProductsCategory extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,6 +40,7 @@ public class ProductsCategory extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private int version;
+    private int rank;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -60,9 +54,9 @@ public class ProductsCategory extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
     @OneToMany(mappedBy = "refProductCategory", fetch = FetchType.LAZY)
-    private Collection<ProductsCategory> productsCategoryCollection;
-    @OneToMany(mappedBy = "refProductCategory", fetch = FetchType.LAZY)
     private Collection<Products> productsCollection;
+    @OneToMany(mappedBy = "refProductCategory", fetch = FetchType.LAZY)
+    private Collection<ProductsCategory> productsCategoryCollection;
     @JoinColumn(name = "ref_product_category", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private ProductsCategory refProductCategory;
@@ -137,6 +131,15 @@ public class ProductsCategory extends BaseEntity implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Products> getProductsCollection() {
+        return productsCollection;
+    }
+
+    public void setProductsCollection(Collection<Products> productsCollection) {
+        this.productsCollection = productsCollection;
+    }
+
+    @XmlTransient
     public Collection<ProductsCategory> getProductsCategoryCollection() {
         return productsCategoryCollection;
     }
@@ -153,12 +156,12 @@ public class ProductsCategory extends BaseEntity implements Serializable {
         this.refProductCategory = refProductCategory;
     }
 
-    public Collection<Products> getProductsCollection() {
-        return productsCollection;
+    public int getRank() {
+        return rank;
     }
 
-    public void setProductsCollection(Collection<Products> productsCollection) {
-        this.productsCollection = productsCollection;
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     @Override

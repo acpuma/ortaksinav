@@ -25,13 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Cities.findAll", query = "SELECT c FROM Cities c"),
-    @NamedQuery(name = "Cities.findByTid", query = "SELECT c FROM Cities c WHERE c.tid = :tid"),
-    @NamedQuery(name = "Cities.findByVersion", query = "SELECT c FROM Cities c WHERE c.version = :version"),
-    @NamedQuery(name = "Cities.findByName", query = "SELECT c FROM Cities c WHERE c.name = :name"),
-    @NamedQuery(name = "Cities.findByCreated", query = "SELECT c FROM Cities c WHERE c.created = :created"),
-    @NamedQuery(name = "Cities.findByUpdated", query = "SELECT c FROM Cities c WHERE c.updated = :updated"),
-    @NamedQuery(name = "Cities.findByActive", query = "SELECT c FROM Cities c WHERE c.active = :active")})
+    @NamedQuery(name = "Cities.findAll", query = "SELECT c FROM Cities c")})
 public class Cities extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -55,6 +49,8 @@ public class Cities extends BaseEntity implements Serializable {
     private Boolean active;
     @OneToMany(mappedBy = "refCity", fetch = FetchType.LAZY)
     private Collection<Towns> townsCollection;
+    @OneToMany(mappedBy = "refCity", fetch = FetchType.LAZY)
+    private Collection<WebClients> webClientsCollection;
     @OneToMany(mappedBy = "refCity", fetch = FetchType.LAZY)
     private Collection<Schools> schoolsCollection;
 
@@ -126,6 +122,15 @@ public class Cities extends BaseEntity implements Serializable {
 
     public void setTownsCollection(Collection<Towns> townsCollection) {
         this.townsCollection = townsCollection;
+    }
+
+    @XmlTransient
+    public Collection<WebClients> getWebClientsCollection() {
+        return webClientsCollection;
+    }
+
+    public void setWebClientsCollection(Collection<WebClients> webClientsCollection) {
+        this.webClientsCollection = webClientsCollection;
     }
 
     @XmlTransient

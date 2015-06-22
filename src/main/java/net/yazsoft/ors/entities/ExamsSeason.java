@@ -26,14 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ExamsSeason.findAll", query = "SELECT e FROM ExamsSeason e"),
-    @NamedQuery(name = "ExamsSeason.findByTid", query = "SELECT e FROM ExamsSeason e WHERE e.tid = :tid"),
-    @NamedQuery(name = "ExamsSeason.findByActive", query = "SELECT e FROM ExamsSeason e WHERE e.active = :active"),
-    @NamedQuery(name = "ExamsSeason.findByVersion", query = "SELECT e FROM ExamsSeason e WHERE e.version = :version"),
-    @NamedQuery(name = "ExamsSeason.findByNameTr", query = "SELECT e FROM ExamsSeason e WHERE e.nameTr = :nameTr"),
-    @NamedQuery(name = "ExamsSeason.findByNameEn", query = "SELECT e FROM ExamsSeason e WHERE e.nameEn = :nameEn"),
-    @NamedQuery(name = "ExamsSeason.findByCreated", query = "SELECT e FROM ExamsSeason e WHERE e.created = :created"),
-    @NamedQuery(name = "ExamsSeason.findByUpdated", query = "SELECT e FROM ExamsSeason e WHERE e.updated = :updated")})
+    @NamedQuery(name = "ExamsSeason.findAll", query = "SELECT e FROM ExamsSeason e")})
 public class ExamsSeason extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

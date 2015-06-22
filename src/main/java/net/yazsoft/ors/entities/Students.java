@@ -27,21 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Students.findAll", query = "SELECT s FROM Students s"),
-    @NamedQuery(name = "Students.findByTid", query = "SELECT s FROM Students s WHERE s.tid = :tid"),
-    @NamedQuery(name = "Students.findByActive", query = "SELECT s FROM Students s WHERE s.active = :active"),
-    @NamedQuery(name = "Students.findByVersion", query = "SELECT s FROM Students s WHERE s.version = :version"),
-    @NamedQuery(name = "Students.findByName", query = "SELECT s FROM Students s WHERE s.name = :name"),
-    @NamedQuery(name = "Students.findBySurname", query = "SELECT s FROM Students s WHERE s.surname = :surname"),
-    @NamedQuery(name = "Students.findByCreated", query = "SELECT s FROM Students s WHERE s.created = :created"),
-    @NamedQuery(name = "Students.findByUpdated", query = "SELECT s FROM Students s WHERE s.updated = :updated"),
-    @NamedQuery(name = "Students.findByUsername", query = "SELECT s FROM Students s WHERE s.username = :username"),
-    @NamedQuery(name = "Students.findByPassword", query = "SELECT s FROM Students s WHERE s.password = :password"),
-    @NamedQuery(name = "Students.findByFullname", query = "SELECT s FROM Students s WHERE s.fullname = :fullname"),
-    @NamedQuery(name = "Students.findByGender", query = "SELECT s FROM Students s WHERE s.gender = :gender"),
-    @NamedQuery(name = "Students.findBySchoolNo", query = "SELECT s FROM Students s WHERE s.schoolNo = :schoolNo"),
-    @NamedQuery(name = "Students.findByMernis", query = "SELECT s FROM Students s WHERE s.mernis = :mernis"),
-    @NamedQuery(name = "Students.findByPhone", query = "SELECT s FROM Students s WHERE s.phone = :phone")})
+    @NamedQuery(name = "Students.findAll", query = "SELECT s FROM Students s")})
 public class Students extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -87,6 +73,9 @@ public class Students extends BaseEntity implements Serializable {
     private String phone;
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
     private Collection<StudentsAnswers> studentsAnswersCollection;
+    @JoinColumn(name = "ref_image", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Images refImage;
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
@@ -97,9 +86,6 @@ public class Students extends BaseEntity implements Serializable {
     private Collection<ZlogLogin> zlogLoginCollection;
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
     private Collection<Results> resultsCollection;
-    @JoinColumn(name = "ref_image", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Images refImage;
 
     public Students() {
     }
@@ -234,6 +220,14 @@ public class Students extends BaseEntity implements Serializable {
         this.studentsAnswersCollection = studentsAnswersCollection;
     }
 
+    public Images getRefImage() {
+        return refImage;
+    }
+
+    public void setRefImage(Images refImage) {
+        this.refImage = refImage;
+    }
+
     public Schools getRefSchool() {
         return refSchool;
     }
@@ -266,14 +260,6 @@ public class Students extends BaseEntity implements Serializable {
 
     public void setResultsCollection(Collection<Results> resultsCollection) {
         this.resultsCollection = resultsCollection;
-    }
-
-    public Images getRefImage() {
-        return refImage;
-    }
-
-    public void setRefImage(Images refImage) {
-        this.refImage = refImage;
     }
 
     @Override

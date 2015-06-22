@@ -24,25 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "StudentsAnswers.findAll", query = "SELECT s FROM StudentsAnswers s"),
-    @NamedQuery(name = "StudentsAnswers.findByTid", query = "SELECT s FROM StudentsAnswers s WHERE s.tid = :tid"),
-    @NamedQuery(name = "StudentsAnswers.findByActive", query = "SELECT s FROM StudentsAnswers s WHERE s.active = :active"),
-    @NamedQuery(name = "StudentsAnswers.findByVersion", query = "SELECT s FROM StudentsAnswers s WHERE s.version = :version"),
-    @NamedQuery(name = "StudentsAnswers.findByBooklet", query = "SELECT s FROM StudentsAnswers s WHERE s.booklet = :booklet"),
-    @NamedQuery(name = "StudentsAnswers.findByAnswers", query = "SELECT s FROM StudentsAnswers s WHERE s.answers = :answers"),
-    @NamedQuery(name = "StudentsAnswers.findByCreated", query = "SELECT s FROM StudentsAnswers s WHERE s.created = :created"),
-    @NamedQuery(name = "StudentsAnswers.findByUpdated", query = "SELECT s FROM StudentsAnswers s WHERE s.updated = :updated"),
-    @NamedQuery(name = "StudentsAnswers.findByTrues", query = "SELECT s FROM StudentsAnswers s WHERE s.trues = :trues"),
-    @NamedQuery(name = "StudentsAnswers.findByFalses", query = "SELECT s FROM StudentsAnswers s WHERE s.falses = :falses"),
-    @NamedQuery(name = "StudentsAnswers.findByNulls", query = "SELECT s FROM StudentsAnswers s WHERE s.nulls = :nulls"),
-    @NamedQuery(name = "StudentsAnswers.findByNets", query = "SELECT s FROM StudentsAnswers s WHERE s.nets = :nets"),
-    @NamedQuery(name = "StudentsAnswers.findByScore", query = "SELECT s FROM StudentsAnswers s WHERE s.score = :score"),
-    @NamedQuery(name = "StudentsAnswers.findByRankSchool", query = "SELECT s FROM StudentsAnswers s WHERE s.rankSchool = :rankSchool"),
-    @NamedQuery(name = "StudentsAnswers.findByRankClass", query = "SELECT s FROM StudentsAnswers s WHERE s.rankClass = :rankClass"),
-    @NamedQuery(name = "StudentsAnswers.findByRateClass", query = "SELECT s FROM StudentsAnswers s WHERE s.rateClass = :rateClass"),
-    @NamedQuery(name = "StudentsAnswers.findByRateSchool", query = "SELECT s FROM StudentsAnswers s WHERE s.rateSchool = :rateSchool"),
-    @NamedQuery(name = "StudentsAnswers.findByRateClassAll", query = "SELECT s FROM StudentsAnswers s WHERE s.rateClassAll = :rateClassAll"),
-    @NamedQuery(name = "StudentsAnswers.findByRateSchoolAll", query = "SELECT s FROM StudentsAnswers s WHERE s.rateSchoolAll = :rateSchoolAll")})
+    @NamedQuery(name = "StudentsAnswers.findAll", query = "SELECT s FROM StudentsAnswers s")})
 public class StudentsAnswers extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

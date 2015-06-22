@@ -24,14 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "WebSlides.findAll", query = "SELECT w FROM WebSlides w"),
-    @NamedQuery(name = "WebSlides.findByTid", query = "SELECT w FROM WebSlides w WHERE w.tid = :tid"),
-    @NamedQuery(name = "WebSlides.findByActive", query = "SELECT w FROM WebSlides w WHERE w.active = :active"),
-    @NamedQuery(name = "WebSlides.findByVersion", query = "SELECT w FROM WebSlides w WHERE w.version = :version"),
-    @NamedQuery(name = "WebSlides.findByTitleTr", query = "SELECT w FROM WebSlides w WHERE w.titleTr = :titleTr"),
-    @NamedQuery(name = "WebSlides.findByTitleEn", query = "SELECT w FROM WebSlides w WHERE w.titleEn = :titleEn"),
-    @NamedQuery(name = "WebSlides.findByCreated", query = "SELECT w FROM WebSlides w WHERE w.created = :created"),
-    @NamedQuery(name = "WebSlides.findByUpdated", query = "SELECT w FROM WebSlides w WHERE w.updated = :updated")})
+    @NamedQuery(name = "WebSlides.findAll", query = "SELECT w FROM WebSlides w")})
 public class WebSlides extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -54,10 +47,13 @@ public class WebSlides extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    @Basic(optional = false)
+    @NotNull
+    @Column(nullable = false)
+    private int rank;
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Images refImage;
-    private int rank;
 
     public WebSlides() {
     }
@@ -66,9 +62,10 @@ public class WebSlides extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public WebSlides(Long tid, int version) {
+    public WebSlides(Long tid, int version, int rank) {
         this.tid = tid;
         this.version = version;
+        this.rank = rank;
     }
 
     public Long getTid() {
@@ -127,20 +124,20 @@ public class WebSlides extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    public Images getRefImage() {
-        return refImage;
-    }
-
-    public void setRefImage(Images refImage) {
-        this.refImage = refImage;
-    }
-
     public int getRank() {
         return rank;
     }
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public Images getRefImage() {
+        return refImage;
+    }
+
+    public void setRefImage(Images refImage) {
+        this.refImage = refImage;
     }
 
     @Override

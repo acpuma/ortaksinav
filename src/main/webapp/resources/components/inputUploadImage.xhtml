@@ -28,9 +28,11 @@
 <cc:implementation>
     <c:set var="daobeann" value="#{cc.attrs.daobean}" />
 
-    <p:outputPanel styleClass="image150" id="schoolLogo" rendered="#{cc.attrs.showImage}">
-        <p:outputLabel value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}" rendered="false"/>
-        <p:graphicImage height="150" width="150" style="height:150px; width: 150px;" cache="false"
+    <p:outputPanel styleClass="image150" id="schoolLogo" rendered="#{cc.attrs.showImage}"
+                   style="text-align: center">
+        <p:outputLabel value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
+                       rendered="false"/>
+        <p:graphicImage height="150"  style="height:150px; " cache="false"
                         value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
                 />
     </p:outputPanel>

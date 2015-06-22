@@ -25,13 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "UploadsType.findAll", query = "SELECT u FROM UploadsType u"),
-    @NamedQuery(name = "UploadsType.findByTid", query = "SELECT u FROM UploadsType u WHERE u.tid = :tid"),
-    @NamedQuery(name = "UploadsType.findByActive", query = "SELECT u FROM UploadsType u WHERE u.active = :active"),
-    @NamedQuery(name = "UploadsType.findByVersion", query = "SELECT u FROM UploadsType u WHERE u.version = :version"),
-    @NamedQuery(name = "UploadsType.findByName", query = "SELECT u FROM UploadsType u WHERE u.name = :name"),
-    @NamedQuery(name = "UploadsType.findByCreated", query = "SELECT u FROM UploadsType u WHERE u.created = :created"),
-    @NamedQuery(name = "UploadsType.findByUpdated", query = "SELECT u FROM UploadsType u WHERE u.updated = :updated")})
+    @NamedQuery(name = "UploadsType.findAll", query = "SELECT u FROM UploadsType u")})
 public class UploadsType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

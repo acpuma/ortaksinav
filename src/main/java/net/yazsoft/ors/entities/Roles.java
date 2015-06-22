@@ -27,14 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r"),
-    @NamedQuery(name = "Roles.findByTid", query = "SELECT r FROM Roles r WHERE r.tid = :tid"),
-    @NamedQuery(name = "Roles.findByActive", query = "SELECT r FROM Roles r WHERE r.active = :active"),
-    @NamedQuery(name = "Roles.findByVersion", query = "SELECT r FROM Roles r WHERE r.version = :version"),
-    @NamedQuery(name = "Roles.findByName", query = "SELECT r FROM Roles r WHERE r.name = :name"),
-    @NamedQuery(name = "Roles.findByNameTr", query = "SELECT r FROM Roles r WHERE r.nameTr = :nameTr"),
-    @NamedQuery(name = "Roles.findByCreated", query = "SELECT r FROM Roles r WHERE r.created = :created"),
-    @NamedQuery(name = "Roles.findByUpdated", query = "SELECT r FROM Roles r WHERE r.updated = :updated")})
+    @NamedQuery(name = "Roles.findAll", query = "SELECT r FROM Roles r")})
 public class Roles extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

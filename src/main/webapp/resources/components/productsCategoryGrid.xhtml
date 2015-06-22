@@ -29,17 +29,22 @@
             <f:facet name="header">
                 Kategoriler
             </f:facet>
-            <p:column headerText="Ad">
+
+            <p:column headerText="Ad" width="300">
                 <h:outputText value="#{item.nameTr}" />
             </p:column>
-            <p:column style="width:24px" >
+            <p:column headerText="#{msg.global_rank}" width="5" style="width: 24px;">
+                <h:outputText value="#{item.rank}" />
+            </p:column>
+
+            <p:column style="width:24px" width="10">
                 <p:commandLink update="@composite:categoryform:detailPanel" oncomplete="PF('detailDialog').show()"
                                title="Guncelle" styleClass="ui-icon ui-icon-refresh"
                                rendered="#{item.tid gt 1}">
                     <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
                 </p:commandLink>
             </p:column>
-            <p:column style="width:24px" >
+            <p:column style="width:24px" width="10">
                 <p:commandLink update="@composite:categoryform:treetable :messages" rendered="#{item.tid gt 1}"
                                title="Sil" styleClass="ui-icon ui-icon-minus"
                                action="#{productsCategoryDao.delete}">
@@ -47,7 +52,7 @@
                 </p:commandLink>
             </p:column>
 
-            <p:column style="width:24px">
+            <p:column style="width:24px" width="10">
                 <p:commandLink update="@composite:categoryform:addPanel" oncomplete="PF('addDialog').show()"
                                title="Ekle" styleClass="ui-icon ui-icon-plus">
                     <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
@@ -55,7 +60,7 @@
             </p:column>
         </p:treeTable>
 
-        <p:dialog id="dialogDetail" header="Kategori Ekle" showEffect="fade"
+        <p:dialog id="dialogDetail" header="Kategori Güncelle" showEffect="fade"
                   widgetVar="detailDialog" modal="true" resizable="false">
             <p:outputPanel id="detailPanel">
                 <p:panelGrid  columns="2" columnClasses="label,value"
@@ -64,6 +69,10 @@
                     <h:inputText id="name" value="#{productsCategoryDao.selected.nameTr}"
                                  style="font-weight:bold"
                                  required="true" requiredMessage="Ad alanı boş"/>
+                    <h:outputLabel for="rank" value="Sıra : " />
+                    <h:inputText id="rank" value="#{productsCategoryDao.selected.rank}"
+                                 style="font-weight:bold"
+                                 />
                 </p:panelGrid>
                 <p:commandButton value="Guncelle" actionListener="#{productsCategoryDao.update}"
                                  oncomplete="PF('detailDialog').hide()"

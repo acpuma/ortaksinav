@@ -25,13 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ImagesType.findAll", query = "SELECT i FROM ImagesType i"),
-    @NamedQuery(name = "ImagesType.findByTid", query = "SELECT i FROM ImagesType i WHERE i.tid = :tid"),
-    @NamedQuery(name = "ImagesType.findByActive", query = "SELECT i FROM ImagesType i WHERE i.active = :active"),
-    @NamedQuery(name = "ImagesType.findByVersion", query = "SELECT i FROM ImagesType i WHERE i.version = :version"),
-    @NamedQuery(name = "ImagesType.findByName", query = "SELECT i FROM ImagesType i WHERE i.name = :name"),
-    @NamedQuery(name = "ImagesType.findByCreated", query = "SELECT i FROM ImagesType i WHERE i.created = :created"),
-    @NamedQuery(name = "ImagesType.findByUpdated", query = "SELECT i FROM ImagesType i WHERE i.updated = :updated")})
+    @NamedQuery(name = "ImagesType.findAll", query = "SELECT i FROM ImagesType i")})
 public class ImagesType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -28,17 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Exams.findAll", query = "SELECT e FROM Exams e"),
-    @NamedQuery(name = "Exams.findByTid", query = "SELECT e FROM Exams e WHERE e.tid = :tid"),
-    @NamedQuery(name = "Exams.findByActive", query = "SELECT e FROM Exams e WHERE e.active = :active"),
-    @NamedQuery(name = "Exams.findByVersion", query = "SELECT e FROM Exams e WHERE e.version = :version"),
-    @NamedQuery(name = "Exams.findByNameTr", query = "SELECT e FROM Exams e WHERE e.nameTr = :nameTr"),
-    @NamedQuery(name = "Exams.findByNameEn", query = "SELECT e FROM Exams e WHERE e.nameEn = :nameEn"),
-    @NamedQuery(name = "Exams.findByCreated", query = "SELECT e FROM Exams e WHERE e.created = :created"),
-    @NamedQuery(name = "Exams.findByUpdated", query = "SELECT e FROM Exams e WHERE e.updated = :updated"),
-    @NamedQuery(name = "Exams.findByDate", query = "SELECT e FROM Exams e WHERE e.date = :date"),
-    @NamedQuery(name = "Exams.findByTime", query = "SELECT e FROM Exams e WHERE e.time = :time"),
-    @NamedQuery(name = "Exams.findByNumber", query = "SELECT e FROM Exams e WHERE e.number = :number")})
+    @NamedQuery(name = "Exams.findAll", query = "SELECT e FROM Exams e")})
 public class Exams extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

@@ -9,10 +9,10 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>#{msg.exams}</title>
+        <title>Ürünler</title>
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
-    <ui:param name="title" value="#{msg.exams}" />
+    <ui:param name="title" value="Ürünler" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <p:outputPanel style="text-align: right;">
         <p:commandButton icon="toolbar-add toolbar-icon"
@@ -24,7 +24,7 @@
                 >
         </p:commandButton>
     </p:outputPanel>
-    <components:productsGrid rows="200"  scrollable="true"
+    <components:productsGrid rows="200"  scrollable="true" update=":#{p:component('formPanel')}"
                                  widgetVar="productsGridWidget" scrollHeight="450"/>
     <p:dialog id="gridDialog" header="#{msg.product}" widgetVar="formDialogWidget"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >

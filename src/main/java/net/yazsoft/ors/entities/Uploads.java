@@ -24,15 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Uploads.findAll", query = "SELECT u FROM Uploads u"),
-    @NamedQuery(name = "Uploads.findByTid", query = "SELECT u FROM Uploads u WHERE u.tid = :tid"),
-    @NamedQuery(name = "Uploads.findByActive", query = "SELECT u FROM Uploads u WHERE u.active = :active"),
-    @NamedQuery(name = "Uploads.findByVersion", query = "SELECT u FROM Uploads u WHERE u.version = :version"),
-    @NamedQuery(name = "Uploads.findByName", query = "SELECT u FROM Uploads u WHERE u.name = :name"),
-    @NamedQuery(name = "Uploads.findByCreated", query = "SELECT u FROM Uploads u WHERE u.created = :created"),
-    @NamedQuery(name = "Uploads.findByUpdated", query = "SELECT u FROM Uploads u WHERE u.updated = :updated"),
-    @NamedQuery(name = "Uploads.findByProcessed", query = "SELECT u FROM Uploads u WHERE u.processed = :processed"),
-    @NamedQuery(name = "Uploads.findByDetail", query = "SELECT u FROM Uploads u WHERE u.detail = :detail")})
+    @NamedQuery(name = "Uploads.findAll", query = "SELECT u FROM Uploads u")})
 public class Uploads extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

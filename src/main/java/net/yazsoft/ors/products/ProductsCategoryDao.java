@@ -33,6 +33,7 @@ public class ProductsCategoryDao extends BaseGridDao<ProductsCategory> implement
             Criteria c = getCriteria();
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
+            c.addOrder(Order.asc("rank"));
             list = c.list();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -51,7 +52,6 @@ public class ProductsCategoryDao extends BaseGridDao<ProductsCategory> implement
         logger.info("LOG01760: ROOT : " + rootCategory);
         TreeNode rootNode = new DefaultTreeNode(rootCategory,root);
         findSubCategories(rootNode, rootCategory);
-
     }
 
     public void findSubCategories(TreeNode treeNode,ProductsCategory category) {

@@ -27,18 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Menus.findAll", query = "SELECT m FROM Menus m"),
-    @NamedQuery(name = "Menus.findByTid", query = "SELECT m FROM Menus m WHERE m.tid = :tid"),
-    @NamedQuery(name = "Menus.findByActive", query = "SELECT m FROM Menus m WHERE m.active = :active"),
-    @NamedQuery(name = "Menus.findByVersion", query = "SELECT m FROM Menus m WHERE m.version = :version"),
-    @NamedQuery(name = "Menus.findByCreated", query = "SELECT m FROM Menus m WHERE m.created = :created"),
-    @NamedQuery(name = "Menus.findByUpdated", query = "SELECT m FROM Menus m WHERE m.updated = :updated"),
-    @NamedQuery(name = "Menus.findByNameTr", query = "SELECT m FROM Menus m WHERE m.nameTr = :nameTr"),
-    @NamedQuery(name = "Menus.findByNameEn", query = "SELECT m FROM Menus m WHERE m.nameEn = :nameEn"),
-    @NamedQuery(name = "Menus.findByImage", query = "SELECT m FROM Menus m WHERE m.image = :image"),
-    @NamedQuery(name = "Menus.findByForm", query = "SELECT m FROM Menus m WHERE m.form = :form"),
-    @NamedQuery(name = "Menus.findByOrder", query = "SELECT m FROM Menus m WHERE m.order = :order"),
-    @NamedQuery(name = "Menus.findByComment", query = "SELECT m FROM Menus m WHERE m.comment = :comment")})
+    @NamedQuery(name = "Menus.findAll", query = "SELECT m FROM Menus m")})
 public class Menus extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

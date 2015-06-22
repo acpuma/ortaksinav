@@ -27,14 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Albums.findAll", query = "SELECT a FROM Albums a"),
-    @NamedQuery(name = "Albums.findByTid", query = "SELECT a FROM Albums a WHERE a.tid = :tid"),
-    @NamedQuery(name = "Albums.findByActive", query = "SELECT a FROM Albums a WHERE a.active = :active"),
-    @NamedQuery(name = "Albums.findByVersion", query = "SELECT a FROM Albums a WHERE a.version = :version"),
-    @NamedQuery(name = "Albums.findByCreated", query = "SELECT a FROM Albums a WHERE a.created = :created"),
-    @NamedQuery(name = "Albums.findByUpdated", query = "SELECT a FROM Albums a WHERE a.updated = :updated"),
-    @NamedQuery(name = "Albums.findByName", query = "SELECT a FROM Albums a WHERE a.name = :name"),
-    @NamedQuery(name = "Albums.findByEditable", query = "SELECT a FROM Albums a WHERE a.editable = :editable")})
+    @NamedQuery(name = "Albums.findAll", query = "SELECT a FROM Albums a")})
 public class Albums extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -170,7 +163,6 @@ public class Albums extends BaseEntity implements Serializable {
     public void setImagesCollection(Collection<Images> imagesCollection) {
         this.imagesCollection = imagesCollection;
     }
-
 
     @Override
     public int hashCode() {
