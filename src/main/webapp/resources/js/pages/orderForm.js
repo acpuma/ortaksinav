@@ -1,4 +1,16 @@
 jQuery(document).ready(function($) {
+    $(".cat_pr_field").each(function() {
+        var cellText=parseFloat($(this).html().trim());
+        console.log(cellText);
+        $(this).html(cellText.toFixed(2) + ' TL');
+    });
+    $(".pr_field").each(function() {
+        var cellText=parseFloat($(this).html().trim());
+        console.log(cellText);
+        $(this).html(cellText.toFixed(2) + ' TL');
+    });
+
+
     $('.openlist').click(function () {
         var xr = $(this).attr('rel');
         xr = xr.replace('o', 's');

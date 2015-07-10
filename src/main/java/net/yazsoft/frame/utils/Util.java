@@ -364,4 +364,9 @@ public class Util implements Serializable{
     public static Date getNow() {
         return Calendar.getInstance(new Locale("TR")).getTime();
     }
+
+    public static void catchException(Exception e) {
+        e.printStackTrace();
+        setFacesMessageError(e.getMessage());
+    }
 }

@@ -25,31 +25,28 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetExam"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetWebHeaders"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="webHeadersGrid"
+                     var="webHeadersVar"
 
-        <p:dataTable id="examsGrid"
-                     var="examsGrid"
-                     rowIndexVar="rowIndex"
-
-                     value="#{examsDao.filteredExams}"
+                     filterEvent="enter"
+                     value="#{webHeadersDao.headers}"
                      emptyMessage=" #{msg['global_no_data']}"
-                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                     paginatorTemplate=" {FirstPageLink}
                  {PreviousPageLink} 
                  {PageLinks} {NextPageLink} 
-                 {LastPageLink} {RowsPerPageDropdown}"
+                 {LastPageLink} "
 
-                     currentPageReportTemplate="{totalRecords} #{msg['global_record']}"
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
-                     editMode="#{cc.attrs.editMode}"
-                     editingRow="#{cc.attrs.editingRow}"
                      expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
@@ -70,76 +67,38 @@
 
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
-                     lazy="true"
 
+                     selection="#{webHeadersDao.item}"
+                     rowKey="#{webHeadersVar.tid}"
+                     tableStyle="#{cc.attrs.tableStyle}"
                      selectionMode="single"
-                     selection="#{examsDao.item}"
 
-                     rowKey="#{examsGrid.tid}"
                 >
-
-            <p:ajax event="rowSelect" update="#{cc.attrs.update} :activeExam :activeSchool"
-                    listener="#{examsDao.setActiveExam}"
-                    global="false"
-                    />
-
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
                     oncomplete="PF('blockUIWidget1').unblock();PF('formDialogWidget').show();"
                     process="@all"
-                    listener="#{examsDao.select}"
+                    listener="#{webHeadersDao.select}"
                     />
 
-
-
-            <p:column headerText=" " width="15" rendered="true"  > #{rowIndex+1}  </p:column>
-            <p:column headerText="#{msg.global_id}" width="50" rendered="false"  > #{examsGrid.tid}  </p:column>
-
-            <p:column headerText="#{msg.exam_year}" width="60" rendered="true"
-                      sortBy="#{examsGrid.refExamYear}">
-                <h:outputText value="#{examsGrid.refExamYear.name}" />
-            </p:column>
-            <p:column headerText="#{msg.exam_season}" width="60" rendered="true"
-                      sortBy="#{examsGrid.refExamSeason}"  >
-                #{examsGrid.refExamSeason.nameTr}
-            </p:column>
-
-            <p:column headerText="#{msg.exam}" width="50" rendered="true"
-                      sortBy="#{examsGrid.refExamSeasonNumber}">
-                #{examsGrid.refExamSeasonNumber.name}
-            </p:column>
-
-            <p:column headerText="#{msg.global_number_short}" width="30" rendered="true"
-                      sortBy="#{examsGrid.number}" >
-             #{examsGrid.number}
-            </p:column>
-
-
-            <p:column headerText="#{msg.global_name}" width="300" >
-                #{examsGrid.nameTr}
-            </p:column>
-
-            <p:column headerText="Tarih" rendered="true" width="100" sortBy="#{examsGrid.date}">
-                <h:outputText value="#{examsGrid.date}" >
-                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-                </h:outputText>
-            </p:column>
-            <f:facet name="footer">
-                <p:commandButton value="Aktifleştir" rendered="false"
-                                 actionListener="#{sessionInfo.setExam(examsDao.item)}"
-                                 update=":activeExam"
-                        />
-                <p:commandButton value="Parametreler"
-                                 actionListener="#{examsParametersDao.setExam(examsDao.item)}"
-                                 update="@widgetVar(examsParametersGridWidget)"
-                                 oncomplete="PF('parametersDialogWidget').show()"
-                        />
-                <p:commandButton value="Cevap Anahtarı"
-                                 actionListener="#{answersDao.setExam(examsDao.item)}"
-                                 update="@widgetVar(answersLessonSelect)"
-                                 oncomplete="PF('answersDialogWidget').show()"
-                        />
+            <f:facet name="header">
+                #{msg.webheaders}
             </f:facet>
+
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  style="display: none">
+                #{webHeadersVar.tid}
+            </p:column>
+
+            <p:column headerText="#{msg.global_title}" width="150">
+                #{webHeadersVar.titleTr}
+            </p:column>
+            <p:column headerText="#{msg.global_subtitle}" width="200" rendered="true">
+                #{webHeadersVar.subtitleTr}
+            </p:column>
+            <p:column headerText="Sıra" width="20" rendered="true">
+                #{webHeadersVar.rank}
+            </p:column>
+
 
         </p:dataTable>
     </h:form>

@@ -25,7 +25,7 @@
                         <p:ajax update="@widgetVar(examsGridWidget)"/>
                         <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
                                       noSelectionOption="true"/>
-                        <f:selectItems value="#{schoolsDao.all}" var="man"
+                        <f:selectItems value="#{schoolsDao.findActiveUserSchools()}" var="man"
                                        itemLabel="#{man.name}" itemValue="#{man}"/>
                     </p:selectOneMenu>
                 </p:panelGrid>

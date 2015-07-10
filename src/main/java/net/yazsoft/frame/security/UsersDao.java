@@ -34,7 +34,6 @@ public class UsersDao extends BaseGridDao<Users> {
     @Override
     @PostConstruct
     public void init() {
-        getItem().setRolesCollection(new HashSet<Roles>());
         getItem().setSchoolsCollection(new HashSet<Schools>());
     }
 
@@ -52,12 +51,16 @@ public class UsersDao extends BaseGridDao<Users> {
 
         //Collection<Roles> roles=new HashSet<>();
         //roles.add(rolesDao.getById(3L));
-        getItem().getRolesCollection().add(new Roles(1L)); //RolesCollection(roles);
         Long pk=super.create();
+
         //rolesDao.getById(3L).getUsersCollection().add(getItem());
         //rolesDao.update();
         //getSession().save(roles);
         return pk;
+    }
+
+    public String update() {
+        return super.update();
     }
 
     public void checkUserExists() {

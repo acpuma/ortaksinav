@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.autharization}</title>
+        <h:outputScript library="js" name="/pages/authmenus.js" />
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.autharization}" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:outputPanel style="width: 100%; text-align: right; ">
+        <h:selectBooleanCheckbox value="false" styleClass="selectAll"/>
+        <h:outputText value="#{msg.select_all}"
+                      style="font-size: 13px;font-weight: normal; margin: 2px 10px 4px 5px;"/>
+    </p:outputPanel>
+    <components:userMenusGrid widgetVar="userMenusGridWidget" scrollHeight="450"/>
+
+    <h:form id="pageForm">
+    </h:form>
+
+    <p:dialog id="gridDialog" header="#{msg.username}" widgetVar="pageGrid" width="800"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)">
+        <components:usersGrid rows="100" scrollable="true" update=":#{p:component('userMenusform')}" oncomplete="PF('pageGrid').hide()"
+                              widgetVar="usersGridWidget" scrollHeight="310" daobean="#{menusTree}"/>
+    </p:dialog>
+
+    <p:confirmDialog global="true">
+        <p:commandButton value="#{msg.global_yes}" type="button"
+                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+        <p:commandButton value="#{msg.global_no}" type="button"
+                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+    </p:confirmDialog>
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

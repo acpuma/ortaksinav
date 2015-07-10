@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetUserMenus"     required="false"   name="widgetVar" />
+    <cc:attribute default=":pageForm" required="false" name="update" />
+
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form id="userMenusform">
+        <p:treeTable value="#{menusTree.root}" var="item"
+                     selection="#{menusTree.selectedNode}"
+                     selectionMode="single" widgetVar="treetableWidget" id="treetable"
+                     scrollable="true"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                >
+
+            <p:column headerText="Ad" width="300">
+                <h:outputText value="#{item.refMenu.nameTr}" />
+            </p:column>
+            <p:column headerText="ID" width="50" style="width: 50px;" rendered="false">
+                <h:outputText value="#{item.tid}" />
+            </p:column>
+            <p:column headerText="MenuID" width="15" style="width: 50px;" rendered="false">
+                <h:outputText value="#{item.refMenu.tid}" />
+            </p:column>
+            <p:column headerText="#{msg.permission_add}" width="5" style="width: 56px;" >
+                <h:selectBooleanCheckbox value="#{item.padd}" styleClass="acheckbox"/>
+            </p:column>
+            <p:column headerText="#{msg.permission_update}" width="5" style="width: 56px;">
+                <h:selectBooleanCheckbox value="#{item.pupdate}" styleClass="acheckbox"/>
+            </p:column>
+            <p:column headerText="#{msg.permission_delete}" width="5" style="width: 56px;">
+                <h:selectBooleanCheckbox value="#{item.pdelete}" styleClass="acheckbox"/>
+            </p:column>
+            <p:column headerText="#{msg.permission_report}" width="5" style="width: 56px;">
+                <h:selectBooleanCheckbox value="#{item.preport}" styleClass="acheckbox"/>
+            </p:column>
+            <p:column headerText="#{msg.permission_super}" width="5" style="width: 56px;">
+                <h:selectBooleanCheckbox value="#{item.psuper}" styleClass="acheckbox"/>
+            </p:column>
+            <f:facet name="footer">
+                <p:outputPanel style="font-size: 13px; float: left;" layout="inline">
+                    <p:commandButton value="KULLANICI SEÇ"
+                                 oncomplete="PF('pageGrid').show();"/>
+                    <p:outputLabel rendered="#{not empty menusTree.user}">
+                    KULLANICI : #{menusTree.user.username}
+                    </p:outputLabel>
+                </p:outputPanel>
+
+                <p:outputPanel style="float:right;" layout="inline" rendered="#{not empty menusTree.user}">
+
+                    <p:commandButton value="KAYDET" action="#{menusTree.saveMenus()}"
+                                     update="treetable :messages"
+                                     onstart="PF('blockUIWidget1').block()"
+                                     oncomplete="PF('blockUIWidget1').unblock();">
+                        <p:confirm header="#{msg.global_confirmation}"
+                               message="YETKİ KAYDINI ONAYLIYORMUSUNUZ?" icon="ui-icon-alert"/>
+                    </p:commandButton>
+                </p:outputPanel>
+            </f:facet>
+
+        </p:treeTable>
+
+
+
+    </h:form>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()"
+                   oncomplete="PF('blockUIWidget1').unblock();" />
+
+</cc:implementation>
+</html>

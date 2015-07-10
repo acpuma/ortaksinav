@@ -77,12 +77,9 @@ public class Users extends BaseEntity implements Serializable {
     @Size(max = 255)
     @Column(length = 255)
     private String image;
-    @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
-    private Collection<Schools> schoolsCollection;
-    @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
-    private Collection<Roles> rolesCollection;
-    @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
-    private Collection<Uploads> uploadsCollection;
+    @JoinColumn(name = "ref_role", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Roles refRole;
     @JoinColumn(name = "ref_active_exam", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Exams refActiveExam;
@@ -92,8 +89,16 @@ public class Users extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_active_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refActiveSchool;
+
+    @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
+    private Collection<Schools> schoolsCollection;
+    @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
+    private Collection<Uploads> uploadsCollection;
+
     @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
     private Collection<ZlogLogin> zlogLoginCollection;
+    @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
+    private Collection<UsersMenus> usersMenusCollection;
 
     public Users() {
     }
@@ -237,13 +242,12 @@ public class Users extends BaseEntity implements Serializable {
         this.schoolsCollection = schoolsCollection;
     }
 
-    @XmlTransient
-    public Collection<Roles> getRolesCollection() {
-        return rolesCollection;
+    public Roles getRefRole() {
+        return refRole;
     }
 
-    public void setRolesCollection(Collection<Roles> rolesCollection) {
-        this.rolesCollection = rolesCollection;
+    public void setRefRole(Roles refRole) {
+        this.refRole = refRole;
     }
 
     @XmlTransient
@@ -286,6 +290,14 @@ public class Users extends BaseEntity implements Serializable {
 
     public void setZlogLoginCollection(Collection<ZlogLogin> zlogLoginCollection) {
         this.zlogLoginCollection = zlogLoginCollection;
+    }
+
+    public Collection<UsersMenus> getUsersMenusCollection() {
+        return usersMenusCollection;
+    }
+
+    public void setUsersMenusCollection(Collection<UsersMenus> usersMenusCollection) {
+        this.usersMenusCollection = usersMenusCollection;
     }
 
     @Override

@@ -47,6 +47,7 @@
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
+                     editMode="#{cc.attrs.editMode}"
                      expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
@@ -68,11 +69,12 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selection="#{productsDao.item}"
-                     selectionMode="single"
                      tableStyle="#{cc.attrs.tableStyle}"
 
+                     selection="#{productsDao.item}"
+                     selectionMode="single"
                      rowKey="#{productsVar.tid}"
+
                 >
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
@@ -80,6 +82,9 @@
                     process="@all"
                     listener="#{productsDao.select}"
                     />
+
+            <p:ajax event="cellEdit" listener="#{productsDao.onCellEdit}" update=":messages" immediate="true"/>
+
 
             <f:facet name="header">
                 #{msg.products}
@@ -89,24 +94,51 @@
                 #{productsVar.tid}
             </p:column>
 
-            <p:column headerText="Resim" width="15" >
+            <p:column headerText="Resim" width="15" rendered="false">
                 <p:outputPanel style="height:70px; text-align: center;">
                     <p:graphicImage height="70"   cache="false"
                                 value="/images/product/#{productsVar.tid}.#{productsVar.refImage.extension}"
                         />
                 </p:outputPanel>
             </p:column>
-            <p:column headerText="#{msg.global_name}" width="50" >
+            <p:column headerText="#{msg.global_name}" width="50" filterBy="#{productsVar.nameTr}">
                 #{productsVar.nameTr}
             </p:column>
-            <p:column headerText="Aciklama" width="130" >
+            <p:column headerText="Aciklama" width="130" filterBy="#{productsVar.detailTr}">
                 #{productsVar.detailTr}
             </p:column>
-            <p:column headerText="Liste Fiyati" width="20" >
+            <p:column headerText="L.Fiyati" width="20" >
                 #{productsVar.price}
             </p:column>
             <p:column headerText="Indirimli" width="20" >
                 #{productsVar.priceReal}
+            </p:column>
+            <p:column headerText="Mağ." width="12" >
+                <p:selectBooleanCheckbox value="#{productsVar.showShop}" >
+                    <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
+                            update=":messages" global="false"/>
+                </p:selectBooleanCheckbox>
+            </p:column>
+            <p:column headerText="Form" width="12" >
+                <p:selectBooleanCheckbox value="#{productsVar.showOrderForm}" >
+                    <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
+                            update=":messages" global="false"/>
+                </p:selectBooleanCheckbox>
+            </p:column>
+            <p:column headerText="Çok S." width="12" >
+                <p:selectBooleanCheckbox value="#{productsVar.showMainMost}" >
+                    <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
+                            update=":messages" global="false"/>
+                </p:selectBooleanCheckbox>
+            </p:column>
+            <p:column headerText="Yeni" width="12" >
+                <p:selectBooleanCheckbox value="#{productsVar.showMainNew}" >
+                    <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
+                            update=":messages" global="false"/>
+                </p:selectBooleanCheckbox>
+            </p:column>
+            <p:column headerText="Yıld." width="12" >
+                <h:outputText value="#{productsVar.stars}" />
             </p:column>
             <p:column headerText="Tür" width="60" filterBy="#{productsVar.refProductType}">
                 <f:facet name="filter">

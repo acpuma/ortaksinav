@@ -2,6 +2,7 @@ package net.yazsoft.frame.security;
 
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.ors.entities.Roles;
+import net.yazsoft.ors.entities.Schools;
 import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.entities.Users;
 import net.yazsoft.ors.students.StudentsDao;
@@ -59,7 +60,7 @@ public class StudentsSecuritySer implements UserDetailsService {
     public Collection<? extends GrantedAuthority> getAuthorities(Users user) {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         //Set<Roles> userRoles = user.getRoles();
-        Collection<Roles> userRoles=user.getRolesCollection();
+        Collection<Schools> userRoles=user.getSchoolsCollection();
 
         String roleName="STUDENT";
         logger.info("ROLE : " + roleName);

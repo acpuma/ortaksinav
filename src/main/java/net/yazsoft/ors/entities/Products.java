@@ -66,6 +66,9 @@ public class Products extends BaseEntity implements Serializable {
     private Float priceReal;
     private Boolean showOrderForm;
     private Boolean showShop;
+    private Boolean showMainNew;
+    private Boolean showMainMost;
+    private Integer stars;
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Images refImage;
@@ -226,6 +229,30 @@ public class Products extends BaseEntity implements Serializable {
 
     public void setOrderFormProductsCollection(Collection<OrderFormProducts> orderFormProductsCollection) {
         this.orderFormProductsCollection = orderFormProductsCollection;
+    }
+
+    public Boolean getShowMainNew() {
+        return showMainNew;
+    }
+
+    public void setShowMainNew(Boolean showMainNew) {
+        this.showMainNew = showMainNew;
+    }
+
+    public Boolean getShowMainMost() {
+        return showMainMost;
+    }
+
+    public void setShowMainMost(Boolean showMainMost) {
+        this.showMainMost = showMainMost;
+    }
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public void setStars(Integer stars) {
+        this.stars = stars;
     }
 
     @Override

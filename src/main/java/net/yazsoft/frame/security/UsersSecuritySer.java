@@ -48,17 +48,10 @@ public class UsersSecuritySer implements UserDetailsService {
     public Collection<? extends GrantedAuthority> getAuthorities(Users user) {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
         //Set<Roles> userRoles = user.getRoles();
-        Collection<Roles> userRoles=user.getRolesCollection();
-
-        if(userRoles != null)
-        {
-            for (Roles role : userRoles) {
-                String roleName=role.getName();
-                logger.info("ROLE : " + roleName);
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roleName);
-                authorities.add(authority);
-            }
-        }
+        String roleName=user.getRefRole().getName();
+        logger.info("ROLE : " + roleName);
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roleName);
+        authorities.add(authority);
         return authorities;
     }
 

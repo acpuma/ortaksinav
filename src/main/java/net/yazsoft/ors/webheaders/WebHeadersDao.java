@@ -1,9 +1,9 @@
-package net.yazsoft.ors.webcomments;
+package net.yazsoft.ors.webheaders;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
-import net.yazsoft.ors.entities.WebComments;
+import net.yazsoft.ors.entities.WebHeaders;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -15,10 +15,10 @@ import java.util.List;
 
 @Named
 @ViewScoped
-public class WebCommentsDao extends BaseGridDao<WebComments> implements Serializable{
-    private static final Logger logger = Logger.getLogger(WebCommentsDao.class);
-    WebComments selected;
-    List<WebComments> comments;
+public class WebHeadersDao extends BaseGridDao<WebHeaders> implements Serializable{
+    private static final Logger logger = Logger.getLogger(WebHeadersDao.class);
+    WebHeaders selected;
+    List<WebHeaders> headers;
     Boolean listChanged=true;
 
     public void delete() {
@@ -31,24 +31,23 @@ public class WebCommentsDao extends BaseGridDao<WebComments> implements Serializ
         return super.save();
     }
 
-    public void addComment() {
-        WebComments temp=new WebComments();
+    public void addHeader() {
+        WebHeaders temp=new WebHeaders();
         temp.setActive(true);
-        temp.setRank(comments.size()+1);
+        temp.setRank(headers.size() + 1);
         temp.setTitleTr("Baslik");
-        temp.setCommentTr("Yorum");
-        temp.setDate(Util.getNow());
+        temp.setSubtitleTr("Yorum");
         create(temp);
         selected=temp;
         listChanged=true;
     }
 
-    public List<WebComments> findWebComments() {
+    public List<WebHeaders> findWebHeaders() {
         List list=null;
         try {
             Criteria c = getCriteria();
             c.add(Restrictions.eq("active", true));
-            c.addOrder(Order.desc("rank"));
+            c.addOrder(Order.asc("rank"));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
             listChanged=false;
@@ -60,27 +59,26 @@ public class WebCommentsDao extends BaseGridDao<WebComments> implements Serializ
         return list;
     }
 
-
-    public WebCommentsDao() {
-        super(WebComments.class);
+    public WebHeadersDao() {
+        super(WebHeaders.class);
     }
 
-    public WebComments getSelected() {
+    public WebHeaders getSelected() {
         return selected;
     }
 
-    public void setSelected(WebComments selected) {
+    public void setSelected(WebHeaders selected) {
         this.selected = selected;
     }
 
-    public List<WebComments> getComments() {
+    public List<WebHeaders> getHeaders() {
         if (listChanged) {
-            comments = findWebComments();
+            headers = findWebHeaders();
         }
-        return comments;
+        return headers;
     }
 
-    public void setComments(List<WebComments> comments) {
-        this.comments = comments;
+    public void setHeaders(List<WebHeaders> headers) {
+        this.headers = headers;
     }
 }

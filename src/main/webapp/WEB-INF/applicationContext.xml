@@ -80,5 +80,21 @@
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+
+    <!-- SET default mail properties -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="webmail.ortaksinav.com.tr"/>
+        <property name="port" value="587"/>
+        <property name="username" value="info@ortaksinav.com.tr"/>
+        <property name="password" value="sin21"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.timeout">30000</prop>
+                <prop key="mail.debug">true</prop>
+            </props>
+        </property>
+    </bean>
     
 </beans>

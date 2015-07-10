@@ -17,7 +17,29 @@
 
         <p:commandButton value="PDF" process="@this" actionListener="#{uploadsBean.downloadFile(47)}"
                          ajax="false" rendered="false"/>
+        <p:commandButton value="EMAIL" process="@this" actionListener="#{email.sendTestMail}"
+                         update=":messages" rendered="false"
+                         onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();"
+                />
         <br/>
+        <b>Versiyon 1.10 (2015.07.10 17.40) : </b>
+        <br/> - Web -> Basliklar
+        <br/><br/>
+        <b>Versiyon 1.09 (2015.07.10 11.30) : </b>
+        <br/> - Siparis Formu mail olarak bildirme
+        <br/> - Eticaret urunler - hizli isaretleme
+        <br/> - Yetkilendirme - tabloda tumunu sec/kaldir
+        <br/><br/>
+        <b>Versiyon 1.08 (2015.07.06 15.30) : </b>
+        <br/> - Urunleri ana sayfada gostermek icin
+        <br/>   yeni urunler ve cok satanlar ozelligi urun tanimlamaya eklendi
+        <br/><br/>
+        <b>Versiyon 1.07 (2015.07.05 01.55) : </b>
+        <br/> - Ayarlar -> Kullanici Kurumlari
+        <br/><br/>
+        <b>Versiyon 1.06 (2015.06.29 23.50) : </b>
+        <br/> - Ayarlar -> Yetkilendirme (Kullanici menu yetkilendirme)
+        <br/><br/>
         <b>Versiyon 1.05 (2015.06.21 15.45) : </b>
         <br/> - Web -> Yorumlar
         <br/><br/>

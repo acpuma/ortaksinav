@@ -36,7 +36,7 @@
                      var="schoolsGrid"
 
                      filterEvent="enter"
-                     value="#{schoolsSer.lazyModel}"
+                     value="#{schoolsDao.findActiveUserSchools()}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 

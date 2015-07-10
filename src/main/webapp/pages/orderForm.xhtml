@@ -29,7 +29,7 @@
             </tr>
         </table>
     </div>
-    <ui:repeat value="#{productsCategoryDao.all}" var="category" >
+    <ui:repeat value="#{productsCategoryDao.findCategories()}" var="category" >
         <p:outputPanel rendered="#{productsDao.findCategoryCount(category) ge 1}">
             <div class="ys_cat_title">
                 <table width="100%" cellpadding="3" cellspacing="0" border="0">
@@ -41,7 +41,7 @@
                                    rel="gr#{category.tid}" class="count_input_gr" size="4"/>
                         </td>
                         <td width="70" class="ys_sp cat_pr_field" align="center">
-                            #{productsDao.findCategoryPrice(category)} TL
+                            #{productsDao.findCategoryPrice(category)}
                         </td>
                         <td width="75" class="ys_sp cat_sum" id="gr#{category.tid}" align="center">0 TL</td>
                         <td width="30" class="ys_sp" rel="gr#{category.tid}" align="center">
@@ -64,7 +64,7 @@
                                              value="#{orderFormDao.products[product.tid]}"
                                              class="gr#{category.tid} count_input" size="4"/>
                             </td>
-                            <td width="70" class="ys_sp pr_field" align="center">#{product.price} TL</td>
+                            <td width="70" class="ys_sp pr_field" align="center">#{product.price}</td>
                             <td width="70" class="ys_sp line_sum line_gr#{category.tid}"
                                 rel="gr#{category.tid}" align="center">0 TL</td>
                             <td width="30">&#160;</td>

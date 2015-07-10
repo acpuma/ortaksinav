@@ -3,7 +3,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui"
+      xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core"
         >
 <f:view>
     <h:head>
@@ -48,24 +48,15 @@
                     <!--  = Three Banners =  -->
                     <!--  ==========  -->
                     <div class="row">
-                        <div class="span4">
-                            <a href="#" class="btn btn-block colored banner">
-                                <span class="title">OPTİK FORM</span>
-                                <em>Optik Form Basımı ve Değerlendirme</em>
-                            </a>
-                        </div>
-                        <div class="span4">
-                            <a href="#" class="btn btn-block colored banner">
-                                <span class="title">ORTAK SINAV DEĞERLENDİRME</span>
-                                <em>Ortak Sınav Hazırlama ve Değerlendirme</em>
-                            </a>
-                        </div>
-                        <div class="span4">
-                            <a href="#" class="btn btn-block colored banner">
-                                <span class="title">ÖZDEBİR<span class="light"> YAYINLARI</span></span>
-                                <em>Tüm Özdebir yayınları</em>
-                            </a>
-                        </div>
+                        <ui:repeat value="#{webHeadersDao.headers}" var="wheader">
+                            <div class="span4">
+                                <a href="#" class="btn btn-block colored banner">
+                                    <span class="title">#{wheader.titleTr}</span>
+                                    <em>#{wheader.subtitleTr}</em>
+                                </a>
+                            </div>
+                        </ui:repeat>
+
                     </div> <!-- /three banners -->
                 </div>
             </div>
@@ -94,152 +85,99 @@
                 <!--  = Carousel =  -->
                 <!--  ==========  -->
                 <div class="carouFredSel" data-autoplay="false" data-nav="featuredItems">
-                    <div class="slide">
-                        <div class="row">
-
-
-
-
+                        <ui:repeat value="#{productsDao.popular}" var="item" varStatus="index">
+                    <h:panelGroup layout="block" styleClass="slide" rendered="#{index.index%3==0}" >
+                            <h:panelGroup layout="block" styleClass="row" rendered="#{index.index%3==0}" >
 
                             <!--  ==========  -->
                             <!--  = Product =  -->
                             <!--  ==========  -->
-                            <div class="span4">
+                        <p:outputPanel class="span4" rendered="#{not empty productsDao.popular[index.index]}">
                                 <div class="product">
                                     <div class="product-img featured">
                                         <div class="picture">
-                                            <img src="resources/theme/images/products/ingilizce.jpg" alt=""
-                                                 style="height:200px !important;"/>
+                                            <p:graphicImage height="150"  style="height:200px; !important; "
+                    value="/images/product/#{productsDao.popular[index.index].tid}.#{productsDao.popular[index.index].refImage.extension}"
+                                                    />
+
                                             <div class="img-overlay">
-                                                <a href="#" class="btn more btn-primary">Detay</a>
-                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                                <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                                <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="main-titles">
-                                        <h4 class="title">3.6 TL</h4>
-                                        <h5 class="no-margin">5.S. Poşetli Yaprak Test İngilizce</h5>
+                                        <h4 class="title">#{productsDao.popular[index.index].price} TL</h4>
+                                        <h5 class="no-margin">#{productsDao.popular[index.index].nameTr} </h5>
                                     </div>
-                                    <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 12 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
+                                    <p class="desc">#{productsDao.popular[index.index].detailTr}</p>
                                     <p class="center-align stars">
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-
+                                        <ui:repeat value="#{productsDao.getProductStars(productsDao.popular[index.index])}"
+                                                   var="star">
+                                            <span class="icon-star stars-clr"></span>
+                                        </ui:repeat>
                                     </p>
                                 </div>
-                            </div> <!-- /product -->
+                            </p:outputPanel> <!-- /product -->
+                                <!--  = Product =  -->
+                                <p:outputPanel class="span4" rendered="#{not empty productsDao.popular[index.index+1]}">
+                                    <div class="product">
+                                        <div class="product-img featured">
+                                            <div class="picture">
+                    <p:graphicImage height="150"  style="height:200px; !important; "
+                       value="/images/product/#{productsDao.popular[index.index+1].tid}.#{productsDao.popular[index.index+1].refImage.extension}"
+                                                        />
 
-
-
-
-
-                            <!--  ==========  -->
-                            <!--  = Product =  -->
-                            <!--  ==========  -->
-                            <div class="span4">
-                                <div class="product">
-                                    <div class="product-img featured">
-                                        <div class="picture">
-                                            <img src="resources/theme/images/products/teog.png"
-                                                 style="height:200px !important;"/>
-                                            <div class="img-overlay">
-                                                <a href="#" class="btn more btn-primary">Detay</a>
-                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                                <div class="img-overlay">
+                                                    <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                                    <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="main-titles">
+                                            <h4 class="title">#{productsDao.popular[index.index+1].price} TL</h4>
+                                            <h5 class="no-margin">#{productsDao.popular[index.index+1].nameTr} </h5>
+                                        </div>
+                                        <p class="desc">#{productsDao.popular[index.index+1].detailTr}</p>
+                                        <p class="center-align stars">
+                                            <ui:repeat value="#{productsDao.getProductStars(productsDao.popular[index.index+1])}"
+                                                       var="star">
+                                                <span class="icon-star stars-clr"></span>
+                                            </ui:repeat>
+                                        </p>
                                     </div>
-                                    <div class="main-titles">
-                                        <h4 class="title">9 TL</h4>
-                                        <h5 class="no-margin">8.S. 5'li TEOG 2 Deneme Sınav Seti</h5>
-                                    </div>
-                                    <p class="desc">Öğretim programının Nisan sonuna kadar işlenen konularından oluşan 5 deneme sınavı, Toplam 600 soru... 4 renkli , kuşe kapak, cevap kağıtlarıyla</p>
-                                    <p class="center-align stars">
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star"></span>
-                                        <span class="icon-star"></span>
-                                        <span class="icon-star"></span>
-                                        <span class="icon-star"></span>
+                                </p:outputPanel> <!-- /product -->
+                                <!--  = Product =  -->
+                                <p:outputPanel class="span4" rendered="#{not empty productsDao.popular[index.index+2]}">
+                                    <div class="product">
+                                        <div class="product-img featured">
+                                            <div class="picture">
+                    <p:graphicImage height="150"  style="height:200px; !important; "
+                       value="/images/product/#{productsDao.popular[index.index+2].tid}.#{productsDao.popular[index.index+2].refImage.extension}"
+                                                        />
 
-                                    </p>
-                                </div>
-                            </div> <!-- /product -->
-
-
-
-
-
-                            <!--  ==========  -->
-                            <!--  = Product =  -->
-                            <!--  ==========  -->
-                            <div class="span4">
-                                <div class="product">
-                                    <div class="product-img featured">
-                                        <div class="picture">
-                                            <img src="resources/theme/images/products/kimya.jpg"
-                                                 style="height:200px !important;"/>
-                                            <div class="img-overlay">
-                                                <a href="#" class="btn more btn-primary">Detay</a>
-                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
+                                                <div class="img-overlay">
+                                                    <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                                    <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="main-titles">
-                                        <h4 class="title">9 TL</h4>
-                                        <h5 class="no-margin">9. S. Konu Anl. Soru B. Kimya</h5>
-                                    </div>
-                                    <p class="desc">9. Sınıf Öğretim Programına göre hazırlanmış, okula yardımcı, sınavlara hazırlık... Özlü konu anlatımları, çözümlü sorularla, etkinliklerle ve 60 konu testiyle desteklenmiştir.</p>
-                                    <p class="center-align stars">
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star"></span>
-                                    </p>
-                                </div>
-                            </div> <!-- /product -->
-
-                        </div>
-                    </div>
-                    <div class="slide">
-                        <div class="row">
-
-
-                            <!--  ==========  -->
-                            <!--  = Product =  -->
-                            <!--  ==========  -->
-                            <div class="span4">
-                                <div class="product">
-                                    <div class="product-img featured">
-                                        <div class="picture">
-                                            <img src="resources/theme/images/products/sosyal.jpg"
-                                                 style="height:200px !important;"/>
-                                            <div class="img-overlay">
-                                                <a href="#" class="btn more btn-primary">Detay</a>
-                                                <a href="#" class="btn buy btn-danger">Satın Al</a>
-                                            </div>
+                                        <div class="main-titles">
+                                            <h4 class="title">#{productsDao.popular[index.index+2].price} TL</h4>
+                                            <h5 class="no-margin">#{productsDao.popular[index.index+2].nameTr} </h5>
                                         </div>
+                                        <p class="desc">#{productsDao.popular[index.index+2].detailTr}</p>
+                                        <p class="center-align stars">
+                                            <ui:repeat value="#{productsDao.getProductStars(productsDao.popular[index.index+2])}"
+                                                       var="star">
+                                                <span class="icon-star stars-clr"></span>
+                                            </ui:repeat>
+                                        </p>
                                     </div>
-                                    <div class="main-titles">
-                                        <h4 class="title">4.5 TL</h4>
-                                        <h5 class="no-margin">5.S. Poşetli Yaprak Test Sosyal Bilgiler</h5>
-                                    </div>
-                                    <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 24 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
-                                    <p class="center-align stars">
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-                                        <span class="icon-star stars-clr"></span>
-
-                                    </p>
-                                </div>
-                            </div> <!-- /product -->
-
-                        </div>
-                    </div>
+                                </p:outputPanel> <!-- /product -->
+                            </h:panelGroup>
+                    </h:panelGroup>
+                        </ui:repeat>
                 </div> <!-- /carousel -->
             </div>
 
@@ -265,6 +203,7 @@
 
             <div class="row popup-products blocks-spacer">
 
+                <ui:repeat value="#{productsDao.news}" var="item" varStatus="index">
 
                 <!--  ==========  -->
                 <!--  = Product =  -->
@@ -272,271 +211,35 @@
                 <div class="span3">
                     <div class="product">
                         <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/matematik.jpg"
-                                     style="height:200px !important;"/>
+                            <div class="picture" style="height: 200px; min-width: 50px; ">
+                                <p:graphicImage height="150"  style="height:200px; !important;  min-height: 200px; min-width: 50px;"
+                                                value="/images/product/#{item.tid}.#{item.refImage.extension}"
+                                        />
+
                                 <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
+                                    <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                    <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
                                 </div>
                             </div>
                         </div>
                         <div class="main-titles no-margin">
-                            <h4 class="title">18 TL</h4>
-                            <h5 class="no-margin">9. S. Konu Anl. Soru B. Matematik</h5>
+                            <h4 class="title">#{item.price} TL</h4>
+                            <h5 class="no-margin">#{item.nameTr}</h5>
                         </div>
-                        <p class="desc">9. Sınıf Öğretim Programına göre hazırlanmış, okula yardımcı, sınavlara hazırlık... Özlü konu anlatımları, çok sayıda çözümlü sorularla, ve 95 konu testinde 2000'i aşkın soruyla desteklenmiştir.</p>
+                        <p class="desc">#{item.detailTr}</p>
                         <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star"></span>
-                            <span class="icon-star"></span>
-                            <span class="icon-star"></span>
+                            <ui:repeat value="#{productsDao.getProductStars(item)}"
+                                       var="star">
+                                <span class="icon-star stars-clr"></span>
+                            </ui:repeat>
 
                         </p>
                     </div>
                 </div> <!-- /product -->
 
+                    <h:panelGroup layout="block" class="clearfix" rendered="#{(index.index+1)%4==0}" />
 
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/biyoloji.jpg"
-                                     style="height:200px !important;"/>
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">19.8 TL</h4>
-                            <h5 class="no-margin">YGS-LYS Biyoloji Soru Bankası</h5>
-                        </div>
-                        <p class="desc">YGS-LYS Biyoloji Soru Bankası 10 Ünite 146 Test</p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/fen.jpg"
-                                     style="height:200px !important;"/>
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">6.3 TL</h4>
-                            <h5 class="no-margin">7.S. Poşetli Yaprak Test Fen Bilimleri</h5>
-                        </div>
-                        <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 32 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/turkce.jpg"
-                                     style="height:200px !important;"/>
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">7.2 TL</h4>
-                            <h5 class="no-margin">6.S. Poşetli Yaprak Test Türkçe</h5>
-                        </div>
-                        <p class="desc">Okula Yardımcı Sınavlara Hazırlık... Çek Kopar 40 Yaprak Test Kuşe Kapak, Renkli, Resimli</p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-                <div class="clearfix"></div>
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/felsefe.jpg"
-                                     style="height:200px !important;" />
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">2.8 TL</h4>
-                            <h5 class="no-margin">Cep Kitabı YGS/LYS Felsefe</h5>
-                        </div>
-                        <p class="desc">YGS/LYS Felsefe Grubu Özetli Temel Konular Okula Yardımcı Üniversiteye hazırlık 9,5x13,5 cm Renkli kuşe kapak</p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/deneme.jpg"
-                                     style="height:200px !important;" />
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">9 TL</h4>
-                            <h5 class="no-margin">5.S. 5'li Deneme Sınavı</h5>
-                        </div>
-                        <p class="desc">Okula Destek TEOG Sınavına Hazırlık, Yeni öğretim programına uygun;Türkçe, Matematik, Fen Bil., Sos. Bil., İngilizce Testleri... 70'er soruluk 5 deneme sınavı, toplam 350 soru... 4 renkli , kuşe kapak, cevap kağıtlarıyla</p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star"></span>
-                            <span class="icon-star"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/geometri.jpg"
-                                     style="height:200px !important;" />
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">2.8 TL</h4>
-                            <h5 class="no-margin">Cep Kitabı YGS/LYS Geometri</h5>
-                        </div>
-                        <p class="desc">YGS/LYS Geometri Özetli Temel Konular Okula Yardımcı Üniversiteye hazırlık 9,5x13,5 cm Renkli kuşe kapak</p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star"></span>
-                            <span class="icon-star"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-
-
-
-                <!--  ==========  -->
-                <!--  = Product =  -->
-                <!--  ==========  -->
-                <div class="span3">
-                    <div class="product">
-                        <div class="product-img">
-                            <div class="picture">
-                                <img src="resources/theme/images/products/ilkokul.jpg"
-                                     style="height:200px !important;" />
-                                <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">Detay</a>
-                                    <a href="#" class="btn buy btn-danger">Sepete Ekle</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-titles no-margin">
-                            <h4 class="title">22.5 TL</h4>
-                            <h5 class="no-margin">4. S. Tüm Ders. K. Anl.Sb.</h5>
-                        </div>
-                        <p class="desc">Sayfa sayısı : 552
-                        </p>
-                        <p class="center-align stars">
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star stars-clr"></span>
-                            <span class="icon-star"></span>
-                            <span class="icon-star"></span>
-
-                        </p>
-                    </div>
-                </div> <!-- /product -->
-
-
+                </ui:repeat>
 
             </div>
         </div>
@@ -656,6 +359,7 @@
                     <img src="resources/theme/images/links/fehmiaksoy.png" alt="" width="203" height="104" />
                     <img src="resources/theme/images/links/yargi.png" alt="" width="203" height="104" />
                     <img src="resources/theme/images/links/yediiklim.png" alt="" width="203" height="104" />
+                    <img src="resources/theme/images/links/adimmat.png" alt="" width="203" height="104" />
                 </div>
             </div>
         </div> <!-- /logos -->

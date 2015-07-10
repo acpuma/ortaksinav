@@ -18,16 +18,18 @@
         <p:commandButton icon="toolbar-add toolbar-icon"
                          styleClass="toolbar-button" style="padding:1px 5px;"
                          value="#{msg.toolbar_add}"
-                         actionListener="#{productsDao.addProduct}"
-                         update="@widgetVar(productsGridWidget)"
+                         actionListener="#{productsDao.reset}"
+                         update="@widgetVar(formDialogWidget)"
+                         oncomplete="PF('formDialogWidget').show();"
                          rendered="true"
                 >
         </p:commandButton>
+
     </p:outputPanel>
     <components:productsGrid rows="200"  scrollable="true" update=":#{p:component('formPanel')}"
-                                 widgetVar="productsGridWidget" scrollHeight="450"/>
+                                 widgetVar="productsGridWidget" scrollHeight="450" editable="true" editMode="cell"/>
     <p:dialog id="gridDialog" header="#{msg.product}" widgetVar="formDialogWidget"
-              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  onHide="">
 
         <p:outputPanel id="formPanel" >
             <components:inputUploadImage widgetVar="uploadImageWidget" imageType="product" daobean="#{productsDao}"
@@ -64,10 +66,20 @@
                         <f:selectItems value="#{productsTypeDao.all}" var="sitem"
                                        itemValue="#{sitem}" itemLabel="#{sitem.nameTr}" />
                     </p:selectOneMenu>
-                    <h:outputLabel value="Sipariş Formunda:" for="showOrderForm" />
-                    <h:selectBooleanCheckbox id="showOrderForm" value="#{productsDao.item.showOrderForm}" title="Evet"
+                    <h:outputLabel value="#{msg.product_showshop}:" for="showshop" />
+                    <h:selectBooleanCheckbox id="showshop" value="#{productsDao.item.showShop}" title="Evet"
                                  />
-
+                    <h:outputLabel value="#{msg.product_showorderform}:" for="showOrderForm" />
+                    <h:selectBooleanCheckbox id="showOrderForm" value="#{productsDao.item.showOrderForm}" title="Evet"
+                            />
+                    <h:outputLabel value="#{msg.product_showMainNew}:" for="showMainNew" />
+                    <h:selectBooleanCheckbox id="showMainNew" value="#{productsDao.item.showMainNew}" title="Evet"
+                            />
+                    <h:outputLabel value="#{msg.product_showMainMost}:" for="showMainMost" />
+                    <h:selectBooleanCheckbox id="showMainMost" value="#{productsDao.item.showMainMost}" title="Evet"
+                            />
+                    <h:outputLabel value="#{msg.product_stars} :" for="stars" />
+                    <h:inputText id="stars" value="#{productsDao.item.stars}" size="1"/>
 
                 </p:panelGrid>
                 <h:inputHidden id="tid" value="#{productsDao.item.tid}"/>
@@ -76,7 +88,7 @@
                 <h:messages />
                 <components:toolbar gridname="productsGrid" daobean="#{productsDao}"
                                     print="false" search="false" new="false"
-                        oncomplete="PF('formDialogWidget').hide()"/>
+                        oncomplete="PF('formDialogWidget').hide(); PF('productsGridWidget').filter();"/>
             </h:form>
         </p:outputPanel>
     </p:dialog>

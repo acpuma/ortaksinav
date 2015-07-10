@@ -7,11 +7,9 @@
     <p:outputPanel styleClass="logo">
         <p:outputPanel style="float:left;">
             <h:form>
-
-            <h:commandLink action="/admin/admin" ajax="false">
-
-            <p:graphicImage library="images" name="orslogo.png" height="44" style="margin:0;padding:0;"/>
-            </h:commandLink>
+                <h:commandLink action="/admin/admin" ajax="false">
+                    <p:graphicImage library="images" name="orslogo.png" height="44" style="margin:0;padding:0;"/>
+                </h:commandLink>
             </h:form>
 
         </p:outputPanel>
@@ -22,7 +20,7 @@
 
     <p:outputPanel style=" margin: 0 10px; text-align: center;">
         <p:graphicImage height="80" value="/images/user/#{sessionInfo.user.tid}.#{sessionInfo.user.refImage.extension}"
-                        style="margin:5px; border-radius: 10px; box-shadow:1px 1px 5px 0px #888888"/>
+                        style="margin:5px; border-radius: 10px; box-shadow:1px 1px 5px 0px #888888; max-width: 80px;"/>
         <div class="clear" />
         <span style="margin: 15px 5px;">
             #{sessionInfo.user.name} #{sessionInfo.user.surname}

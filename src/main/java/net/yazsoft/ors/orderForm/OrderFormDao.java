@@ -1,8 +1,8 @@
 package net.yazsoft.ors.orderForm;
 
 import net.sf.jasperreports.engine.JRParameter;
-import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.mail.Email;
 import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
@@ -33,6 +33,7 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
 
     @Inject OrderFormProductsDao orderFormProductsDao;
     @Inject Report report;
+    @Inject Email email;
 
     @Transactional
     public void delete(OrderForm of) {
@@ -83,13 +84,23 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
             orderForm.setCreated(Calendar.getInstance().getTime());
             Long pk=create(orderForm);
             if (pk!=null) {
+                logger.info("LOG02230: PRODUCTS : " + products);
                 for (Map.Entry<Products,String> entry: products.entrySet()) {
                     logger.info("LOG01860: ENTRY : " + entry.getValue().getClass().getName());
+                    logger.info("LOG02240: ENTRY VALUE : " + entry.getValue());
+                    if (entry.getValue().equals("")) continue;
                     OrderFormProducts product=new OrderFormProducts();
                     product.setActive(true);
                     Products oproduct=(Products)getSession().load(Products.class,entry.getKey());
                     product.setRefProduct(oproduct);
-                    product.setCount(Integer.valueOf(entry.getValue()));
+                    Integer productCount=null;
+                    try {
+                        productCount=Integer.valueOf(entry.getValue());
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if (productCount==0) continue;
+                    product.setCount(productCount);
                     product.setPrice(oproduct.getPrice());
                     product.setName(oproduct.getNameTr());
                     if (orderForm.getDiscount()==0) {
@@ -98,10 +109,18 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
                         product.setPriceDiscount(oproduct.getPrice() -
                                 (oproduct.getPrice() * orderForm.getDiscount() / 100));
                     }
-                    product.setRefOrderform((OrderForm)getSession().load(OrderForm.class,pk));
+                    product.setRefOrderform((OrderForm) getSession().load(OrderForm.class, pk));
                     product.setCreated(Calendar.getInstance().getTime());
                     orderFormProductsDao.create(product);
                 }
+                String body=" Yeni siparisiniz var : "
+                        +"\nAd : "  + orderForm.getName()
+                        +"\nAdres : " + orderForm.getAddress()
+                        +"\nTelefon : " + orderForm.getPhone()
+                        +"\nEposta : " + orderForm.getEmail()
+                        +"\nAciklama : " + orderForm.getComment();
+                email.sendMail("nurullahsin@hotmail.com", "Ortak Sinav Yeni Siparis Formu",body);
+                //email.sendMail("info@ortaksinav.com.tr", "Ortak Sinav Yeni Siparis Formu",body);
             }
             //Util.setFacesMessage("SIPARISINIZ ALINDI");
             //reportOrderForm();
@@ -111,6 +130,8 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
             e.printStackTrace();
         }
     }
+
+
 
     public List<OrderForm> findOrderForms() {
         List list=null;
@@ -131,6 +152,7 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
     @PostConstruct
     public void init() {
         orderForm=new OrderForm();
+        orderForm.setDiscount(0);
         products=new HashMap<>();
         orderForms=null;
     }

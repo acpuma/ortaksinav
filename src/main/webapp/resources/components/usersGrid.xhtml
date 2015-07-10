@@ -4,6 +4,7 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 <cc:interface>
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
@@ -27,11 +28,15 @@
     <cc:attribute default="false"     required="false"   name="transient" />
     <cc:attribute default="widgetUser"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute default="" required="false" name="oncomplete" />
+    <cc:attribute required="true" name="daobean" />
+
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form>
+        <c:set var="daobeann" value="#{cc.attrs.daobean}" />
         <p:dataTable id="usersGrid"
                      var="usersGrid"
 
@@ -77,12 +82,12 @@
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').show();"
+                    oncomplete="PF('blockUIWidget1').unblock(); #{cc.attrs.oncomplete};"
                     process="@all"
-                    listener="#{usersDao.select}"
+                    listener="#{daobeann.select}"
                     />
 
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{usersGrid.tid}  </p:column>
+            <p:column headerText="#{msg.global_id}" width="25" rendered="true"  > #{usersGrid.tid}  </p:column>
 
             <p:column headerText="#{msg.username}" width="120" filterBy="#{usersGrid.username}"  >
                 #{usersGrid.username} </p:column>
@@ -93,6 +98,9 @@
             <p:column headerText="#{msg.global_surname}" width="120" rendered="true" filterBy="#{usersGrid.surname}">
                 #{usersGrid.surname}  </p:column>
             <p:column headerText="#{msg.global_email}" width="150" rendered="true" > #{usersGrid.email}  </p:column>
+            <p:column headerText="#{msg.global_group}" width="100" rendered="true" >
+             #{usersGrid.refRole.nameTr}
+            </p:column>
 
         </p:dataTable>
     </h:form>

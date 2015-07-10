@@ -5,6 +5,7 @@ package net.yazsoft.frame.menus;
 import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.ors.entities.Menus;
 import net.yazsoft.ors.entities.MenusType;
+import net.yazsoft.ors.entities.Users;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -50,7 +51,7 @@ public class MenusDao extends BaseDao<Menus> implements Serializable{
         return list;
     }
     
-    public List<Menus> getMenus(Long menutype) {
+    public List<Menus> getMenus(Long menutype,Users user) {
         Criteria query;
         List list=null;
         final Session session = sessionFactory.getCurrentSession();
@@ -58,8 +59,11 @@ public class MenusDao extends BaseDao<Menus> implements Serializable{
             session.flush();
             //session.clear(); //clear cache
             query = session.createCriteria(Menus.class);
+            if (user!=null) {
+                query.add(Restrictions.eq("refUser",user));
+            }
             query.add(Restrictions.eq("refMenutype", new MenusType(menutype)));
-            query.add(Restrictions.eq("active", 1));
+            query.add(Restrictions.eq("active", true));
             query.addOrder(Order.asc("order"));
             //query.setProjection(Projections.rowCount());
             list = query.list();
@@ -68,6 +72,10 @@ public class MenusDao extends BaseDao<Menus> implements Serializable{
         }
         logger.info("LOG01670: MENUS : " + list.size());
         return list;
+    }
+
+    public List<Menus> getMenus(Long menutype) {
+        return getMenus(menutype,null);
     }
 
 }

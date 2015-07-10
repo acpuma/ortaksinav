@@ -9,28 +9,61 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>#{msg.exams}</title>
+        <title>#{msg.schools}</title>
     </h:head>
-<ui:decorate template="/WEB-INF/templates/master.xhtml">
-    <ui:param name="title" value="#{msg.exams}" />
-<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
-    <h:form id="pageForm">
-        <p:panelGrid columns="2" id="pagePanel">
-            <h:outputLabel value="Hello, world"/>
-        </p:panelGrid>
-        <h:inputHidden id="status" value="#{schoolsDao.status}"  />
-        <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
-        <h:messages />
-        <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" />
-    </h:form>
+    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+        <ui:param name="title" value="#{msg.schools}" />
+        <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+            <components:schoolsGrid rows="100"  scrollable="true" update=":#{p:component('formPanel')}"
+                                    widgetVar="schoolsGridWidget" scrollHeight="310"/>
+            <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
+                      modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
 
-    <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
-              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
-        <components:schoolsGrid rows="5"  scrollable="true" update=":#{p:component('pageForm')}"
-                                widgetVar="schoolsGridWidget"/>
-    </p:dialog>
+                <p:outputPanel id="formPanel" >
+                    <components:inputUploadImage widgetVar="uploadLogoWidget" imageType="school" daobean="#{schoolsDao}"/>
+                    <h:form id="pageForm">
 
-</p:outputPanel>
-</ui:decorate>
+                        <p:panelGrid columns="4" id="pagePanel">
+
+                            <h:outputLabel value="#{msg.schools_mebcode}:" for="mebcode" />
+                            <h:inputText id="mebcode" value="#{schoolsDao.item.mebCode}" title="#{msg.schools_mebcode}"
+                                         required="true"
+                                         requiredMessage="#{msg.schools_mebcode} #{msg.validation_required}"/>
+
+                            <h:outputLabel value="#{msg.global_name}:" for="name" />
+                            <h:inputText id="name" value="#{schoolsDao.item.name}" title="#{msg.global_name}"
+                                         required="true" requiredMessage="Ad alani gereklidir" size="40"/>
+
+                            <h:outputLabel value="#{msg.global_city}:" for="city" />
+                            <p:selectOneMenu value="#{schoolsDao.item.refCity}"  rendered="true" id="city"
+                                    >
+                                <f:selectItems value="#{citiesDao.all}" var="sitem"
+                                               itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+                                <p:ajax update="towns" listener="#{citiesDao.handleCityChange}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg.global_town}:" for="towns" />
+                            <p:selectOneMenu value="#{schoolsDao.item.refTown}"  rendered="true" id="towns"
+                                    >
+                                <f:selectItems value="#{citiesDao.towns}" var="sitem"
+                                               itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+                            </p:selectOneMenu>
+
+                        </p:panelGrid>
+                        <h:inputHidden id="tid" value="#{schoolsDao.item.tid}"/>
+                        <h:inputHidden id="status" value="#{schoolsDao.status}"  />
+                        <h:inputHidden id="disabledelete" value="#{schoolsDao.disabledelete}" />
+                        <h:messages />
+                        <p:commandButton value="Aktif Kurum Yap"
+                                         rendered="#{schoolsDao.item.tid!=null}"
+                                         actionListener="#{sessionInfo.setSchool(schoolsDao.item)}"
+                                         update=":activeSchool"
+                                />
+                        <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" print="false" />
+                    </h:form>
+                </p:outputPanel>
+            </p:dialog>
+
+        </p:outputPanel>
+    </ui:decorate>
 </f:view>
 </html>

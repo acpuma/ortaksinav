@@ -2,6 +2,7 @@ package net.yazsoft.ors.exams;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.examsParameters.ExamsParametersDao;
@@ -9,6 +10,8 @@ import net.yazsoft.ors.examsParameters.ExamsParametersTypeDao;
 import net.yazsoft.ors.lessons.LessonsDao;
 import net.yazsoft.ors.lessons.LessonsDto;
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -25,6 +28,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     ExamsSeason filterSeason;
     ExamsSeasonNumber filterSeasonNumber;
     Schools filterSchool;
+    Boolean listChanged;
 
     List<Exams> filteredExams;
 
@@ -47,8 +51,43 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         //filterSchool=Util.getActiveSchool();
         logger.info("EXAMSDAO INIT");
         super.init();
+        listChanged=true;
 
         //filteredExams=new ArrayList<Exams>();
+    }
+
+    public List<Exams> findFilteredExams() {
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            if (filterSchool!=null) {
+                c.add(Restrictions.eq("refSchool", filterSchool));
+            } else {
+                if (!Util.getActiveUser().getRefRole().getName().equals(Constants.ROLE_ADMIN)) {
+                    c.add(Restrictions.in("refSchool", Util.getActiveUser().getSchoolsCollection()));
+                }
+            }
+            if (filterYear!=null) {
+                c.add(Restrictions.eq("refExamYear", filterYear));
+            }
+            if (filterSeason!=null) {
+                c.add(Restrictions.eq("refExamSeason", filterSeason));
+            }
+            if (filterSeasonNumber!=null) {
+                c.add(Restrictions.eq("refExamSeasonNumber", filterSeasonNumber));
+            }
+            //for (Schools school:Util.getActiveUser().getSchoolsCollection()) {
+
+            //}
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public Long save() {
@@ -61,6 +100,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             pk=create();
         }
         //reset();
+        listChanged=true;
         return pk;
     }
 
@@ -72,6 +112,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         getItem().setRefBookletType(examsBookletTypeDao.getById(2L)); //B
         getItem().setRefFalseType(examsFalseTypeDao.getById(1L)); //0
         lessonsDao.reset();
+        listChanged=true;
     }
 
 
@@ -124,17 +165,28 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     }
     @Override
     public void select() {
-        Util.getSessionInfo().setExam(getItem());
-        lessonsDao.reset();
-        if (lessonsDao!=null) {
-            lessonsDao.getExamLessons(getItem());
+        try {
+            Util.getSessionInfo().setExam(getItem());
+            lessonsDao.reset();
+            if (lessonsDao != null) {
+                lessonsDao.getExamLessons(getItem());
+            }
+            super.select();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Util.setFacesMessageError(e.getMessage());
         }
-        super.select();
     }
 
     public void setActiveExam() {
-        Util.getSessionInfo().setSchool(getItem().getRefSchool());
-        Util.getSessionInfo().setExam(getItem());
+        try {
+            Util.getSessionInfo().setSchool(getItem().getRefSchool());
+            Util.getSessionInfo().setExam(getItem());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Util.setFacesMessageError(e.getMessage());
+        }
+
     }
 
     public Exams getSelected() {
@@ -150,6 +202,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     }
 
     public void setFilterYear(ExamsYear filterYear) {
+        listChanged=true;
         this.filterYear = filterYear;
     }
 
@@ -158,6 +211,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     }
 
     public void setFilterSeason(ExamsSeason filterSeason) {
+        listChanged=true;
         this.filterSeason = filterSeason;
     }
 
@@ -166,10 +220,15 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     }
 
     public void setFilterSeasonNumber(ExamsSeasonNumber filterSeasonNumber) {
+        listChanged=true;
         this.filterSeasonNumber = filterSeasonNumber;
     }
 
     public List<Exams> getFilteredExams() {
+        if (listChanged) {
+            filteredExams = findFilteredExams();
+            listChanged = false;
+        }
         return filteredExams;
     }
 
@@ -182,6 +241,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     }
 
     public void setFilterSchool(Schools filterSchool) {
+        listChanged=true;
         this.filterSchool = filterSchool;
     }
 }

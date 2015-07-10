@@ -37,7 +37,7 @@
                 />
     </p:outputPanel>
     <p:outputPanel id="uploadFilePanel"  style="margin:0 auto 10px; text-align: center;">
-        <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_logo}"
+        <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_logo}" rendered="#{not empty daobeann.item.tid}"
                          immediate="true" process="@none"
                          oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
                 >

@@ -35,7 +35,7 @@ public class Menus extends BaseEntity implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Integer active;
+    private Boolean active;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -70,6 +70,8 @@ public class Menus extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_menutype", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private MenusType refMenutype;
+    @OneToMany(mappedBy = "refMenu", fetch = FetchType.LAZY)
+    private Collection<UsersMenus> usersMenusCollection;
 
     public Menus() {
     }
@@ -92,11 +94,11 @@ public class Menus extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Integer getActive() {
+    public Boolean getActive() {
         return active;
     }
 
-    public void setActive(Integer active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
@@ -195,6 +197,14 @@ public class Menus extends BaseEntity implements Serializable {
 
     public void setRefMenutype(MenusType refMenutype) {
         this.refMenutype = refMenutype;
+    }
+
+    public Collection<UsersMenus> getUsersMenusCollection() {
+        return usersMenusCollection;
+    }
+
+    public void setUsersMenusCollection(Collection<UsersMenus> usersMenusCollection) {
+        this.usersMenusCollection = usersMenusCollection;
     }
 
     @Override

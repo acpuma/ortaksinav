@@ -3,7 +3,10 @@
 package net.yazsoft.frame.menus;
 
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Menus;
+import net.yazsoft.ors.entities.UsersMenus;
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Named
@@ -24,11 +28,11 @@ import java.util.List;
 public class MenusBus implements Serializable{
     private static final Logger logger = Logger.getLogger(MenusBus.class);
     private MenuModel model = new DefaultMenuModel();
-    private List<Menus> menus;
+    //private List<Menus> menus;
+    private List<UsersMenus> usersMenus;
     private List<Menus> webmenus;
 
-    @Autowired
-    MenusDao menusDao;
+    @Autowired MenusDao menusDao;
 
     public List<Menus> getWebmenus() {
         if (webmenus==null) {
@@ -38,30 +42,31 @@ public class MenusBus implements Serializable{
     }
 
     public MenuModel getMenuModel(Long menutype) {
-        menus=menusDao.getMenus(menutype);
+        //menus=menusDao.getMenus(menutype, Util.getActiveUser());
+        usersMenus=new ArrayList(Util.getActiveUser().getUsersMenusCollection());
         getSubmenus(1L,null);
-        logger.info("LOG01690: MENUS: " + menus);
+        logger.info("LOG01690: USERMENUS: " + usersMenus);
         return model;
     }
 
-    public List<Menus> getSubmenus(Long menuid,DefaultSubMenu subm) {
+    public List<UsersMenus> getSubmenus(Long menuid,DefaultSubMenu subm) {
         
-        List<Menus> list=null;
+        List<UsersMenus> list=null;
         try {            
             list=findSubmenus(menuid);//dao.getSubmenus(menuid);
-            for (Menus menu:list) {
-                List<Menus> submenus=findSubmenus(menu.getTid());
+            for (UsersMenus menu:list) {
+                List<UsersMenus> submenus=findSubmenus(menu.getRefMenu().getTid());
                 if (submenus.isEmpty()) {
-                    DefaultMenuItem item = new DefaultMenuItem(menu.getNameTr());
-                    item.setOutcome(menu.getForm());
+                    DefaultMenuItem item = new DefaultMenuItem(menu.getRefMenu().getNameTr());
+                    item.setOutcome(menu.getRefMenu().getForm());
                     if (subm==null) {
                         model.addElement(item);                         
                     } else {
                         subm.addElement(item);
                     }
                 } else {
-                    DefaultSubMenu submenu = new DefaultSubMenu(menu.getNameTr());
-                    getSubmenus(menu.getTid(),submenu);
+                    DefaultSubMenu submenu = new DefaultSubMenu(menu.getRefMenu().getNameTr());
+                    getSubmenus(menu.getRefMenu().getTid(),submenu);
                     model.addElement(submenu);
                 }
             }
@@ -71,13 +76,15 @@ public class MenusBus implements Serializable{
         return list;
     }
     
-    public List<Menus> findSubmenus(Long menuid) {
-        List<Menus> submenus=new ArrayList<>();
-        for (Menus menu:menus) {
-            if (menu.getMainId().getTid().equals(menuid)) {
-                submenus.add(menu);
+    public List<UsersMenus> findSubmenus(Long menuid) {
+        List<UsersMenus> submenus=new ArrayList<>();
+        for (UsersMenus umenu:usersMenus) {
+            if (umenu.getRefMenu().getMainId().getTid().equals(menuid)) {
+                submenus.add(umenu);
             }
         }
+        BeanComparator fieldComparator=new BeanComparator("refMenu.order");
+        Collections.sort(submenus,fieldComparator);
         return submenus;
     }
 
