@@ -83,7 +83,7 @@ public class MenusBus implements Serializable{
                 submenus.add(umenu);
             }
         }
-        BeanComparator fieldComparator=new BeanComparator("refMenu.order");
+        BeanComparator fieldComparator=new BeanComparator("refMenu.rank");
         Collections.sort(submenus,fieldComparator);
         return submenus;
     }

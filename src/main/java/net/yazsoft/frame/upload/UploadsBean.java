@@ -10,6 +10,7 @@ import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.products.ProductsDao;
 import net.yazsoft.ors.schools.SchoolsDao;
 import net.yazsoft.ors.students.StudentsDao;
+import net.yazsoft.ors.weblinks.WebLinksDao;
 import net.yazsoft.ors.webslides.WebSlidesDao;
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -33,14 +34,17 @@ import java.io.*;
 public class UploadsBean extends BaseDao implements Serializable{
     private static final Logger logger = Logger.getLogger(UploadsBean.class.getName());
     private static final int BUFFER_SIZE = 6124;
-    private static final long DAT = 1L;
-    private static final long IMAGE = 2L;
-    private static final long BOOKLET = 3L;
-    private static final String IMAGE_SCHOOL = "school";
-    private static final String IMAGE_USER ="user";
-    private static final String IMAGE_STUDENT ="student";
-    private static final String IMAGE_SLIDE ="slide";
-    private static final String IMAGE_PRODUCT ="product";
+    public static final long DAT = 1L;
+    public static final long IMAGE = 2L;
+    public static final long BOOKLET = 3L;
+    public static final long LOGO = 4L;
+    public static final long FILE = 5L;
+    public static final String IMAGE_SCHOOL = "school";
+    public static final String IMAGE_USER ="user";
+    public static final String IMAGE_STUDENT ="student";
+    public static final String IMAGE_SLIDE ="slide";
+    public static final String IMAGE_PRODUCT ="product";
+    public static final String IMAGE_WEBLINK ="weblink";
     private UploadedFile uploadedFile;
     Schools activeSchool;
     File uploadDirectory;
@@ -62,14 +66,13 @@ public class UploadsBean extends BaseDao implements Serializable{
     @Inject StudentsDao studentsDao;
     @Inject WebSlidesDao webSlidesDao;
     @Inject ProductsDao productsDao;
-
-
+    @Inject WebLinksDao webLinksDao;
 
     @PostConstruct
     public void init() {
         logger.info("UPLOAD CONSTRUCTOR");
         //album=activeSchool.getId();
-        fileType=DAT;
+        fileType=FILE;
     }
 
     @Transactional
@@ -83,6 +86,7 @@ public class UploadsBean extends BaseDao implements Serializable{
             case IMAGE_STUDENT: tid=studentsDao.getItem().getTid();break;
             case IMAGE_SLIDE: tid=webSlidesDao.getItem().getTid();break;
             case IMAGE_PRODUCT: tid=productsDao.getItem().getTid();break;
+            case IMAGE_WEBLINK: tid=webLinksDao.getItem().getTid();break;
         }
 
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
@@ -130,6 +134,8 @@ public class UploadsBean extends BaseDao implements Serializable{
                     imagesType=(ImagesType)getSession().load(ImagesType.class,4L);break;
                 case (IMAGE_PRODUCT) :
                     imagesType=(ImagesType)getSession().load(ImagesType.class,5L);break;
+                case (IMAGE_WEBLINK) :
+                    imagesType=(ImagesType)getSession().load(ImagesType.class,6L);break;
             }
 
             Images image=null;
@@ -156,6 +162,8 @@ public class UploadsBean extends BaseDao implements Serializable{
                     webSlidesDao.getItem().setRefImage(image); webSlidesDao.update();break;
                 case (IMAGE_PRODUCT) :
                     productsDao.getItem().setRefImage(image); productsDao.update();break;
+                case (IMAGE_WEBLINK) :
+                    webLinksDao.getItem().setRefImage(image); webLinksDao.update();break;
             }
         } catch (Exception e) {
             logger.error("EXCEPTION: ", e);
@@ -185,10 +193,12 @@ public class UploadsBean extends BaseDao implements Serializable{
             } else if (fileType.equals(BOOKLET)) {
                 dirName = uploadsFolder + "/BOOKLET/" + upload.getRefSchool().getTid().toString();
             } else {
-                dirName = uploadsFolder + "/files/" + upload.getRefSchool().getTid().toString();
+                dirName = uploadsFolder + "/files/";
             }
 
-            dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
+            if (!fileType.equals(FILE)) {
+                dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
+            }
 
             File file = new File(dirName + "/" + upload.getTid().toString() + "." + extension);
 
@@ -226,12 +236,13 @@ public class UploadsBean extends BaseDao implements Serializable{
     @Transactional
     public void deleteUpload(Uploads upload) {
         try {
+
             if (upload.getRefUploadType()==null) {
                 fileType=DAT;
             } else {
                 fileType=upload.getRefUploadType().getTid();
             }
-            uploadsDao.delete(upload);
+
 
             String uploadsFolder = Util.getUploadsFolder();
             String extension=UploadsDao.getFileExtension(upload.getName());
@@ -241,21 +252,26 @@ public class UploadsBean extends BaseDao implements Serializable{
             } else if (fileType.equals(BOOKLET)) {
                 dirName = uploadsFolder + "/BOOKLET/" + upload.getRefSchool().getTid().toString();
             } else {
-                dirName = uploadsFolder + "/files/" + upload.getRefSchool().getTid().toString();
+                dirName = uploadsFolder + "/files/";
             }
 
-            dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
+            if (!fileType.equals(FILE)) {
+                dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
+            }
 
             File file = new File(dirName + "/" + upload.getTid().toString()+"."+extension);
             if (file.delete()) {
                 logger.info(file.getName() + " is deleted!");
             } else {
                 logger.info("DELETING : " + dirName + "/" + upload.getTid().toString()+"."+extension);
-                logger.info("Delete operation is failed.");
+                logger.error("Delete operation is failed.");
+                Util.setFacesMessageError("Kayit silindi, dosya silineMEdi.");
             }
+            Util.setFacesMessage("Deleted file : " + upload.getName());
+            uploadsDao.delete(upload);
             uploadsDao.setUploads(null);
+            uploadsDao.setFileUploads(null);
             //deleting
-            Util.setFacesMessage("Deleted file id : ");
         } catch (Exception e) {
             logger.error("EXCEPTION: ", e);
             Util.setFacesMessageError(e.getMessage());
@@ -296,8 +312,11 @@ public class UploadsBean extends BaseDao implements Serializable{
                     dirName="/images/student"; break;
             }
             */
+        } else if (fileType.equals(FILE)) {
+            Util.createDirectory("files");
+            dirName="/files/";
         } else {
-            dirName="/files";
+            logger.error("LOG02410: UNSUPPORTED UPLOAD TYPE !!!");
         }
         targetFolder=Util.createDirectory(dirName);
 
@@ -333,15 +352,23 @@ public class UploadsBean extends BaseDao implements Serializable{
 
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         try {
-            getUploadDirectory(Util.getActiveExam().getTid().toString());
+            if (fileType==FILE){
+                getUploadDirectory(null);
+            } else {
+                getUploadDirectory(Util.getActiveExam().getTid().toString());
+            }
             String filenameOriginal=event.getFile().getFileName();
             String extension=UploadsDao.getFileExtension(filenameOriginal);
 
             Long tid=1L;
             Uploads upload=new Uploads();
             upload.setActive(Boolean.TRUE);
-            upload.setRefSchool(Util.getActiveSchool());
-            upload.setRefExam(Util.getActiveExam());
+            upload.setCreated(Util.getNow());
+            upload.setExtension(extension);
+            if (fileType!=FILE) {
+                upload.setRefSchool(Util.getActiveSchool());
+                upload.setRefExam(Util.getActiveExam());
+            }
             upload.setRefUser(Util.getActiveUser());
             upload.setName(filenameOriginal);
             upload.setRefUploadType(uploadsTypeDao.getById(fileType));
@@ -371,8 +398,7 @@ public class UploadsBean extends BaseDao implements Serializable{
             out.close();
 
             uploadsDao.setUploads(null); //for refresh grid
-
-
+            uploadsDao.setFileUploads(null);
             Util.setFacesMessage("ID : " + tid.toString() + " ,file name: "
                     + event.getFile().getFileName() + " File size: "
                     + event.getFile().getSize() / 1024 + " Kb Content type: "

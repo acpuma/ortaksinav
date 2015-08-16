@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.weblinks}</title>
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.weblinks}" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:outputPanel style="text-align: right;">
+        <p:commandButton icon="toolbar-add toolbar-icon"
+                         styleClass="toolbar-button" style="padding:1px 5px;"
+                         value="#{msg.toolbar_add}"
+                         actionListener="#{webLinksDao.reset}"
+                         update="@widgetVar(formDialogWidget)"
+                         oncomplete="PF('formDialogWidget').show();"
+                         rendered="true"
+                >
+        </p:commandButton>
+
+    </p:outputPanel>
+    <components:webLinksGrid rows="200"  scrollable="true" update=":#{p:component('formPanel')}" draggableRows="true"
+                                 widgetVar="webLinksGridWidget" scrollHeight="400" editable="true" editMode="cell"/>
+    <p:outputLabel style="font-size: 12px;">
+        Logo çözünürüğü : 203x104
+    </p:outputLabel>
+    <p:dialog id="gridDialog" header="#{msg.weblink}" widgetVar="formDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  onHide="">
+
+        <p:outputPanel id="formPanel" >
+            <components:inputUploadImage widgetVar="uploadImageWidget" imageType="weblink"
+                                         daobean="#{webLinksDao}" imageWidth="203" imageHeight="104"
+                                         update="@widgetVar(webLinksGridWidget)"/>
+            <h:form id="pageForm">
+
+                <p:panelGrid columns="4" id="pagePanel">
+
+                    <h:outputLabel value="#{msg.global_name}:" for="name" />
+                    <h:inputTextarea id="name" value="#{webLinksDao.item.name}"
+                                 required="true" requiredMessage="Ad alani gereklidir" rows="5" cols="50"/>
+
+                    <h:outputLabel value="#{msg.address} : " for="url" />
+                    <h:inputTextarea id="url" value="#{webLinksDao.item.url}"
+                                 rows="5" cols="50"/>
+
+                </p:panelGrid>
+                <h:inputHidden id="tid" value="#{webLinksDao.item.tid}"/>
+                <h:inputHidden id="status" value="#{webLinksDao.status}"  />
+                <h:inputHidden id="disabledelete" value="#{webLinksDao.disabledelete}" />
+                <h:messages />
+                <components:toolbar gridname="webLinksGrid" daobean="#{webLinksDao}"
+                                    print="false" search="false" new="false"
+                        oncomplete="PF('formDialogWidget').hide(); PF('webLinksGridWidget').filter();"/>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

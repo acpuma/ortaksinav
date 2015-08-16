@@ -10,7 +10,9 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.CellEditEvent;
+import org.primefaces.event.ReorderEvent;
 
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,6 +29,25 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
     Boolean productsChanged=true;
     List<Products> popular;
     List<Products> news;
+    Long productId;
+
+    public void onRowReorder(ReorderEvent event) {
+        Util.setFacesMessage("Row Moved From: " + event.getFromIndex() + ", To:" + event.getToIndex());
+        int size=products.size();
+        logger.info("LOG02430: SIZE : " + products.size());
+        try {
+            products.get(event.getFromIndex()).setRank(size-event.getToIndex());
+            logger.info("LOG02290: MOVED : " + products.get(event.getFromIndex()).getNameTr());
+            update(products.get(event.getFromIndex()));
+            for (int i = 0; i < products.size(); i++) {
+                products.get(i).setRank(size-i);
+                update(products.get(i));
+            }
+            productsChanged = true;
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
 
     /*
     public void addProduct() {
@@ -39,6 +60,12 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
         productsChanged=true;
     }
     */
+
+    public void initSelected() {
+        if (!FacesContext.getCurrentInstance().isPostback()) {
+            selected=getById(productId);
+        }
+    }
 
     public void checkboxChange(Products product) {
         try {
@@ -59,19 +86,33 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
         logger.info("LOG02220:" +"Cell Changed : " +  "Old: " + oldValue + ", New:" + newValue);
     }
 
+    public List<Products> findProducts() {
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            c.addOrder(Order.desc("rank"));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+            productsChanged=false;
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return list;
+    }
+
     public List<Products> findNews() {
         List list=null;
         try {
             Criteria c = getCriteria();
             c.add(Restrictions.eq("showMainNew", true));
             c.add(Restrictions.eq("active", true));
+            c.addOrder(Order.desc("date"));
             //c.add(Restrictions.eq("isDeleted", false));
             c.setMaxResults(8);
             list = c.list();
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            Util.setFacesMessage(e.getMessage());
-            e.printStackTrace();
+            Util.catchException(e);
         }
         return list;
     }
@@ -94,18 +135,20 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
             Criteria c = getCriteria();
             c.add(Restrictions.eq("showMainMost", true));
             c.add(Restrictions.eq("active", true));
+            c.addOrder(Order.desc("countSold"));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            Util.setFacesMessage(e.getMessage());
-            e.printStackTrace();
+            Util.catchException(e);
         }
         return list;
     }
 
     public Long save() {
         productsChanged=true;
+        if (getItem().getTid()==null) {
+            getItem().setRank(products.size()+1);
+        }
         return super.save();
     }
 
@@ -177,7 +220,7 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
 
     public List<Products> getProducts() {
         if (productsChanged==true) {
-            products=getAll();
+            products=findProducts();
         }
         productsChanged=false;
         return products;
@@ -207,5 +250,13 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
 
     public void setNews(List<Products> news) {
         this.news = news;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 }

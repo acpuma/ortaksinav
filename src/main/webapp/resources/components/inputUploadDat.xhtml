@@ -25,6 +25,7 @@
         <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_file}"
                          immediate="true" process="@none"
                          oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
+                         disabled="#{not authsDao.auths.padd}"
                 >
         </p:commandButton>
     </p:outputPanel>

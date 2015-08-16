@@ -15,6 +15,7 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.operations}" />
+    #{authsDao.findAuths("/admin/operations")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <components:uploadsGrid rows="30" scrollable="true" scrollHeight="250" widgetVar="uploadsGridWidget" />
     <p:outputPanel style="text-align: center;" >
@@ -24,6 +25,7 @@
                          action="#{operationsDao.show}"
                          update=":messages fileContentForm:fileContent"
                          oncomplete="PF('showFileDialogWidget').show()"
+                         disabled="#{not authsDao.auths.pupdate}"
                 />
         <p:commandButton value="#{msg.transfer}"
                          action="#{operationsDao.transfer}"
@@ -31,11 +33,13 @@
                                         @widgetVar(schoolsClassGridWidget)
                                         @widgetVar(studentsAnswersViewGridWidget)"
                          oncomplete="PF('transferDialogWidget').show()"
+                         disabled="#{not authsDao.auths.pupdate}"
                 />
         <p:commandButton value="#{msg.operation_count}"
                          action="#{operationsDao.count}"
                          update=":messages "
                          oncomplete="PF('countDialogWidget').show()"
+                         disabled="#{not authsDao.auths.pupdate}"
                 />
 
         <components:inputUploadBooklet update="@widgetVar(uploadsGridWidget)" />

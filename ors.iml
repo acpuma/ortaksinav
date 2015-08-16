@@ -26,9 +26,11 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
+          <unit-entry name="reverse:hibernate.cfg.xml" />
           <unit-entry name="sessionFactory" value="dataSource" />
         </datasource-map>
         <naming-strategy-map />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/reverse/hibernate.cfg.xml" />
       </configuration>
     </facet>
     <facet type="JRebel" name="JRebel">

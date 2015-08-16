@@ -92,6 +92,7 @@
                                  style="height: 36px; width: 36px;"
                                  actionListener="#{productsTypeDao.setSelected(productsTypeVar)}"
                                  immediate="true" value=""
+                                 disabled="#{not authsDao.auths.pupdate}"
                                >
                 </p:commandButton>
             </p:column>
@@ -100,14 +101,16 @@
                 <p:commandButton value="" update=" :messages productsTypeGrid"
                                  icon="ui-icon-trash"
                                  style="height: 36px; width: 36px;"
-                                 actionListener="#{productsTypeDao.delete(productsTypeVar)}">
+                                 actionListener="#{productsTypeDao.delete(productsTypeVar)}"
+                                 disabled="#{not authsDao.auths.pdelete}" >
                 </p:commandButton>
             </p:column>
             <f:facet name="footer">
                 <p:column style="width:24px">
                     <p:commandButton update="@composite:productTypeForm:addTypePanel"
                                      oncomplete="PF('addTypeDialogWidget').show()"
-                                   value="Ekle" >
+                                   value="Ekle"
+                                     disabled="#{not authsDao.auths.padd}" >
                     </p:commandButton>
                 </p:column>
             </f:facet>

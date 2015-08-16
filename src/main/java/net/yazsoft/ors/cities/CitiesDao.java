@@ -6,6 +6,7 @@ import net.yazsoft.ors.entities.Cities;
 import net.yazsoft.ors.entities.Towns;
 import net.yazsoft.ors.schools.SchoolsDao;
 import net.yazsoft.ors.towns.TownsDao;
+import net.yazsoft.ors.webclients.WebClientsDao;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +26,9 @@ public class CitiesDao extends BaseGridDao<Cities> implements Serializable{
 
     List<Towns> towns;
 
-    @Inject
-    TownsDao townsDao;
-
-    @Inject
-    SchoolsDao schoolsDao;
+    @Inject TownsDao townsDao;
+    @Inject SchoolsDao schoolsDao;
+    @Inject WebClientsDao webClientsDao;
 
 
     public CitiesDao() {
@@ -38,6 +37,15 @@ public class CitiesDao extends BaseGridDao<Cities> implements Serializable{
 
     public void handleCityChange() {
         Cities city=schoolsDao.getItem().getRefCity();
+        logger.info("CITY : " + city);
+        if(city !=null && !city.equals(""))
+            towns = townsDao.findByCity(city);
+        else
+            towns = new ArrayList<Towns>();
+    }
+
+    public void handleWebClientsCityChange() {
+        Cities city=webClientsDao.getItem().getRefCity();
         logger.info("CITY : "+city);
         if(city !=null && !city.equals(""))
             towns = townsDao.findByCity(city);

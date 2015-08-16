@@ -52,6 +52,7 @@ public class WebLinks extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Images refImage;
+    private Integer rank;
 
     public WebLinks() {
     }
@@ -128,6 +129,14 @@ public class WebLinks extends BaseEntity implements Serializable {
 
     public void setRefImage(Images refImage) {
         this.refImage = refImage;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
     @Override

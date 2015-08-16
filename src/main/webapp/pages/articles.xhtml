@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+        >
+<f:view>
+    <f:metadata>
+        <f:viewParam name="pid" value="#{webArticlesDao.page}" />
+        <f:viewParam name="month" value="#{webArticlesDao.month}" />
+        <f:viewParam name="year" value="#{webArticlesDao.year}" />
+    </f:metadata>
+    <h:head>
+        <title>#{msg.news}</title>
+        <h:outputStylesheet library="css" name="/pages/contact.css" />
+    </h:head>
+
+<ui:decorate template="/WEB-INF/templates/masterweb.xhtml">
+    <ui:param name="title" value="#{msg.news}"/>
+<p:outputPanel style=" margin:0px auto 10px;" >
+    <div class="darker-stripe" />
+
+    <div class="container">
+        <div class="push-up top-equal blocks-spacer">
+            <div class="row">
+                <!--  ==========  -->
+                <!--  = Main Title =  -->
+                <!--  ==========  -->
+                <div class="span12">
+                    <div class="title-area">
+                        <h1 class="inline"><span class="light">#{msg.news}</span> </h1>
+                    </div>
+                </div>
+
+                <!--  ==========  -->
+                <!--  = Main content =  -->
+                <!--  ==========  -->
+                <section class="span8 blog">
+                    <p:outputPanel rendered="false">
+                        Row count: #{webArticlesDao.rowCount()}
+                    </p:outputPanel>
+                    <ui:repeat value="#{webArticlesDao.webitems}" var="article">
+                    <article class="post format-image">
+                        <div class="post-inner" >
+                            <a href="blog-single.html" style="display: none;"><img src="images/dummy/blog-posts/post-1.jpg" alt="featured image" width="1540" height="746" /></a>
+                            <div class="post-title">
+                                <h2>
+                                    <h:link outcome="/pages/article">
+                                        <f:param name="aid" value="#{article.tid}" />
+                                        #{article.titleTr}
+                                    </h:link>
+                                </h2>
+                                <div class="metadata">
+                                    <h:outputText value="#{article.date}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                                    </h:outputText>
+                                </div>
+                            </div>
+
+                            <p class="push-down-25" >
+                                    <h:outputText value=" #{article.refContent.contentTr.substring(0,1500)} ..." escape="false"
+                                                  rendered="#{article.refContent.contentTr.length() ge 1500}">
+                                            </h:outputText>
+                                    <h:outputText value=" #{article.refContent.contentTr}" escape="false"
+                                                  rendered="#{article.refContent.contentTr.length() lt 1500}"/>
+                             </p>
+
+                        </div>
+                        <div style="display: block;">
+                        <br/>
+                            <h:link outcome="/pages/article" styleClass="btn btn-primary bold higher">
+                                <f:param name="aid" value="#{article.tid}" />
+                                #{msg.continue_reading}
+                            </h:link>
+                        </div>
+                    </article>
+                    </ui:repeat>
+
+                    <hr />
+
+                    <!--  ==========  -->
+                    <!--  = Pagination =  -->
+                    <!--  ==========  -->
+                    <div class="pagination">
+                        <ul>
+                            <li>
+                                <h:link outcome="/pages/articles" styleClass="btn btn-primary"
+                                        disabled="#{webArticlesDao.page eq 1}">
+                                    <f:param name="pid" value="#{webArticlesDao.page-1}"
+                                             disable="#{webArticlesDao.page eq 1}" />
+                                    <span class="icon-chevron-left"></span>
+                                </h:link>
+
+                            </li>
+                            <ui:repeat value="#{webArticlesDao.pages}" var="page" >
+                                <li class="#{webArticlesDao.page==page?'active':''}">
+                                    <h:link outcome="/pages/articles">
+                                        <f:param name="pid" value="#{page}" />
+                                        #{page}
+                                    </h:link>
+                                </li>
+                            </ui:repeat>
+                            <li>
+                                <h:link outcome="/pages/articles" styleClass="btn btn-primary"
+                                        disabled="#{webArticlesDao.pages.size() eq webArticlesDao.page}">
+                                    <f:param name="pid" value="#{webArticlesDao.page+1}" />
+                                    <span class="icon-chevron-right"></span>
+                                </h:link>
+                            </li>
+                        </ul>
+                    </div> <!-- /pagination -->
+                    <br/>
+                </section> <!-- /main content -->
+
+                <!--  ==========  -->
+                <!--  = Sidebar =  -->
+                <!--  ==========  -->
+                <aside class="span4 right-sidebar">
+                    <!--  ==========  -->
+                    <!--  = Search Widget =  -->
+                    <!--  ==========  -->
+                    <div class="sidebar-item widget_search" style="display: none;">
+                        <!-- <div class="underlined">
+                            <h3><span class="light">Search</span></h3>
+                        </div> -->
+
+                        <form class="form" action="#" id="searchform" method="get" role="search">
+
+                            <input type="text" id="appendedInputButton" class="input-block-level" name="s"
+                                   placeholder="Haber ara ..." />
+
+                            <button type="submit">
+                                <i class="icon-search"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!--  ==========  -->
+                    <!--  = Archive =  -->
+                    <!--  ==========  -->
+                    <div class="sidebar-item widget_archive">
+                        <div class="underlined">
+                            <h3><span class="light">Haber </span>Arşivi</h3>
+                        </div>
+
+                        <ul>
+                            <ui:repeat value="#{webArticlesDao.archives}" var="archive">
+                                <li>
+                                    <h:link outcome="/pages/articles">
+                                        <f:param name="month" value="#{archive.month}" />
+                                        <f:param name="year" value="#{archive.year}" />
+                                        #{archive.monthname} , #{archive.year}
+                                    </h:link>
+                                    (#{archive.count})
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                    </div>
+
+                </aside> <!-- /sidebar -->
+
+            </div>
+        </div>
+    </div> <!-- /container -->
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

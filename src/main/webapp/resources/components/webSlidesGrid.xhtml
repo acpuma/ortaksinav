@@ -74,7 +74,10 @@
                      selection="#{webSlidesDao.item}"
                      lazy="true"
                      rowKey="#{webSlidesVar.tid}"
+                     draggableRows="true"
                 >
+
+            <p:ajax event="rowReorder" listener="#{webSlidesDao.onRowReorder}" update=":messages webSlidesGrid" immediate="true"/>
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"

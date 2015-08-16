@@ -69,7 +69,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
         params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
         params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
-        params.put("plogo","http://www.ortaksinav.com.tr/images/logo/"+Util.getActiveSchool().getTid()
+        params.put("plogo","http://www.ortaksinav.com.tr/images/school/"+Util.getActiveSchool().getTid()
                 + "."+ Util.getActiveSchool().getRefImage().getExtension());
 
         Locale trlocale= Locale.forLanguageTag("tr-TR");

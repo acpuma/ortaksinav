@@ -26,6 +26,7 @@
                      scrollable="true"
                      scrollHeight="#{cc.attrs.scrollHeight}"
                 >
+
             <f:facet name="header">
                 Kategoriler
             </f:facet>
@@ -40,21 +41,24 @@
             <p:column style="width:24px" width="10">
                 <p:commandLink update="@composite:categoryform:detailPanel" oncomplete="PF('detailDialog').show()"
                                title="Guncelle" styleClass="ui-icon ui-icon-refresh"
-                               rendered="#{item.tid gt 1}">
+                               rendered="#{item.tid gt 1}"
+                               disabled="#{not authsDao.auths.pupdate}" >
                     <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
                 </p:commandLink>
             </p:column>
             <p:column style="width:24px" width="10">
                 <p:commandLink update="@composite:categoryform:treetable :messages" rendered="#{item.tid gt 1}"
                                title="Sil" styleClass="ui-icon ui-icon-minus"
-                               action="#{productsCategoryDao.delete}">
+                               action="#{productsCategoryDao.delete}"
+                               disabled="#{not authsDao.auths.pdelete}">
                     <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
                 </p:commandLink>
             </p:column>
 
             <p:column style="width:24px" width="10">
                 <p:commandLink update="@composite:categoryform:addPanel" oncomplete="PF('addDialog').show()"
-                               title="Ekle" styleClass="ui-icon ui-icon-plus">
+                               title="Ekle" styleClass="ui-icon ui-icon-plus"
+                               disabled="#{not authsDao.auths.padd}" >
                     <f:setPropertyActionListener value="#{item}" target="#{productsCategoryDao.selected}" />
                 </p:commandLink>
             </p:column>
@@ -76,7 +80,8 @@
                 </p:panelGrid>
                 <p:commandButton value="Guncelle" actionListener="#{productsCategoryDao.update}"
                                  oncomplete="PF('detailDialog').hide()"
-                                 update="@composite:categoryform:treetable :messages"/>
+                                 update="@composite:categoryform:treetable :messages"
+                                 disabled="#{not authsDao.auths.pupdate}"/>
             </p:outputPanel>
         </p:dialog>
 
@@ -93,7 +98,8 @@
                 </p:panelGrid>
                 <p:commandButton value="Ekle" actionListener="#{productsCategoryDao.create}"
                                  oncomplete="PF('addDialog').hide()"
-                                 update="@composite:categoryform:treetable :messages" />
+                                 update="@composite:categoryform:treetable :messages"
+                                 disabled="#{not authsDao.auths.padd}"/>
             </p:outputPanel>
         </p:dialog>
 

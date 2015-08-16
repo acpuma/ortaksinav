@@ -51,6 +51,9 @@ public class WebSlides extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private int rank;
+    @Size(max = 1000)
+    @Column(length = 1000)
+    private String url;
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Images refImage;
@@ -138,6 +141,14 @@ public class WebSlides extends BaseEntity implements Serializable {
 
     public void setRefImage(Images refImage) {
         this.refImage = refImage;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

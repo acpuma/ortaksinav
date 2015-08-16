@@ -20,7 +20,7 @@
         <div class="fullwidthbanner">
             <ul>
                 <ui:repeat value="#{webSlidesDao.slides}" var="slide">
-                    <li data-transition="premium-random" data-slotamount="3">
+                    <li data-transition="premium-random" data-slotamount="3" data-link="#{slide.url}">
                         <p:graphicImage height="550" width="1400" style="height:550px; width: 1400px;"
                                         value="/images/slide/#{slide.tid}.#{slide.refImage.extension}"
                                 />
@@ -101,7 +101,11 @@
                                                     />
 
                                             <div class="img-overlay">
-                                                <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                                <h:link outcome="pages/product.xhtml"
+                                                        value="#{msg.global_detail}" styleClass="btn more btn-primary">
+                                                        <f:param name="pid" value="#{productsDao.popular[index.index].tid}" />
+                                                </h:link>
+
                                                 <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
                                             </div>
                                         </div>
@@ -129,7 +133,10 @@
                                                         />
 
                                                 <div class="img-overlay">
-                                                    <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                                    <h:link outcome="pages/product.xhtml"
+                                                            value="#{msg.global_detail}" styleClass="btn more btn-primary">
+                                                        <f:param name="pid" value="#{productsDao.popular[index.index+1].tid}" />
+                                                    </h:link>
                                                     <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
                                                 </div>
                                             </div>
@@ -157,7 +164,10 @@
                                                         />
 
                                                 <div class="img-overlay">
-                                                    <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                                    <h:link outcome="pages/product.xhtml"
+                                                            value="#{msg.global_detail}" styleClass="btn more btn-primary">
+                                                        <f:param name="pid" value="#{productsDao.popular[index.index+2].tid}" />
+                                                    </h:link>
                                                     <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
                                                 </div>
                                             </div>
@@ -217,7 +227,10 @@
                                         />
 
                                 <div class="img-overlay">
-                                    <a href="#" class="btn more btn-primary">#{msg.global_detail}</a>
+                                    <h:link outcome="pages/product.xhtml"
+                                            value="#{msg.global_detail}" styleClass="btn more btn-primary">
+                                        <f:param name="pid" value="#{item.tid}" />
+                                    </h:link>
                                     <a href="#" class="btn buy btn-danger">#{msg.product_buy}</a>
                                 </div>
                             </div>
@@ -349,17 +362,12 @@
         <div class="row">
             <div class="span12">
                 <div class="brands carouFredSel" data-nav="brands" data-autoplay="true">
-                    <img src="resources/theme/images/links/meb.png" alt=""  height="104" />
-                    <img src="resources/theme/images/links/eokul.png" alt=""  height="104" />
-                    <img src="resources/theme/images/links/ozdebir.png" alt=""  height="104" />
-                    <img src="resources/theme/images/links/fsmal.png" alt=""  height="104" />
-                    <img src="resources/theme/images/links/vga.png" alt="" width="203" height="104" />
-                    <img src="resources/theme/images/links/kiptas.png" alt=""  height="104" />
-                    <img src="resources/theme/images/links/beyazkalem.png" alt="" width="203" height="104" />
-                    <img src="resources/theme/images/links/fehmiaksoy.png" alt="" width="203" height="104" />
-                    <img src="resources/theme/images/links/yargi.png" alt="" width="203" height="104" />
-                    <img src="resources/theme/images/links/yediiklim.png" alt="" width="203" height="104" />
-                    <img src="resources/theme/images/links/adimmat.png" alt="" width="203" height="104" />
+                    <ui:repeat value="#{webLinksDao.links}" var="link">
+                        <p:graphicImage height="104"  style="height:104px; cursor: pointer;"
+                                        value="/images/weblink/#{link.tid}.#{link.refImage.extension}"
+                                        onclick="window.open('#{link.url}');"
+                                />
+                    </ui:repeat>
                 </div>
             </div>
         </div> <!-- /logos -->

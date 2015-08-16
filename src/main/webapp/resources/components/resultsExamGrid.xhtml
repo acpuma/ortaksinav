@@ -127,11 +127,11 @@
             </p:column>
 
             <f:facet name="footer">
-                <h:commandLink>
+                <h:commandLink disabled="#{not authsDao.auths.preport}">
                     <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
                     <p:dataExporter type="pdf" target="resultsExamGrid" fileName="sonuclar" pageOnly="true"/>
                 </h:commandLink>
-                <h:commandLink>
+                <h:commandLink disabled="#{not authsDao.auths.preport}">
                     <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>
                     <p:dataExporter type="xls" target="resultsExamGrid" fileName="sonuclar" pageOnly="true"/>
                 </h:commandLink>

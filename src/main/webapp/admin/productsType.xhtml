@@ -9,10 +9,11 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>#{msg.exams}</title>
+        <title>Ürün Kategorileri</title>
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
-    <ui:param name="title" value="#{msg.exams}" />
+    <ui:param name="title" value="Ürün Kategorileri" />
+    #{authsDao.findAuths("/admin/productsType")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <p:panelGrid columns="2">
         <p:outputPanel style="width: 350px;">

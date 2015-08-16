@@ -13,6 +13,7 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.results}" />
+    #{authsDao.findAuths("/admin/resultsView")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <h:form id="pageForm">
         <p:panelGrid columns="2" id="pagePanel">

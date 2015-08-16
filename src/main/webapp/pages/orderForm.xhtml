@@ -14,9 +14,17 @@
     </h:head>
     <ui:decorate template="/WEB-INF/templates/masterweb.xhtml">
         <ui:param name="title" value="Sipariş Formu"/>
-<p:outputPanel style="width:800px; margin:0 auto;" >
-<h2>Yayın Ön Sipariş Formu</h2>
-<h:form id="orderForm" prependId="false">
+<p:outputPanel style="margin:0px auto 10px; " >
+    <div class="darker-stripe" />
+    <div class="container">
+    <div class="push-up span12">
+        <div class="title-area" style="margin-bottom: 20px;">
+            <h1 class="inline"><span class="light">Sipariş Formu</span> </h1>
+        </div>
+    </div>
+    <div class="top-equal blocks-spacer-last"
+         style="margin:60px auto 0;">
+<h:form id="orderForm" prependId="false" style="width: 800px; margin:5px auto;">
 <div id="ys">
     <div class="ys_title">
         <table width="100%" cellpadding="3" cellspacing="0" border="0">
@@ -266,6 +274,8 @@
                          styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
     </p:confirmDialog>
 </h:form>
+    </div>
+    </div>
 </p:outputPanel>
 </ui:decorate>
 </f:view>

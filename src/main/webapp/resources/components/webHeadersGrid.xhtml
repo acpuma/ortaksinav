@@ -73,7 +73,12 @@
                      tableStyle="#{cc.attrs.tableStyle}"
                      selectionMode="single"
 
+                     draggableRows="true"
+
                 >
+
+            <p:ajax event="rowReorder" listener="#{webHeadersDao.onRowReorder}" update=":messages webHeadersGrid" immediate="true"/>
+
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
                     oncomplete="PF('blockUIWidget1').unblock();PF('formDialogWidget').show();"

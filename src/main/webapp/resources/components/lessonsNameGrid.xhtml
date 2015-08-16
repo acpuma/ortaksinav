@@ -108,14 +108,16 @@
                 #{lessonsNameGrid.refLessonGroup.tid}
             </p:column>
 
-            <p:column width="100%">
-                <p:rowEditor />
+            <p:column width="100%" >
+                <p:rowEditor rendered="#{authsDao.auths.pupdate}"/>
             </p:column>
             <p:column width="40">
                 <p:commandButton value="" update=" :messages lessonsNameGrid"
                                  icon="ui-icon-trash"
                                  style="height: 36px; width: 36px;"
-                                 actionListener="#{lessonsGroupDao.deleteLessonName(lessonsNameGrid)}">
+                                 actionListener="#{lessonsGroupDao.deleteLessonName(lessonsNameGrid)}"
+                                 disabled="#{not authsDao.auths.pdelete}"
+                        >
                 </p:commandButton>
             </p:column>
 
@@ -123,6 +125,7 @@
                 <p:commandButton value="Ekle" onclick="PF('lessonDialogWidget').show()"
                                  actionListener="#{lessonsNameDao.reset}"
                                  update=":#{p:component('lessonForm')}"
+                                 disabled="#{not authsDao.auths.padd}"
                         />
             </f:facet>
 

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.event.ReorderEvent;
 
 import javax.inject.Named;
 import java.io.Serializable;
@@ -20,6 +21,23 @@ public class WebCommentsDao extends BaseGridDao<WebComments> implements Serializ
     WebComments selected;
     List<WebComments> comments;
     Boolean listChanged=true;
+
+    public void onRowReorder(ReorderEvent event) {
+        //Util.setFacesMessage("Row Moved From: " + event.getFromIndex() + ", To:" + event.getToIndex());
+        try {
+            int size=comments.size();
+            comments.get(event.getFromIndex()).setRank(size-event.getToIndex());
+            logger.info("LOG02290: MOVED : " + comments.get(event.getFromIndex()).getName());
+            update(comments.get(event.getFromIndex()));
+            for (int i = 0; i < comments.size(); i++) {
+                comments.get(i).setRank(size - i);
+                update(comments.get(i));
+            }
+            listChanged = true;
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
 
     public void delete() {
         super.delete();

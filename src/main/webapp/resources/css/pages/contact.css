@@ -1,0 +1,19 @@
+.leftCol {
+    width: 140px !important;
+    border: none !important;
+    padding: 10px !important;
+}
+.rightCol {
+
+}
+.ui-grid {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.webclient {
+    background: #eee;
+    margin:5px;
+    padding:5px;
+    border-radius: 4px;
+}

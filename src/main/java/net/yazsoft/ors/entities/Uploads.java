@@ -50,6 +50,9 @@ public class Uploads extends BaseEntity implements Serializable {
     @Size(max = 255)
     @Column(length = 255)
     private String detail;
+    @Size(max = 255)
+    @Column(length = 255)
+    private String extension;
     @JoinColumn(name = "ref_upload_type", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private UploadsType refUploadType;
@@ -170,6 +173,14 @@ public class Uploads extends BaseEntity implements Serializable {
 
     public void setRefUser(Users refUser) {
         this.refUser = refUser;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     @Override

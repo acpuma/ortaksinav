@@ -75,6 +75,8 @@
                      selectionMode="single"
                      rowKey="#{productsVar.tid}"
 
+                     draggableRows="false"
+
                 >
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
@@ -84,6 +86,8 @@
                     />
 
             <p:ajax event="cellEdit" listener="#{productsDao.onCellEdit}" update=":messages" immediate="true"/>
+
+            <p:ajax event="rowReorder" listener="#{productsDao.onRowReorder}" update=":messages productsGrid" />
 
 
             <f:facet name="header">
@@ -113,6 +117,12 @@
             <p:column headerText="Indirimli" width="20" >
                 #{productsVar.priceReal}
             </p:column>
+            <p:column headerText="#{msg.global_rank}" width="10" rendered="false">
+                #{productsVar.rank}
+            </p:column>
+            <p:column headerText="Satış" width="15" >
+                #{productsVar.countSold}
+            </p:column>
             <p:column headerText="Mağ." width="12" >
                 <p:selectBooleanCheckbox value="#{productsVar.showShop}" >
                     <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
@@ -125,13 +135,29 @@
                             update=":messages" global="false"/>
                 </p:selectBooleanCheckbox>
             </p:column>
-            <p:column headerText="Çok S." width="12" >
+            <p:column headerText="Çok S." width="12" filterBy="#{productsVar.showMainMost}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItem itemLabel="True" itemValue="true"/>
+                        <f:selectItem itemLabel="False" itemValue="false"/>
+                    </p:selectOneMenu>
+                </f:facet>
                 <p:selectBooleanCheckbox value="#{productsVar.showMainMost}" >
                     <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
                             update=":messages" global="false"/>
                 </p:selectBooleanCheckbox>
             </p:column>
-            <p:column headerText="Yeni" width="12" >
+            <p:column headerText="Yeni" width="12" filterBy="#{productsVar.showMainNew}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                        <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
+                                      noSelectionOption="true" />
+                        <f:selectItem itemLabel="True" itemValue="true"/>
+                        <f:selectItem itemLabel="False" itemValue="false"/>
+                    </p:selectOneMenu>
+                </f:facet>
                 <p:selectBooleanCheckbox value="#{productsVar.showMainNew}" >
                     <p:ajax event="valueChange"  listener="#{productsDao.checkboxChange(productsVar)}"
                             update=":messages" global="false"/>
@@ -161,6 +187,11 @@
                     </p:selectOneMenu>
                 </f:facet>
                 #{productsVar.refProductCategory.nameTr}
+            </p:column>
+            <p:column headerText="Tarih" width="60" rendered="true">
+                <h:outputText value="#{productsVar.date}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
             </p:column>
 
 

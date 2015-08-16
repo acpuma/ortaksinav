@@ -40,6 +40,7 @@
         <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_logo}" rendered="#{not empty daobeann.item.tid}"
                          immediate="true" process="@none"
                          oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
+                         disabled="#{not authsDao.auths.pupdate}"
                 >
         </p:commandButton>
     </p:outputPanel>

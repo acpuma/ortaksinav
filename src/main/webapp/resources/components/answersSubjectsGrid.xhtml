@@ -111,13 +111,15 @@
                 <p:commandButton value="" update=" :messages answersSubjectGrid"
                                  icon="ui-icon-trash"
                                  style="height: 36px; width: 36px;"
-                                 actionListener="#{answersSubjectTypeDao.deleteSubjectType(gridVar)}">
+                                 actionListener="#{answersSubjectTypeDao.deleteSubjectType(gridVar)}"
+                                 disabled="#{not authsDao.auths.pdelete}" >
                 </p:commandButton>
             </p:column>
             <f:facet name="footer">
                 <p:commandButton value="Ekle" onclick="PF('subjectDialogWidget').show()"
                                  actionListener="#{answersSubjectTypeDao.reset}"
                                  update="@widgetVar(answersSubjectGridWidget)"
+                                 disabled="#{not authsDao.auths.padd}"
                         />
             </f:facet>
 

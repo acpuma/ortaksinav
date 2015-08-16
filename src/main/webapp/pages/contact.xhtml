@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+        >
+<f:view>
+    <h:head>
+        <title>İletişim</title>
+        <h:outputStylesheet library="css" name="/pages/contact.css" />
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/masterweb.xhtml">
+    <ui:param name="title" value="İletişim"/>
+<p:outputPanel style=" margin:0px auto 10px;" >
+    <div class="darker-stripe" />
+
+    <div class="container">
+        <div class="push-up top-equal blocks-spacer-last">
+            <div class="row">
+
+                <!--  ==========  -->
+                <!--  = Main Title =  -->
+                <!--  ==========  -->
+
+                <div class="span12">
+                    <div class="title-area">
+                        <h1 class="inline">İletişim</h1>
+                    </div>
+                </div>
+
+                <!--  ==========  -->
+                <!--  = Main content =  -->
+                <!--  ==========  -->
+                <section class="span8 single single-page">
+
+                    <!--  ==========  -->
+                    <!--  = Post =  -->
+                    <!--  ==========  -->
+                    <article class="post">
+                        <div class="post-inner">
+                            <p>
+                                Her türlü görüş, öneri, şikayet ve dileklerinizi bize aşağıdaki formdan bildirebilirsiniz.
+                                <br/>Bayilik başvurusu için de bu formu kullanabilir veya iletişim bilgilerimizden bize ulaşabilirsiniz.
+                            </p>
+                        </div>
+                    </article>
+
+                    <hr />
+
+                    <!--  ==========  -->
+                    <!--  = Contact Form =  -->
+                    <!--  ==========  -->
+                    <section class="contact-form-container">
+
+                        <h3 class="push-down-25">Mesaj Gönder</h3>
+
+                        <h:form id="commentform"  styleClass="form form-inline form-contact">
+                            <p:panelGrid columns="2" layout="grid" style="width: 400px; border : none;" columnClasses="leftCol,rightCol">
+                                <p:outputLabel for="author" style="border: none;">Ad Soyad<span class="red-clr bold">*</span></p:outputLabel>
+                                <p:inputText aria-required="true" tabindex="1" size="30"
+                                             value="#{webContactFormsDao.item.name}" id="author" name="author" />
+                                <label for="email" >EMail<span class="red-clr bold">*</span></label>
+                                <p:inputText type="email" aria-required="true" tabindex="2" size="30"
+                                             value="#{webContactFormsDao.item.email}" id="email" name="email" />
+                                <label for="phone"  >#{msg.global_phone}</label>
+                                <p:inputText  tabindex="3" size="30" id="phone" name="phone"
+                                        value="#{webContactFormsDao.item.phone}"/>
+                            </p:panelGrid>
+                            <br/>
+                            <p class="push-down-20">
+                                <p:inputTextarea class="input-block-level" tabindex="4" rows="7" cols="70"
+                                                 id="comment" name="comment" placeholder="Mesajınızı buraya yazın ..."
+                                        value="#{webContactFormsDao.item.message}"/>
+                            </p>
+                            <p>
+                                <p:commandButton value="#{msg.send}" actionListener="#{webContactFormsDao.sendMessage}"
+                                                 class="btn btn-primary bold"
+                                                 onstart="PF('blockUIWidget1').block()"
+                                                 oncomplete="PF('blockUIWidget1').unblock(); "
+                                                 update="commentform :messages">
+                                    <p:confirm header="#{msg.global_confirmation}"
+                                               message="MESAJ GÖNDERİLSİNMİ?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p>
+                        </h:form>
+                    </section>
+
+                    <hr />
+
+                    <!--  ==========  -->
+                    <!--  = Company Info with Google Maps =  -->
+                    <!--  ==========  -->
+                    <article class="company-info">
+                        <div class="row">
+                            <div class="span5">
+                                <div class="add-googlemap" data-height="205"
+                                     style="height:300px; width: 770px;"
+                                     data-latitude="#{webClientsDao.center.coorX}"
+                                     data-longitude="#{webClientsDao.center.coorY}"
+                                     data-title="Ortak Sinav Merkezi" data-zoom="14" data-type="roadmap"></div>
+                            </div>
+                        </div>
+
+                    </article>
+
+                </section> <!-- /main content -->
+
+                <!--  ==========  -->
+                <!--  = Sidebar =  -->
+                <!--  ==========  -->
+                <aside class="span4">
+
+                    <!--  ==========  -->
+                    <!--  = Opening Times Widget =  -->
+                    <!--  ==========  -->
+                    <div class="sidebar-item opening-time" id="opening_time-4">
+                        <div class="underlined">
+                            <h3>Bayilerimiz</h3>
+                        </div>
+                        <div class="time-table">
+                            <ui:repeat var="client" value="#{webClientsDao.items}" >
+                                <p:outputPanel rendered="#{client.center eq false}" styleClass="webclient">
+                                    <strong class="opensans dark-clr" style="font-size: 16px;">
+                                        <h:outputText value="#{client.refCity.name.toUpperCase()}" /> </strong>
+                                    <strong class="opensans dark-clr" style="font-size: 13px;">
+                                        <h:outputText value="#{client.refTown.name.toUpperCase()}" /> </strong>
+                                    <hr/>
+                                    <strong class="opensans dark-clr"><h:outputText value="#{client.name.toUpperCase()}" /> </strong>
+                                    <br/>
+                                    <hr/>
+                                    <p:outputPanel rendered="#{not empty client.phone}">
+                                        <strong class="opensans dark-clr">Telefon : </strong>
+                                        <h:outputText value="#{client.phone}" /> <br/>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{not empty client.email}">
+                                        <strong class="opensans dark-clr">Email : </strong>
+                                        <h:outputText value="#{client.email}" /> <br/>
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{not empty client.address}">
+                                        <strong class="opensans dark-clr">Adres : </strong>
+                                        <h:outputText value="#{client.address} " />
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{not empty client.url}">
+                                        <strong class="opensans dark-clr">Web : </strong>
+                                        <p:link href="#{client.url}" value="#{client.url}"/>
+                                    </p:outputPanel>
+
+                                    <p:link href="#{client.socialFacebook} " styleClass="zocial-facebook"
+                                            rendered="#{not empty client.socialFacebook}" style="margin:3px 10px;"/>
+                                    <p:link href="#{client.socialTwitter} " styleClass="zocial-twitter"
+                                            rendered="#{not empty client.socialTwitter}" style="margin:3px 10px;"/>
+                                    <p:link href="#{client.socialGplus} " styleClass="zocial-googleplus"
+                                            rendered="#{not empty client.socialGplus}" style="margin:3px 10px;"/>
+                                    <p:link href="#{client.socialRss} " styleClass="zocial-rss"
+                                            rendered="#{not empty client.socialRss}" style="margin:3px 10px;"/>
+                                    <p:link href="#{client.socialLinkedin} " styleClass="zocial-linkedin"
+                                            rendered="#{not empty client.socialLinkedin}" style="margin:3px 10px;"/>
+                                </p:outputPanel>
+                            </ui:repeat>
+                        </div>
+                    </div>
+
+
+
+                </aside> <!-- /sidebar -->
+
+            </div>
+        </div>
+    </div> <!-- /container -->
+    <p:confirmDialog global="true">
+        <p:commandButton value="#{msg.global_yes}" type="button"
+                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+        <p:commandButton value="#{msg.global_no}" type="button"
+                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+    </p:confirmDialog>
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

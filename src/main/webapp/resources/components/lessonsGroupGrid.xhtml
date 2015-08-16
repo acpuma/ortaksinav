@@ -100,7 +100,9 @@
             <p:column width="25">
                 <p:commandButton value="" update=" :messages :groupForm" action="#{lessonsGroupDao.setStatus}"
                                  icon="ui-icon-pencil" style="height: 36px; width: 36px;"
-                                 oncomplete="PF('groupDialogWidget').show()">
+                                 oncomplete="PF('groupDialogWidget').show()"
+                                 disabled="#{not authsDao.auths.pupdate}"
+                        >
                     <f:setPropertyActionListener value="#{lessonsGroupGrid}" target="#{lessonsGroupDao.item}" />
                 </p:commandButton>
 
@@ -111,6 +113,7 @@
                                  style="height: 36px; width: 36px;"
                                  action="#{lessonsGroupDao.delete}"
                                  update=":messages  lessonsGroupGrid"
+                                 disabled="#{not authsDao.auths.pdelete}"
                         >
                     <f:setPropertyActionListener value="#{lessonsGroupGrid}" target="#{lessonsGroupDao.item}" />
                 </p:commandButton>
@@ -120,6 +123,7 @@
                 <p:commandButton value="Ekle" onclick="PF('groupDialogWidget').show()"
                                  actionListener="#{lessonsGroupDao.reset}"
                                  update=":#{p:component('groupForm')}"
+                                 disabled="#{not authsDao.auths.padd}"
                         />
             </f:facet>
 

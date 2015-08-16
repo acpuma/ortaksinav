@@ -138,11 +138,13 @@
                                  process="@this"
                                  update="parametersGrid"
                                  onsuccess="PF('parametersDialogWidget').hide()"
+                                 disabled="#{not (authsDao.auths.pupdate)}"
                         />
                 <p:commandButton value="Parametre Ekle" style="text-align: right;"
                                  actionListener="#{examsParametersDao.addParameter}"
                                  process="@this"
                                  update="parametersGrid"
+                                 disabled="#{not (authsDao.auths.pupdate)}"
                         />
             </f:facet>
         </p:dataTable>

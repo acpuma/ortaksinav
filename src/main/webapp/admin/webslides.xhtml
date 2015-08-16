@@ -44,12 +44,15 @@
         </p:outputPanel>
         <p:panelGrid columns="4" id="pagePanel">
 
-            <h:outputLabel value="#{msg.global_title}:" for="titletr" />
+            <h:outputLabel value="#{msg.global_title} :" for="titletr" />
             <h:inputText id="titletr" value="#{webSlidesDao.item.titleTr}" size="50"
                          requiredMessage="#{msg.global_title} #{msg.validation_required}"/>
-            <h:outputLabel value="#{msg.global_rank}:" for="rank" />
+            <h:outputLabel value="#{msg.global_rank} :" for="rank" />
             <h:inputText id="rank" value="#{webSlidesDao.item.rank}"
                          requiredMessage="#{msg.global_rank} #{msg.validation_required}"/>
+
+            <h:outputLabel value="#{msg.url} :" for="url" />
+            <h:inputText id="url" value="#{webSlidesDao.item.url}" size="50"/>
 
         </p:panelGrid>
         <h:inputHidden id="tid" value="#{webSlidesDao.item.tid}"/>

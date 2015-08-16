@@ -37,6 +37,7 @@ public class WebClients extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private int version;
+    private Boolean center;
     private int rank;
     @Basic(optional = false)
     @NotNull
@@ -270,6 +271,14 @@ public class WebClients extends BaseEntity implements Serializable {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public Boolean getCenter() {
+        return center;
+    }
+
+    public void setCenter(Boolean center) {
+        this.center = center;
     }
 
     @Override

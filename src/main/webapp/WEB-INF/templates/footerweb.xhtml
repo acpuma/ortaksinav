@@ -20,7 +20,7 @@
                         <div class="main-titles lined">
                             <h3 class="title"><span class="light">Haberlere</span> Kayıt Olun</h3>
                         </div>
-                        <p>Ortak Sınav Merkezi ile ilgili önemli haberleri almak email adresinizi kayıt ettirin.</p>
+                        <p>Ortak Sınav Merkezi ile ilgili önemli haberleri almak için email adresinizi kayıt ettirin.</p>
                         <!-- Begin MailChimp Signup Form -->
                         <div id="mc_embed_signup">
                             <form action="http://proteusthemes.us4.list-manage1.com/subscribe/post?u=ea0786485977f5ec8c9283d5c&amp;id=5dad3f35e9" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form form-inline" target="_blank" >
@@ -47,11 +47,9 @@
                         <div class="bordered">
                             <div class="fill-iframe" style="padding:10px;">
 
-                                Telefon : +90 (506) 710 31 34 <br/>
-                                Email : info@ortaksinav.com.tr <br/>
-                                Adres : Prof. Dr. Selahaddin Yazıcıoğlu cd. <br/>
-                                Yeni Adliye Bitişiği Karakoç Plaza No:27<br/>
-                                Yenişehir / DİYARBAKIR
+                                Telefon : <h:outputText value="#{webClientsDao.center.phone}" /> <br/>
+                                Email : <h:outputText value="#{webClientsDao.center.email}" /> <br/>
+                                Adres : <h:outputText value="#{webClientsDao.center.address} " />
                             </div>
                         </div>
                     </div>

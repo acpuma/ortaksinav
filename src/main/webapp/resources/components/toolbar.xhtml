@@ -34,7 +34,9 @@
                             onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock(); #{cc.attrs.oncomplete}; "
                              update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)}  :messages"
                              process="@this :#{p:component('pageForm')}" partialSubmit="true"
-                             rendered="#{cc.attrs.save}">
+                             rendered="#{cc.attrs.save}"
+                             disabled="#{not (authsDao.auths.pupdate or authsDao.auths.padd)}"
+                    >
                 <p:confirm header="#{msg.global_confirmation}"
                            message="#{msg.toolbar_save_confirm}" icon="ui-icon-alert"/>
             </p:commandButton>
@@ -43,7 +45,9 @@
                              process=":#{p:component('pageForm')}"  actionListener="#{daobeann.reset}"
                              immediate="true"
                              update=":#{p:component('pageForm')}"
-                             rendered="#{cc.attrs.new}">  
+                             rendered="#{cc.attrs.new}"
+                             disabled="#{not authsDao.auths.padd}"
+                    >
                 
                 <p:resetInput  target=":#{cc.attrs.resetfields}" />
                
@@ -66,16 +70,18 @@
                              process="@this :#{p:component('pageForm')}" partialSubmit="true"
                              action="#{daobeann.delete}"
                              update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)} :messages"
-                             disabled="#{daobeann.disabledelete}" rendered="#{cc.attrs.delete}"
+                             disabled="#{daobeann.disabledelete or (not authsDao.auths.pdelete)}"
+                             rendered="#{cc.attrs.delete}"
                              oncomplete="#{cc.attrs.oncomplete};"
                              id="toolbarDelete">
                 <p:confirm header="#{msg.global_confirmation}" message="#{msg.toolbar_remove_confirm}"
                            icon="ui-icon-alert"/>
             </p:commandButton>
             <p:commandButton icon="toolbar-print toolbar-icon" styleClass="toolbar-button"
-                             value="#{msg.toolbar_print}" rendered="#{cc.attrs.print}"/>
+                             value="#{msg.toolbar_print}" rendered="#{cc.attrs.print}" disabled=""/>
             <p:commandButton icon="toolbar-help toolbar-icon" styleClass="toolbar-button"
-                             value="#{msg.toolbar_help}" rendered="#{cc.attrs.help}" disabled="true"/>
+                             value="#{msg.toolbar_help}" rendered="#{cc.attrs.help}"
+                             disabled="#{not authsDao.auths.preport}"/>
 
             <p:confirmDialog global="true">
                 <p:commandButton value="#{msg.global_yes}" type="button"

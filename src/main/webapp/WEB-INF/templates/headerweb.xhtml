@@ -32,10 +32,17 @@
                     </div>
                     <div class="top-right">
                         <div class="icons">
-                            <a href="#"><span class="zocial-facebook"></span></a>
-                            <a href="#"><span class="zocial-twitter"></span></a>
-                            <a href="#"><span class="zocial-googleplus"></span></a>
-                            <a href="#"><span class="zocial-rss"></span></a>
+                            <p:link href="#{webClientsDao.center.socialFacebook} " styleClass="zocial-facebook"
+                                    rendered="#{not empty webClientsDao.center.socialFacebook}" />
+                            <p:link href="#{webClientsDao.center.socialTwitter} " styleClass="zocial-twitter"
+                                    rendered="#{not empty webClientsDao.center.socialTwitter}" />
+                            <p:link href="#{webClientsDao.center.socialGplus} " styleClass="zocial-googleplus"
+                                    rendered="#{not empty webClientsDao.center.socialGplus}" />
+                            <p:link href="#{webClientsDao.center.socialRss} " styleClass="zocial-rss"
+                                    rendered="#{not empty webClientsDao.center.socialRss}" />
+                            <p:link href="#{webClientsDao.center.socialLinkedin} " styleClass="zocial-linkedin"
+                                    rendered="#{not empty webClientsDao.center.socialLinkedin}" />
+
                         </div>
                         <div class="register">
                             <h:outputLink value="admin/admin.html" title="ADMIN" class="btn btn-info bold"

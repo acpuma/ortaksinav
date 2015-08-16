@@ -159,7 +159,7 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
             }
 
             // Add filtering if requested
-            if (!filters.isEmpty()) {
+            if ((filters!=null) && (!filters.isEmpty())) {
                 Iterator<Map.Entry<String, Object>> iterator = filters.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<String, Object> entry = iterator.next();

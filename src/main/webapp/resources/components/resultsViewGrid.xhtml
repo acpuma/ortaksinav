@@ -332,14 +332,14 @@
 
 
         </p:dataTable>
-        <h:commandLink>
+        <h:commandLink disabled="#{not authsDao.auths.preport}">
             <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
             <pe:exporter type="pdf" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"
                             encoding="iso-8859-9" preProcessor="#{resultsViewDao.preProcessPDF}"
                          postProcessor="#{resultsViewDao.postProcessPDF}"
                     orientation="Landscape" />
         </h:commandLink>
-        <h:commandLink>
+        <h:commandLink disabled="#{not authsDao.auths.preport}">
             <p:graphicImage name="toolbar/excel.png" library="images" width="24" rendered="true"/>
             <pe:exporter type="xlsx" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"/>
         </h:commandLink>

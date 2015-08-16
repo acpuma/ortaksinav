@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+        >
+<f:view>
+    <f:metadata>
+        <f:viewParam name="pid" value="#{productsDao.productId}" />
+        <f:viewAction action="#{productsDao.initSelected}" />
+    </f:metadata>
+    <h:head>
+        <title>#{productsDao.selected.nameTr}</title>
+        <h:outputScript library="js" name="pages/orderForm.js" />
+        <link href='http://fonts.googleapis.com/css?family=Cuprum' rel='stylesheet' type='text/css'/>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/masterweb.xhtml">
+        <ui:param name="title" value="#{productsDao.selected.nameTr}"/>
+<p:outputPanel style=" margin:30px auto 10px; " >
+
+    <!--  ==========  -->
+    <!--  = Main container =  -->
+    <!--  ==========  -->
+    <div class="container">
+        <div class="push-up top-equal blocks-spacer">
+
+            <!--  ==========  -->
+            <!--  = Product =  -->
+            <!--  ==========  -->
+            <div class="row blocks-spacer">
+
+                <!--  ==========  -->
+                <!--  = Preview Images =  -->
+                <!--  ==========  -->
+                <div class="span5">
+                    <div class="product-preview">
+                        <div class="picture">
+                            <p:graphicImage height="150"  style="min-height:200px; max-height: 940px; max-width: 400px; !important; "
+                                            value="/images/product/#{productsDao.selected.tid}.#{productsDao.selected.refImage.extension}"
+                                    />
+                        </div>
+                        <div class="thumbs clearfix" style="display: none;">
+                            <div class="thumb active">
+                                <a href="#mainPreviewImg"><img src="images/dummy/products/shirt-1.jpg" alt="" width="940" height="940" /></a>
+                            </div>
+                            <div class="thumb">
+                                <a href="#mainPreviewImg"><img src="images/dummy/products/shirt-2.jpg" alt="" width="940" height="940" /></a>
+                            </div>
+                            <div class="thumb">
+                                <a href="#mainPreviewImg"><img src="images/dummy/products/shirt-3.jpg" alt="" width="940" height="940" /></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--  ==========  -->
+                <!--  = Title and short desc =  -->
+                <!--  ==========  -->
+                <div class="span7">
+                    <div class="product-title">
+                        <h1 class="name">#{productsDao.selected.nameTr}</h1>
+                        <div class="meta">
+                            <span class="tag">#{productsDao.selected.price} TL</span>
+                            <span class="stock" style="display: none;">
+                                <span class="btn btn-success">In Stock</span>
+                                <span class="btn btn-danger">Out of Stock</span>
+                                <span class="btn btn-warning">Ask for availability</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <hr style="margin:0 auto 10px;"/>
+                    <div class="product-description">
+                        <p>#{productsDao.selected.detailTr}</p>
+                        <!-- <hr /> -->
+
+                        <!--  ==========  -->
+                        <!--  = Add to cart form =  -->
+                        <!--  ==========  -->
+                        <form action="#" class="form form-inline clearfix" style="display: none;">
+                            <div class="numbered">
+                                <input type="text" name="num" value="1" class="tiny-size" />
+                                <span class="clickable add-one icon-plus-sign-alt"></span>
+                                <span class="clickable remove-one icon-minus-sign-alt"></span>
+                            </div>
+                            &#160;
+
+                            <button class="btn pull-right" style="background-color: #aaa !important;"><i class="icon-shopping-cart"></i> &#160; Add To Cart</button>
+                            <!--btn-danger-->
+                        </form>
+
+                        <!--<hr />-->
+
+
+                </div>
+            </div>
+        </div>
+
+        <!--  ==========  -->
+        <!--  = Tabs with more info =  -->
+        <!--  ==========  -->
+        <div class="row" style="display: none;">
+            <div class="span12">
+                <ul id="myTab" class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-1" data-toggle="tab">Details</a>
+                    </li>
+                    <li>
+                        <a href="#tab-2" data-toggle="tab">SIZING CHART</a>
+                    </li>
+                    <li>
+                        <a href="#tab-3" data-toggle="tab">COMMENTS</a>
+                    </li>
+                    <li>
+                        <a href="#tab-4" data-toggle="tab">SHIPPING DETAILS</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="fade in tab-pane active" id="tab-1">
+                        <h3>Product Description</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dui ante, vulputate at pellentesque eget, viverra ac dolor. Morbi interdum tortor non leo aliquam ac aliquet nulla porta. Morbi id dolor massa, ut ornare augue. Morbi tincidunt magna bibendum enim tristique tristique. Quisque a massa tellus, ac tempor magna. Sed eget ligula tellus, nec pellentesque dolor. Phasellus dictum, mauris non mollis ornare, turpis libero faucibus orci, at fringilla urna leo sodales libero. Aliquam nec lectus mauris. Morbi lectus quam, convallis vel euismod a, auctor non dui. Etiam a nisi risus.</p>
+                        <p>Phasellus velit quam, ultrices et hendrerit vitae, suscipit nec dui. Sed at ligula vitae ligula pellentesque dictum. Duis lobortis auctor ipsum vel placerat. Phasellus nisi odio, ornare eget faucibus et, accumsan nec mauris. per conubia nostra, per inceptos himenaeos. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dui ante, vulputate at pellentesque eget, viverra ac dolor.Etiam a nisi risus.</p>
+                        <h1>Heading H1 30px</h1>
+                        <h2>Heading H2 26px</h2>
+                        <h3>Heading H3 20px</h3>
+                        <h4>Heading H4 18px</h4>
+                        <h5>Heading H5 15px</h5>
+                        <p>Phasellus velit quam, ultrices et hendrerit vitae, suscipit nec dui. Sed at ligula vitae ligula pellentesque dictum. Duis lobortis auctor ipsum vel placerat. Phasellus nisi odio, ornare eget faucibus et, accumsan nec mauris. per conubia nostra, per inceptos himenaeos.</p>
+                    </div>
+                    <div class="fade tab-pane" id="tab-2">
+                        <p>
+                            Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
+                        </p>
+                    </div>
+                    <div class="fade tab-pane" id="tab-3">
+                        <p>
+                            Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+                        </p>
+                    </div>
+                    <div class="fade tab-pane" id="tab-4">
+                        <p>
+                            Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr. Another text here ...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> <!-- /container -->
+
+
+    </p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

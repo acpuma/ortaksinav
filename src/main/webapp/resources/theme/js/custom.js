@@ -416,6 +416,8 @@ jQuery(document).ready(function($) {
             $this.goMap({
                 markers: [ {
                     address: $this.data("addr"),
+                    latitude: $this.data("latitude"),
+                    longitude: $this.data("longitude"),
                     title: "undefined" === typeof $this.data("title") ? false : $this.data("title")
                 } ],
                 scrollwheel: false,
@@ -429,7 +431,8 @@ jQuery(document).ready(function($) {
 
     //  ========== 
     //  = Cart Container Effects = 
-    //  ========== 
+    //  ==========
+    /*
     $("#cartContainer").hover(function() {
         $(this).children(".cart").addClass("opened");
         $(this).children(".open-panel").stop(true, true).slideDown(150);
@@ -440,6 +443,7 @@ jQuery(document).ready(function($) {
         }, 120);
         $(this).children(".open-panel").stop(true, true).slideUp(150);
     });
+    */
     // delete item from the popover cart
     $(".item-in-cart .icon-remove-sign").click(function() {
         $(this).parents(".item-in-cart").animate({

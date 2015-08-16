@@ -5,6 +5,7 @@ import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.Exams;
 import net.yazsoft.ors.entities.Uploads;
+import net.yazsoft.ors.entities.UploadsType;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -22,6 +23,7 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
     Uploads selected;
 
     List<Uploads> uploads;
+    List<Uploads> fileUploads;
 
     @PostConstruct
     public void init() {
@@ -64,9 +66,27 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
         uploads=list;
         return list;
     }
+    public List<Uploads> findFileUploads() {
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refUploadType",
+                    (UploadsType) getSession().load(UploadsType.class, UploadsBean.FILE) ) );
+            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        fileUploads=list;
+        return list;
+    }
 
     public void onRowSelect(SelectEvent event) {
         selected=(Uploads) event.getObject();
+        logger.info("LOG02420: SELECTED : " + selected);
     }
 
     public static String getUploadedFilePath(Uploads upload){
@@ -109,5 +129,16 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
 
     public void setUploads(List<Uploads> uploads) {
         this.uploads = uploads;
+    }
+
+    public List<Uploads> getFileUploads() {
+        if (fileUploads==null) {
+            fileUploads=findFileUploads();
+        }
+        return fileUploads;
+    }
+
+    public void setFileUploads(List<Uploads> fileUploads) {
+        this.fileUploads = fileUploads;
     }
 }

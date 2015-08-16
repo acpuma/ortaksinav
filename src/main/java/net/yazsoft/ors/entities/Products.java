@@ -53,6 +53,8 @@ public class Products extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
     @Size(max = 5000)
     @Column(name = "detail_tr", length = 5000)
     private String detailTr;
@@ -69,6 +71,8 @@ public class Products extends BaseEntity implements Serializable {
     private Boolean showMainNew;
     private Boolean showMainMost;
     private Integer stars;
+    private Integer rank;
+    private Integer countSold;
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Images refImage;
@@ -253,6 +257,30 @@ public class Products extends BaseEntity implements Serializable {
 
     public void setStars(Integer stars) {
         this.stars = stars;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    public Integer getCountSold() {
+        return countSold;
+    }
+
+    public void setCountSold(Integer countSold) {
+        this.countSold = countSold;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override

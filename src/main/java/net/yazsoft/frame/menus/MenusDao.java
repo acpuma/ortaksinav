@@ -25,8 +25,8 @@ import net.yazsoft.frame.scopes.*;
 public class MenusDao extends BaseDao<Menus> implements Serializable{
 
     private static final Logger logger = Logger.getLogger(MenusDao.class);
-    @Inject
-    protected SessionFactory sessionFactory;
+
+    @Inject protected SessionFactory sessionFactory;
 
     public MenusDao() {
         super(Menus.class);
@@ -42,7 +42,7 @@ public class MenusDao extends BaseDao<Menus> implements Serializable{
             query = session.createCriteria(Menus.class);
             query.add(Restrictions.eq("mainId", new Menus(menuid)));
             query.add(Restrictions.eq("active", 1));
-            query.addOrder(Order.asc("order"));
+            query.addOrder(Order.asc("rank"));
             //query.setProjection(Projections.rowCount());
             list = query.list();
         } catch (HibernateException ex) {
@@ -64,7 +64,7 @@ public class MenusDao extends BaseDao<Menus> implements Serializable{
             }
             query.add(Restrictions.eq("refMenutype", new MenusType(menutype)));
             query.add(Restrictions.eq("active", true));
-            query.addOrder(Order.asc("order"));
+            query.addOrder(Order.asc("rank"));
             //query.setProjection(Projections.rowCount());
             list = query.list();
         } catch (HibernateException ex) {

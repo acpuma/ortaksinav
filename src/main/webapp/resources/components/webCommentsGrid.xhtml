@@ -74,6 +74,7 @@
                      selectionMode="single"
 
                      rowStyleClass="#{webCommentsVar.tid eq null ? 'bgYellow' : null}"
+                     draggableRows="true"
 
                 >
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
@@ -82,6 +83,8 @@
                     process="@all"
                     listener="#{webCommentsDao.select}"
                     />
+
+            <p:ajax event="rowReorder" listener="#{webCommentsDao.onRowReorder}" update=":messages webCommentsGrid" immediate="true"/>
 
             <f:facet name="header">
                 Sipariş Formları

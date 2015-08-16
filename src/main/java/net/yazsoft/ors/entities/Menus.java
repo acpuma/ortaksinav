@@ -58,10 +58,14 @@ public class Menus extends BaseEntity implements Serializable {
     @Size(max = 255)
     @Column(length = 255)
     private String form;
-    private Integer order;
+    private Integer rank;
     @Size(max = 255)
     @Column(length = 255)
     private String comment;
+    private Boolean custom;
+    @JoinColumn(name = "ref_content", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Contents refContent;
     @OneToMany(mappedBy = "mainId", fetch = FetchType.LAZY)
     private Collection<Menus> menusCollection;
     @JoinColumn(name = "main_id", referencedColumnName = "tid")
@@ -158,12 +162,12 @@ public class Menus extends BaseEntity implements Serializable {
         this.form = form;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getRank() {
+        return rank;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
     public String getComment() {
@@ -205,6 +209,22 @@ public class Menus extends BaseEntity implements Serializable {
 
     public void setUsersMenusCollection(Collection<UsersMenus> usersMenusCollection) {
         this.usersMenusCollection = usersMenusCollection;
+    }
+
+    public Boolean getCustom() {
+        return custom;
+    }
+
+    public void setCustom(Boolean custom) {
+        this.custom = custom;
+    }
+
+    public Contents getRefContent() {
+        return refContent;
+    }
+
+    public void setRefContent(Contents refContent) {
+        this.refContent = refContent;
     }
 
     @Override

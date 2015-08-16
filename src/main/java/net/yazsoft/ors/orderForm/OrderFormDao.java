@@ -5,6 +5,7 @@ import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.mail.Email;
 import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.OrderForm;
 import net.yazsoft.ors.entities.OrderFormProducts;
@@ -119,7 +120,7 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
                         +"\nTelefon : " + orderForm.getPhone()
                         +"\nEposta : " + orderForm.getEmail()
                         +"\nAciklama : " + orderForm.getComment();
-                email.sendMail("nurullahsin@hotmail.com", "Ortak Sinav Yeni Siparis Formu",body);
+                email.sendMail(Constants.EMAIL_NOTIFICATION, "Ortak Sinav Yeni Siparis Formu",body);
                 //email.sendMail("info@ortaksinav.com.tr", "Ortak Sinav Yeni Siparis Formu",body);
             }
             //Util.setFacesMessage("SIPARISINIZ ALINDI");

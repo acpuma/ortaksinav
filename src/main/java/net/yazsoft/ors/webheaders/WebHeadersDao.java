@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.event.ReorderEvent;
 
 import javax.inject.Named;
 import java.io.Serializable;
@@ -20,6 +21,22 @@ public class WebHeadersDao extends BaseGridDao<WebHeaders> implements Serializab
     WebHeaders selected;
     List<WebHeaders> headers;
     Boolean listChanged=true;
+
+    public void onRowReorder(ReorderEvent event) {
+        //Util.setFacesMessage("Row Moved From: " + event.getFromIndex() + ", To:" + event.getToIndex());
+        try {
+            headers.get(event.getFromIndex()).setRank(event.getToIndex());
+            logger.info("LOG02290: MOVED : " + headers.get(event.getFromIndex()).getTitleTr());
+            update(headers.get(event.getFromIndex()));
+            for (int i = 0; i < headers.size(); i++) {
+                headers.get(i).setRank(i+1);
+                update(headers.get(i));
+            }
+            listChanged = true;
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
 
     public void delete() {
         super.delete();

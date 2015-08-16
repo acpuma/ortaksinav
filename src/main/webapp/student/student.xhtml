@@ -55,10 +55,10 @@
                     <p:panelGrid columns="2" style="margin:0 auto;">
                         <p:outputLabel value="#{msg.global_booklet} :" />
                         <p:outputLabel value="#{studentsAnswersDao.item.booklet} " />
-                        <p:outputLabel value="#{msg.student} #{msg.answers} : " />
-                        <p:outputLabel value="#{studentsAnswersDao.item.answers} "/>
-                        <p:outputLabel value="#{msg.results_true} #{msg.answers} : "/>
+                        <p:outputLabel value="Cevap Anahtarı  : "/>
                         <p:outputLabel value="#{studentsAnswersDao.trueAnswers} "/>
+                        <p:outputLabel value="Öğrenci Cevapları : " />
+                        <p:outputLabel value="#{studentsAnswersDao.item.answers} "/>
                     </p:panelGrid>
                     <br/>
                     <p:outputPanel rendered="#{studentsAnswersDao.bookletReady}">

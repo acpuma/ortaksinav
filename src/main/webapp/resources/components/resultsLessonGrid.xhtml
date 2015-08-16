@@ -149,9 +149,11 @@
             </p:column>
             <f:facet name="footer">
                 <p:commandButton value="PDF" process="@this"
-                                 actionListener="#{resultsDao.reportLesson}" ajax="false" rendered="true"/>
+                                 actionListener="#{resultsDao.reportLesson}" ajax="false" rendered="true"
+                                 disabled="#{not authsDao.auths.preport}" />
                 <p:commandButton value="Ortalama PDF" process="@this"
-                                 actionListener="#{resultsDao.reportLessonAverage}" ajax="false" rendered="true"/>
+                                 actionListener="#{resultsDao.reportLessonAverage}" ajax="false" rendered="true"
+                                 disabled="#{not authsDao.auths.preport}" />
 
 
                 <h:commandLink>

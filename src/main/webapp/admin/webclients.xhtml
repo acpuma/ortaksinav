@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.webClients}</title>
+    </h:head>
+<ui:decorate template="/WEB-INF/templates/master.xhtml">
+    <ui:param name="title" value="#{msg.webClients}" />
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:outputPanel style="text-align: right;">
+        <p:commandButton icon="toolbar-add toolbar-icon"
+                         styleClass="toolbar-button" style="padding:1px 5px;"
+                         value="#{msg.toolbar_add}"
+                         actionListener="#{webClientsDao.reset}"
+                         update="@widgetVar(formDialogWidget)"
+                         oncomplete="PF('formDialogWidget').show();"
+                         rendered="true"
+                >
+        </p:commandButton>
+
+    </p:outputPanel>
+    <components:webClientsGrid rows="200"  scrollable="true" update=":#{p:component('formPanel')}" draggableRows="true"
+                                 widgetVar="webClientsGridWidget" scrollHeight="400" editable="true" editMode="cell"/>
+    <p:outputLabel style="font-size: 12px;">
+
+    </p:outputLabel>
+    <p:dialog id="gridDialog" header="#{msg.webClient}" widgetVar="formDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  onHide="">
+
+        <p:outputPanel id="formPanel" >
+            <h:form id="pageForm">
+
+                <p:panelGrid columns="2" id="pagePanel">
+
+                    <p:outputLabel value="#{msg.center}:" for="center" />
+                    <p:selectBooleanCheckbox id="center" value="#{webClientsDao.item.center}" />
+
+                    <p:outputLabel value="#{msg.global_name}:" for="name" />
+                    <p:inputText id="name" value="#{webClientsDao.item.name}" size="50"
+                                 required="true" requiredMessage="Ad alani gereklidir"/>
+
+                    <p:outputLabel value="#{msg.global_email} : " for="email" />
+                    <p:inputText id="email" value="#{webClientsDao.item.email}"/>
+
+                    <p:outputLabel value="#{msg.global_phone} : " for="phone" />
+                    <p:inputText id="phone" value="#{webClientsDao.item.phone}"/>
+
+                    <p:outputLabel value="#{msg.global_city} : " for="city" />
+                    <p:selectOneMenu value="#{webClientsDao.item.refCity}"  rendered="true" id="city"
+                            >
+                        <f:selectItems value="#{citiesDao.all}" var="sitem"
+                                       itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+                        <p:ajax update="towns" listener="#{citiesDao.handleWebClientsCityChange}"/>
+                    </p:selectOneMenu>
+                    <h:outputLabel value="#{msg.global_town}:" for="towns" />
+                    <p:selectOneMenu value="#{webClientsDao.item.refTown}"  rendered="true" id="towns"
+                            >
+                        <f:selectItems value="#{citiesDao.towns}" var="sitem"
+                                       itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel value="#{msg.address} : " for="address" />
+                    <p:inputTextarea id="address" value="#{webClientsDao.item.address}" rows="5" cols="70"/>
+                </p:panelGrid>
+
+                <p:panelGrid columns="4" id="pagePanel2">
+                    <p:outputLabel value="#{msg.coorX} : " for="coorX" />
+                    <p:inputText id="coorX" value="#{webClientsDao.item.coorX}"/>
+
+                    <p:outputLabel value="#{msg.coorY} : " for="coorY" />
+                    <p:inputText id="coorY" value="#{webClientsDao.item.coorY}"/>
+
+                    <p:outputLabel value="URL : " for="url" />
+                    <p:inputText id="url" value="#{webClientsDao.item.url}"/>
+
+                    <p:outputLabel value="Facebook : " for="Facebook" />
+                    <p:inputText id="Facebook" value="#{webClientsDao.item.socialFacebook}"/>
+
+                    <p:outputLabel value="Twitter : " for="Twitter" />
+                    <p:inputText id="Twitter" value="#{webClientsDao.item.socialTwitter}"/>
+
+                    <p:outputLabel value="Google Plus : " for="Gplus" />
+                    <p:inputText id="Gplus" value="#{webClientsDao.item.socialGplus}"/>
+
+                    <p:outputLabel value="Linkedin : " for="Linkedin" />
+                    <p:inputText id="Linkedin" value="#{webClientsDao.item.socialLinkedin}"/>
+
+                    <p:outputLabel value="Rss : " for="Rss" />
+                    <p:inputText id="Rss" value="#{webClientsDao.item.socialRss}"/>
+
+                </p:panelGrid>
+                <h:inputHidden id="tid" value="#{webClientsDao.item.tid}"/>
+                <h:inputHidden id="status" value="#{webClientsDao.status}"  />
+                <h:inputHidden id="disabledelete" value="#{webClientsDao.disabledelete}" />
+                <h:messages />
+                <components:toolbar gridname="webClientsGrid" daobean="#{webClientsDao}"
+                                    print="false" search="false" new="false"
+                        oncomplete="PF('formDialogWidget').hide(); PF('webClientsGridWidget').filter();"/>
+            </h:form>
+        </p:outputPanel>
+    </p:dialog>
+
+</p:outputPanel>
+</ui:decorate>
+</f:view>
+</html>

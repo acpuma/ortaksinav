@@ -13,6 +13,7 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="Ürünler" />
+    #{authsDao.findAuths("/admin/products")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <p:outputPanel style="text-align: right;">
         <p:commandButton icon="toolbar-add toolbar-icon"
@@ -22,6 +23,7 @@
                          update="@widgetVar(formDialogWidget)"
                          oncomplete="PF('formDialogWidget').show();"
                          rendered="true"
+                         disabled="#{not authsDao.auths.padd}"
                 >
         </p:commandButton>
 
@@ -78,6 +80,10 @@
                     <h:outputLabel value="#{msg.product_showMainMost}:" for="showMainMost" />
                     <h:selectBooleanCheckbox id="showMainMost" value="#{productsDao.item.showMainMost}" title="Evet"
                             />
+                    <h:outputLabel value="#{msg.global_date} :" for="date" />
+                    <p:calendar id="date" value="#{productsDao.item.date}" locale="tr"/>
+                    <h:outputLabel value="#{msg.product_countSold} :" for="countSold" />
+                    <h:inputText id="countSold" value="#{productsDao.item.countSold}" size="5"/>
                     <h:outputLabel value="#{msg.product_stars} :" for="stars" />
                     <h:inputText id="stars" value="#{productsDao.item.stars}" size="1"/>
 
