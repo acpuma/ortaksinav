@@ -34,13 +34,18 @@
                                          value="#{loginSer.rememberMe}" />
 
                 <f:facet name="footer">
-                    <p:commandButton type="submit" id="login" ajax="false"
+                    <p:outputPanel style="width: 100%; text-align: center; margin:8px;">
+                        <p:commandButton type="submit" id="login" ajax="false"
                                      actionListener="#{loginSer.loginStudent}" value="#{msg.login}" />
+                    </p:outputPanel>
                 </f:facet>
             </p:panelGrid>
-            <br/>
+
         </div>
         <p:messages id="messages" showDetail="false" autoUpdate="true" closable="false" />
+        Demo kullanıcı bilgileri : #{settingsDao.findByName('demoOgrName').valueStr}
+        / #{settingsDao.findByName('demoOgrPass').valueStr}
+        <br/>
             <h:link outcome="/index" title="ANASAYFA" immediate="true"  value="ANASAYFA" />
         </p:panel>
     </h:form>

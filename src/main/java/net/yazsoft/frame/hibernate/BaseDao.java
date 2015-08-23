@@ -173,6 +173,8 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
                             c.add(Restrictions.eq(entry.getKey(), Long.parseLong(entry.getValue().toString())));
                         } else if (clazz.equals(String.class)) {
                             c.add(Restrictions.like(entry.getKey(), entry.getValue().toString(), MatchMode.START));
+                        } else if (clazz.equals(Boolean.class)) {
+                            c.add(Restrictions.eq(entry.getKey(), Boolean.valueOf(entry.getValue().toString()) ) );
                         } else if (clazz.getGenericSuperclass().equals(BaseEntity.class)){
                             logger.info("FILTER CLAZZ BASE ENTITY entry/value: " +
                                     entry.getKey() + "/ " + entry.getValue());
@@ -262,6 +264,8 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
                             c.add(Restrictions.eq(entry.getKey(), Long.parseLong(entry.getValue().toString())));
                         } else if (clazz.equals(String.class)) {
                             c.add(Restrictions.like(entry.getKey(), entry.getValue().toString(), MatchMode.START));
+                        } else if (clazz.equals(Boolean.class)) {
+                            c.add(Restrictions.eq(entry.getKey(), Boolean.valueOf(entry.getValue().toString())) );
                         } else if (clazz.getGenericSuperclass().equals(BaseEntity.class)){
                             logger.info("FILTER CLAZZ BASE ENTITY entry/value: " +
                                     entry.getKey() + "/ " + entry.getValue());

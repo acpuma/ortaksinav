@@ -15,6 +15,9 @@
 <h:form id="pageForm">
     <p:outputPanel style="margin:10px; height:440px; overflow-y: scroll;">
 
+        <p:commandButton value="SMS" process="@this" actionListener="#{smsDao.sendSms}"
+                         rendered="false" update=":messages"/>
+
         <p:commandButton value="PDF" process="@this" actionListener="#{uploadsBean.downloadFile(47)}"
                          ajax="false" rendered="false"/>
         <p:commandButton value="EMAIL" process="@this" actionListener="#{email.sendTestMail}"
@@ -22,6 +25,12 @@
                          onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();"
                 />
         <br/>
+        <b>Versiyon 1.21 (2015.08.21 12.30) : </b>
+        <br/> - Ayarlar - Genel Ayarlar
+        <br/><br/>
+        <b>Versiyon 1.20 (2015.08.18 10.00) : </b>
+        <br/> - Gonder - SMS
+        <br/><br/>
         <b>Versiyon 1.19 (2015.08.16 13.30) : </b>
         <br/> - Yetkilendirme ekle/guncellestirme/silme/rapor
         <br/><br/>

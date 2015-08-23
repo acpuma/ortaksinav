@@ -80,7 +80,9 @@ public class WebArticlesDao extends BaseGridDao<WebArticles> implements Serializ
         archives = new ArrayList<>();
         try {
             String hql = "SELECT month(date),year(date),count(A.date),monthname(date) " +
-                    "FROM WebArticles A GROUP BY month(date),year(date) " +
+                    "FROM WebArticles A " +
+                    "WHERE publish=true " +
+                    "GROUP BY month(date),year(date) " +
                     "order by year(date) desc,month(date) desc";
             Query query = getSession().createQuery(hql);
             for (Iterator it = query.iterate(); it.hasNext(); ) {
@@ -120,8 +122,10 @@ public class WebArticlesDao extends BaseGridDao<WebArticles> implements Serializ
         if (month!=null) {
             return findWebItemsArchive(month,year);
         }
+        Map<String,Object> filters= new HashMap<>();
+        filters.put("publish",true);
         return super.load(start, Constants.PAGE_ARTICLES,
-                "date", SortOrder.DESCENDING, null);
+                "date", SortOrder.DESCENDING, filters);
     }
 
     public void checkboxChange(WebArticles article) {
@@ -202,7 +206,7 @@ public class WebArticlesDao extends BaseGridDao<WebArticles> implements Serializ
             Criteria c = getCriteria();
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
-            c.add(Restrictions.eq("publish",true));
+            //c.add(Restrictions.eq("publish",true));
             c.addOrder(Order.desc("date"));
             list = c.list();
             itemsChanged = false;

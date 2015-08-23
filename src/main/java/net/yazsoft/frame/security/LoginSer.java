@@ -53,6 +53,7 @@ public class LoginSer implements Serializable{
             logger.info("user / pass : " + this.getUsername() + " / " + this.getPassword());
             Authentication authenticationRequest = new UsernamePasswordAuthenticationToken(
                     this.getUsername(), this.getPassword());
+
             Authentication result = authenticationManager
                     .authenticate(authenticationRequest);
 
