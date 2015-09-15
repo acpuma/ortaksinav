@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.send_results}</title>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+        <ui:param name="title" value="#{msg.send_results}" />
+        #{authsDao.findAuths("/admin/resultsSend")}
+        #{resultsDao.fillGrids()}
+        #{smsDao.initUsers()}
+        <p:outputPanel styleClass="pageFormDiv clearfix"
+                       style="margin:0px; padding: 0px;float:left;width: 100%;" >
+            <h:form id="pageForm" style="display: block;">
+                <p:panelGrid columns="2">
+
+                <p:panelGrid columns="2" id="pagePanel" >
+                    <p:outputLabel value="Gönderme Şekli" />
+                    <p:outputPanel >
+                        <p:selectBooleanCheckbox itemLabel="Email" value="#{resultsSendDao.bEmail}"/> <br/>
+                        <p:selectBooleanCheckbox itemLabel="SMS" value="#{resultsSendDao.bSms}"/>
+                    </p:outputPanel>
+                    <p:outputLabel value="Gönderilecekler" />
+                    <p:outputPanel>
+                        <p:selectBooleanCheckbox itemLabel="Ders Sonuçları" value="#{resultsSendDao.bReportLesson}"/> <br/>
+                        <p:selectBooleanCheckbox itemLabel="Ortalamalar" value="#{resultsSendDao.bReportLessonAverage}"/>
+                    </p:outputPanel>
+
+                    <p:outputLabel value="Sınıflar" />
+                    <p:selectCheckboxMenu value="#{resultsSendDao.selectedClasses}" label="#{msg.global_select}"
+                                          >
+                        <f:selectItems value="#{resultsDao.classes}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man.tid}"/>
+                    </p:selectCheckboxMenu>
+                    <p:outputLabel value="Dersler" />
+                    <p:selectCheckboxMenu value="#{resultsSendDao.selectedLessons}" label="#{msg.global_select}"
+                                          >
+                        <f:selectItems value="#{resultsDao.lessons}" var="man"
+                                       itemLabel="#{man.refLessonName.nameTr}" itemValue="#{man.tid}"/>
+                    </p:selectCheckboxMenu>
+
+                    <h:outputLabel value="EMAİL BAŞLIK : " for="mailTitle" />
+                    <h:inputText id="mailTitle" value="#{resultsSendDao.mailTitle}"/>
+
+                    <h:outputLabel value="EMAİL MESAJ : " for="mesaj" />
+                    <h:inputTextarea id="mailMessage" value="#{resultsSendDao.mailMessage}"
+                                     rows="5" cols="24"  />
+
+                    <h:outputLabel value="SMS BAŞLIK : " for="sender" />
+                    <h:inputText id="sender" value="#{smsDao.sender}"/>
+
+                    <h:outputLabel value="SMS MESAJ : " for="mesaj" />
+                    <h:inputTextarea id="mesaj" value="#{smsDao.mesaj}"
+                                     rows="5" cols="24"  />
+                </p:panelGrid>
+                <p:outputPanel style="width: 340px; height: 380px; overflow: scroll; vertical-align: top;">
+                    <h:outputLabel value="Kişiler : " for="phones" />
+                    <p:selectManyMenu value="#{resultsSendDao.selectedUsers}" id="phones" label="TELEFONLAR" showCheckbox="true"
+                            style="width: 334px;" converter="entityConverter">
+
+                        <f:selectItems value="#{smsDao.users}" var="sitem"
+                                       itemValue="#{sitem}" itemLabel="#{sitem.name} #{sitem.surname} : #{sitem.email} : #{sitem.phone}" />
+                    </p:selectManyMenu>
+                </p:outputPanel>
+                </p:panelGrid>
+                <p:outputPanel style="width: 100%;position: relative;">
+                <p:commandButton value="#{msg.send}" actionListener="#{resultsSendDao.send}"
+                                 rendered="true" update=":messages"
+                                 disabled="#{not authsDao.auths.preport}"
+                                 onstart="PF('blockUIWidget1').block()"
+                                 oncomplete="PF('blockUIWidget1').unblock();"
+
+                        />
+                <p:commandButton value="Gönderilenler" actionListener="#{resultsSendDao.setItems(null)}"
+                                 rendered="true" update=":messages @widgetVar(resultsSendDialogWidget)"
+                                 oncomplete="PF('resultsSendDialogWidget').show();"
+                                 style="position: absolute; right: 10px;"
+                        />
+                </p:outputPanel>
+
+                <h:messages rendered="false"/>
+
+            </h:form>
+
+            <p:dialog id="resultsSendDialog" header="Gönderilenler" widgetVar="resultsSendDialogWidget"
+                      modal="true" resizable="true" dynamic="true" appendTo="@(body)">
+
+                    <components:resultsSendGrid rows="100" scrollable="true" editable="true"  scrollHeight="400"
+                                            widgetVar="resultsSendGridWidget" />
+            </p:dialog>
+
+        </p:outputPanel>
+    </ui:decorate>
+</f:view>
+</html>

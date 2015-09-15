@@ -9,8 +9,7 @@ import net.yazsoft.ors.answers.AnswersDao;
 import net.yazsoft.ors.entities.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -167,6 +166,33 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
             //c.addOrder(Order.desc("score"));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List findByExamAndLessonAndClass(Exams exam,Lessons lesson,SchoolsClass sclass) {
+        logger.info("EXAM : " + exam);
+        List list=null;
+        try {
+            DetachedCriteria subquery = DetachedCriteria.forClass(Students.class, "stu")
+                    // Filter the Subquery
+                    .add(Restrictions.eq("refSchoolClass", sclass))
+                            // SELECT The User Id
+                    .setProjection(Projections.property("stu.tid"));
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refExam", exam));
+            c.add(Restrictions.eq("refLesson", lesson));
+            //c.add(Restrictions.eq("refStudent.refSchoolClass", sclass));
+            c.add(Subqueries.propertyIn("refStudent", subquery));
+            c.add(Restrictions.eq("active", true));
+            //c.addOrder(Order.desc("score"));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+            logger.info("LOG02570: LIST COUNT : " + list.size());
         } catch (Exception e) {
             logger.error(e.getMessage());
             Util.setFacesMessage(e.getMessage());

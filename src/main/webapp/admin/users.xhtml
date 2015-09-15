@@ -52,7 +52,7 @@
                     <p:outputLabel value="#{msg.global_surname}:" for="surname"/>
                     <p:inputText id="surname" value="#{usersDao.item.surname}" title="Surname"/>
                     <p:outputLabel value="#{msg.global_phone}:" for="phone"/>
-                    <p:inputText id="phone" value="#{usersDao.item.phone}" title="Phone"/>
+                    <p:inputMask id="phone" value="#{usersDao.item.phone}" title="Phone" mask="9999999999"/>
                     <p:outputLabel value="#{msg.global_email}:" for="email"/>
                     <p:inputText id="email" value="#{usersDao.item.email}" title="Email"/>
                     <p:outputLabel value="#{msg.global_group} :" />

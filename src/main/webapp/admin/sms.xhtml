@@ -19,6 +19,8 @@
                        style="margin:0px; padding: 0px;float:left;width: 100%;" >
             <h:form id="pageForm">
                 <p:panelGrid columns="2" id="pagePanel">
+                    <h:outputLabel value="BAŞLIK : " for="sender" />
+                    <h:inputText id="sender" value="#{smsDao.sender}"/>
 
                     <h:outputLabel value="MESAJ : " for="mesaj" />
                     <h:inputTextarea id="mesaj" value="#{smsDao.mesaj}"

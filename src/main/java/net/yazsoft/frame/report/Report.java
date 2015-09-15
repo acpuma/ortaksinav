@@ -79,5 +79,42 @@ public class Report extends BaseDao{
         }
     }
 
+    public void pdfFile(String jasperFile, Map<String, Object> params,String outputFile)  {
+        Connection connection=null;
+        try {
+            if (outputFile==null) outputFile="rapor";
+            String path = Util.getSession().getServletContext().getRealPath("/WEB-INF/jasper/"+jasperFile + ".jasper");
+            logger.info("LOG01170: PATH : " + path);
+            InputStream input = new FileInputStream(new File(path));
+
+            connection=dataSource.getConnection();
+
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(input);
+            JasperPrint jasperPrint =
+                    JasperFillManager.fillReport(jasperReport, params, connection);
+            String outfile=Util.getUploadsFolder()+"/temp/"+outputFile+ ".pdf";
+            OutputStream output = new FileOutputStream(new File(outfile));
+
+            JasperExportManager.exportReportToPdfStream(jasperPrint, output);
+            //JasperExportManager.exportReportToPdfStream(jasperPr;
+            output.flush();
+            output.close();
+        } catch(Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if ((connection != null) && (!connection.isClosed())) {
+                    connection.close();
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                Util.setFacesMessage(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }

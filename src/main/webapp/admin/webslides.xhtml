@@ -13,7 +13,9 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="Slidelar" />
-<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    #{authsDao.findAuths("/admin/webslides")}
+
+    <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
 
     <p:outputPanel style="text-align: right;">
         <p:commandButton icon="toolbar-add toolbar-icon"
@@ -22,6 +24,7 @@
                          actionListener="#{webSlidesDao.addSlide}"
                          update="@widgetVar(formDialogWidget) @widgetVar(webSlidesGridWidget)"
                          rendered="true"
+                         disabled="#{not authsDao.auths.padd}"
                 >
         </p:commandButton>
     </p:outputPanel>

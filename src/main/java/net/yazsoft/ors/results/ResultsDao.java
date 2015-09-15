@@ -11,7 +11,10 @@ import net.yazsoft.ors.schools.SchoolsClassDto;
 import net.yazsoft.ors.students.*;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -30,11 +33,12 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
     List<StudentsAnswers> answers;
     List<StudentsAnswersDto> answersDto;
     List<SchoolsClass> classes;
+    List<Long> classesLong;
     List<Lessons> lessons;
     List<Results> results;
     List<ResultsDto> resultsDto;
     Lessons selectedLesson;
-    List<SchoolsClass> selectedClasses;
+    List<Long> selectedClasses;
 
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject SchoolsClassDao schoolsClassDao;
@@ -54,12 +58,18 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
             Util.setFacesMessageError("Ders Seciniz");
             return;
         }
-        logger.info("LOG01600: REPORT LESSON : " + selectedLesson.getRefLessonName().getNameTr());
+        if (selectedClasses==null) {
+            Util.setFacesMessageError("Sinif Seciniz");
+            return;
+        }
+        logger.info("LOG01600: REPORT LESSON : " + selectedLesson + " : " + selectedLesson.getRefLessonName().getNameTr());
+        logger.info("LOG01610: selelectedClasses : " + selectedClasses);
         Map<String, Object> params = new HashMap<>();
         params.put("pSchoolName", Util.getActiveSchool().getName());
         params.put("pexam", Util.getActiveExam().getTid());
         params.put("plesson", selectedLesson.getTid());
         params.put("pLessonName", selectedLesson.getRefLessonName().getNameTr());
+        params.put("pclasses",selectedClasses);
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
@@ -69,9 +79,10 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
         params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
         params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
-        params.put("plogo","http://www.ortaksinav.com.tr/images/school/"+Util.getActiveSchool().getTid()
-                + "."+ Util.getActiveSchool().getRefImage().getExtension());
-
+        if (Util.getActiveSchool().getRefImage()!=null) {
+            params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
+                    + "." + Util.getActiveSchool().getRefImage().getExtension());
+        }
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
         report.pdf("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
@@ -97,7 +108,14 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("plesson", selectedLesson.getTid());
         params.put("pLessonName", selectedLesson.getRefLessonName().getNameTr());
         params.put("pclasses",selectedClasses);
-        params.put("pclassesstr",selectedClasses.toString());
+
+        List<String> pclassesstr=new ArrayList<>();
+        for (Long pid:selectedClasses) {
+            SchoolsClass sclass=(SchoolsClass)getSession().load(SchoolsClass.class,pid);
+            pclassesstr.add(sclass.getName());
+        }
+        params.put("pclassesstr",pclassesstr.toString());
+        //params.put("pclassesstr",selectedClasses.toString());
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
@@ -108,11 +126,13 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
         params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
         params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
-        params.put("plogo","http://www.ortaksinav.com.tr/images/school/"+Util.getActiveSchool().getTid()
-                + "."+ Util.getActiveSchool().getRefImage().getExtension());
+        if (Util.getActiveSchool().getRefImage()!=null) {
+            params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
+                    + "." + Util.getActiveSchool().getRefImage().getExtension());
+        }
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
-        report.pdf("repLessonOrtalama", params, selectedLesson.getRefLessonName().getNameTr()+"Ortalama");
+        report.pdf("repLessonOrtalama", params, selectedLesson.getRefLessonName().getNameTr() + "Ortalama");
     }
 
     public void fillGrids() {
@@ -182,6 +202,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         return list;
     }
 
+
     public List findByStudent(Students student) {
         logger.info("STUDENT  : " + student + " : " + student.getFullname());
         List list=null;
@@ -234,6 +255,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         }
         return list;
     }
+
 
     public void select() {
         super.select();
@@ -311,11 +333,11 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         this.results = results;
     }
 
-    public List<SchoolsClass> getSelectedClasses() {
+    public List<Long> getSelectedClasses() {
         return selectedClasses;
     }
 
-    public void setSelectedClasses(List<SchoolsClass> selectedClasses) {
+    public void setSelectedClasses(List<Long> selectedClasses) {
         this.selectedClasses = selectedClasses;
     }
 
@@ -325,5 +347,13 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
 
     public void setSelectedLesson(Lessons selectedLesson) {
         this.selectedLesson = selectedLesson;
+    }
+
+    public List<Long> getClassesLong() {
+        return classesLong;
+    }
+
+    public void setClassesLong(List<Long> classesLong) {
+        this.classesLong = classesLong;
     }
 }

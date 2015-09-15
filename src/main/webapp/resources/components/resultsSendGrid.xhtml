@@ -4,7 +4,8 @@
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <cc:interface>
     <cc:attribute default="false"     required="false"   name="disabledSelection"  />
     <cc:attribute default="false"     required="false"   name="draggableColumns" />
@@ -21,28 +22,29 @@
     <cc:attribute default="true"      required="false"   name="scrollable" />
     <cc:attribute default="auto"      required="false"   name="scrollWidth" />
     <cc:attribute default="auto"      required="false"   name="scrollHeight" />
-    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="descending" required="false"   name="sortOrder" />
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetOrderForms"     required="false"   name="widgetVar" />
+    <cc:attribute default="widgetresultsSend"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
+
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form onkeypress="if (event.keyCode == 13) {return false; }" id="orderFormsGridForm">
-        <p:dataTable id="orderFormsGrid"
-                     var="orderFormsVar"
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="resultsSendGrid"
+                     var="gridVar"
 
                      filterEvent="enter"
-                     value="#{orderFormDao.orderForms}"
+                     value="#{resultsSendDao.items}"
                      emptyMessage=" #{msg['global_no_data']}"
-                     paginatorTemplate=" {FirstPageLink}
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
                  {PreviousPageLink} 
                  {PageLinks} {NextPageLink} 
-                 {LastPageLink} "
+                 {LastPageLink} {RowsPerPageDropdown}"
 
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
@@ -58,7 +60,8 @@
                      rendered="#{cc.attrs.rendered}"
 
                      scrollable="#{cc.attrs.scrollable}"
-                     sortOrder="#{cc.attrs.sortOrder}"
+                     sortOrder="descending"
+                     sortBy="#{gridVar.created}"
                      sortMode="#{cc.attrs.sortMode}"
                      stickyHeader="#{cc.attrs.stickyHeader}"
                      scrollWidth="#{cc.attrs.scrollWidth}"
@@ -68,76 +71,66 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
-                     selection="#{orderFormDao.item}"
-                     rowKey="#{orderFormsVar.tid}"
+                     selection="#{resultsSendDao.item}"
+                     rowKey="#{gridVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
                      selectionMode="single"
-
-                     rowStyleClass="#{orderFormsVar.tid eq null ? 'bgYellow' : null}"
-
                 >
-            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
-                    onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').show();"
-                    process="@all"
-                    listener="#{orderFormDao.select}"
-                    />
-
-            <f:facet name="header">
-                Sipariş Formları
+            <f:facet name="header" >
+                Gönderilenler
             </f:facet>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  style="display: none">
-                #{orderFormsVar.tid}
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{gridVar.tid}  </p:column>
+            <p:column headerText="Okul" width="30" >
+                #{gridVar.refSchool.name}
             </p:column>
-
-
-            <p:column headerText="#{msg.global_name}" width="30" >
-                    #{orderFormsVar.name}
+            <p:column headerText="Sınav" width="30" >
+                #{gridVar.refExam.nameTr}
             </p:column>
-            <p:column headerText="Telefon" width="40" rendered="true">
-                #{orderFormsVar.phone}
+            <p:column headerText="Ders Rap." width="20" >
+                <p:selectBooleanCheckbox value="#{gridVar.reportLesson}" />
             </p:column>
-            <p:column headerText="Email" width="40" rendered="true">
-                #{orderFormsVar.email}
+            <p:column headerText="Ortalama Rap." width="20" >
+                <p:selectBooleanCheckbox value="#{gridVar.reportAverage}" />
             </p:column>
-            <p:column headerText="Adres" width="40" rendered="true">
-                #{orderFormsVar.address}
+            <p:column headerText="Email" width="20" >
+                <p:selectBooleanCheckbox value="#{gridVar.email}" />
             </p:column>
-            <p:column headerText="Tarih" width="40" rendered="true">
-                #{orderFormsVar.created}
+            <p:column headerText="E.Başlık" width="40" >
+                #{gridVar.emailTitle}
             </p:column>
-            <p:column width="10">
-                <p:commandButton value=" " update="@composite:orderFormsGridForm:orderFormsGrid"
-                                 actionListener="#{orderFormDao.delete(orderFormsVar)}"
-                                 icon="ui-icon-trash"
-                                 style="width: 30px; height: 30px;"
-                                 id="deleteOrderForm"
-                                 disabled="#{not authsDao.auths.pdelete}">
-                    <p:confirm header="#{msg.global_confirmation}"
-                               message="SİLME İŞLEMİNİ ONAYLIYORMUSUNUZ ?" icon="ui-icon-alert"/>
-                </p:commandButton>
+            <p:column headerText="E.Mesaj" width="40" >
+                #{gridVar.emailMessage}
             </p:column>
-
-            <p:column width="10">
-                <p:commandButton action="#{orderFormDao.reportOrderForm}" ajax="false" value=" "
-                                 actionListener="#{orderFormDao.preparePrint(orderFormsVar)}"
-                                 icon="ui-icon-print"
-                                 style="width: 30px; height: 30px;"
-                                 id="printOrderForm"
-                                 disabled="#{not authsDao.auths.preport}">
-                </p:commandButton>
+            <p:column headerText="Sms" width="20" >
+                <p:selectBooleanCheckbox value="#{gridVar.sms}" />
+            </p:column>
+            <p:column headerText="S.Başlık" width="40" >
+                #{gridVar.smsTitle}
+            </p:column>
+            <p:column headerText="S.Mesaj" width="40" >
+                #{gridVar.smsMessage}
+            </p:column>
+            <p:column headerText="Sınıflar" width="30" >
+                #{gridVar.classes}
+            </p:column>
+            <p:column headerText="Dersler" width="30" >
+                #{gridVar.lessons}
+            </p:column>
+            <p:column headerText="Kişiler" width="30" >
+                #{gridVar.users}
+            </p:column>
+            <p:column headerText="Gönderen" width="30"  >
+                #{gridVar.refUser.username}
+            </p:column>
+            <p:column headerText="Tarih" rendered="true" width="100" sortBy="#{gridVar.created}" >
+                <h:outputText value="#{gridVar.created}" >
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                </h:outputText>
             </p:column>
 
         </p:dataTable>
-
     </h:form>
-    <p:confirmDialog global="true">
-        <p:commandButton value="#{msg.global_yes}" type="button"
-                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
-        <p:commandButton value="#{msg.global_no}" type="button"
-                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
-    </p:confirmDialog>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
 
 </cc:implementation>

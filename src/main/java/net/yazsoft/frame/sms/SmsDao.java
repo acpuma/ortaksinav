@@ -32,13 +32,13 @@ public class SmsDao {
     private ArrayList<Users> users;
     private ArrayList<String> phones;
     private String mesaj;
+    private String sender="ORTAKSINAVM";
 
     @Inject UsersDao usersDao;
 
     public SmsDao() {
         users=new ArrayList<>();
         phones=new ArrayList<String>();
-
     }
 
     @PostConstruct
@@ -57,6 +57,9 @@ public class SmsDao {
 
         for (String phone:phones) {
             xmlClass.addYolla(new Yolla(phone, mesaj));
+        }
+        if (sender!=null) {
+            xmlClass.BILGI.setBASLIK(sender);
         }
         //xmlClass.addYolla(new Yolla("5062532953", "test mesaj"));
         //xmlClass.addYolla(new Yolla("5062532953", "test mesaj2"));
@@ -145,5 +148,13 @@ public class SmsDao {
 
     public void setPhones(ArrayList<String> phones) {
         this.phones = phones;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 }

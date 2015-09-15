@@ -31,6 +31,19 @@ public class SettingsDao extends BaseGridDao<Settings> implements Serializable{
         return setting;
     }
 
+    public Long save() {
+        try {
+            for (Settings setting:settings) {
+                super.saveOrUpdate(setting);
+            }
+            Util.setFacesMessage("AYARLAR GUNCELLENDI");
+
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+
+        return null;
+    }
 
     public SettingsDao() {
         super(Settings.class);

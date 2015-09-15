@@ -13,6 +13,7 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.messages}" />
+    #{authsDao.findAuths("/admin/webcontactforms")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <components:webContactFormsGrid rows="200"  scrollable="true" update=":#{p:component('formPanel')}" draggableRows="true"
                                  widgetVar="webContactFormsGridWidget" scrollHeight="400" editable="true" editMode="cell"/>

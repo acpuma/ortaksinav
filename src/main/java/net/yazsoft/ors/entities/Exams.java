@@ -100,6 +100,8 @@ public class Exams extends BaseEntity implements Serializable {
     private Collection<Lessons> lessonsCollection;
     @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
     private Collection<Results> resultsCollection;
+    @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
+    private Collection<ResultsSend> resultsSendCollection;
 
     public Exams() {
     }
@@ -320,6 +322,14 @@ public class Exams extends BaseEntity implements Serializable {
 
     public void setResultsCollection(Collection<Results> resultsCollection) {
         this.resultsCollection = resultsCollection;
+    }
+
+    public Collection<ResultsSend> getResultsSendCollection() {
+        return resultsSendCollection;
+    }
+
+    public void setResultsSendCollection(Collection<ResultsSend> resultsSendCollection) {
+        this.resultsSendCollection = resultsSendCollection;
     }
 
     @Override

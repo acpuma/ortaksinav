@@ -14,7 +14,8 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.webmenus}" />
-<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    #{authsDao.findAuths("/admin/webmenus")}
+    <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <p:outputPanel style="text-align: right;">
         <p:commandButton icon="toolbar-add toolbar-icon"
                          styleClass="toolbar-button" style="padding:1px 5px;"
@@ -23,6 +24,7 @@
                          update="@widgetVar(formDialogWidget)"
                          oncomplete="PF('formDialogWidget').show();"
                          rendered="true"
+                         disabled="#{not authsDao.auths.padd}"
                 >
         </p:commandButton>
 

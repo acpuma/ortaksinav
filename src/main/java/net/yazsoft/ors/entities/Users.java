@@ -99,6 +99,8 @@ public class Users extends BaseEntity implements Serializable {
     private Collection<ZlogLogin> zlogLoginCollection;
     @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
     private Collection<UsersMenus> usersMenusCollection;
+    @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
+    private Collection<ResultsSend> resultsSendCollection;
 
     public Users() {
     }
@@ -298,6 +300,14 @@ public class Users extends BaseEntity implements Serializable {
 
     public void setUsersMenusCollection(Collection<UsersMenus> usersMenusCollection) {
         this.usersMenusCollection = usersMenusCollection;
+    }
+
+    public Collection<ResultsSend> getResultsSendCollection() {
+        return resultsSendCollection;
+    }
+
+    public void setResultsSendCollection(Collection<ResultsSend> resultsSendCollection) {
+        this.resultsSendCollection = resultsSendCollection;
     }
 
     @Override

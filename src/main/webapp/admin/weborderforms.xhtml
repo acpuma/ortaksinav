@@ -13,7 +13,8 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="Sipariş Formları" />
-<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    #{authsDao.findAuths("/admin/weborderforms")}
+    <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <components:webOrderFormsGrid rows="100" scrollable="true" update=":#{p:component('formPanel')}"
                                   widgetVar="webOrderFormsWidget" scrollHeight="450"/>
     <p:dialog id="gridDialog" header="Sipariş Formu" widgetVar="pageGrid"

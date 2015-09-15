@@ -34,6 +34,8 @@
                 <p:commandButton value="#{msg.toolbar_save}"
                                  actionListener="#{settingsDao.save}"
                                  update=":messages"
+                                 onstart="PF('blockUIWidget1').block()"
+                                 oncomplete="PF('blockUIWidget1').unblock();"
                         />
             </h:form>
         </p:outputPanel>

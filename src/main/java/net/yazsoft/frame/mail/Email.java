@@ -33,6 +33,8 @@ public class Email {
         }
     }
 
+
+
     public void sendTestMail() {
         sendMail("cumacakmak@gmail.com","java mail", "TESTTTT");
     }

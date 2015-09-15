@@ -71,7 +71,6 @@
                      selection="#{studentsAnswersDao.item}"
                      rowKey="#{studentsAnswersVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
-
                 >
 
             <f:facet name="header">
@@ -87,14 +86,14 @@
             <p:column headerText="#{msg.exam}" width="50" rendered="false">
                 <p:outputLabel value="#{studentsAnswersVar.refExam.nameTr}" />
             </p:column>
-            <p:column  width="50"
-                    filterBy="#{studentsAnswersVar.refStudent.refSchoolClass.name}"
-                      filterMatchMode="in">
+            <p:column  width="50" filterBy="#{studentsAnswersVar.refStudent.refSchoolClass.tid}"
+                       filterMatchMode="in">
                 <f:facet name="filter">
                     <p:selectCheckboxMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" label="Sınıflar"
-                            value="#{resultsDao.selectedClasses}">
+                            value="#{resultsDao.selectedClasses}" >
                         <f:selectItems value="#{resultsDao.classes}" var="man"
-                                       itemLabel="#{man.name}" itemValue="#{man.name}"/>
+                                       itemLabel="#{man.name}" itemValue="#{man.tid}"/>
+                        <f:converter converterId="javax.faces.Long" />
                     </p:selectCheckboxMenu>
                 </f:facet>
                 <p:outputLabel value="#{studentsAnswersVar.refStudent.refSchoolClass.name}" />
@@ -150,7 +149,7 @@
             <f:facet name="footer">
                 <p:commandButton value="PDF" process="@this"
                                  actionListener="#{resultsDao.reportLesson}" ajax="false" rendered="true"
-                                 disabled="#{not authsDao.auths.preport}" />
+                                 disabled="#{not authsDao.auths.preport}" onclick="this.form.target='_blank'"  />
                 <p:commandButton value="Ortalama PDF" process="@this"
                                  actionListener="#{resultsDao.reportLessonAverage}" ajax="false" rendered="true"
                                  disabled="#{not authsDao.auths.preport}" />

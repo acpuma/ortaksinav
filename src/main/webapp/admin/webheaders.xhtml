@@ -13,6 +13,7 @@
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.webheaders}" />
+    #{authsDao.findAuths("/admin/webheaders")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
 
     <p:outputPanel style="text-align: right;">
@@ -22,6 +23,7 @@
                          actionListener="#{webHeadersDao.addHeader}"
                          update="@widgetVar(formDialogWidget) @widgetVar(webHeadersGridWidget)"
                          rendered="true"
+                         disabled="#{not authsDao.auths.padd}"
                 >
         </p:commandButton>
     </p:outputPanel>
