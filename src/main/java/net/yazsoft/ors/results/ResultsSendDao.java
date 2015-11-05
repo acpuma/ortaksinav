@@ -11,6 +11,7 @@ import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.students.StudentsAnswersDao;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -41,12 +42,20 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
     String mailTitle;
     String mailMessage;
 
+    Users newUser;
+
     @Inject ResultsDao resultsDao;
     @Inject EmailAttach emailAttach;
     @Inject Email email;
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject Report report;
     @Inject SmsDao smsDao;
+
+    public void addUser() {
+        System.out.println("ADDING USER : ");
+        smsDao.getUsers().add(newUser);
+        newUser=new Users();
+    }
 
     public void reportLesson() {
         if (selectedLesson==null) {
@@ -80,6 +89,8 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         }
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
+
+        /*
         for (String sclassStr:selectedClasses) {
             logger.info("LOG02580: CLASSSTR : " + sclassStr );
             SchoolsClass sclass=(SchoolsClass) getSession().load(SchoolsClass.class,Long.valueOf(sclassStr));
@@ -91,6 +102,11 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
                 mailFiles.add(sclass.getName()+"_"+selectedLesson.getRefLessonName().getNameTr()+".pdf");
             }
         }
+        */
+
+        params.put("pclasses",selectedClasses);
+        report.pdfFile("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
+        mailFiles.add(selectedLesson.getRefLessonName().getNameTr()+".pdf");
     }
 
     public void reportLessonAverage() {
@@ -235,6 +251,12 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         selectedUsers=new ArrayList<>();
         mailFiles=new ArrayList<>();
         selected=new ResultsSend();
+        newUser=new Users();
+    }
+
+    public void delete(ResultsSend rs) {
+        super.delete(rs);
+        items=null;
     }
 
     public ResultsSendDao() {
@@ -318,6 +340,14 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
             items=getAll();
         }
         return items;
+    }
+
+    public Users getNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(Users newUser) {
+        this.newUser = newUser;
     }
 
     public void setItems(List<ResultsSend> items) {

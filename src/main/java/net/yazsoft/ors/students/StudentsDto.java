@@ -81,8 +81,7 @@ public class StudentsDto extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
     Collection<Results> resultsCollection;
 
-    public Students toEntity() {
-        Students entity=new Students();
+    public Students toEntity(Students entity) {
         entity.setTid(this.tid);
         entity.setActive(this.active);
         entity.setVersion(this.version);
@@ -102,6 +101,10 @@ public class StudentsDto extends BaseEntity implements Serializable {
         entity.setRefSchoolClass(this.refSchoolClass);
         entity.setResultsCollection(this.resultsCollection);
         return entity;
+    }
+    public Students toEntity() {
+        Students entity=new Students();
+        return toEntity(entity);
     }
 
     public StudentsDto(Students entity) {
@@ -312,5 +315,30 @@ public class StudentsDto extends BaseEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentsDto{" +
+                "id=" + id +
+                ", tid=" + tid +
+                ", active=" + active +
+                ", version=" + version +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", fullname='" + fullname + '\'' +
+                ", gender='" + gender + '\'' +
+                ", schoolNo=" + schoolNo +
+                ", mernis='" + mernis + '\'' +
+                ", phone='" + phone + '\'' +
+                ", studentsAnswersCollection=" + studentsAnswersCollection +
+                ", refSchool=" + refSchool +
+                ", refSchoolClass=" + refSchoolClass +
+                ", resultsCollection=" + resultsCollection +
+                '}';
     }
 }

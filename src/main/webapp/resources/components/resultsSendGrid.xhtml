@@ -26,7 +26,7 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetresultsSend"     required="false"   name="widgetVar" />
+    <cc:attribute default="resultsSendGridWidget"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
 
@@ -97,28 +97,42 @@
                 <p:selectBooleanCheckbox value="#{gridVar.email}" />
             </p:column>
             <p:column headerText="E.Başlık" width="40" >
+                <div title="#{gridVar.emailTitle}">
                 #{gridVar.emailTitle}
+                </div>
             </p:column>
             <p:column headerText="E.Mesaj" width="40" >
+                <div title="#{gridVar.emailMessage}">
                 #{gridVar.emailMessage}
+                </div>
             </p:column>
             <p:column headerText="Sms" width="20" >
                 <p:selectBooleanCheckbox value="#{gridVar.sms}" />
             </p:column>
             <p:column headerText="S.Başlık" width="40" >
+                <div title="#{gridVar.smsTitle}">
                 #{gridVar.smsTitle}
+                </div>
             </p:column>
             <p:column headerText="S.Mesaj" width="40" >
+                <div title="#{gridVar.smsMessage}">
                 #{gridVar.smsMessage}
+                </div>
             </p:column>
             <p:column headerText="Sınıflar" width="30" >
+                <div title="#{gridVar.classes}">
                 #{gridVar.classes}
+                </div>
             </p:column>
             <p:column headerText="Dersler" width="30" >
+                <div title="#{gridVar.lessons}">
                 #{gridVar.lessons}
+                </div>
             </p:column>
-            <p:column headerText="Kişiler" width="30" >
-                #{gridVar.users}
+            <p:column headerText="Kişiler" width="30">
+                <div title="#{gridVar.users}">
+                    #{gridVar.users}
+                </div>
             </p:column>
             <p:column headerText="Gönderen" width="30"  >
                 #{gridVar.refUser.username}
@@ -127,6 +141,16 @@
                 <h:outputText value="#{gridVar.created}" >
                     <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
                 </h:outputText>
+            </p:column>
+
+            <p:column width="20">
+                <p:commandButton value="" update=":messages resultsSendGrid"
+                                 icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{resultsSendDao.delete(gridVar)}"
+
+                        >
+                </p:commandButton>
             </p:column>
 
         </p:dataTable>

@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="false"     required="false"   name="disabledSelection"  />
+    <cc:attribute default="false"     required="false"   name="draggableColumns" />
+    <cc:attribute default="false"     required="false"   name="editable" />
+    <cc:attribute default="false"     required="false"   name="editMode" />
+    <cc:attribute default="false"     required="false"   name="editingRow" />
+    <cc:attribute default="false"     required="false"   name="expandedRow" />
+    <cc:attribute default="true"      required="false"   name="paginator" />
+    <cc:attribute default="bottom"    required="false"   name="paginatorPosition" />
+    <cc:attribute default="true"      required="false"   name="paginatorAlwaysVisible" />
+    <cc:attribute default="true"      required="false"   name="resizableColumns" />
+    <cc:attribute default="0"         required="false"   name="rows" />
+    <cc:attribute default="true"      required="false"   name="rendered" />
+    <cc:attribute default="true"      required="false"   name="scrollable" />
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetExamsYear"     required="false"   name="widgetVar" />
+    <cc:attribute default="" required="false" name="update" />
+    <cc:attribute  required="false" name="tableStyle" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="examsYearGrid"
+                     var="examsYearVar"
+
+                     filterEvent="enter"
+                     value="#{examsYearDao.items}"
+                     emptyMessage=" #{msg['global_no_data']}"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                 {PreviousPageLink} 
+                 {PageLinks} {NextPageLink} 
+                 {LastPageLink} {RowsPerPageDropdown}"
+
+                     draggableColumns="#{cc.attrs.draggableColumns}"
+
+                     editable="#{cc.attrs.editable}"
+                     expandedRow="#{cc.attrs.expandedRow}"
+
+                     paginator="#{cc.attrs.paginator}"
+                     paginatorPosition="#{cc.attrs.paginatorPosition}"
+                     paginatorAlwaysVisible="#{cc.attrs.paginatorAlwaysVisible}"
+
+                     resizableColumns="#{cc.attrs.resizableColumns}"
+                     rows="#{cc.attrs.rows}"
+                     rendered="#{cc.attrs.rendered}"
+
+                     scrollable="#{cc.attrs.scrollable}"
+                     sortOrder="#{cc.attrs.sortOrder}"
+                     sortMode="#{cc.attrs.sortMode}"
+                     stickyHeader="#{cc.attrs.stickyHeader}"
+                     scrollWidth="#{cc.attrs.scrollWidth}"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                     liveResize="true"
+
+                     transient="#{cc.attrs.transient}"
+                     widgetVar="#{cc.attrs.widgetVar}"
+
+                     selection="#{examsYearDao.item}"
+                     rowKey="#{examsYearVar.tid}"
+                     tableStyle="#{cc.attrs.tableStyle}"
+                     selectionMode="single"
+                >
+
+            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
+                    onstart="PF('blockUIWidget1').block()"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
+                    process="@all"
+                    listener="#{examsYearDao.select}"
+                    />
+
+            <p:ajax event="rowSelect" listener="#{examsYearDao.onRowSelect}"
+                    update="@widgetVar(answersSubjectGridWidget)" />
+
+            <p:ajax event="rowEdit" listener="#{examsYearDao.onRowEdit}"
+                    update=":messages "  />
+            <p:ajax event="rowEditCancel" listener="#{examsYearDao.onRowCancel}"
+                    update=":messages " />
+
+            <f:facet name="header">
+                #{msg.exam_year}
+            </f:facet>
+
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{examsYearVar.tid}  </p:column>
+
+
+            <p:column headerText="#{msg.global_name}" width="80" filterBy="#{examsYearVar.name}">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{examsYearVar.name}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{examsYearVar.name}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.global_id}" width="20" rendered="false"
+                      filterBy="#{examsYearVar.active}">
+                #{examsYearVar.active}
+            </p:column>
+
+            <p:column headerText="Aktif" width="20" >
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <p:selectBooleanCheckbox value="#{examsYearVar.active}" disabled="true">
+
+                        </p:selectBooleanCheckbox>
+
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:selectBooleanCheckbox value="#{examsYearVar.active}" >
+                            <p:ajax event="valueChange"
+                                    update=":messages" global="false"/>
+                        </p:selectBooleanCheckbox>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+
+            <p:column headerText="Default" width="30" >
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <p:selectBooleanCheckbox value="#{examsYearVar.current}" disabled="true" />
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:selectBooleanCheckbox value="#{examsYearVar.current}" >
+                            <p:ajax event="valueChange"
+                                    update=":messages" global="false"/>
+                        </p:selectBooleanCheckbox>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+
+            <p:column width="20" >
+                <p:rowEditor rendered="#{authsDao.auths.pupdate}"/>
+            </p:column>
+
+
+            <p:column width="40">
+                <p:commandButton value="" update=" :messages examsYearGrid"
+                                 icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{examsYearDao.delete(examsYearVar)}"
+                                 disabled="#{not authsDao.auths.pdelete}"
+                        >
+                    <p:confirm header="#{msg.global_confirmation}"
+                               message="DÖNEM SİLMEYİ ONAYLIYORMUSUNUZ?" icon="ui-icon-alert"/>
+                </p:commandButton>
+            </p:column>
+
+
+
+            <f:facet name="footer">
+                <p:commandButton value="Ekle" onclick="PF('yearDialogWidget').show()"
+                                 actionListener="#{examsYearDao.reset}"
+                                 disabled="#{not authsDao.auths.padd}"
+                        />
+            </f:facet>
+
+        </p:dataTable>
+    </h:form>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
+
+</cc:implementation>
+</html>

@@ -9,10 +9,27 @@
 <f:view>
     <h:head>
         <title>#{msg.student}</title>
+        <h:outputScript library="primefaces" name="jquery/jquery.js" />
     </h:head>
     <ui:decorate template="/WEB-INF/templates/masterStudent.xhtml">
         <ui:param name="title" value="#{msg.student}" />
         <h:form id="pageForm">
+            <p:outputPanel style="width: 100%; text-align: right;">
+                <p:panelGrid columns="4" styleClass="filterPanelGrid" >
+                    <p:outputLabel value="#{msg.exam_year} :"/>
+                    <p:selectOneMenu id="examsYear" value="#{examsDao.filterYear}" title="examsYear">
+                        <p:ajax update="@widgetVar(resultsGridWidget)"/>
+                        <f:selectItems value="#{examsYearDao.itemsActive}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}" />
+                    </p:selectOneMenu>
+                    <p:outputLabel value="#{msg.exam_season} :"/>
+                    <p:selectOneMenu value="#{examsDao.filterSeason}">
+                        <p:ajax update="@widgetVar(resultsGridWidget)"/>
+                        <f:selectItems value="#{examsSeasonDao.items}" var="man"
+                                       itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+            </p:outputPanel>
             <components:resultsStudentLessonsGrid rows="5000" scrollable="true" scrollHeight="450" update=":#{p:component('answersForm')}"
                                                   widgetVar="resultsGridWidget" paginator="false"/>
             <p:panelGrid columns="2">

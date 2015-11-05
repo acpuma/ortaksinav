@@ -38,6 +38,9 @@ public class StudentsSecuritySer implements UserDetailsService {
         if (student==null) {
             throw new UsernameNotFoundException("Kullanıcı Bulunmadı");
         }
+        if (student.getActive().equals(false)) {
+            throw new UsernameNotFoundException("Kullanıcı Bulunmadı");
+        }
         Users user=new Users();
         user.setTid(student.getTid());
         user.setUsername(student.getUsername());

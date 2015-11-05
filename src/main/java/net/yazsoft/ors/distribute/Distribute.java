@@ -325,33 +325,15 @@ public class Distribute {
                             }
                             if (value!=null) {
                                 switch (index) {
-                                    case 1:
-                                        person.setId(Double.valueOf(value).intValue());
-                                        break;
-                                    case 2:
-                                        person.setSclass(value);
-                                        break;
-                                    case 3:
-                                        person.setNumber(Double.valueOf(value).intValue());
-                                        break;
-                                    case 4:
-                                        person.setName(value);
-                                        break;
-                                    case 5:
-                                        person.setSurname(value);
-                                        break;
-                                    case 6:
-                                        person.setBooklet(value);
-                                        break;
-                                    case 7:
-                                        person.setLesson1(value);
-                                        break;
-                                    case 8:
-                                        person.setLesson2(value);
-                                        break;
-                                    case 9:
-                                        person.setLesson3(value);
-                                        break;
+                                    case 1:person.setId(Double.valueOf(value).intValue());break;
+                                    case 2:person.setSclass(value);break;
+                                    case 3:person.setNumber(Double.valueOf(value).intValue());break;
+                                    case 4:person.setName(value);break;
+                                    case 5:person.setSurname(value);break;
+                                    case 6:person.setBooklet(value);break;
+                                    case 7:person.setLesson1(value);break;
+                                    case 8:person.setLesson2(value);break;
+                                    case 9:person.setLesson3(value);break;
                                     default:
                                         logger.info("LOG01270: INDEX NONE : " + index);
                                         break;

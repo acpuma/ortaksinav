@@ -16,6 +16,9 @@
         #{authsDao.findAuths("/admin/users")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;">
         <p:outputPanel style="text-align: right;">
+            <p:commandButton value="Dosyadan Al" process="@this"
+                             oncomplete="PF('fileDialogWidget').show()"
+                    />
             <p:commandButton icon="toolbar-add toolbar-icon"
                              styleClass="toolbar-button" style="padding:1px 5px;"
                              value="#{msg.toolbar_add}"
@@ -28,6 +31,7 @@
         </p:outputPanel>
     <p:outputPanel style="width: 99%; margin:0 auto;">
         <components:usersGrid rows="100" scrollable="true" update=":#{p:component('formPanel')}" daobean="#{usersDao}"
+                              id="usersGrid"
                               widgetVar="usersGridWidget" scrollHeight="400" oncomplete="PF('pageGrid').show()"/>
     </p:outputPanel>
     <p:dialog id="gridDialog" header="#{msg.username}" widgetVar="pageGrid"
@@ -45,7 +49,7 @@
 
                     <p:outputLabel value="#{msg.password}:" for="password"/>
                     <p:password id="password" value="#{usersDao.item.password}" title="Password"
-                                converter="password" />
+                                 />
 
                     <p:outputLabel value="#{msg.global_name}:" for="name"/>
                     <p:inputText id="name" value="#{usersDao.item.name}" title="Name"/>
@@ -71,12 +75,64 @@
                 <div class="clearfix"/>
 
                 <p:messages/>
-                <components:toolbar gridname="usersGrid" daobean="#{usersDao}" print="false" new="false" search="false"/>
+                <components:toolbar gridname="usersGrid" daobean="#{usersDao}" print="false" new="false" search="false"
+                        oncomplete="PF('usersGridWidget').filter();"/>
             </h:form>
         </p:outputPanel>
+    </p:dialog>
 
+    <p:dialog id="fileDialog" header="#{msg.username} Al" widgetVar="fileDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+        <p:panelGrid columns="5" id="filePanel">
+            <p:outputPanel>
+                <h:form enctype="multipart/form-data" id="uploadForm">
+                    <p:fileUpload fileUploadListener="#{usersDao.handleFileUpload}"
+                                  mode="advanced"
+                                  multiple="false"
+                                  allowTypes="/(\.|\/)(xls)$/"
+                                  fileLimit="20000"
+                                  label="#{msg.upload_select_file}"
+                                  uploadLabel="#{msg.upload}"
+                                  cancelLabel="#{msg.global_cancel}"
+                                  process="uploadForm"
+                                  update=":messages"
+                            />
+                </h:form>
+            </p:outputPanel>
+
+            <p:outputPanel style="text-align: center;">
+                <h:form id="fileForm">
+                    <p:commandButton value="Dosyadan Al" actionListener="#{usersDao.readUsers}"
+                                     update=":#{p:component('usersDtosGrid')} :messages"
+                                     oncomplete="PF('usersDtosGridWidget').filter()"/>
+                </h:form>
+            </p:outputPanel>
+
+            <p:outputPanel style="text-align: center;">
+                <h:form id="sonUploadForm">
+
+                    <p:commandLink value="son upload indir" process="@this"
+                                   actionListener="#{usersDao.downloadExcel}" ajax="false"/>
+                </h:form>
+            </p:outputPanel>
+            <p:outputPanel style="text-align: center;">
+                <h:form id="bosExcelForm">
+                    <p:commandLink value="bos excel indir" process="@this"
+                                   actionListener="#{usersDao.downloadExcelTemplate}" ajax="false"/>
+                </h:form>
+            </p:outputPanel>
+
+            <p:commandButton value="#{msg.toolbar_save}" process="@this"
+                             actionListener="#{usersDao.saveDtos}"
+                             update=":#{p:component('usersGrid')} :messages"
+                             oncomplete="PF('fileDialogWidget').hide(); PF('usersGridWidget').filter();" />
+        </p:panelGrid>
+
+        <components:usersDtosGrid rows="100"  scrollable="true" id="usersDtosGrid" scrollHeight="310"
+                                     widgetVar="usersDtosGridWidget" />
 
     </p:dialog>
+
 
 </p:outputPanel>
     </ui:decorate>

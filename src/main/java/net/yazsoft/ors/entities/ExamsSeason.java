@@ -38,6 +38,7 @@ public class ExamsSeason extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private boolean active;
+    private boolean current;
     @Basic(optional = false)
     @NotNull
     @Column(nullable = false)
@@ -127,6 +128,14 @@ public class ExamsSeason extends BaseEntity implements Serializable {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public boolean getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current = current;
     }
 
     @XmlTransient

@@ -24,6 +24,7 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
     private static final Logger logger = Logger.getLogger(SchoolsClassDao.class);
     SchoolsClass selected;
     List<SchoolsClass> schoolsClasses;
+    List<SchoolsClass> foundClasses;
 
     public List findBySchool(Schools school) {
         logger.info("SCHOOL : " + school);
@@ -40,6 +41,23 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
             e.printStackTrace();
         }
         return list;
+    }
+
+    /**
+     * Find class from current active schollClasses list
+     * @param name class name to find
+     * @return
+     */
+    public SchoolsClass findByNameFromList(String name) {
+        if (foundClasses==null) {
+            foundClasses=findBySchool(Util.getActiveSchool());
+        }
+        for (SchoolsClass sclass:foundClasses) {
+            if (sclass.getName().equals(name)) {
+                return sclass;
+            }
+        }
+        return null;
     }
 
     public SchoolsClass findBySchoolAndName(Schools school,String name) {

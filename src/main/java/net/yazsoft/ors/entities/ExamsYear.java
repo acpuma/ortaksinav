@@ -42,6 +42,7 @@ public class ExamsYear extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private int version;
+    private boolean current;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -114,6 +115,14 @@ public class ExamsYear extends BaseEntity implements Serializable {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public boolean getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current = current;
     }
 
     @XmlTransient

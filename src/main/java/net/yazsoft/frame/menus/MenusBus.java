@@ -80,7 +80,9 @@ public class MenusBus implements Serializable{
         List<UsersMenus> submenus=new ArrayList<>();
         for (UsersMenus umenu:usersMenus) {
             if (umenu.getRefMenu().getMainId().getTid().equals(menuid)) {
-                submenus.add(umenu);
+                if (umenu.getRefMenu().getActive()==true) {
+                    submenus.add(umenu);
+                }
             }
         }
         BeanComparator fieldComparator=new BeanComparator("refMenu.rank");

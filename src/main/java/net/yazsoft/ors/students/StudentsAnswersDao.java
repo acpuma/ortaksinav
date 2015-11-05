@@ -7,6 +7,9 @@ import net.yazsoft.frame.upload.UploadsDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.answers.AnswersDao;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.exams.ExamsDao;
+import net.yazsoft.ors.exams.ExamsSeasonDao;
+import net.yazsoft.ors.exams.ExamsYearDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
@@ -24,10 +27,14 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
     private static final Logger logger = Logger.getLogger(StudentsAnswersDao.class);
     StudentsAnswers selected;
     List studentAnswers;
+    ExamsYear filterYear;
 
     @Inject AnswersDao answersDao;
     @Inject UploadsBean uploadsBean;
     @Inject UploadsDao uploadsDao;
+    @Inject ExamsDao examsDao;
+    @Inject ExamsYearDao examsYearDao;
+    @Inject ExamsSeasonDao examsSeasonDao;
 
     public Boolean getBookletReady() {
         Uploads upload=uploadsDao.getExamBooklet(getItem().getRefExam(),getItem().getBooklet());
@@ -77,13 +84,27 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
      */
     public List findByStudent(Students student) {
         logger.info("STUDENT : " + student);
+        logger.info("LOG02710: YEAR / SEASON : " + examsDao.getFilterYear() + " / " + examsDao.getFilterSeason());
         List list=null;
         try {
+            if (examsDao.getFilterYear()==null) {
+                examsDao.setFilterYear(examsYearDao.findDefaultYear());
+                examsDao.setFilterSeason(examsSeasonDao.findDefaultSeason());
+            }
             Criteria c = getCriteria();
             c.add(Restrictions.eq("refStudent", student));
             c.add(Restrictions.eq("active", true));
+            DetachedCriteria subquery = DetachedCriteria.forClass(Exams.class, "exam")
+                    // Filter the Subquery
+                    .add(Restrictions.eq("refExamYear", examsDao.getFilterYear()))
+                    .add(Restrictions.eq("refExamSeason", examsDao.getFilterSeason()))
+                            // SELECT The exam Id
+                    .setProjection(Projections.property("exam.tid"));
+            //c.add(Restrictions.eq("refExam.refExamSeason",examsDao.getFilterSeason()));
+            //c.add(Restrictions.eq("refExam.refExamYear",examsDao.getFilterYear()));
             //c.addOrder(Order.desc(""));
             //c.add(Restrictions.eq("isDeleted", false));
+            c.add(Subqueries.propertyIn("refExam", subquery));
             list = c.list();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -214,11 +235,21 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
     }
 
     public List getStudentAnswers() {
-        if (studentAnswers==null) findByStudent(Util.getActiveStudent());
+        //if (studentAnswers==null) {
+            findByStudent(Util.getActiveStudent());
+        //}
         return studentAnswers;
     }
 
     public void setStudentAnswers(List studentAnswers) {
         this.studentAnswers = studentAnswers;
+    }
+
+    public ExamsYear getFilterYear() {
+        return filterYear;
+    }
+
+    public void setFilterYear(ExamsYear filterYear) {
+        this.filterYear = filterYear;
     }
 }

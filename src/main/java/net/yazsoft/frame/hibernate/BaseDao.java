@@ -146,7 +146,7 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
         try {
             c = getCriteria();
             getSession().flush();
-            c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
 
             // Add sorting if requested

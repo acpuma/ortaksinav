@@ -60,7 +60,14 @@
                     <h:inputTextarea id="mesaj" value="#{smsDao.mesaj}"
                                      rows="5" cols="24"  />
                 </p:panelGrid>
-                <p:outputPanel style="width: 340px; height: 380px; overflow: scroll; vertical-align: top;">
+                <p:outputPanel style="width: 340px; height: 100%; overflow: scroll; vertical-align: top;" id="userspanel">
+                    <p:commandButton value="Kişi Ekle"
+                                     rendered="true" update=":messages"
+                                     disabled="#{not authsDao.auths.padd}"
+                                     oncomplete="PF('addUserDialogWidget').show();"
+
+                            />
+                    <hr/>
                     <h:outputLabel value="Kişiler : " for="phones" />
                     <p:selectManyMenu value="#{resultsSendDao.selectedUsers}" id="phones" label="TELEFONLAR" showCheckbox="true"
                             style="width: 334px;" converter="entityConverter">
@@ -76,8 +83,8 @@
                                  disabled="#{not authsDao.auths.preport}"
                                  onstart="PF('blockUIWidget1').block()"
                                  oncomplete="PF('blockUIWidget1').unblock();"
-
                         />
+
                 <p:commandButton value="Gönderilenler" actionListener="#{resultsSendDao.setItems(null)}"
                                  rendered="true" update=":messages @widgetVar(resultsSendDialogWidget)"
                                  oncomplete="PF('resultsSendDialogWidget').show();"
@@ -94,6 +101,28 @@
 
                     <components:resultsSendGrid rows="100" scrollable="true" editable="true"  scrollHeight="400"
                                             widgetVar="resultsSendGridWidget" />
+            </p:dialog>
+
+            <p:dialog id="addUserDialog" header="Kişi Ekle" widgetVar="addUserDialogWidget"
+                      modal="true" resizable="true" dynamic="true" appendTo="@(body)">
+
+                <h:form>
+                    <p:panelGrid columns="2">
+                        <h:outputLabel value="Ad : " for="name" />
+                        <h:inputText id="name" value="#{resultsSendDao.newUser.name}"/>
+                        <h:outputLabel value="Soyad : " for="surname" />
+                        <h:inputText id="surname" value="#{resultsSendDao.newUser.surname}"/>
+                        <h:outputLabel value="Email : " for="email" />
+                        <h:inputText id="email" value="#{resultsSendDao.newUser.email}"/>
+                        <h:outputLabel value="Telefon : " for="phone" />
+                        <h:inputText id="phone" value="#{resultsSendDao.newUser.phone}"/>
+                        <p:commandButton value="Kişi Ekle" actionListener="#{resultsSendDao.addUser}"
+                                         rendered="true" update=":messages :#{p:component('userspanel')}"
+                                         disabled="#{not authsDao.auths.padd}"
+                                         oncomplete="PF('addUserDialogWidget').hide();"
+                                />
+                    </p:panelGrid>
+                </h:form>
             </p:dialog>
 
         </p:outputPanel>

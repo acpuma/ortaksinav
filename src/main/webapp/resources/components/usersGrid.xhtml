@@ -38,7 +38,8 @@
     <h:form>
         <c:set var="daobeann" value="#{cc.attrs.daobean}" />
         <p:dataTable id="usersGrid"
-                     var="usersGrid"
+                     var="usersGridVar"
+                     rowIndexVar="rowIndex"
 
                      filterEvent="enter"
                      value="#{usersSer.lazyModel}"
@@ -77,7 +78,7 @@
                      selectionMode="single"
                      selection="#{usersDao.item}"
                      lazy="true"
-                     rowKey="#{usersGrid.tid}"
+                     rowKey="#{usersGridVar.tid}"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
@@ -87,21 +88,27 @@
                     listener="#{daobeann.select}"
                     />
 
-            <p:column headerText="#{msg.global_id}" width="25" rendered="true"  > #{usersGrid.tid}  </p:column>
+            <p:column headerText=" " width="15" rendered="true"  > #{rowIndex+1}  </p:column>
+            <p:column headerText="#{msg.global_id}" width="25" rendered="true"  > #{usersGridVar.tid}  </p:column>
 
-            <p:column headerText="#{msg.username}" width="120" filterBy="#{usersGrid.username}"  >
-                #{usersGrid.username} </p:column>
-            <p:column headerText="#{msg.global_name}" width="120" filterBy="#{usersGrid.name}">
-                #{usersGrid.name}
+            <p:column headerText="#{msg.username}" width="120" filterBy="#{usersGridVar.username}"  >
+                #{usersGridVar.username} </p:column>
+            <p:column headerText="#{msg.global_name}" width="120" filterBy="#{usersGridVar.name}">
+                #{usersGridVar.name}
             </p:column>
 
-            <p:column headerText="#{msg.global_surname}" width="120" rendered="true" filterBy="#{usersGrid.surname}">
-                #{usersGrid.surname}  </p:column>
-            <p:column headerText="#{msg.global_email}" width="150" rendered="true" > #{usersGrid.email}  </p:column>
-            <p:column headerText="#{msg.global_group}" width="100" rendered="true" >
-             #{usersGrid.refRole.nameTr}
+            <p:column headerText="#{msg.global_surname}" width="120" rendered="true" filterBy="#{usersGridVar.surname}">
+                #{usersGridVar.surname}  </p:column>
+            <p:column headerText="#{msg.global_email}" width="130" rendered="true" > #{usersGridVar.email}  </p:column>
+            <p:column headerText="#{msg.global_group}" width="70" rendered="true" >
+             #{usersGridVar.refRole.nameTr}
             </p:column>
-
+            <p:column headerText="Aktif" width="20" >
+                <p:selectBooleanCheckbox value="#{usersGridVar.active}" >
+                    <p:ajax event="valueChange"  listener="#{usersDao.checkboxChange(usersGridVar)}"
+                            update=":messages" global="false"/>
+                </p:selectBooleanCheckbox>
+            </p:column>
         </p:dataTable>
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />

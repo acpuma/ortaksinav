@@ -35,6 +35,7 @@
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
         <p:dataTable id="studentsGrid"
                      var="studentsVar"
+                     rowIndexVar="rowIndex"
 
                      filterEvent="enter"
                      value="#{studentsDao.gridStudents}"
@@ -87,6 +88,7 @@
                 #{msg.students}
             </f:facet>
 
+            <p:column headerText=" " width="15" rendered="true"  > #{rowIndex+1}  </p:column>
             <p:column headerText="#{msg.global_id}" width="20" rendered="true" style="display:none;" >
                 #{studentsVar.tid}
             </p:column>
@@ -126,6 +128,12 @@
             </p:column>
             <p:column headerText="#{msg.global_mernis}" width="60" >
                 #{studentsVar.mernis}
+            </p:column>
+            <p:column headerText="Aktif" width="20" >
+                <p:selectBooleanCheckbox value="#{studentsVar.active}" >
+                    <p:ajax event="valueChange"  listener="#{studentsDao.checkboxChange(studentsVar)}"
+                            update=":messages" global="false"/>
+                </p:selectBooleanCheckbox>
             </p:column>
 
             <p:column width="40" rendered="false">

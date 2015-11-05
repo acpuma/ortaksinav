@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="false"     required="false"   name="disabledSelection"  />
+    <cc:attribute default="false"     required="false"   name="draggableColumns" />
+    <cc:attribute default="false"     required="false"   name="editable" />
+    <cc:attribute default="false"     required="false"   name="editMode" />
+    <cc:attribute default="false"     required="false"   name="editingRow" />
+    <cc:attribute default="false"     required="false"   name="expandedRow" />
+    <cc:attribute default="true"      required="false"   name="paginator" />
+    <cc:attribute default="bottom"    required="false"   name="paginatorPosition" />
+    <cc:attribute default="true"      required="false"   name="paginatorAlwaysVisible" />
+    <cc:attribute default="true"      required="false"   name="resizableColumns" />
+    <cc:attribute default="0"         required="false"   name="rows" />
+    <cc:attribute default="true"      required="false"   name="rendered" />
+    <cc:attribute default="true"      required="false"   name="scrollable" />
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetusersDtos"     required="false"   name="widgetVar" />
+    <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute  required="false" name="tableStyle" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="usersDtosGrid"
+                     var="usersDtosVar"
+
+                     filterEvent="enter"
+                     value="#{usersDao.usersDtos}"
+                     emptyMessage=" #{msg['global_no_data']}"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+                 {PreviousPageLink} 
+                 {PageLinks} {NextPageLink} 
+                 {LastPageLink} {RowsPerPageDropdown}"
+
+                     draggableColumns="#{cc.attrs.draggableColumns}"
+
+                     editable="#{cc.attrs.editable}"
+                     expandedRow="#{cc.attrs.expandedRow}"
+
+                     paginator="#{cc.attrs.paginator}"
+                     paginatorPosition="#{cc.attrs.paginatorPosition}"
+                     paginatorAlwaysVisible="#{cc.attrs.paginatorAlwaysVisible}"
+
+                     resizableColumns="#{cc.attrs.resizableColumns}"
+                     rows="#{cc.attrs.rows}"
+                     rendered="#{cc.attrs.rendered}"
+
+                     scrollable="#{cc.attrs.scrollable}"
+                     sortOrder="#{cc.attrs.sortOrder}"
+                     sortMode="#{cc.attrs.sortMode}"
+                     stickyHeader="#{cc.attrs.stickyHeader}"
+                     scrollWidth="#{cc.attrs.scrollWidth}"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                     liveResize="true"
+
+                     transient="#{cc.attrs.transient}"
+                     widgetVar="#{cc.attrs.widgetVar}"
+
+
+                     rowKey="#{usersDtosVar.tid}"
+                     tableStyle="#{cc.attrs.tableStyle}"
+
+                     rowStyleClass="#{usersDtosVar.tid eq null ? 'bgYellow' : null}"
+
+                >
+            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
+                    onstart="PF('blockUIWidget1').block()"
+                    oncomplete="PF('blockUIWidget1').unblock();PF('formDialogWidget').show();"
+                    process="@all"
+                    listener="#{usersDao.select}"
+                    />
+
+            <f:facet name="header">
+                #{msg.users_header}
+            </f:facet>
+
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  >
+                #{usersDtosVar.tid}
+            </p:column>
+            <p:column headerText="#{msg.school}" width="120" rendered="false" >
+                #{usersDtosVar.refSchool.name}
+            </p:column>
+            <p:column headerText="#{msg.global_name}" width="60" >
+                #{usersDtosVar.name}
+            </p:column>
+            <p:column headerText="#{msg.global_surname}" width="60" >
+                #{usersDtosVar.surname}
+            </p:column>
+            <p:column headerText="#{msg.username}" width="120" >
+                #{usersDtosVar.username}
+            </p:column>
+            <p:column headerText="#{msg.global_phone}" width="120" >
+                #{usersDtosVar.phone}
+            </p:column>
+            <p:column headerText="#{msg.global_email}" width="60" >
+                #{usersDtosVar.email}
+            </p:column>
+
+
+        </p:dataTable>
+    </h:form>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
+
+</cc:implementation>
+</html>

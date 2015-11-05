@@ -34,6 +34,7 @@ public class UsersSecuritySer implements UserDetailsService {
         Users user = userDao.findByUserName(username);
         logger.info("USER : " + user);
         if (user==null) throw new UsernameNotFoundException("Username not found");
+        if (user.getActive()==false) throw new UsernameNotFoundException("Username is passive");
         return new User(
                 user.getUsername(),
                 user.getPassword(),

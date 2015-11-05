@@ -15,30 +15,64 @@
         <ui:param name="title" value="#{msg.settings}" />
         #{authsDao.findAuths("/admin/settings")}
         <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
-            <h:form id="pageForm">
-                <ui:repeat value="#{settingsDao.settings}" var="setting">
-                    <p:panelGrid columns="2" id="pagePanel" >
-                        <h:outputLabel value="#{setting.titleTr}" />
-                        <p:inputText value="#{setting.valueStr}"  rendered="#{not empty setting.valueStr}" />
-                        <p:inputText value="#{setting.valueInt}" rendered="#{not empty setting.valueInt}" />
-                        <p:inputText value="#{setting.valueFloat}" rendered="#{not empty setting.valueFloat}"/>
-                        <p:inputText value="#{setting.valueDouble}" rendered="#{not empty setting.valueDouble}"/>
-                        <p:selectBooleanButton value="#{setting.valueBool}" rendered="#{not empty setting.valueBool}"
-                                               offLabel="#{msg.global_no}" onLabel="#{msg.global_yes}"/>
+            <p:tabView >
+                <p:tab title="Dönemler">
+                    <p:panelGrid columns="2">
+                    <components:examsYearGrid rows="100" scrollable="true" editable="true"
+                                                paginator="false" scrollHeight="250"
+                                                widgetVar="examsYearGridWidget"/>
+                    <components:examsSeasonGrid rows="100" scrollable="true"
+                                              paginator="false" scrollHeight="250"
+                                              widgetVar="examsSeasonGridWidget"/>
                     </p:panelGrid>
-                </ui:repeat>
-                <h:inputHidden id="tid" value="#{settingsDao.item.tid}"/>
-                <h:inputHidden id="status" value="#{settingsDao.status}"  />
-                <h:inputHidden id="disabledelete" value="#{settingsDao.disabledelete}" />
-                <h:messages />
-                <p:commandButton value="#{msg.toolbar_save}"
-                                 actionListener="#{settingsDao.save}"
-                                 update=":messages"
-                                 onstart="PF('blockUIWidget1').block()"
-                                 oncomplete="PF('blockUIWidget1').unblock();"
-                        />
-            </h:form>
+                </p:tab>
+            <p:tab title="Demo">
+                <h:form id="pageForm">
+                    <ui:repeat value="#{settingsDao.settings}" var="setting">
+                        <p:panelGrid columns="2" id="pagePanel" >
+                            <h:outputLabel value="#{setting.titleTr}" />
+                            <p:inputText value="#{setting.valueStr}"  rendered="#{not empty setting.valueStr}" />
+                            <p:inputText value="#{setting.valueInt}" rendered="#{not empty setting.valueInt}" />
+                            <p:inputText value="#{setting.valueFloat}" rendered="#{not empty setting.valueFloat}"/>
+                            <p:inputText value="#{setting.valueDouble}" rendered="#{not empty setting.valueDouble}"/>
+                            <p:selectBooleanButton value="#{setting.valueBool}" rendered="#{not empty setting.valueBool}"
+                                                   offLabel="#{msg.global_no}" onLabel="#{msg.global_yes}"/>
+                        </p:panelGrid>
+                    </ui:repeat>
+                    <h:inputHidden id="tid" value="#{settingsDao.item.tid}"/>
+                    <h:inputHidden id="status" value="#{settingsDao.status}"  />
+                    <h:inputHidden id="disabledelete" value="#{settingsDao.disabledelete}" />
+                    <h:messages />
+                    <p:commandButton value="#{msg.toolbar_save}"
+                                     actionListener="#{settingsDao.save}"
+                                     update=":messages"
+                                     onstart="PF('blockUIWidget1').block()"
+                                     oncomplete="PF('blockUIWidget1').unblock();"
+                            />
+                </h:form>
+            </p:tab>
+            </p:tabView>
         </p:outputPanel>
+
+        <p:dialog id="yearDialog" header="#{msg.lesson}" widgetVar="yearDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+            <h:form id="yearForm" >
+                <p:outputLabel value="#{msg.global_name}:" for="year" />
+                <p:inputText id="year" value="#{examsYearDao.item.name}" title="Ad" />
+                <p:commandButton value="Kaydet" action="#{examsYearDao.save}"
+                                 update="@widgetVar(examsYearGridWidget)"
+                                 onsuccess="PF('yearDialogWidget').hide()">
+                </p:commandButton>
+            </h:form>
+        </p:dialog>
+
+        <p:confirmDialog global="true">
+            <p:commandButton value="#{msg.global_yes}" type="button"
+                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            <p:commandButton value="#{msg.global_no}" type="button"
+                             styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+        </p:confirmDialog>
+
     </ui:decorate>
 </f:view>
 </html>
