@@ -2,6 +2,7 @@ package net.yazsoft.ors.exams;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.security.UsersDao;
 import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
@@ -11,6 +12,7 @@ import net.yazsoft.ors.lessons.LessonsDao;
 import net.yazsoft.ors.lessons.LessonsDto;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.PostConstruct;
@@ -40,6 +42,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     @Inject ExamsFalseTypeDao examsFalseTypeDao;
     @Inject ExamsParametersTypeDao examsParametersTypeDao;
     @Inject ExamsParametersDao examsParametersDao;
+    @Inject UsersDao usersDao;
 
     public ExamsDao() {
         super(Exams.class);
@@ -54,6 +57,15 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         listChanged=true;
 
         //filteredExams=new ArrayList<Exams>();
+    }
+
+    @Override
+    public void delete() {
+        for (Users tempuser:getItem().getUsersCollection()) {
+            tempuser.setRefActiveExam(null);
+            usersDao.update(tempuser);
+        }
+        super.delete();
     }
 
     public List<Exams> findFilteredExams() {
@@ -187,6 +199,25 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             Util.setFacesMessageError(e.getMessage());
         }
 
+    }
+
+    public Exams findLastExam(Schools school) {
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            c.add(Restrictions.eq("refSchool", school));
+            c.addOrder(Order.desc("date"));
+            list = c.list();
+            if (list.size()>0) {
+                return (Exams)list.get(0);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Exams getSelected() {

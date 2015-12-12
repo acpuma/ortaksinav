@@ -14,7 +14,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
@@ -272,6 +274,22 @@ public class UsersDao extends BaseGridDao<Users> {
         } else {
             return null;
         }
+    }
+
+    public List<Users> findAdmins() {
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            c.createCriteria("refRole").add(Restrictions.eq("name",Constants.ROLE_ADMIN));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
     }
 
 

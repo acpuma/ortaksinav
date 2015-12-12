@@ -3,6 +3,8 @@ package net.yazsoft.ors.deleteRecords;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
+import net.yazsoft.ors.entities.Exams;
+import net.yazsoft.ors.entities.Schools;
 import net.yazsoft.ors.entities.SchoolsClass;
 import net.yazsoft.ors.entities.Students;
 import net.yazsoft.ors.schools.SchoolsClassDao;
@@ -19,7 +21,8 @@ import java.util.List;
 @Named
 @ViewScoped
 public class DeleteRecordsDao extends BaseGridDao implements Serializable{
-
+    Schools school;
+    Exams exam;
     List<Students> students;
     List<SchoolsClass> classes;
 
@@ -47,6 +50,7 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
 
 
     public void deleteClassesExam() {
+        getSchool();
         getClasses();
         try {
             for (SchoolsClass schoolsClass:classes){
@@ -60,9 +64,10 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
     }
 
     public void deleteClassesSchool() {
+        getSchool();
         try {
             String hql = "delete from SchoolsClass where refSchool= :school";
-            getSession().createQuery(hql).setLong("school", Util.getActiveSchool().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("school", school.getTid()).executeUpdate();
             Util.setFacesMessage("Silindi");
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
@@ -71,6 +76,7 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
     }
 
     public void deleteStudentsExam() {
+        getExam();
         getStudents();
         try {
             for (Students student:students){
@@ -84,9 +90,10 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
     }
 
     public void deleteStudentsSchool() {
+        getSchool();
         try {
             String hql = "delete from Students where refSchool= :school";
-            getSession().createQuery(hql).setLong("school", Util.getActiveSchool().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("school", school.getTid()).executeUpdate();
             Util.setFacesMessage("Silindi");
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
@@ -95,10 +102,11 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
     }
 
     public void deleteStudentsAnswersExam() {
+        getExam();
         getStudents();
         try {
             String hql = "delete from StudentsAnswers where refExam= :exam";
-            getSession().createQuery(hql).setLong("exam", Util.getActiveExam().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("exam", exam.getTid()).executeUpdate();
             Util.setFacesMessage("Silindi");
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
@@ -107,10 +115,11 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
     }
 
     public void deleteStudentsAnswersSchool() {
+        getSchool();
         getStudents();
         try {
             String hql = "delete from StudentsAnswers where refSchool = :school";
-            getSession().createQuery(hql).setLong("school", Util.getActiveSchool().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("school", school.getTid()).executeUpdate();
             Util.setFacesMessage("Silindi");
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
@@ -120,12 +129,13 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
 
     @Transactional
     public void deleteResultsExam() {
+        getExam();
         try {
             String hql = "delete from Results where refExam = :exam";
-            getSession().createQuery(hql).setLong("exam", Util.getActiveExam().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("exam", exam.getTid()).executeUpdate();
             hql = "update StudentsAnswers a set trues=NULL,falses=NULL,nets=NULL,score=NULL," +
                     "rankClass=NULL,rankSchool=NULL,a.nulls=NULL where refExam = :exam";
-            getSession().createQuery(hql).setLong("exam", Util.getActiveExam().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("exam", exam.getTid()).executeUpdate();
             Util.setFacesMessage("Silindi");
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
@@ -134,12 +144,13 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
     }
 
     public void deleteResultsSchool() {
+        getSchool();
         try {
             String hql = "delete from Results where refSchool = :school";
-            getSession().createQuery(hql).setLong("school", Util.getActiveSchool().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("school", school.getTid()).executeUpdate();
             hql = "update StudentsAnswers a set trues=NULL,falses=NULL,nets=NULL,score=NULL," +
                     "rankClass=NULL,rankSchool=NULL,a.nulls=NULL where refSchool = :school";
-            getSession().createQuery(hql).setLong("school", Util.getActiveSchool().getTid()).executeUpdate();
+            getSession().createQuery(hql).setLong("school", school.getTid()).executeUpdate();
             Util.setFacesMessage("Silindi");
         } catch (Exception e) {
             Util.setFacesMessageError(e.getMessage());
@@ -149,7 +160,7 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
 
     public List<Students> getStudents() {
         if (students==null) {
-            students=studentsAnswersDao.findExamStudents(Util.getActiveExam());
+            students=studentsAnswersDao.findExamStudents(exam);
         }
         return students;
     }
@@ -160,12 +171,34 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
 
     public List<SchoolsClass> getClasses() {
         if (classes==null) {
-            classes=studentsAnswersDao.findExamClasses(Util.getActiveExam());
+            classes=studentsAnswersDao.findExamClasses(exam);
         }
         return classes;
     }
 
     public void setClasses(List<SchoolsClass> classes) {
         this.classes = classes;
+    }
+
+    public Schools getSchool() {
+        if (school==null) {
+            school=Util.getActiveSchool();
+        }
+        return school;
+    }
+
+    public void setSchool(Schools school) {
+        this.school = school;
+    }
+
+    public Exams getExam() {
+        if (exam==null) {
+            exam=Util.getActiveExam();
+        }
+        return exam;
+    }
+
+    public void setExam(Exams exam) {
+        this.exam = exam;
     }
 }

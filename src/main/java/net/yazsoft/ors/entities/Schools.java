@@ -52,6 +52,7 @@ public class Schools extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
     private Boolean active;
+    private Boolean useMernis;
     @Size(max = 50)
     @Column(name = "meb_code", length = 50)
     private String mebCode;
@@ -62,12 +63,12 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<Users> usersCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Uploads> uploadsCollection;
-    @OneToMany(mappedBy = "refActiveSchool", fetch = FetchType.LAZY)
-    private Collection<Users> usersCollection1;
+
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Albums> albumsCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<StudentsAnswers> studentsAnswersCollection;
+    //cascade exams delete if school deleted
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Exams> examsCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
@@ -179,14 +180,6 @@ public class Schools extends BaseEntity implements Serializable {
         this.uploadsCollection = uploadsCollection;
     }
 
-    @XmlTransient
-    public Collection<Users> getUsersCollection1() {
-        return usersCollection1;
-    }
-
-    public void setUsersCollection1(Collection<Users> usersCollection1) {
-        this.usersCollection1 = usersCollection1;
-    }
 
     @XmlTransient
     public Collection<Albums> getAlbumsCollection() {
@@ -255,6 +248,14 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setRefTown(Towns refTown) {
         this.refTown = refTown;
+    }
+
+    public Boolean getUseMernis() {
+        return useMernis;
+    }
+
+    public void setUseMernis(Boolean useMernis) {
+        this.useMernis = useMernis;
     }
 
     @XmlTransient

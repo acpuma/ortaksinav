@@ -1,6 +1,5 @@
 package net.yazsoft.ors.lessonsGroup;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;

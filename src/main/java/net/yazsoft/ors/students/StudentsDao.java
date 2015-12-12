@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -43,6 +45,74 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     @Inject SchoolsClassDao schoolsClassDao;
     @Inject Excel excel;
     @Inject private BCryptPasswordEncoder encoder;
+
+    @Override
+    public void delete() {
+        super.delete();
+        gridStudents=null;
+    }
+
+    @Override
+    public Long create() {
+        logger.info("CREATING STUDENT");
+        getItem().setActive(Boolean.TRUE);
+        getItem().setRefSchool(Util.getActiveSchool());
+        //getItem().setAccountNonExpired(Boolean.TRUE);
+        //getItem().setAccountNonLocked(Boolean.TRUE);
+        //getItem().setCredentialsNonExpired(Boolean.TRUE);
+        if ((getItem().getPassword()==null) || getItem().getPassword().equals("")) {
+            Util.setFacesMessage("SIFRE alanini doldurunuz");
+            return null;
+        }
+        getItem().setPassword(encoder.encode(getItem().getPassword()));
+
+        //Collection<Roles> roles=new HashSet<>();
+        //roles.add(rolesDao.getById(3L));
+        Long pk=super.create();
+
+        //rolesDao.getById(3L).getUsersCollection().add(getItem());
+        //rolesDao.update();
+        //getSession().save(roles);
+        gridStudents=null;
+        return pk;
+    }
+
+
+    public String update() {
+        try {
+            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getUsername() + ":" + getItem().getPassword()+ ":"
+                    + ":" + getItem().getName() + ":" + getItem().getSurname() );
+            if ( (getItem().getPassword() == null) || (getItem().getPassword().length()==0) ) {
+                String hql = "update Students u set username=:username,name=:name,surname=:surname," +
+                        "phone=:phone,fullname=:fullname,schoolNo=:schoolno,refSchoolClass=:sclass," +
+                        "mernis=:mernis,gender=:gender where tid = :tid";
+                Query query = getSession().createQuery(hql);
+                query.setLong("tid", getItem().getTid());
+                query.setString("username", getItem().getUsername());
+                query.setLong("sclass", getItem().getRefSchoolClass().getTid());
+                query.setInteger("schoolno", getItem().getSchoolNo());
+                query.setString("fullname", getItem().getFullname());
+                query.setString("mernis", getItem().getMernis());
+                query.setString("name", getItem().getName());
+                query.setString("surname", getItem().getSurname());
+                query.setString("phone", getItem().getPhone());
+                query.setString("gender", getItem().getGender());
+
+                //query.setLong("role", getItem().getRefRole().getTid());
+                query.executeUpdate();
+                Util.setFacesMessage("KAYIT GÜNCELLENDİ");
+            } else {
+                getItem().setPassword(encoder.encode(getItem().getPassword()));
+                super.update();
+            }
+            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getUsername() + ":" + getItem().getPassword()+ ":"
+                    + ":" + getItem().getName() + ":" + getItem().getSurname() );
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        gridStudents=null;
+        return null;
+    }
 
     public Students findByNoAndSchool(Integer schoolNo,Schools school) {
         Students temp=null;
@@ -81,32 +151,61 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         return null;
     }
 
-    @Transactional
-    public void saveDtos() {
-        Students tempStudent=null;
+    public void saveClasses() {
         try {
-            for (StudentsDto studentDto:studentsDtos) {
+            //save classes
+            schoolsClassDao.findBySchool(Util.getActiveSchool()); //find old classes
+            for (StudentsDto studentDto : studentsDtos) {
                 //if class does not exist
-                if (studentDto.refSchoolClass.getTid()==null){
-                    SchoolsClass sclass=schoolsClassDao.findBySchoolAndName(
-                            Util.getActiveSchool(),studentDto.refSchoolClass.getName());
-                    //if class not created yet, create it
-                    if (sclass==null) {
-                        sclass=studentDto.refSchoolClass;
+                if (studentDto.refSchoolClass.getTid() == null) {
+                    SchoolsClass sclass = schoolsClassDao.findByNameFromList(studentDto.refSchoolClass.getName());
+                    //if class not created yet, §create it
+                    if (sclass == null) {
+                        sclass = new SchoolsClass();
+                        sclass.setName(studentDto.refSchoolClass.getName());
                         sclass.setRefSchool(Util.getActiveSchool());
-                        sclass.setActive(true);
+                        sclass.setActive(Boolean.TRUE);
+                        sclass.setVersion(1);
                         schoolsClassDao.saveOrUpdate(sclass);
+                        //sclass=(SchoolsClass)getSession().load(SchoolsClass.class,pkclas);
+                        schoolsClassDao.getFoundClasses().add(sclass);
+                        studentDto.setRefSchoolClass(sclass);
+                        logger.info("LOG02750: SCLASS : " + sclass.getTid());
                     }
                 }
+            }
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
+
+    public void saveDtos() {
+        saveClasses();
+        saveStudentDtos();
+    }
+
+    public void saveStudentDtos() {
+        Students tempStudent=null;
+        try {
+            saveClasses();
+
+            //save students
+            for (StudentsDto studentDto:studentsDtos) {
+                //logger.info("LOG02730: STUDENT : " + studentDto.getName()+ studentDto.getSurname());
+                //get schoolclass from saved one
+                studentDto.setRefSchoolClass(schoolsClassDao.findByNameFromList(studentDto.getRefSchoolClass().getName()));
                 if (studentDto.getTid()==null) {
+                    studentDto.setVersion(1);
                     getSession().save(studentDto.toEntity());
                 } else {
                     tempStudent=(Students)getSession().load(Students.class, studentDto.getTid());
                     saveOrUpdate(studentDto.toEntity(tempStudent));
                 }
-
+                //logger.info("LOG02740: SAVEDDDDDD STUDENT : " + studentDto.getName()+ studentDto.getSurname());
             }
+            logger.info("LOG02740: SAVEDDDDDD");
             Util.setFacesMessage("KAYIT EDILDI");
+            gridStudents=null;
         } catch (Exception e) {
             Util.catchException(e);
         }
@@ -169,7 +268,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                             }
                             //logger.info("LOG02650: CELL TYPE : " + index + " : " + cell.getCellType() + " : " + value);
 
-                            if (value!=null) {
+                            if (value!=null ) {
                                 switch (index) {
                                     case 1:
                                         tempClass=schoolsClassDao.findByNameFromList(value);
@@ -199,9 +298,9 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
 
                         //logger.info("LOG01240:VALUE : " + value);
                     } //end of cell iterator
-                    String credit=Util.getActiveSchool().getMebCode().concat(person.getSchoolNo().toString());
-                    person.setUsername(credit);
-                    person.setPassword(encoder.encode(credit));
+                    person=prepareCredits(person);
+
+
                     if (person.getSchoolNo()!=null) {
                         Students oldstudent=findByNo(person.getSchoolNo());
                         if (oldstudent!=null) {
@@ -214,10 +313,30 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                 }
             } //end of rows iterator
             studentsDtos=persons;
-            logger.info("LOG02610: STUDENTS : " + persons );
+            //logger.info("LOG02610: STUDENTS : " + persons );
         } catch (Exception e) {
             Util.catchException(e);
         }
+    }
+
+    /**
+     * Sets the student credits according to school useMernis field
+     * @param person
+     * @return same person with new credits
+     */
+    public StudentsDto prepareCredits(StudentsDto person) {
+        String credit;
+        if (Util.getActiveSchool().getUseMernis()) {
+            credit = person.getMernis();
+        } else {
+            credit = Util.getActiveSchool().getMebCode().concat(person.getSchoolNo().toString());
+        }
+        //logger.info("LOG02720: CREDIT : " + credit);
+        person.setUsername(credit);
+        if (credit!=null) {
+            person.setPassword(encoder.encode(credit));
+        }
+        return person;
     }
 
     public void downloadExcel(){

@@ -14,7 +14,12 @@
             <h:commandLink action="/student/student" ajax="false" immediate="true">
                 <p:graphicImage library="images" name="orslogo.png" height="44" style="margin:0;padding:0;"/>
             </h:commandLink>
-            <p:outputLabel value="#{sessionInfo.student.fullname}" style="margin: 0px 20px;"/>
+            <p:outputLabel style="margin: 0px 20px;"
+                           rendered="#{not empty sessionInfo.student.name}">
+                    #{sessionInfo.student.name} #{sessionInfo.student.surname}
+            </p:outputLabel>
+            <p:outputLabel value="#{sessionInfo.student.fullname}" style="margin: 0px 20px;"
+                           rendered="#{empty sessionInfo.student.name}"/>
         </span>
             </h:form>
     </p:outputPanel>

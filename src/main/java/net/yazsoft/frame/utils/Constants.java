@@ -3,6 +3,7 @@ package net.yazsoft.frame.utils;
 
 public class Constants {
     public static final String ROLE_ADMIN ="ADMIN";
+    public static final Long ROLE_ADMIN_NO =1L;
     public static final String ROLE_COMPANY ="COMPANY";
     public static final String ROLE_SCHOOL ="SCHOOL";
     public static final String ROLE_MANAGER ="MANAGER";

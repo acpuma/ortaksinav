@@ -65,6 +65,16 @@ public class LoginSer implements Serializable{
             zlog.setName(student.getUsername());
             zlog.setRefStudent(student);
             zlog.setRefSchool(student.getRefSchool());
+            if (student.getRefSchool()!=null) {
+                zlog.setSchoolName(student.getRefSchool().getName());
+            }
+            //save fullname as string so if student deleted, name will not be deleted
+            if (student.getFullname()==null) {
+                zlog.setFullname(student.getName() + " " + student.getSurname());
+            } else {
+                zlog.setFullname(student.getFullname());
+            }
+
             zlog.setActive(true);
             zlog.setCreated(Calendar.getInstance().getTime());
             zlogLoginDao.create(zlog);
@@ -118,6 +128,11 @@ public class LoginSer implements Serializable{
             zlog.setName(user.getUsername());
             zlog.setRefUser(user);
             zlog.setRefSchool(user.getRefActiveSchool());
+            if (user.getRefActiveSchool()!=null) {
+                zlog.setSchoolName(user.getRefActiveSchool().getName());
+            }
+            //save fullname as string so if user deleted, name will not be deleted
+            zlog.setFullname(user.getName() + " " + user.getSurname());
             zlog.setActive(true);
             zlog.setCreated(Calendar.getInstance().getTime());
             zlogLoginDao.create(zlog);

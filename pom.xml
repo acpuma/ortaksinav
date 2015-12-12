@@ -340,12 +340,13 @@
 
 
   <!-- Excel -->
+  <!--
   <dependency>
     <groupId>org.apache.poi</groupId>
     <artifactId>poi</artifactId>
     <version>3.11</version>
   </dependency>
-
+  -->
   <dependency>
     <groupId>org.apache.poi</groupId>
     <artifactId>poi-ooxml</artifactId>
@@ -390,7 +391,7 @@
 
 
 <build>
-  <finalName>${artifactId}</finalName>
+  <finalName>${project.artifactId}</finalName>
   <plugins>
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
@@ -407,7 +408,7 @@
       <version>${maven-war-plugin.version}</version>
       <configuration>
         <outputDirectory>deployments</outputDirectory>
-        <warName>${artifactId}</warName>
+        <warName>${project.artifactId}</warName>
       </configuration>
     </plugin>
   </plugins>

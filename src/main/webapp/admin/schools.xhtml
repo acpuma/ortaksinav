@@ -15,6 +15,18 @@
         <ui:param name="title" value="#{msg.schools}" />
         #{authsDao.findAuths("/admin/schools")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:outputPanel style="text-align: right;">
+        <p:commandButton icon="toolbar-add toolbar-icon"
+                         styleClass="toolbar-button" style="padding:1px 5px;"
+                         value="#{msg.toolbar_add}"
+                         actionListener="#{schoolsDao.reset}"
+                         update="@widgetVar(pageGrid)"
+                         oncomplete="PF('pageGrid').show();"
+                         rendered="true"
+                         disabled="#{not authsDao.auths.padd}"
+        >
+        </p:commandButton>
+    </p:outputPanel>
     <components:schoolsGrid rows="100"  scrollable="true" update=":#{p:component('formPanel')}"
                             widgetVar="schoolsGridWidget" scrollHeight="310"/>
     <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
@@ -23,6 +35,7 @@
         <p:outputPanel id="formPanel" >
             <components:inputUploadImage widgetVar="uploadLogoWidget" imageType="school" daobean="#{schoolsDao}"/>
         <h:form id="pageForm">
+            #{citiesDao.handleCityChange()}
 
             <p:panelGrid columns="4" id="pagePanel">
 
@@ -46,8 +59,10 @@
                 <p:selectOneMenu value="#{schoolsDao.item.refTown}"  rendered="true" id="towns"
                         >
                     <f:selectItems value="#{citiesDao.towns}" var="sitem"
-                                   itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+                                   itemValue="#{sitem}" itemLabel="#{sitem.name}"/>
                 </p:selectOneMenu>
+                <h:outputLabel value="Kullanıcı Adı Kimlik No ?" for="usemernis" />
+                <p:selectBooleanCheckbox value="#{schoolsDao.item.useMernis}" id="usemernis"/>
 
             </p:panelGrid>
             <h:inputHidden id="tid" value="#{schoolsDao.item.tid}"/>
@@ -59,7 +74,7 @@
                              actionListener="#{sessionInfo.setSchool(schoolsDao.item)}"
                              update=":activeSchool"
                     />
-            <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" print="false" />
+            <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" print="false" search="false" new="false"/>
         </h:form>
         </p:outputPanel>
     </p:dialog>

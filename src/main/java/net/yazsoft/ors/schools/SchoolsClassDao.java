@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Named;
 import java.io.Serializable;
@@ -60,6 +61,7 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
         return null;
     }
 
+    //@Transactional
     public SchoolsClass findBySchoolAndName(Schools school,String name) {
         logger.info("SCHOOL : " + school);
         SchoolsClass temp=null;
@@ -130,5 +132,13 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
 
     public void setSchoolsClasses(List<SchoolsClass> schoolsClasses) {
         this.schoolsClasses = schoolsClasses;
+    }
+
+    public List<SchoolsClass> getFoundClasses() {
+        return foundClasses;
+    }
+
+    public void setFoundClasses(List<SchoolsClass> foundClasses) {
+        this.foundClasses = foundClasses;
     }
 }

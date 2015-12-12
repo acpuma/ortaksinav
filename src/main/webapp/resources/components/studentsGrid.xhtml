@@ -108,28 +108,35 @@
                 </f:facet>
                 <p:outputLabel value="#{studentsVar.refSchoolClass.name}" />
             </p:column>
-            <p:column headerText="#{msg.students_school_no}" width="50" >
+            <p:column headerText="#{msg.students_school_no}" width="50" sortBy="#{studentsVar.schoolNo}"
+                      filterBy="#{studentsVar.schoolNo}">
                 #{studentsVar.schoolNo}
             </p:column>
-            <p:column headerText="#{msg.global_name_surname}" width="120" >
+            <p:column headerText="#{msg.global_name_surname}" width="120" sortBy="#{studentsVar.fullname}"
+                      filterBy="#{studentsVar.fullname}">
                 #{studentsVar.fullname}
             </p:column>
-            <p:column headerText="#{msg.global_name}" width="60" >
+            <p:column headerText="#{msg.global_name}" width="60" sortBy="#{studentsVar.name}"
+                      filterBy="#{studentsVar.name}">
                 #{studentsVar.name}
             </p:column>
-            <p:column headerText="#{msg.global_surname}" width="60" >
+            <p:column headerText="#{msg.global_surname}" width="60" sortBy="#{studentsVar.surname}"
+                      filterBy="#{studentsVar.surname}">
                 #{studentsVar.surname}
             </p:column>
-            <p:column headerText="#{msg.global_gender}" width="20" >
+            <p:column headerText="#{msg.global_gender}" width="20" sortBy="#{studentsVar.gender}"
+                      filterBy="#{studentsVar.gender}">
                 #{studentsVar.gender}
             </p:column>
-            <p:column headerText="#{msg.global_phone}" width="60" >
+            <p:column headerText="#{msg.global_phone}" width="60" sortBy="#{studentsVar.phone}"
+                      filterBy="#{studentsVar.phone}">
                 #{studentsVar.phone}
             </p:column>
-            <p:column headerText="#{msg.global_mernis}" width="60" >
+            <p:column headerText="#{msg.global_mernis}" width="60" sortBy="#{studentsVar.mernis}"
+                      filterBy="#{studentsVar.mernis}">
                 #{studentsVar.mernis}
             </p:column>
-            <p:column headerText="Aktif" width="20" >
+            <p:column headerText="Aktif" width="20" sortBy="#{studentsVar.active}">
                 <p:selectBooleanCheckbox value="#{studentsVar.active}" >
                     <p:ajax event="valueChange"  listener="#{studentsDao.checkboxChange(studentsVar)}"
                             update=":messages" global="false"/>

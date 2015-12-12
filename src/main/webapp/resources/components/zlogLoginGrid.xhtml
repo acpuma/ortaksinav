@@ -105,6 +105,9 @@
                 <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
                     #{loginGrid.refStudent.refSchool.name}
                 </p:outputLabel>
+                <p:outputLabel rendered="#{not empty loginGrid.refUser}">
+                    #{loginGrid.refUser.refActiveSchool.name}
+                </p:outputLabel>
             </p:column>
             <p:column headerText="#{msg.class}" width="20"
                       sortBy="#{loginGrid.refStudent.refSchoolClass.name}"

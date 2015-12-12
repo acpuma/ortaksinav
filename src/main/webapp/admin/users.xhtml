@@ -26,6 +26,7 @@
                              update="@widgetVar(pageGrid)"
                              oncomplete="PF('pageGrid').show();"
                              rendered="true"
+                             disabled="#{not authsDao.auths.padd}"
                     >
             </p:commandButton>
         </p:outputPanel>

@@ -9,10 +9,10 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>#{msg.exams}</title>
+        <title>Loglar</title>
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
-    <ui:param name="title" value="#{msg.exams}" />
+    <ui:param name="title" value="Loglar" />
     #{authsDao.findAuths("/admin/zloglogin")}
     <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <h:form id="pageForm">

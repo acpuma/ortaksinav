@@ -33,7 +33,7 @@
 <cc:implementation>
     <h:form>
         <p:dataTable id="schoolsGrid"
-                     var="schoolsGrid"
+                     var="schoolsVar"
 
                      filterEvent="enter"
                      value="#{schoolsDao.findActiveUserSchools()}"
@@ -72,7 +72,7 @@
                      selectionMode="single"
                      selection="#{schoolsDao.item}"
                      lazy="true"
-                     rowKey="#{schoolsGrid.tid}"
+                     rowKey="#{schoolsVar.tid}"
                 >
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
@@ -82,16 +82,19 @@
                     listener="#{schoolsDao.select}"
                     />
 
-            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{schoolsGrid.tid}  </p:column>
+            <p:column headerText="#{msg.global_id}" width="40" rendered="true"  > #{schoolsVar.tid}  </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="370" filterBy="#{schoolsGrid.name}">
-                #{schoolsGrid.name}
+            <p:column headerText="#{msg.global_name}" width="370" filterBy="#{schoolsVar.name}">
+                #{schoolsVar.name}
             </p:column>
 
-            <p:column headerText="Sehir" rendered="true" filterBy="#{schoolsGrid.refCity.name}">
-                #{schoolsGrid.refCity.name}  </p:column>
-            <p:column headerText="Ilce" rendered="true" > #{schoolsGrid.refTown.name}  </p:column>
+            <p:column headerText="Sehir" rendered="true" filterBy="#{schoolsVar.refCity.name}">
+                #{schoolsVar.refCity.name}  </p:column>
+            <p:column headerText="Ilce" rendered="true" > #{schoolsVar.refTown.name}  </p:column>
+            <p:column headerText="Kimlik" width="40">
+                <p:selectBooleanCheckbox value="#{schoolsVar.useMernis}" id="usemernis" disabled="true"/>
+            </p:column>
 
         </p:dataTable>
     </h:form>

@@ -2,6 +2,8 @@ package net.yazsoft.frame.security;
 
 import net.yazsoft.frame.scopes.SessionScoped;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.exams.ExamsDao;
+import net.yazsoft.ors.schools.SchoolsDao;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,8 +19,8 @@ public class SessionInfo implements Serializable{
     Exams exam;
     SchoolsClass sclass;
 
-    @Inject
-    UsersDao usersDao;
+    @Inject UsersDao usersDao;
+    @Inject ExamsDao examsDao;
 
     public Users getUser() {
         return user;
@@ -36,6 +38,7 @@ public class SessionInfo implements Serializable{
         this.school = school;
         if (user!=null) {
             user.setRefActiveSchool(school);
+            user.setRefActiveExam(examsDao.findLastExam(school));
             usersDao.update(user);
         }
     }

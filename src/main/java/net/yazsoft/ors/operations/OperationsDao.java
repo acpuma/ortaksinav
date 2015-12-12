@@ -220,9 +220,12 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                             }
                             //logger.info(parameterName + " : " + parameterValue);
                         }
+                        studentDto=studentsDao.prepareCredits(studentDto);
+                        /*
                         String credit=Util.getActiveSchool().getMebCode().concat(schoolNo.toString());
                         studentDto.setUsername(credit);
                         studentDto.setPassword(encoder.encode(credit));
+                         */
                         studentsDto.add(studentDto);
                         newStudentsDto.add(studentDto);
                         answerView = new StudentsAnswersViewDto(studentDto);

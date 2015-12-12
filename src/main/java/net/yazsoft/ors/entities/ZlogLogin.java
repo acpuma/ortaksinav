@@ -40,6 +40,8 @@ public class ZlogLogin extends BaseEntity implements Serializable {
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
+    private String schoolName;
+    private String fullname;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
     @Basic(optional = false)
@@ -139,6 +141,22 @@ public class ZlogLogin extends BaseEntity implements Serializable {
 
     public void setRefUser(Users refUser) {
         this.refUser = refUser;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     @Override
