@@ -209,6 +209,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             c.add(Restrictions.eq("refSchool", school));
             c.addOrder(Order.desc("date"));
             list = c.list();
+            logger.info("LOG02820: " + (Exams)list.get(0));
             if (list.size()>0) {
                 return (Exams)list.get(0);
             }

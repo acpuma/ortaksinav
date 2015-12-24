@@ -2,6 +2,7 @@ package net.yazsoft.ors.answers;
 
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.exams.ExamsAnswerTypeDao;
@@ -236,6 +237,18 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
         }
     }
 
+    public Integer findCancelCount(Lessons lesson) {
+        Integer count=0;
+        for (Answers answer:lesson.getAnswersCollection()) {
+            //getSession().refresh(answer);
+            if ( (answer.getRefAnswerCancel()!=null) &&
+                    (answer.getRefAnswerCancel().getTid().equals(Constants.CANCELTYPE_YES)) ){
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Gets lessons answers as map which includes booklet number and booklet answers as string
      * @param exam1
@@ -246,18 +259,34 @@ public class AnswersDao extends BaseGridDao<Answers> implements Serializable{
         getLessonAnswers(exam1, lesson1);
         Map<Integer,String> answersMap = new LinkedHashMap<>();
         String answers;
+        //loop booklets
         for (int i=0; i<exam1.getRefBookletType().getTid();i++) {
             answers="";
+            //loop booklet answers
             for (AnswersDto dto : answersDtos) {
-                switch (i){
-                    case 0: answers = answers.concat(dto.getAnsA());break;
-                    case 1: answers = answers.concat(dto.getAnsB());break;
-                    case 2: answers = answers.concat(dto.getAnsC());break;
-                    case 3: answers = answers.concat(dto.getAnsD());break;
-                    case 4: answers = answers.concat(dto.getAnsE());break;
-                    case 5: answers = answers.concat(dto.getAnsF());break;
-                    case 6: answers = answers.concat(dto.getAnsG());break;
-                    case 7: answers = answers.concat(dto.getAnsH());break;
+                //check cancel type
+                //if canceltype is not null and have a canceltype
+                if ((dto.getRefAnswerCancel()!=null) &&
+                        (!dto.getRefAnswerCancel().getTid().equals(Constants.CANCELTYPE_NO))) {
+                    if (dto.getRefAnswerCancel().getTid().equals(Constants.CANCELTYPE_YES)) {
+                        answers = answers.concat("Z");
+                    } else if (dto.getRefAnswerCancel().getTid().equals(Constants.CANCELTYPE_TRUE)) {
+                        answers = answers.concat("X");
+                    } else if (dto.getRefAnswerCancel().getTid().equals(Constants.CANCELTYPE_FALSE)) {
+                        answers = answers.concat("Y");
+                    }
+                } else {
+                    //not canceled, add answer
+                    switch (i){
+                        case 0: answers = answers.concat(dto.getAnsA());break;
+                        case 1: answers = answers.concat(dto.getAnsB());break;
+                        case 2: answers = answers.concat(dto.getAnsC());break;
+                        case 3: answers = answers.concat(dto.getAnsD());break;
+                        case 4: answers = answers.concat(dto.getAnsE());break;
+                        case 5: answers = answers.concat(dto.getAnsF());break;
+                        case 6: answers = answers.concat(dto.getAnsG());break;
+                        case 7: answers = answers.concat(dto.getAnsH());break;
+                    }
                 }
             }
             answersMap.put(i,answers);

@@ -15,6 +15,10 @@ public class Constants {
     public static final Long ARTICLE_NEWS = 1L;
     public static final String EMAIL_NOTIFICATION ="nurullahsin@hotmail.com";
     public static final Integer PAGE_ARTICLES = 5;
+    public static final Long CANCELTYPE_NO = 1L; //not canceled
+    public static final Long CANCELTYPE_YES = 2L; //canceled
+    public static final Long CANCELTYPE_TRUE = 3L; //true for everybody
+    public static final Long CANCELTYPE_FALSE = 4L; //false for everybody
 
 
 }

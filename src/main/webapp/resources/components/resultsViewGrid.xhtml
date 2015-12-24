@@ -311,12 +311,13 @@
             <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.falses}" />
             </p:column>
-            <p:column  >
-                <p:outputLabel value="#{resultsViewVar.result.nulls}" />
-            </p:column>
             <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.nets}" />
             </p:column>
+            <p:column  >
+                <p:outputLabel value="#{resultsViewVar.result.nulls}" />
+            </p:column>
+
             <p:column >
                 <p:outputLabel value="#{resultsViewVar.result.score}">
 
@@ -329,9 +330,8 @@
                 <p:outputLabel value="#{resultsViewVar.result.rankSchool}" />
             </p:column>
 
-
-
         </p:dataTable>
+
         <h:commandLink disabled="#{not authsDao.auths.preport}">
             <p:graphicImage name="toolbar/pdf.png"  library="images"  width="24" rendered="true"/>
             <pe:exporter type="pdf" target="resultsViewGrid" fileName="sonuclar" pageOnly="true"

@@ -372,7 +372,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             Float questionScore;
             Lessons lesson;
             Map<Integer,String> answersMap;
-            //Map<Long,>
+            Integer cancelCount;
 
             Integer falseType=Integer.parseInt(Util.getActiveExam().getRefFalseType().getName());
             logger.info("FALSETYPE : " + falseType);
@@ -381,13 +381,15 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             for (StudentsAnswersDto dto:answersDto) {
                 trues=0f; falses=0f; nulls=0f; nets=0f;
                 lesson=dto.getRefLesson();
+                cancelCount=answersDao.findCancelCount(lesson);
+                //logger.info("LOG02830: CANCELCOUNT : " + cancelCount);
                 //for (Lessons lesson:Util.getActiveExam().getLessonsCollection()){
                 //Map<Integer,String> answersMap=answersDao.getLessonAnswersMap(Util.getActiveExam(),lesson);
                 answersMap=getLessonAnswersMap(lesson);
-                //logger.info("answersMap : " + answersMap);
+                logger.info("answersMap : " + answersMap);
                 //StudentsAnswersDto dto=answersDto.get(0);
                 //logger.info("studentAnswers : " + dto.getTid() + ", " + dto.getRefStudent() + ", " + dto.getAnswers());
-                String answers = "";
+                String answers = ""; //real answers
                 switch (dto.getBooklet()) {
                     case "A": answers = answersMap.get(0);break;
                     case "B": answers = answersMap.get(1);break;
@@ -402,8 +404,10 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                     if (answers.length()>i) {
                         if (answers.charAt(i)=='X') { //Herkes icin dogru
                             trues++;
-                            //}else if (dto.getAnswers().charAt(i)=='İ') { //Iptal edilmis
-                            //    nulls++;
+                        } else if (answers.charAt(i) == 'Y') { //herkes icin yanlis
+                            falses++;
+                        }else if (answers.charAt(i)=='Z') { //Iptal edilmis
+                            //    do nothing
                         } else if (dto.getAnswers().charAt(i) == ' ') {
                             nulls++;
                         } else {
@@ -423,23 +427,35 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 }
                 if (nets<0) nets=0f;
 
-                score= (100/lesson.getQuestionCount()) * nets;
-                //logger.info("LESSON RESULT : trues:" + trues + ", falses : " + falses
-                //        + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score);
+                score= ( (float) 100/(lesson.getQuestionCount()-cancelCount) ) * nets;
+
+                //if all trues, score is 100
+                if (lesson.getQuestionCount()-cancelCount==trues) {
+                    score=(float)100;
+                }
+                logger.info("LESSON RESULT : trues:" + trues + ", falses : " + falses
+                        + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score );
                 dto.setTrues(trues.intValue());
                 dto.setFalses(falses.intValue());
                 dto.setNulls(nulls.intValue());
                 dto.setNets(nets);
-                dto.setScore(score);
+                dto.setScore( Util.round(score,2) );
             }
             Collections.sort(answersDto);
             Collections.reverse(answersDto);
 
             int totalQuestionCount=0;
+            int totalCancelCount=0;
             for (Lessons lesson1:Util.getActiveExam().getLessonsCollection()){
+                //getSession().refresh(lesson1);
                 totalQuestionCount+=lesson1.getQuestionCount();
+                int lessonCancelCount=answersDao.findCancelCount(lesson1);
+                totalCancelCount += lessonCancelCount;
+                logger.info("LOG02840: LESSON / cancelcount : " + lesson1.getRefLessonName().getNameTr()
+                        + " / " + lessonCancelCount);
             }
             logger.info("TOTAL QUESTION COUNT : " + totalQuestionCount);
+            logger.info("TOTAL CANCEL COUNT : " + totalCancelCount);
 
             //get only students with results
             List<Students> resultStudents=new ArrayList<>();
@@ -477,12 +493,19 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 if (nets<0) nets=0f;
 
                 //score=score/lessonsCount;
-                score = (100 / (float) totalQuestionCount) * nets;
+                int totalcount=totalQuestionCount-totalCancelCount;
+                score = ( (float) 100 / (totalQuestionCount-totalCancelCount) ) * nets;
                 logger.info("EXAM RESULT : trues:" + trues + ", falses : " + falses
-                        + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score + ", qc:" +totalQuestionCount);
+                        + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score + ", qc:" +totalQuestionCount
+                        + " , totalCount : " + totalcount);
+
+                //if all trues, set score 100
+                if (totalQuestionCount-totalCancelCount==trues) {
+                    score = (float) 100;
+                }
                 result.setRefStudent(student);
                 result.setRefExam(Util.getActiveExam());
-                result.setScore(score);
+                result.setScore( Util.round(score,2) );
                 result.setTrues(trues.intValue());
                 result.setFalses(falses.intValue());
                 result.setNulls(nulls.intValue());
@@ -687,7 +710,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
     public void getAnswersAutomatic() {
         String lessonAnswers;
-        String parameterValue;
+        String parameterValue=null;
         //String parameterName;
         String booklet="";
         try {
@@ -697,8 +720,13 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                     //get booklet
 
                     for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
-                        parameterValue = line.substring(parameter.getStart() - 1,
-                                parameter.getStart() + parameter.getLength() - 1).trim();
+                        //logger.info("LOG02810: " + parameter.getRefParameter().getNameTr());
+                        //logger.info("LOG02790: " + (parameter.getStart() - 1));
+                        //logger.info("LOG02800: " + (parameter.getStart() + parameter.getLength() - 1));
+                        if ( (parameter.getStart()+parameter.getLength()-1) < line.length() ) {
+                            parameterValue = line.substring(parameter.getStart() - 1,
+                                    parameter.getStart() + parameter.getLength() - 1).trim();
+                        }
                         if (parameter.getRefParameter().getTid().intValue() == 7) {
                             booklet = parameterValue;
                         }

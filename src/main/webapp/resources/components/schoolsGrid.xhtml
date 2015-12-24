@@ -95,6 +95,12 @@
             <p:column headerText="Kimlik" width="40">
                 <p:selectBooleanCheckbox value="#{schoolsVar.useMernis}" id="usemernis" disabled="true"/>
             </p:column>
+            <p:column headerText="Aktiflestir">
+                <p:commandButton value="Aktif"
+                                 actionListener="#{sessionInfo.setSchool(schoolsVar)}"
+                                 update=":activeSchool :activeExam"
+                />
+            </p:column>
 
         </p:dataTable>
     </h:form>

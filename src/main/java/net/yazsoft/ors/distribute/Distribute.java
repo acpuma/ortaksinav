@@ -34,7 +34,6 @@ public class Distribute {
     Integer personCount;
     Boolean randomize=false;
 
-
     @Transactional
     public void handleFileUpload(FileUploadEvent event) {
         logger.info("UPLOADING FILE.......");
@@ -160,7 +159,7 @@ public class Distribute {
                         if (p!=null) {
                             rowIndex++;
                             Row row = sheet.createRow(rowIndex);
-                            Cell cell0, cell1, cell2, cell3, cell4,cell5,cell6,cell7,cell8,cell9;
+                            Cell cell0, cell1, cell2, cell3, cell4,cell5,cell6,cell7,cell8,cell9,cell10;
                             cell0 = row.createCell(0);
                             cell0.setCellValue(i + 1);
                             cell1 = row.createCell(1);
@@ -172,15 +171,18 @@ public class Distribute {
                             cell4 = row.createCell(4);
                             cell4.setCellValue(p.getSurname());
                             cell5 = row.createCell(5);
-                            cell5.setCellValue(p.getBooklet());
+                            cell5.setCellType(Cell.CELL_TYPE_STRING);
+                            cell5.setCellValue(p.getKimlikno());
                             cell6 = row.createCell(6);
-                            cell6.setCellValue(room.getName());
+                            cell6.setCellValue(p.getBooklet());
                             cell7 = row.createCell(7);
-                            cell7.setCellValue(p.getLesson1());
+                            cell7.setCellValue(room.getName());
                             cell8 = row.createCell(8);
-                            cell8.setCellValue(p.getLesson2());
+                            cell8.setCellValue(p.getLesson1());
                             cell9 = row.createCell(9);
-                            cell9.setCellValue(p.getLesson3());
+                            cell9.setCellValue(p.getLesson2());
+                            cell10 = row.createCell(10);
+                            cell10.setCellValue(p.getLesson3());
                         }
                     }
                 //}
@@ -226,9 +228,15 @@ public class Distribute {
                 Iterator<Cell> cellIterator = row.cellIterator();
                 int index = 0;
                 String value = null;
-                while (cellIterator.hasNext() && index < 4) {
+                while (index < 4) {
+                    //index++;
+                    //Cell cell = cellIterator.next();
+                    Cell cell = row.getCell(index);
                     index++;
-                    Cell cell = cellIterator.next();
+                    if (cell==null) {
+                        continue;
+                    }
+                    value=null;
                     try {
                         switch (cell.getCellType()) {
                             case Cell.CELL_TYPE_STRING:
@@ -241,7 +249,8 @@ public class Distribute {
                         switch (index) {
                             case 1:room.setName(value);break;
                             case 2:room.setCapacity(Double.valueOf(value).intValue());break;
-                            case 3:room.setInclude(Double.valueOf(value).intValue());break;
+                            case 3:
+                                room.setInclude(Double.valueOf(value).intValue());break;
                             default:
                                 logger.info("LOG01270: INDEX NONE : " + index);
                                 break;
@@ -251,7 +260,10 @@ public class Distribute {
                     }
                     //logger.info("LOG01240:VALUE : " + value);
                 } //end of cell iterator
-                rooms.add(room);
+                if (room.getName()!=null) {
+                    rooms.add(room);
+                }
+
             } //end of rows iterator
             for (Room r:rooms) {
                 logger.info("LOG01260:ROOM : " + r);
@@ -311,10 +323,21 @@ public class Distribute {
                     Iterator<Cell> cellIterator = row.cellIterator();
                     int index=0;
                     String value=null;
-                    while (cellIterator.hasNext() && index<9) {
+                    while (index<10) {
+                        //index++;
+                        //Cell cell = cellIterator.next();
+
+                        Cell cell = row.getCell(index);
                         index++;
-                        Cell cell = cellIterator.next();
+                        if (cell==null) {
+                            continue;
+                        }
+                        value=null;
                         try {
+                            //if kimlik no then set cell type to string to read it as string
+                            if (index==7) {
+                                cell.setCellType(Cell.CELL_TYPE_STRING);
+                            }
                             switch(cell.getCellType()){
                                 case Cell.CELL_TYPE_STRING:
                                     value=cell.getStringCellValue().trim();
@@ -331,20 +354,25 @@ public class Distribute {
                                     case 4:person.setName(value);break;
                                     case 5:person.setSurname(value);break;
                                     case 6:person.setBooklet(value);break;
-                                    case 7:person.setLesson1(value);break;
-                                    case 8:person.setLesson2(value);break;
-                                    case 9:person.setLesson3(value);break;
+                                    case 7:person.setKimlikno(value);break;
+                                    case 8:person.setLesson1(value);break;
+                                    case 9:person.setLesson2(value);break;
+                                    case 10:person.setLesson3(value);break;
                                     default:
                                         logger.info("LOG01270: INDEX NONE : " + index);
                                         break;
                                 }
                             }
                         } catch (Exception e) {
+                            logger.info("LOG02770: EXCEPTION :" + e.getMessage());
                             e.printStackTrace();
                         }
-                        //logger.info("LOG01240:VALUE : " + value);
+                        logger.info("LOG01240:VALUE : " + value);
                     } //end of cell iterator
 
+                    logger.info("LOG02780: PERSON : " + person);
+
+                    //if person room is signed as included than add it.
                     if ((findRoomByName(person.getSclass())!=null)
                             && (findRoomByName(person.getSclass()).getInclude()==1)) {
                         if (person.getNumber()!=null) {
@@ -353,6 +381,7 @@ public class Distribute {
                         }
                     }
                 } //end of rows iterator
+                logger.info("LOG02760: PERSONS : " + persons);
                 sheetPersons.put(i,persons);
 
             } //end of sheets for loop
@@ -360,7 +389,7 @@ public class Distribute {
             for (int i=1; i<sheetPersons.size()+1; i++) {
                 List<Person> pers=sheetPersons.get(i);
                 for (Person p:pers){
-                    //logger.info("SHEET :" + i + " Person : " + p);
+                    logger.info("SHEET :" + i + " Person : " + p);
                 }
                 logger.info("LOG01290:person count: " + pers.size());
             }
@@ -385,6 +414,12 @@ public class Distribute {
         }
         return list;
     }
+
+    /**
+     * Finds room by name from rooms list
+     * @param name room name to find
+     * @return found room
+     */
     private Room findRoomByName(String name) {
         for (Room room:rooms) {
             if (room.getName().equals(name)) {
@@ -456,6 +491,7 @@ public class Distribute {
         String lesson1;
         String lesson2;
         String lesson3;
+        String kimlikno;
 
         public String getName() {
             return Name;
@@ -537,6 +573,14 @@ public class Distribute {
             this.lesson3 = lesson3;
         }
 
+        public String getKimlikno() {
+            return kimlikno;
+        }
+
+        public void setKimlikno(String kimlikno) {
+            this.kimlikno = kimlikno;
+        }
+
         @Override
         public String toString() {
             return "Person{" +
@@ -545,6 +589,12 @@ public class Distribute {
                     ", Surname='" + Surname + '\'' +
                     ", Sclass='" + Sclass + '\'' +
                     ", Number=" + Number +
+                    ", include=" + include +
+                    ", booklet='" + booklet + '\'' +
+                    ", kimlikno='" + kimlikno + '\'' +
+                    ", lesson1='" + lesson1 + '\'' +
+                    ", lesson2='" + lesson2 + '\'' +
+                    ", lesson3='" + lesson3 + '\'' +
                     '}';
         }
     }

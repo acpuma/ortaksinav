@@ -390,4 +390,17 @@ public class Util implements Serializable{
         e.printStackTrace();
         setFacesMessageError(e.getMessage());
     }
+
+    /**
+     * Round float to certain number of decimals
+     *
+     * @param d
+     * @param decimalPlace the numbers of decimals
+     * @return
+     */
+
+    public static float round(float d, int decimalPlace) {
+        return BigDecimal.valueOf(d).setScale(decimalPlace,BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+
 }

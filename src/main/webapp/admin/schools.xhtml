@@ -72,7 +72,7 @@
             <p:commandButton value="Aktif Kurum Yap"
                              rendered="#{schoolsDao.item.tid!=null}"
                              actionListener="#{sessionInfo.setSchool(schoolsDao.item)}"
-                             update=":activeSchool"
+                             update=":activeSchool :activeExam"
                     />
             <components:toolbar gridname="schoolsGrid" daobean="#{schoolsDao}" print="false" search="false" new="false"/>
         </h:form>
