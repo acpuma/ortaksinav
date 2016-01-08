@@ -387,6 +387,7 @@ public class Util implements Serializable{
     }
 
     public static void catchException(Exception e) {
+        logger.info("LOG02850: ERROR : " + e.getMessage());
         e.printStackTrace();
         setFacesMessageError(e.getMessage());
     }

@@ -204,9 +204,12 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
 
 
     public List findByStudent(Students student) {
-        logger.info("STUDENT  : " + student + " : " + student.getFullname());
         List list=null;
         try {
+            if (student==null) {
+                throw new Exception("OGRENCI NULL)");
+            }
+            logger.info("LOG02970: " + student + " : " + student.getFullname());
             Criteria c = getCriteria();
             c.add(Restrictions.eq("refStudent", student));
             c.add(Restrictions.eq("active", true));
@@ -214,9 +217,7 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            Util.setFacesMessage(e.getMessage());
-            e.printStackTrace();
+            Util.catchException(e);
         }
         return list;
     }

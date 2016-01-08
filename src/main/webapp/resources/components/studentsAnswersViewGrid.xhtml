@@ -35,6 +35,7 @@
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
         <p:dataTable id="studentsGrid"
                      var="studentsVar"
+                     rowIndexVar="rowIndex"
 
                      filterEvent="enter"
                      value="#{operationsDao.answersViewDto}"
@@ -80,6 +81,7 @@
                 #{msg.students}
             </f:facet>
 
+            <p:column headerText=" " width="18" rendered="true"  > #{rowIndex+1}  </p:column>
             <p:column headerText="#{msg.global_id}" width="20" rendered="true" style="display:none;" >
                 #{studentsVar.tid}
             </p:column>

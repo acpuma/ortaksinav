@@ -78,10 +78,12 @@
 
             <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
                     onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock();PF('pageGrid').hide();"
+                    oncomplete="PF('blockUIWidget1').unblock(); PF('resultsDialogWidget').show();"
                     process="@all"
                     listener="#{zlogLoginDao.select}"
                     />
+
+
 
             <p:column headerText="#{msg.global_id}" width="25" rendered="true"  > #{loginGrid.tid}  </p:column>
 
@@ -89,10 +91,13 @@
                       filterBy="#{loginGrid.name}"  sortBy="#{loginGrid.name}">
                 #{loginGrid.name}
             </p:column>
-            <p:column headerText="#{msg.global_name}" width="100"
+            <p:column headerText="#{msg.global_name}" width="100" filterBy="#{loginGrid.refStudent.fullname}"
                       >
-                <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
+                <p:outputLabel rendered="#{not empty loginGrid.refStudent.fullname}">
                     #{loginGrid.refStudent.fullname}
+                </p:outputLabel>
+                <p:outputLabel rendered="#{not empty loginGrid.refStudent.name}">
+                    #{loginGrid.refStudent.name} #{loginGrid.refStudent.surname}
                 </p:outputLabel>
                 <p:outputLabel rendered="#{not empty loginGrid.refUser}">
                     #{loginGrid.refUser.name} #{loginGrid.refUser.surname}

@@ -114,6 +114,39 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         return null;
     }
 
+    public String updateFields(Students student) {
+        try {
+            logger.info("LOG02680: STUDENT UPDATE : "
+                    + ":" + getItem().getName() + ":" + getItem().getSurname() );
+
+                String hql = "update Students u set username=:username,name=:name,surname=:surname," +
+                        "phone=:phone,fullname=:fullname,schoolNo=:schoolno,refSchoolClass=:sclass," +
+                        "mernis=:mernis,gender=:gender where tid = :tid";
+                Query query = getSession().createQuery(hql);
+                query.setLong("tid", getItem().getTid());
+                query.setString("username", getItem().getUsername());
+                query.setLong("sclass", getItem().getRefSchoolClass().getTid());
+                query.setInteger("schoolno", getItem().getSchoolNo());
+                query.setString("fullname", getItem().getFullname());
+                query.setString("mernis", getItem().getMernis());
+                query.setString("name", getItem().getName());
+                query.setString("surname", getItem().getSurname());
+                query.setString("phone", getItem().getPhone());
+                query.setString("gender", getItem().getGender());
+
+                //query.setLong("role", getItem().getRefRole().getTid());
+                query.executeUpdate();
+                Util.setFacesMessage("KAYIT GÜNCELLENDİ");
+
+            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getUsername() + ":" + getItem().getPassword()+ ":"
+                    + ":" + getItem().getName() + ":" + getItem().getSurname() );
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        gridStudents=null;
+        return null;
+    }
+
     public Students findByNoAndSchool(Integer schoolNo,Schools school) {
         Students temp=null;
         if (school==null) {
@@ -151,6 +184,24 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         return null;
     }
 
+    /**
+     * find student by mernis from active school
+     * @param mernis
+     * @return
+     */
+
+    public Students findByMernis(String mernis) {
+        if (foundStudents==null) {
+            foundStudents=findBySchool(Util.getActiveSchool());
+        }
+        for (Students student:foundStudents) {
+            if (student.getMernis().equals(mernis)) {
+                return student;
+            }
+        }
+        return null;
+    }
+
     public void saveClasses() {
         try {
             //save classes
@@ -166,6 +217,9 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                         sclass.setRefSchool(Util.getActiveSchool());
                         sclass.setActive(Boolean.TRUE);
                         sclass.setVersion(1);
+                        if ((sclass.getName()==null) || (sclass.getName().equals("")) ){
+                            throw new Exception("SINIF ADI BOS");
+                        }
                         schoolsClassDao.saveOrUpdate(sclass);
                         //sclass=(SchoolsClass)getSession().load(SchoolsClass.class,pkclas);
                         schoolsClassDao.getFoundClasses().add(sclass);
@@ -194,6 +248,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                 //logger.info("LOG02730: STUDENT : " + studentDto.getName()+ studentDto.getSurname());
                 //get schoolclass from saved one
                 studentDto.setRefSchoolClass(schoolsClassDao.findByNameFromList(studentDto.getRefSchoolClass().getName()));
+                studentDto=prepareCredits(studentDto);
                 if (studentDto.getTid()==null) {
                     studentDto.setVersion(1);
                     getSession().save(studentDto.toEntity());
@@ -253,6 +308,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                         Cell cell = row.getCell(index);
                         index++;
                         if (cell==null) {
+                            logger.info("LOG02650: NULL CELL : " + index  );
                             continue;
                         }
                         value=null;
@@ -291,22 +347,31 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                                         break;
                                 }
                             }
-                            //logger.info("LOG02620: INDEX/VALUE : " + index + " / " + value );
+                            logger.info("LOG02620: INDEX/VALUE : " + index + " / " + value );
                         } catch (Exception e) {
                             Util.catchException(e);
                         }
 
                         //logger.info("LOG01240:VALUE : " + value);
                     } //end of cell iterator
-                    person=prepareCredits(person);
+                    //person=prepareCredits(person); //cpu %100
 
-
-                    if (person.getSchoolNo()!=null) {
-                        Students oldstudent=findByNo(person.getSchoolNo());
-                        if (oldstudent!=null) {
-                            person.setTid(oldstudent.getTid());
+                    Students oldstudent=null;
+                    if (Util.getActiveSchool().getUseMernis().equals(true) ) {
+                        if (person.getMernis()!=null) {
+                            oldstudent = findByMernis(person.getMernis());
                         }
-                        //logger.info("LOG02630: PERSON : " + person);
+                    } else {
+                        if (person.getSchoolNo() != null) {
+                            oldstudent = findByNo(person.getSchoolNo());
+                        }
+                    }
+                    if (oldstudent != null) {
+                        person.setTid(oldstudent.getTid());
+                    }
+                    if ( (person.getSchoolNo()==null) && (person.getMernis()==null) ){
+                        logger.info("LOG02630: PERSON NO NUMBER : " + person);
+                    } else {
                         persons.add(person);
                         personCount++;
                     }
@@ -403,6 +468,19 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         return list;
     }
 
+    public Students findUserByMernis(String mernis) {
+        Students tempstudent=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            c.add(Restrictions.eq("mernis", mernis));
+            tempstudent = (Students) c.uniqueResult();
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return tempstudent;
+    }
+
     public void checkboxChange(Students student) {
         try {
             update(student);
@@ -410,6 +488,49 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         } catch (Exception e) {
             Util.catchException(e);
         }
+    }
+
+
+    /**
+     * Updates student info according to selected fields
+     * @param student
+     * @return
+     */
+    public String updateStudentFields(Students student,boolean updateNameSurname,boolean updateFullname,
+                                      boolean updateGender,boolean updatePhone,boolean updateMernis) {
+        try {
+            // logger.info("LOG02680: STUDENT UPDATE : " + student.getTid()
+            //             + ":" + student.getName() + ":" + student.getSurname() );
+
+            String hql = "update Students u set ";
+            if (updateNameSurname) hql=hql+"name=:name,surname=:surname,";
+            if (updatePhone) hql=hql+ "phone=:phone,";
+            if (updateFullname) hql=hql+ "fullname=:fullname,";
+            if (updateMernis) hql=hql+ "mernis=:mernis," ;
+            if (updateGender) hql=hql+ "gender=:gender,";
+
+            hql=hql + "active=:active where tid = :tid ";
+
+            Query query = getSession().createQuery(hql);
+            query.setLong("tid", student.getTid());
+            query.setBoolean("active",true);
+            if (updateFullname) query.setString("fullname", student.getFullname());
+            if (updateMernis) query.setString("mernis", student.getMernis());
+            if (updateNameSurname) {
+                query.setString("name", student.getName());
+                query.setString("surname", student.getSurname());
+            }
+            if (updatePhone) query.setString("phone", student.getPhone());
+            if (updateGender) query.setString("gender", student.getGender());
+
+            //query.setLong("role", getItem().getRefRole().getTid());
+            query.executeUpdate();
+            //Util.setFacesMessage("KAYIT GÜNCELLENDİ");
+
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return null;
     }
 
     public StudentsDao() {

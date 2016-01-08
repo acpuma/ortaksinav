@@ -265,6 +265,18 @@
 
 </p>
 
+    <p:outputPanel rendered="#{not empty webClientsDao.center.payment}">
+        <div class="span4">
+
+            <div class="bordered">
+                <div class="fill-iframe" style="padding:10px;background: #eee;">
+                    <h4 class="title">Hesap Bilgileri</h4>
+                    <h:outputText value="#{webClientsDao.center.payment}" escape="false"/> <br/>
+                </div>
+            </div>
+        </div>
+    </p:outputPanel>
+
 <div class="clear"></div>
 
     <p:confirmDialog global="true">

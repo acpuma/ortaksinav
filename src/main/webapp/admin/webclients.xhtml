@@ -38,7 +38,7 @@
 
         <p:outputPanel id="formPanel" >
             <h:form id="pageForm">
-
+                #{citiesDao.handleWebClientsCityChange()}
                 <p:panelGrid columns="2" id="pagePanel">
 
                     <p:outputLabel value="#{msg.center}:" for="center" />
@@ -69,7 +69,9 @@
                     </p:selectOneMenu>
 
                     <p:outputLabel value="#{msg.address} : " for="address" />
-                    <p:inputTextarea id="address" value="#{webClientsDao.item.address}" rows="5" cols="70"/>
+                    <p:editor id="address" value="#{webClientsDao.item.address}" height="120"/>
+                    <p:outputLabel value="#{msg.payment} : " for="payment" />
+                    <p:editor id="payment" value="#{webClientsDao.item.payment}"  height="90"/>
                 </p:panelGrid>
 
                 <p:panelGrid columns="4" id="pagePanel2">

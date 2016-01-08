@@ -98,13 +98,26 @@
                                      style="height:300px; width: 770px;"
                                      data-latitude="#{webClientsDao.center.coorX}"
                                      data-longitude="#{webClientsDao.center.coorY}"
-                                     data-title="Ortak Sinav Merkezi" data-zoom="14" data-type="roadmap"></div>
+                                     data-title="Ortak Sinav Merkezi" data-zoom="13" data-type="roadmap"></div>
                             </div>
                         </div>
 
+                        <p:outputPanel rendered="#{not empty webClientsDao.center.payment}">
+                        <div class="span4">
+                            <div class="bordered">
+                                <div class="fill-iframe" style="padding:2px;background: #eee;">
+                                    <h4 class="title">Hesap Bilgileri</h4>
+                                    <h:outputText value="#{webClientsDao.center.payment}" escape="false"/> <br/>
+                                </div>
+                            </div>
+                        </div>
+                        </p:outputPanel>
                     </article>
 
+
                 </section> <!-- /main content -->
+
+
 
                 <!--  ==========  -->
                 <!--  = Sidebar =  -->
@@ -140,6 +153,10 @@
                                     <p:outputPanel rendered="#{not empty client.address}">
                                         <strong class="opensans dark-clr">Adres : </strong>
                                         <h:outputText value="#{client.address} " />
+                                    </p:outputPanel>
+                                    <p:outputPanel rendered="#{not empty client.payment}">
+                                        <strong class="opensans dark-clr">#{msg.payment} : </strong>
+                                        <h:outputText value="#{client.payment}" escape="false"/>
                                     </p:outputPanel>
                                     <p:outputPanel rendered="#{not empty client.url}">
                                         <strong class="opensans dark-clr">Web : </strong>

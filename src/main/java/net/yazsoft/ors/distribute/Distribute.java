@@ -148,7 +148,7 @@ public class Distribute {
                         Person p = null;
                         while (p==null && rowIndex<personCount) {
                             p=getNextPerson(index);
-                            if (index>723)  {
+                            if (index>668)  {
                                 logger.info("LOG01340: PERSON : " + p + ", personcount: " + personCount);
                                 logger.info("LOG01350:ROOM : " + room);
                             }

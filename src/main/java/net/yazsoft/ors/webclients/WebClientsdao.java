@@ -36,7 +36,7 @@ public class WebClientsDao extends BaseGridDao<WebClients> implements Serializab
             c.add(Restrictions.eq("active", true));
             c.add(Restrictions.eq("center", true));
             client = (WebClients) c.uniqueResult();
-            //logger.info("LOG02340: CENTER CLIENT : " + client.getName() + " , " + client.getAddress());
+            logger.info("LOG02340: CENTER CLIENT : " + client.getName() + " , " + client.getAddress());
         } catch (Exception e) {
             logger.error(e.getMessage());
             Util.setFacesMessage(e.getMessage());

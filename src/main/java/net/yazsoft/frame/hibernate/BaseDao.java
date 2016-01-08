@@ -54,6 +54,11 @@ public class BaseDao<T extends BaseEntity> implements Serializable {
 		this.type = type;
 	}
 
+    /**
+     * Creates and saves entity
+     * @param t New entity
+     * @return created entity tid
+     */
 	public Long create(final T t) {
         Long pk=(Long) getSession().save(t);
         all=null;

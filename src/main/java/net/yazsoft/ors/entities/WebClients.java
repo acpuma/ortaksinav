@@ -91,6 +91,9 @@ public class WebClients extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_town", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Towns refTown;
+    @Size(max = 3000)
+    @Column(name = "payment", length = 3000)
+    private String payment;
 
     public WebClients() {
     }
@@ -279,6 +282,14 @@ public class WebClients extends BaseEntity implements Serializable {
 
     public void setCenter(Boolean center) {
         this.center = center;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
     }
 
     @Override

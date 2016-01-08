@@ -60,6 +60,11 @@
                     <p:inputMask id="phone" value="#{usersDao.item.phone}" title="Phone" mask="9999999999"/>
                     <p:outputLabel value="#{msg.global_email}:" for="email"/>
                     <p:inputText id="email" value="#{usersDao.item.email}" title="Email"/>
+                    <p:outputLabel value="#{msg.sms_count} :" />
+                    <p:inputText id="smsCount" value="#{usersDao.item.smsCount}" title="smsCount"/>
+                    <p:outputLabel value="#{msg.sms_total} :" />
+                    <p:inputText id="smsTotal" value="#{usersDao.item.smsTotal}" title="smsTotal" disabled="true"/>
+
                     <p:outputLabel value="#{msg.global_group} :" />
                     <p:selectOneMenu value="#{usersDao.item.refRole}" required="true" requiredMessage="Grup Seciniz">
                         <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}" noSelectionOption="true"/>

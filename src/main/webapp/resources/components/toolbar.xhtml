@@ -15,7 +15,9 @@
         <cc:attribute default="true"     required="false"   name="delete" />
         <cc:attribute default="true"     required="false"   name="print" />
         <cc:attribute default="false"     required="false"   name="help" />
-        <cc:attribute default="true"     required="false"   name="gridname" />
+        <cc:attribute default=""     required="false"   name="gridname" />
+        <cc:attribute default="@this" required="false"   name="update" />
+
         <cc:attribute default=""     required="false"   name="oncomplete" />
         <cc:attribute default="#{p:component('pageForm')}" name="resetfields" />
         <cc:attribute name="daobean" /> 
@@ -28,11 +30,11 @@
             <p:toolbarGroup align="center" style="top: 20px;text-align: center" >
             <c:set var="daobeann" value="#{cc.attrs.daobean}" />
             <h:inputHidden id="disabledelete" value="#{daobeann.disabledelete}" />
-            <p:commandButton icon="toolbar-save toolbar-icon" styleClass="toolbar-button"
+            <p:commandButton icon="toolbar-save toolbar-icon" styleClass="toolbar-button" id="toolbarSave"
                              value="#{msg.toolbar_save}"
                              action="#{daobeann.save}"
                             onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock(); #{cc.attrs.oncomplete}; "
-                             update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)}  :messages"
+                             update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)} :messages #{cc.attrs.update}"
                              process="@this :#{p:component('pageForm')}" partialSubmit="true"
                              rendered="#{cc.attrs.save}"
                              disabled="#{not (authsDao.auths.pupdate or authsDao.auths.padd)}"
@@ -40,11 +42,11 @@
                 <p:confirm header="#{msg.global_confirmation}"
                            message="#{msg.toolbar_save_confirm}" icon="ui-icon-alert"/>
             </p:commandButton>
-            <p:commandButton icon="toolbar-add toolbar-icon" styleClass="toolbar-button"
+            <p:commandButton icon="toolbar-add toolbar-icon" styleClass="toolbar-button" id="toolbarAdd"
                              value="#{msg.toolbar_add}"
                              process=":#{p:component('pageForm')}"  actionListener="#{daobeann.reset}"
                              immediate="true"
-                             update=":#{p:component('pageForm')}"
+                             update=":#{p:component('pageForm')} #{cc.attrs.update}"
                              rendered="#{cc.attrs.new}"
                              disabled="#{not authsDao.auths.padd}"
                     >
@@ -53,7 +55,7 @@
                
             </p:commandButton>
             
-            <p:commandButton icon="toolbar-search toolbar-icon" styleClass="toolbar-button" 
+            <p:commandButton icon="toolbar-search toolbar-icon" styleClass="toolbar-button" id="toolbarSearch"
                              value="#{msg.toolbar_search}"
                              onclick="PF('pageGrid').show();" rendered="#{cc.attrs.search}"
                              update="toolbarDelete" 
@@ -69,7 +71,7 @@
                              value="#{msg.toolbar_delete}"  immediate="true"
                              process="@this :#{p:component('pageForm')}" partialSubmit="true"
                              action="#{daobeann.delete}"
-                             update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)} :messages"
+                             update=":#{p:component('pageForm')} :#{p:component(cc.attrs.gridname)} :messages #{cc.attrs.update}"
                              disabled="#{daobeann.disabledelete or (not authsDao.auths.pdelete)}"
                              rendered="#{cc.attrs.delete}"
                              oncomplete="#{cc.attrs.oncomplete};"

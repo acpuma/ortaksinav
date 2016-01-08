@@ -87,6 +87,10 @@ public class UsersDto extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refActiveSchool;
 
+    private int smsCount;
+    private int smsMax;
+    private int smsTotal;
+
     @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
     private Collection<Schools> schoolsCollection;
     @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
@@ -135,6 +139,9 @@ public class UsersDto extends BaseEntity implements Serializable {
         entity.setUploadsCollection(this.uploadsCollection);
         entity.setUsersMenusCollection(this.usersMenusCollection);
         entity.setZlogLoginCollection(this.zlogLoginCollection);
+        entity.setSmsCount(this.smsCount);
+        entity.setSmsTotal(this.smsTotal);
+        entity.setSmsMax(this.smsMax);
         return entity;
     }
 
@@ -166,6 +173,9 @@ public class UsersDto extends BaseEntity implements Serializable {
         this.uploadsCollection=entity.getUploadsCollection();
         this.usersMenusCollection=entity.getUsersMenusCollection();
         this.zlogLoginCollection=entity.getZlogLoginCollection();
+        this.smsCount=entity.getSmsCount();
+        this.smsTotal=entity.getSmsTotal();
+        this.smsMax=entity.getSmsMax();
     }
 
     public Long getTid() {
@@ -361,6 +371,30 @@ public class UsersDto extends BaseEntity implements Serializable {
 
     public void setResultsSendCollection(Collection<ResultsSend> resultsSendCollection) {
         this.resultsSendCollection = resultsSendCollection;
+    }
+
+    public int getSmsCount() {
+        return smsCount;
+    }
+
+    public void setSmsCount(int smsCount) {
+        this.smsCount = smsCount;
+    }
+
+    public int getSmsMax() {
+        return smsMax;
+    }
+
+    public void setSmsMax(int smsMax) {
+        this.smsMax = smsMax;
+    }
+
+    public int getSmsTotal() {
+        return smsTotal;
+    }
+
+    public void setSmsTotal(int smsTotal) {
+        this.smsTotal = smsTotal;
     }
 
     public Long getId() {

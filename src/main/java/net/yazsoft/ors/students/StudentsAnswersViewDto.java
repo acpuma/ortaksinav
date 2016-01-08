@@ -17,6 +17,7 @@ public class StudentsAnswersViewDto extends StudentsDto{
         fromStudentDto(student);
     }
     public void fromStudentDto(StudentsDto student) {
+
         this.tid=student.getTid();
         this.active=student.getActive();
         this.version=student.getVersion();

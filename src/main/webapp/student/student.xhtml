@@ -72,10 +72,26 @@
                     <p:panelGrid columns="2" style="margin:0 auto;">
                         <p:outputLabel value="#{msg.global_booklet} :" />
                         <p:outputLabel value="#{studentsAnswersDao.item.booklet} " />
-                        <p:outputLabel value="Cevap Anahtarı  : "/>
-                        <p:outputLabel value="#{studentsAnswersDao.trueAnswers} "/>
-                        <p:outputLabel value="Öğrenci Cevapları : " />
-                        <p:outputLabel value="#{studentsAnswersDao.item.answers} "/>
+                        <p:outputPanel>
+                            Soru No:
+                            <hr/>
+                            <p:outputLabel value="Cevap Anahtarı  : "/> <br/>
+                            <p:outputLabel value="Öğrenci Cevapları : " />
+                        </p:outputPanel>
+                        <p:dataGrid value="#{studentsAnswersDao.answerList}" var="trueans"  rows="1" columns="20">
+                                #{trueans.no}
+                                <hr/>
+                                #{trueans.answerTrue}<br/>
+                            <p:outputPanel rendered="#{trueans.right}" style="border:1px solid lightgreen">
+                                #{trueans.answerStudent}
+                            </p:outputPanel>
+                            <p:outputPanel rendered="#{not trueans.right}" style="border:1px solid red">
+                                #{trueans.answerStudent}
+                            </p:outputPanel>
+                        </p:dataGrid>
+                        <p:outputLabel value="#{studentsAnswersDao.trueAnswers}" rendered="false"/>
+                        <p:outputLabel value="Öğrenci Cevapları : " rendered="false"/>
+                        <p:outputLabel value="#{studentsAnswersDao.item.answers}" rendered="false"/>
                     </p:panelGrid>
                     <br/>
                     <p:outputPanel rendered="#{studentsAnswersDao.bookletReady}">

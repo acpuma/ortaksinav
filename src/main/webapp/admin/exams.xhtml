@@ -79,7 +79,7 @@
 
         <p:outputPanel style="margin:5px 10px; min-height: 400px;" >
             <components:examsGrid rows="200"  scrollable="true" paginator="false"
-                                  update=":#{p:component('pageForm')} " scrollHeight="370"
+                                  update=":#{p:component('pageForm')}" scrollHeight="370"
                               widgetVar="examsGridWidget" sortMode="multiple"/>
         </p:outputPanel>
 
@@ -182,8 +182,8 @@
                 <h:inputHidden id="disabledelete" value="#{examsDao.disabledelete}"/>
                 <h:messages rendered="false"/>
             </h:form>
-            <components:toolbar gridname="examsGrid" daobean="#{examsDao}"
-                                print="false" search="false" new="false" />
+            <components:toolbar gridname="examsGrid" daobean="#{examsDao}" update=":activeExam :activeSchool"
+                                print="false" search="false" new="false" oncomplete="PF('formDialogWidget').hide()" />
         </p:dialog>
 
         <p:dialog id="parametersDialog" header="#{msg.parameters}" widgetVar="parametersDialogWidget"

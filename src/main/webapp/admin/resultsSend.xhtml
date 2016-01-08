@@ -10,6 +10,7 @@
 <f:view>
     <h:head>
         <title>#{msg.send_results}</title>
+        <h:outputStylesheet library="css" name="pages/resultsSend.css" />
     </h:head>
     <ui:decorate template="/WEB-INF/templates/master.xhtml">
         <ui:param name="title" value="#{msg.send_results}" />
@@ -22,7 +23,15 @@
                 <p:panelGrid columns="2">
 
                 <p:panelGrid columns="2" id="pagePanel" >
-                    <p:outputLabel value="Gönderme Şekli" />
+                    <p:outputPanel>
+                        <p:outputLabel value="Gönderme Şekli" />
+                        <p:outputPanel style="font-size: 12px" id="smsInfoPanel">
+                            Gönderilen sms : #{sessionInfo.user.smsTotal} <br/>
+                            #{msg.sms_count} : #{sessionInfo.user.smsCount}
+                        </p:outputPanel>
+
+                    </p:outputPanel>
+
                     <p:outputPanel >
                         <p:selectBooleanCheckbox itemLabel="Email" value="#{resultsSendDao.bEmail}"/> <br/>
                         <p:selectBooleanCheckbox itemLabel="SMS" value="#{resultsSendDao.bSms}"/>
@@ -79,7 +88,7 @@
                 </p:panelGrid>
                 <p:outputPanel style="width: 100%;position: relative;">
                 <p:commandButton value="#{msg.send}" actionListener="#{resultsSendDao.send}"
-                                 rendered="true" update=":messages"
+                                 rendered="true" update=":messages smsInfoPanel"
                                  disabled="#{not authsDao.auths.preport}"
                                  onstart="PF('blockUIWidget1').block()"
                                  oncomplete="PF('blockUIWidget1').unblock();"
@@ -126,6 +135,7 @@
             </p:dialog>
 
         </p:outputPanel>
+
     </ui:decorate>
 </f:view>
 </html>

@@ -28,6 +28,7 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
     StudentsAnswers selected;
     List studentAnswers;
     ExamsYear filterYear;
+    List<AnswersList> answerList;
 
     @Inject AnswersDao answersDao;
     @Inject UploadsBean uploadsBean;
@@ -55,6 +56,34 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
             Util.setFacesMessage(e.getMessage());
             e.printStackTrace();
         }
+    }
+    public List<AnswersList> getAnswerList() {
+        List<AnswersList> answers=new ArrayList<>();
+        List<Answers> answersList=answersDao.getLessonAnswers(getItem().getRefExam(),getItem().getRefLesson());
+        logger.info("LOG01400: ANSWERSLIST :" + answersList);
+        int i=0;
+        char booklet=getItem().getBooklet().toUpperCase().charAt(0);
+        for (Answers answer:answersList) {
+            i++;
+            AnswersList tempanswer=new AnswersList();
+            tempanswer.setNo(i);
+            tempanswer.setAnswerStudent(getItem().getAnswers().substring(i-1,i));
+            logger.info("LOG01420: BOOKLET : " + booklet);
+            logger.info("LOG01430: answer : " + answer.getAnsA());
+            switch (booklet) {
+                case 'A' : tempanswer.setAnswerTrue(answer.getAnsA()); break;
+                case 'B' : tempanswer.setAnswerTrue(answer.getAnsB()); break;
+                case 'C' : tempanswer.setAnswerTrue(answer.getAnsC()); break;
+                case 'D' : tempanswer.setAnswerTrue(answer.getAnsD()); break;
+                case 'E' : tempanswer.setAnswerTrue(answer.getAnsE()); break;
+            }
+            if (tempanswer.getAnswerStudent().equals(tempanswer.getAnswerTrue())) {
+                tempanswer.setRight(true);
+            }
+            answers.add(tempanswer);
+        }
+        logger.info("LOG01410: ANSWERS : " + answers);
+        return answers;
     }
 
     public String getTrueAnswers() {
@@ -106,10 +135,9 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
             //c.add(Restrictions.eq("isDeleted", false));
             c.add(Subqueries.propertyIn("refExam", subquery));
             list = c.list();
+            logger.info("LOG02980: LIST : " + list);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            Util.setFacesMessage(e.getMessage());
-            e.printStackTrace();
+            Util.catchException(e);
         }
         studentAnswers=list;
         return list;
@@ -251,5 +279,9 @@ public class StudentsAnswersDao extends BaseGridDao<StudentsAnswers> implements 
 
     public void setFilterYear(ExamsYear filterYear) {
         this.filterYear = filterYear;
+    }
+
+    public void setAnswerList(List<AnswersList> answerList) {
+        this.answerList = answerList;
     }
 }

@@ -114,6 +114,7 @@ public class UsersDao extends BaseGridDao<Users> {
                     schools.add(Util.getActiveSchool());
                     person.setSchoolsCollection(schools);
                     person.setActive(true);
+                    person.setSmsCount(0);
                     person.setAccountNonExpired(true);
                     person.setAccountNonLocked(true);
                     person.setCredentialsNonExpired(true);
@@ -228,7 +229,7 @@ public class UsersDao extends BaseGridDao<Users> {
                     + ":" + getItem().getName() + ":" + getItem().getSurname() );
             if ( (getItem().getPassword() == null) || (getItem().getPassword().length()==0) ) {
                 String hql = "update Users u set username=:username,name=:name,surname=:surname," +
-                        "phone=:phone,email=:email,refRole=:role where tid = :tid";
+                        "phone=:phone,email=:email,refRole=:role,smsCount=:smsCount where tid = :tid";
                 Query query = getSession().createQuery(hql);
                 query.setLong("tid", getItem().getTid());
                 query.setString("username", getItem().getUsername());
@@ -236,6 +237,7 @@ public class UsersDao extends BaseGridDao<Users> {
                 query.setString("surname", getItem().getSurname());
                 query.setString("phone", getItem().getPhone());
                 query.setString("email", getItem().getEmail());
+                query.setInteger("smsCount", getItem().getSmsCount());
                 query.setLong("role", getItem().getRefRole().getTid());
                 query.executeUpdate();
                 Util.setFacesMessage("KAYIT GÜNCELLENDİ");

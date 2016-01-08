@@ -42,6 +42,10 @@ public class ZlogLoginDao extends BaseGridDao<ZlogLogin>{
         return list;
     }
 
+    public void select() {
+        Util.getSessionInfo().setStudent(getItem().getRefStudent());
+    }
+
     public ZlogLoginDao() {
         super(ZlogLogin.class);
     }

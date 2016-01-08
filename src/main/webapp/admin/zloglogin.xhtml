@@ -24,8 +24,15 @@
     </h:form>
     <p:outputPanel style="width: 800px;">
         <components:zlogLoginGrid rows="250" scrollable="true" scrollHeight="450"
-                                  widgetVar="zlogloginGridWidget" />
+                                  widgetVar="zlogloginGridWidget" update=":#{p:component('studentsAnswersGrid')}"/>
+
     </p:outputPanel>
+
+        <p:dialog id="resultsDialog" header="#{msg.result}" widgetVar="resultsDialogWidget"
+                  modal="true" resizable="true" dynamic="true" appendTo="@(body)" width="900">
+            <components:resultsStudentLessonsGrid rows="5000" scrollable="true" scrollHeight="450"
+                                              widgetVar="resultsGridWidget" paginator="false"/>
+        </p:dialog>
 
 </p:outputPanel>
 </ui:decorate>

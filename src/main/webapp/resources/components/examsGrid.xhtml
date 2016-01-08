@@ -90,36 +90,36 @@
                     listener="#{examsDao.select}"
                     />
 
-
+            <p:ajax event="sort" listener="#{examsDao.sortListener}" />
 
             <p:column headerText=" " width="15" rendered="true"  > #{rowIndex+1}  </p:column>
             <p:column headerText="#{msg.global_id}" width="50" rendered="false"  > #{examsGrid.tid}  </p:column>
 
-            <p:column headerText="#{msg.exam_year}" width="60" rendered="true"
-                      sortBy="#{examsGrid.refExamYear}">
+            <p:column headerText="#{msg.exam_year}" width="60" rendered="true" id="examyear"
+                      sortBy="#{examsGrid.refExamYear.name}">
                 <h:outputText value="#{examsGrid.refExamYear.name}" />
             </p:column>
-            <p:column headerText="#{msg.exam_season}" width="60" rendered="true"
+            <p:column headerText="#{msg.exam_season}" width="60" rendered="true" id="examseason"
                       sortBy="#{examsGrid.refExamSeason}"  >
                 #{examsGrid.refExamSeason.nameTr}
             </p:column>
 
-            <p:column headerText="#{msg.exam}" width="50" rendered="true"
+            <p:column headerText="#{msg.exam}" width="50" rendered="true" id="examseasonno"
                       sortBy="#{examsGrid.refExamSeasonNumber}">
                 #{examsGrid.refExamSeasonNumber.name}
             </p:column>
 
-            <p:column headerText="#{msg.global_number_short}" width="30" rendered="true"
+            <p:column headerText="#{msg.global_number_short}" width="30" rendered="true" id="examnumber"
                       sortBy="#{examsGrid.number}" >
              #{examsGrid.number}
             </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="300" >
+            <p:column headerText="#{msg.global_name}" width="300" sortBy="#{examsGrid.nameTr}" id="examname">
                 #{examsGrid.nameTr}
             </p:column>
 
-            <p:column headerText="Tarih" rendered="true" width="100" sortBy="#{examsGrid.date}">
+            <p:column headerText="Tarih" rendered="true" width="100" sortBy="#{examsGrid.date}" id="examdate">
                 <h:outputText value="#{examsGrid.date}" >
                     <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
                 </h:outputText>

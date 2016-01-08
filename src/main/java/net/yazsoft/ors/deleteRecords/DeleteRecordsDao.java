@@ -39,6 +39,8 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
         deleteStudentsAnswersExam();
         deleteStudentsExam();
         deleteClassesExam();
+        getSession().flush();
+        getSession().clear();
     }
 
     public void deleteAllSchool() {
@@ -46,6 +48,8 @@ public class DeleteRecordsDao extends BaseGridDao implements Serializable{
         deleteStudentsAnswersSchool();
         deleteStudentsSchool();
         deleteClassesSchool();
+        getSession().flush();
+        getSession().clear();
     }
 
 

@@ -65,7 +65,7 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
         tempClass.setName(this.name);
         tempClass.setCreated(this.created);
         tempClass.setUpdated(this.updated);
-        tempClass.setStudentsCollection(this.studentsCollection);
+        //tempClass.setStudentsCollection(this.studentsCollection);
         tempClass.setRefSchool(this.refSchool);
         return tempClass;
     }

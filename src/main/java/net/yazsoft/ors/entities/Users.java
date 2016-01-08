@@ -90,6 +90,10 @@ public class Users extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refActiveSchool;
 
+    private int smsCount;
+    private int smsMax;
+    private int smsTotal;
+
     @ManyToMany(mappedBy = "usersCollection", fetch = FetchType.LAZY)
     private Collection<Schools> schoolsCollection;
     @OneToMany(mappedBy = "refUser", fetch = FetchType.LAZY)
@@ -308,6 +312,31 @@ public class Users extends BaseEntity implements Serializable {
 
     public void setResultsSendCollection(Collection<ResultsSend> resultsSendCollection) {
         this.resultsSendCollection = resultsSendCollection;
+    }
+
+
+    public int getSmsCount() {
+        return smsCount;
+    }
+
+    public void setSmsCount(int smsCount) {
+        this.smsCount = smsCount;
+    }
+
+    public int getSmsMax() {
+        return smsMax;
+    }
+
+    public void setSmsMax(int smsMax) {
+        this.smsMax = smsMax;
+    }
+
+    public int getSmsTotal() {
+        return smsTotal;
+    }
+
+    public void setSmsTotal(int smsTotal) {
+        this.smsTotal = smsTotal;
     }
 
     @Override

@@ -99,9 +99,12 @@
 
             <p:column headerText="#{msg.global_surname}" width="100" rendered="true" filterBy="#{usersGridVar.surname}">
                 #{usersGridVar.surname}  </p:column>
-            <p:column headerText="#{msg.global_email}" width="130" rendered="true" > #{usersGridVar.email}  </p:column>
+            <p:column headerText="#{msg.global_email}" width="100" rendered="true" > #{usersGridVar.email}  </p:column>
             <p:column headerText="#{msg.global_group}" width="70" rendered="true" >
              #{usersGridVar.refRole.nameTr}
+            </p:column>
+            <p:column headerText="SMS" width="20" rendered="true" >
+                #{usersGridVar.smsCount}
             </p:column>
             <p:column headerText="Aktif" width="20" >
                 <p:selectBooleanCheckbox value="#{usersGridVar.active}" >

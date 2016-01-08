@@ -11,6 +11,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StringType;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Named;
@@ -63,14 +64,18 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
 
     //@Transactional
     public SchoolsClass findBySchoolAndName(Schools school,String name) {
-        logger.info("SCHOOL : " + school);
+        //List list;
+        //logger.info("SCHOOL : " + school);
         SchoolsClass temp=null;
         try {
             Criteria c = getCriteria();
             c.add(Restrictions.eq("refSchool", school));
-            c.add(Restrictions.eq("name", name));
+            //c.add(Restrictions.eq("name", name.toUpperCase()));
             c.add(Restrictions.eq("active", true));
+            c.add(Restrictions.sqlRestriction("name = ? collate utf8_turkish_ci", name, new StringType()) );
             //c.add(Restrictions.eq("isDeleted", false));
+            //list=c.list();
+            //logger.info("LOG02910: LIST : " + list);
             temp = (SchoolsClass)c.uniqueResult();
         } catch (Exception e) {
             logger.error(e.getMessage());

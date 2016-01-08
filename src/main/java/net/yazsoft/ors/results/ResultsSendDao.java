@@ -6,6 +6,7 @@ import net.yazsoft.frame.mail.Email;
 import net.yazsoft.frame.mail.EmailAttach;
 import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.frame.sms.SmsDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
@@ -193,12 +194,20 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
             }
 
             if (bSms) {
-                ArrayList<String> phones=new ArrayList<>();
-                for (Users user:selectedUsers) {
-                    phones.add(user.getPhone());
+                if (Util.getSessionInfo().getUser().getSmsCount()-selectedUsers.size()<0) {
+                    Util.setFacesMessageError("SMS göndermek için Kalan SMS miktarınız yetersizdir.");
+                } else {
+                    ArrayList<String> phones = new ArrayList<>();
+                    for (Users user : selectedUsers) {
+                        phones.add(user.getPhone());
+                    }
+                    smsDao.setPhones(phones);
+                    smsDao.sendSms();
+                    if (Util.getSessionInfo().getUser().getSmsCount() > 0) {
+                        Util.getSessionInfo().getUser().setSmsCount(Util.getSessionInfo().getUser().getSmsCount() - phones.size());
+                        Util.getSessionInfo().getUser().setSmsTotal(Util.getSessionInfo().getUser().getSmsTotal() + phones.size());
+                    }
                 }
-                smsDao.setPhones(phones);
-                smsDao.sendSms();
             }
 
             selected.setActive(true);

@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.event.data.SortEvent;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -31,6 +32,8 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
     ExamsSeasonNumber filterSeasonNumber;
     Schools filterSchool;
     Boolean listChanged;
+    String sortColumn;
+    String sortOrder;
 
     List<Exams> filteredExams;
 
@@ -55,8 +58,22 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         logger.info("EXAMSDAO INIT");
         super.init();
         listChanged=true;
-
+        sortColumn="tid";
+        sortOrder="desc";
         //filteredExams=new ArrayList<Exams>();
+    }
+
+    public void sortListener(final SortEvent sortEvent) {
+        String column=sortEvent.getSortColumn().getColumnKey();
+        logger.info("LOG02950: SORT COLUMN :" + column);
+        if (sortEvent.isAscending()) {
+            sortOrder="asc";
+        } else {
+            sortOrder="desc";
+        }
+        if (column.contains("examdate")) sortColumn="date";
+        if (column.contains("examname")) sortColumn="nameTr";
+        findFilteredExams();
     }
 
     @Override
@@ -93,11 +110,16 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             //for (Schools school:Util.getActiveUser().getSchoolsCollection()) {
 
             //}
+            if (sortOrder.equals("asc") ) {
+                c.addOrder(Order.asc(sortColumn));
+            } else {
+                c.addOrder(Order.desc(sortColumn));
+            }
             list = c.list();
+            filteredExams=list;
+            //logger.info("LOG02960: LIST :" + list);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            Util.setFacesMessage(e.getMessage());
-            e.printStackTrace();
+            Util.catchException(e);
         }
         return list;
     }
@@ -133,6 +155,9 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
         Long pk=null;
         try {
             logger.info("CREATE : " + getItem());
+            if (Util.getActiveSchool()==null) {
+                throw new Exception("Once kurum aktif etmelisiniz");
+            }
             getItem().setActive(Boolean.TRUE);
             getItem().setRefExamType(new ExamsType(1L));
             getItem().setRefSchool(Util.getActiveSchool());
@@ -149,6 +174,8 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
                 examsParametersDao.create(parameter);
             }
             reset();
+            setItem((Exams)getSession().load(Exams.class,pk));
+            setActiveExam();
         } catch (Exception e) {
             logger.error("EXCEPTION", e);
             Util.setFacesMessage("HATA: " +e.getMessage());

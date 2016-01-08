@@ -1,6 +1,7 @@
 package net.yazsoft.ors.operations;
 
 import com.sun.faces.util.CollectionsUtils;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.upload.UploadsBean;
@@ -20,6 +21,7 @@ import net.yazsoft.ors.schools.SchoolsClassDao;
 import net.yazsoft.ors.schools.SchoolsClassDto;
 import net.yazsoft.ors.students.*;
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -58,6 +60,14 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     List<String> lines;
     Boolean deleteOld=Boolean.FALSE;
     Boolean autoAddAnswers=Boolean.FALSE;
+
+    Boolean updateFields=Boolean.FALSE;
+    Boolean updateFullname=Boolean.FALSE;
+    Boolean updateNameSurname=Boolean.FALSE;
+    Boolean updateGender=Boolean.FALSE;
+    Boolean updatePhone=Boolean.FALSE;
+    Boolean updateMernis=Boolean.FALSE;
+
     Integer lessonsCount;
     Map<Lessons,Map<Integer,String>> lessonAnswerMap;
     String fileContent;
@@ -148,7 +158,8 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
     @Transactional
     public void transfer() {
         logger.info("TRANSFERING ....");
-        List<Integer> schoolNos;
+        List<Integer> schoolNos=null;
+        List<String> mernisNos=null;
         try {
             reset();
             upload=uploadsDao.getSelected();
@@ -161,8 +172,12 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             prepareClasses();
             getAnswersAutomatic();
 
-            //get schoolsNos from db and from dat
-            schoolNos=getSchoolNos(studentsDto);
+            //get schoolsNos/mernisNos from db and from dat
+            if (Util.getActiveSchool().getUseMernis().equals(Boolean.TRUE)) {
+                mernisNos = getMernisNos(studentsDto);
+            } else {
+                schoolNos = getSchoolNos(studentsDto);
+            }
 
             String parameterName;
             String parameterValue;
@@ -170,6 +185,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             String lessonAnswers = null;
             String booklet=null;
             Integer schoolNo=null;
+            String mernisNo=null;
             StudentsDto studentDto=null;
             StudentsAnswersDto answer;
             SchoolsClass schoolsClass;
@@ -178,126 +194,198 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
             for (String line : lines) {
                 //find schoolno first
-                //logger.info("CEVAPMI? : "+line.substring(0,5));
-                if (!line.substring(0,5).equals("CEVAP")) {
+                try {
+                    String nameSurname = null;
                     for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
+                        if (parameter.getRefParameter().getTid().intValue() == 1) { //ad soyad
+                            parameterValue = line.substring(parameter.getStart() - 1,
+                                    parameter.getStart() + parameter.getLength() - 1).trim();
+                            if ((parameterValue != null) && (!parameterValue.equals(""))) {
+                                nameSurname = parameterValue;
+                            }
+                        }
                         if (parameter.getRefParameter().getTid().intValue() == 2) {
                             parameterValue = line.substring(parameter.getStart() - 1,
                                     parameter.getStart() + parameter.getLength() - 1).trim();
                             if ((parameterValue != null) && (!parameterValue.equals(""))) {
-                                schoolNo = Integer.valueOf(parameterValue);
+                                try {
+                                    schoolNo = Integer.valueOf(parameterValue);
+                                } catch (Exception e) {
+                                    //Util.setFacesMessageError("OKUL NO HATASI. SATIR : " + line + e.getMessage());
+                                    Util.catchException(e);
+                                }
+                            }
+                        }
+                        if (parameter.getRefParameter().getTid().intValue() == 8) {
+                            parameterValue = line.substring(parameter.getStart() - 1,
+                                    parameter.getStart() + parameter.getLength() - 1).trim();
+                            if ((parameterValue != null) && (!parameterValue.equals(""))) {
+                                mernisNo = parameterValue;
                             }
                         }
                     }
-
-                    //if schoolno not exists add new student
-                    if (!schoolNos.contains(schoolNo)) {
-                        studentDto = new StudentsDto();
-                        studentDto.setSchoolNo(schoolNo);
-                        studentDto.setActive(Boolean.TRUE);
-
-                        //Get parameters
-                        for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
-                            //logger.info("PARAMETER :" + parameter);
-                            parameterValue = line.substring(parameter.getStart() - 1,
-                                    parameter.getStart() + parameter.getLength() - 1).trim();
-                            parameterName = parameter.getRefParameter().getNameTr();
-                            studentDto.setRefSchool(Util.getActiveSchool());
-                            switch (parameter.getRefParameter().getTid().intValue()) {
-                                case 1:studentDto.setFullname(parameterValue);break;
-                                //case 2: schoolNo=Integer.valueOf(parameterValue);break; //already setted
-                                case 3:
-                                    schoolsClass = findSchoolClassByName(parameterValue);
-                                    studentDto.setRefSchoolClass(schoolsClass);
-                                    break;
-                                case 4:studentDto.setName(parameterValue);break;
-                                case 5:studentDto.setSurname(parameterValue);break;
-                                case 6:studentDto.setGender(parameterValue);break;
-                                case 7:booklet = parameterValue;break;
-                                case 8:studentDto.setMernis(parameterValue);break;
-                                case 10:studentDto.setPhone(parameterValue);break;
-                                default:break;
-                            }
-                            //logger.info(parameterName + " : " + parameterValue);
+                    //logger.info("CEVAPMI? : "+line.substring(0,5));
+                    if (!nameSurname.equals("CEVAP")) {
+                        Boolean isnew = false;
+                        //if schoolno not exists add new student
+                        if (Util.getActiveSchool().getUseMernis().equals(true)) {
+                            if (!mernisNos.contains(mernisNo)) isnew = true;
+                        } else {
+                            if (!schoolNos.contains(schoolNo)) isnew = true;
                         }
-                        studentDto=studentsDao.prepareCredits(studentDto);
+                        if (isnew) {
+                            studentDto = new StudentsDto();
+                            studentDto.setSchoolNo(schoolNo);
+                            studentDto.setMernis(mernisNo);
+                            studentDto.setActive(Boolean.TRUE);
+                            studentDto.setVersion(0);
+                            studentDto.setRefSchool(Util.getActiveSchool());
+
+                            //Get parameters
+                            for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
+                                //logger.info("PARAMETER :" + parameter);
+                                parameterValue = line.substring(parameter.getStart() - 1,
+                                        parameter.getStart() + parameter.getLength() - 1).trim();
+                                parameterName = parameter.getRefParameter().getNameTr();
+                                switch (parameter.getRefParameter().getTid().intValue()) {
+                                    case 1:
+                                        studentDto.setFullname(parameterValue);
+                                        break;
+                                    //case 2: schoolNo=Integer.valueOf(parameterValue);break; //already setted
+                                    case 3:
+                                        schoolsClass = findSchoolClassByName(parameterValue);
+                                        studentDto.setRefSchoolClass(schoolsClass);
+                                        break;
+                                    case 4:
+                                        studentDto.setName(parameterValue);
+                                        break;
+                                    case 5:
+                                        studentDto.setSurname(parameterValue);
+                                        break;
+                                    case 6:
+                                        studentDto.setGender(parameterValue);
+                                        break;
+                                    case 7:
+                                        booklet = parameterValue;
+                                        break;
+                                    case 8:
+                                        studentDto.setMernis(parameterValue);
+                                        break;
+                                    case 9:
+                                        studentDto.setPhone(parameterValue);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                //logger.info(parameterName + " : " + parameterValue);
+                            }
+
                         /*
                         String credit=Util.getActiveSchool().getMebCode().concat(schoolNo.toString());
                         studentDto.setUsername(credit);
                         studentDto.setPassword(encoder.encode(credit));
                          */
-                        studentsDto.add(studentDto);
-                        newStudentsDto.add(studentDto);
-                        answerView = new StudentsAnswersViewDto(studentDto);
-                        answersViewDto.add(answerView);
-                    } else {
-                        //get booklet
-                        for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
-                            parameterValue = line.substring(parameter.getStart() - 1,
-                                    parameter.getStart() + parameter.getLength() - 1).trim();
-                            switch (parameter.getRefParameter().getTid().intValue()) {
-                                case 7:
-                                    booklet = parameterValue;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        studentDto = findStudent(schoolNo);
-                        answerView =new StudentsAnswersViewDto(studentDto);
-                        answersViewDto.add(answerView);
-                        //answerView = findStudentAnswerView(schoolNo);
-                    }
-                    answerView.setBooklet(booklet);
-
-                    //Students tempStudent=studentsDao.findBySchoolAndNumber(Util.getActiveSchool(),schoolNo);
-
-                    //ADD ANSWERS TO DB
-                    Students studentEntity = null;
-                    if (studentDto != null) {
-                        studentEntity = studentDto.toEntity();
-                    }
-                    int i = 0;
-                    for (LessonsDto lesson : lessonsDao.getLessonsDtos()) {
-                        i++;
-                        lessonName = lesson.getRefLessonName().getNameTr();
-                        //if (line.length() > lesson.getStart() + lesson.getQuestionCount()) {
-                        lessonAnswers = line.substring(lesson.getStart() - 1,
-                                lesson.getStart() + lesson.getQuestionCount() - 1);
-                        //}
-                        //if (lessonAnswers==null){
-                        //logger.info("LESSON : " + lessonName + " : " + lessonAnswers);
-                        //logger.info("LINE : " + line);
-                        //logger.info("LINE LENGTH : " + line.length());
-                        //}
-                        answer = null;
-                        if ((studentDto.getTid() != null) && (lesson.getTid() != null)) {
-                            answer = findAnswer((Students) getSession().load(Students.class, studentDto.getTid()),
-                                    (Lessons) getSession().load(Lessons.class, lesson.getTid()));
-                            if (answer!=null) {
-                                answer.setBooklet(booklet);
-                            }
-                        }
-                        if (answer == null) {
-                            answer = new StudentsAnswersDto();
-                            answer.setRefSchool(Util.getActiveSchool());
-                            answer.setRefExam(Util.getActiveExam());
-                            answer.setRefLesson(lessonsDao.getById(lesson.getTid()));
-                            answer.setBooklet(booklet);
-                            answer.setAnswers(lessonAnswers);
-                            answer.setActive(Boolean.TRUE);
-                            if (studentDto != null) {
-                                answer.setRefStudent(studentEntity);
-                            }
-                            answersDto.add(answer);
-                            newAnswersDto.add(answer);
+                            studentsDto.add(studentDto);
+                            newStudentsDto.add(studentDto);
+                            answerView = new StudentsAnswersViewDto(studentDto);
+                            answersViewDto.add(answerView);
                         } else {
-                            answer.setAnswers(lessonAnswers);
+
+                            if (Util.getActiveSchool().getUseMernis().equals(true)) {
+                                studentDto = findStudentByMernis(mernisNo);
+                            } else {
+                                studentDto = findStudentBySchoolno(schoolNo);
+                            }
+                            //get booklet
+                            for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
+                                parameterValue = line.substring(parameter.getStart() - 1,
+                                        parameter.getStart() + parameter.getLength() - 1).trim();
+                                switch (parameter.getRefParameter().getTid().intValue()) {
+                                    case 1:
+                                        studentDto.setFullname(parameterValue);
+                                        break;
+                                    case 4:
+                                        studentDto.setName(parameterValue);
+                                        break;
+                                    case 5:
+                                        studentDto.setSurname(parameterValue);
+                                        break;
+                                    case 6:
+                                        studentDto.setGender(parameterValue);
+                                        break;
+                                    case 7:
+                                        booklet = parameterValue;
+                                        break;
+                                    case 9:
+                                        studentDto.setPhone(parameterValue);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            answerView = new StudentsAnswersViewDto(studentDto);
+                            answersViewDto.add(answerView);
+                            //answerView = findStudentAnswerView(schoolNo);
                         }
-                        answerView.getAnswers().add(lessonAnswers);
-                        //studentsAnswersDao.saveOrUpdate(answers);
+                        answerView.setBooklet(booklet);
+
+                        //Students tempStudent=studentsDao.findBySchoolAndNumber(Util.getActiveSchool(),schoolNo);
+
+                        //ADD ANSWERS TO DB
+                        Students studentEntity = null;
+                        if (studentDto != null) {
+                            studentEntity = studentDto.toEntity();
+                        }
+                        int i = 0;
+                        for (LessonsDto lesson : lessonsDao.getLessonsDtos()) {
+                            i++;
+                            lessonName = lesson.getRefLessonName().getNameTr();
+                            //if (line.length() > lesson.getStart() + lesson.getQuestionCount()) {
+                            lessonAnswers = line.substring(lesson.getStart() - 1,
+                                    lesson.getStart() + lesson.getQuestionCount() - 1);
+                            //}
+                            //if (lessonAnswers==null){
+                            //logger.info("LESSON : " + lessonName + " : " + lessonAnswers);
+                            //logger.info("LINE : " + line);
+                            //logger.info("LINE LENGTH : " + line.length());
+                            //}
+                            answer = null;
+                            if ((studentDto.getTid() != null) && (lesson.getTid() != null)) {
+                                answer = findAnswer((Students) getSession().load(Students.class, studentDto.getTid()),
+                                        (Lessons) getSession().load(Lessons.class, lesson.getTid()));
+                                if (answer != null) {
+                                    answer.setBooklet(booklet);
+                                }
+                            }
+                            if (answer == null) {
+                                answer = new StudentsAnswersDto();
+                                answer.setRefSchool(Util.getActiveSchool());
+                                answer.setRefExam(Util.getActiveExam());
+                                answer.setRefLesson(lessonsDao.getById(lesson.getTid()));
+                                answer.setBooklet(booklet);
+                                answer.setAnswers(lessonAnswers);
+                                answer.setActive(Boolean.TRUE);
+                                if (studentDto != null) {
+                                    answer.setRefStudent(studentEntity);
+                                }
+                                answersDto.add(answer);
+                                newAnswersDto.add(answer);
+                            } else {
+                                answer.setAnswers(lessonAnswers);
+                                if (studentDto != null) {
+                                    answer.setRefStudent(studentEntity);
+                                }
+                            }
+                            answerView.getAnswers().add(lessonAnswers);
+                            //studentsAnswersDao.saveOrUpdate(answers);
+                        }
+                        //logger.info("ANSWERS : " + answerView.getAnswers());
                     }
-                    //logger.info("ANSWERS : " + answerView.getAnswers());
+                } catch (Exception e) {
+                    logger.error("LOG02930: ERROR LINE : " + line );
+                    logger.error("LOG02940: " + e.getMessage());
+                    Util.setFacesMessageError("HATA SATIRI : " + line);
+                    Util.catchException(e);
                 }
             }
 
@@ -323,33 +411,70 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             if (autoAddAnswers) {
                 answersDao.saveAutoAnswers(Util.getActiveExam());
             }
+
+            //CREATE NEW CLASSES
+            for (SchoolsClassDto classDto:newClassesDto) {
+                schoolsClassDao.saveOrUpdate(classDto.toEntity());
+                //logger.info("LOG02900: SAVED CLASS : " + classtid + " : " + classDto.getName());
+            }
+            getSession().flush();
+            getSession().clear();
+
+            //CREATE OR UPDATE STUDENT INFO
+            SchoolsClass schoolsClass=null;
+            Students stuEntity=null;
+            for (StudentsDto studentDto: studentsDto) {
+                //set school class for student
+                schoolsClass=null;
+                stuEntity=null;
+                if ((studentDto.getRefSchoolClass()!=null)
+                        && (studentDto.getRefSchoolClass().getName()!=null)
+                        && (!studentDto.getRefSchoolClass().getName().equals("")) ) {
+                    schoolsClass = schoolsClassDao.findBySchoolAndName(Util.getActiveSchool(),
+                            studentDto.getRefSchoolClass().getName());
+                }
+                if (schoolsClass!=null) {
+                    studentDto.setRefSchoolClass(schoolsClass);
+                }
+
+                if (studentDto.getTid()==null) {
+                    studentDto = studentsDao.prepareCredits(studentDto);
+                    studentsDao.saveOrUpdate(studentDto.toEntity());
+                } else {
+                    if (updateFields) {
+                        if ( (updateMernis) && (Util.getActiveSchool().getUseMernis()) ) {
+                            studentDto = studentsDao.prepareCredits(studentDto);
+                        }
+                        stuEntity=(Students)getSession().load(Students.class,studentDto.getTid());
+                        studentsDao.updateStudentFields(studentDto.toEntity(stuEntity),updateNameSurname,updateFullname,
+                                updateGender,updatePhone,updateMernis);
+                    }
+                }
+            }
+            //getSession().flush();
+            //getSession().clear();
+
+            //CREATE STUDENT ANSWERS
             if (deleteOld) {
                 studentsAnswersDao.deleteExamAnswers(Util.getActiveExam());
                 for (StudentsAnswersDto dto : answersDto) {
-                    schoolsClassDao.saveOrUpdate(dto.getRefStudent().getRefSchoolClass());
-                    studentsDao.saveOrUpdate(dto.getRefStudent());
                     dto.setRefSchool(Util.getActiveSchool());
-                    tid = studentsAnswersDao.create(dto.toEntity());
-                    dto.setTid(tid);
+                    //find saved student and set it to dto
+                    stuEntity=studentsDao.findByMernis(dto.getRefStudent().getMernis());
+                    dto.setRefStudent(stuEntity);
+                    studentsAnswersDao.create(dto.toEntity());
                 }
             } else {
                 for (StudentsAnswersDto dto : newAnswersDto) {
-                    SchoolsClass schoolsClass=null;
-                    if (dto.getRefStudent().getRefSchoolClass()!=null) {
-                        schoolsClass=schoolsClassDao.findBySchoolAndName(Util.getActiveSchool(),
-                                dto.getRefStudent().getRefSchoolClass().getName());
-                    }
-                    if (schoolsClass==null) {
-                        schoolsClassDao.saveOrUpdate(dto.getRefStudent().getRefSchoolClass());
-                    } else {
-                        dto.getRefStudent().setRefSchoolClass(schoolsClass);
-                    }
-                    studentsDao.saveOrUpdate(dto.getRefStudent());
+                    stuEntity=studentsDao.findByMernis(dto.getRefStudent().getMernis());
+                    dto.setRefStudent(stuEntity);
                     dto.setRefSchool(Util.getActiveSchool());
-                    tid = studentsAnswersDao.create(dto.toEntity());
-                    dto.setTid(tid);
+                    studentsAnswersDao.saveOrUpdate(dto.toEntity());
                 }
             }
+            getSession().flush();
+            getSession().clear();
+
             if ((upload.getProcessed()==null) || (!upload.getProcessed().equals(Boolean.TRUE) )){
                 upload.setProcessed(Boolean.TRUE);
                 uploadsDao.update(upload);
@@ -679,23 +804,34 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             String parameterValue;
 
             for (String line : lines) {
-                if (!line.substring(0,5).equals("CEVAP")) {
-                    for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
-                        if (parameter.getRefParameter().getTid().intValue() == 3) {
-                            //TODO: concat class and branch
-                            parameterValue = line.substring(parameter.getStart() - 1,
-                                    parameter.getStart() + parameter.getLength() - 1).trim();
-                            //schoolsClass = schoolsClassDao.findBySchoolAndName(Util.getActiveSchool(), parameterValue);
-                            if (!classesList.contains(parameterValue)) {
-                                SchoolsClassDto tempClass = new SchoolsClassDto();
-                                tempClass.setName(parameterValue);
-                                tempClass.setRefSchool(Util.getActiveSchool());
-                                tempClass.setActive(Boolean.TRUE);
-                                //schoolsClassDao.saveOrUpdate(tempClass);
-                                classesDto.add(tempClass);
-                                newClassesDto.add(tempClass);
-                                classesList.add(parameterValue);
+                for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
+                    //if cevap continue next
+                    if (parameter.getRefParameter().getTid().intValue() == 1) { //ad soyad
+                        parameterValue = line.substring(parameter.getStart() - 1,
+                                parameter.getStart() + parameter.getLength() - 1).trim();
+                        if ((parameterValue != null) && (!parameterValue.equals(""))) {
+                            if (!parameterValue.equals("CEVAP")) {
+                                continue;
                             }
+                        }
+                    }
+                    if (parameter.getRefParameter().getTid().intValue() == 3) {
+                        //TODO: concat class and branch
+                        parameterValue = line.substring(parameter.getStart() - 1,
+                                parameter.getStart() + parameter.getLength() - 1).trim();
+                        //schoolsClass = schoolsClassDao.findBySchoolAndName(Util.getActiveSchool(), parameterValue);
+                        if ( (parameterValue!=null)
+                                && (!parameterValue.equals(""))
+                                && (!classesList.contains(parameterValue)) ) {
+                            SchoolsClassDto tempClass = new SchoolsClassDto();
+                            tempClass.setName(parameterValue);
+                            tempClass.setRefSchool(Util.getActiveSchool());
+                            tempClass.setActive(Boolean.TRUE);
+                            //schoolsClassDao.saveOrUpdate(tempClass);
+                            classesDto.add(tempClass);
+                            newClassesDto.add(tempClass);
+                            classesList.add(parameterValue);
+                            logger.info("LOG02890: ADDING CLASS : " + parameterValue);
                         }
                     }
                 }
@@ -716,26 +852,37 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
         try {
             answersDao.getAnswersAutos().clear();
             for (String line : lines) {
-                if (line.substring(0,5).equals("CEVAP")) {
-                    //get booklet
 
+                    //get booklet
+                    String nameSurname=null;
                     for (ExamsParametersDto parameter : examsParametersDao.getParametersDtos()) {
                         //logger.info("LOG02810: " + parameter.getRefParameter().getNameTr());
                         //logger.info("LOG02790: " + (parameter.getStart() - 1));
                         //logger.info("LOG02800: " + (parameter.getStart() + parameter.getLength() - 1));
+                        if (parameter.getRefParameter().getTid().intValue() == 1) { //ad soyad
+                            parameterValue = line.substring(parameter.getStart() - 1,
+                                    parameter.getStart() + parameter.getLength() - 1).trim();
+                            if ((parameterValue != null) && (!parameterValue.equals(""))) {
+                                nameSurname = parameterValue;
+                            }
+                        }
+
+
                         if ( (parameter.getStart()+parameter.getLength()-1) < line.length() ) {
                             parameterValue = line.substring(parameter.getStart() - 1,
                                     parameter.getStart() + parameter.getLength() - 1).trim();
                         }
-                        if (parameter.getRefParameter().getTid().intValue() == 7) {
+                        if (parameter.getRefParameter().getTid().intValue() == 7) { //booklet
                             booklet = parameterValue;
                         }
+
                     }
                     /*
                     booklet=line.substring(6,7);
                     */
-                    logger.info("BOOKLET : " + booklet);
 
+                if (nameSurname.equals("CEVAP")) {
+                    logger.info("BOOKLET : " + booklet);
                     List<LessonsDto> lessonsDtos=lessonsDao.getLessonsDtos();
                     logger.info("LESSONS : " + lessonsDtos);
                     for (LessonsDto lesson : lessonsDtos) {
@@ -780,9 +927,18 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
     }
 
-    private StudentsDto findStudent(Integer schoolNo) {
+    private StudentsDto findStudentBySchoolno(Integer schoolNo) {
         for (StudentsDto dto:studentsDto) {
             if (dto.getSchoolNo().equals(schoolNo)) {
+                return dto;
+            }
+        }
+        return null;
+    }
+
+    private StudentsDto findStudentByMernis(String mernisNo) {
+        for (StudentsDto dto:studentsDto) {
+            if (dto.getMernis().equals(mernisNo)) {
                 return dto;
             }
         }
@@ -859,6 +1015,20 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             }
         }
         */
+        return nos;
+
+    }
+
+    /**
+     * Finds list of mernis nos from studentsdto list
+     * @param studentsDto
+     * @return list of mernis nos
+     */
+    public List<String> getMernisNos(List<StudentsDto> studentsDto) {
+        List<String> nos=new ArrayList<>();
+        for (StudentsDto dto:studentsDto) {
+            nos.add(dto.getMernis());
+        }
         return nos;
 
     }
@@ -978,5 +1148,53 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
     public void setFileContent(String fileContent) {
         this.fileContent = fileContent;
+    }
+
+    public Boolean getUpdateFields() {
+        return updateFields;
+    }
+
+    public void setUpdateFields(Boolean updateFields) {
+        this.updateFields = updateFields;
+    }
+
+    public Boolean getUpdateFullname() {
+        return updateFullname;
+    }
+
+    public void setUpdateFullname(Boolean updateFullname) {
+        this.updateFullname = updateFullname;
+    }
+
+    public Boolean getUpdateNameSurname() {
+        return updateNameSurname;
+    }
+
+    public void setUpdateNameSurname(Boolean updateNameSurname) {
+        this.updateNameSurname = updateNameSurname;
+    }
+
+    public Boolean getUpdateGender() {
+        return updateGender;
+    }
+
+    public void setUpdateGender(Boolean updateGender) {
+        this.updateGender = updateGender;
+    }
+
+    public Boolean getUpdatePhone() {
+        return updatePhone;
+    }
+
+    public void setUpdatePhone(Boolean updatePhone) {
+        this.updatePhone = updatePhone;
+    }
+
+    public Boolean getUpdateMernis() {
+        return updateMernis;
+    }
+
+    public void setUpdateMernis(Boolean updateMernis) {
+        this.updateMernis = updateMernis;
     }
 }
