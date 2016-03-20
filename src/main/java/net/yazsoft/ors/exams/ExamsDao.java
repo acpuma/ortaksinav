@@ -177,8 +177,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             setItem((Exams)getSession().load(Exams.class,pk));
             setActiveExam();
         } catch (Exception e) {
-            logger.error("EXCEPTION", e);
-            Util.setFacesMessage("HATA: " +e.getMessage());
+            Util.catchException(e);
         }
         return pk;
     }
@@ -222,8 +221,7 @@ public class ExamsDao extends BaseGridDao<Exams> implements Serializable{
             Util.getSessionInfo().setSchool(getItem().getRefSchool());
             Util.getSessionInfo().setExam(getItem());
         } catch (Exception e) {
-            e.printStackTrace();
-            Util.setFacesMessageError(e.getMessage());
+            Util.catchException(e);
         }
 
     }

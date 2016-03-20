@@ -118,7 +118,7 @@
                     <p:inputText id="nameEn" value="#{examsDao.item.nameEn}" title="NameEn" rendered="false"/>
                     <p:outputLabel value="#{msg.global_date}:" for="date" style="margin-left:10px;"/>
                     <p:calendar id="date" value="#{examsDao.item.date}" title="Date" showOn="button"
-                                pattern="dd/MM/yyyy HH:mm:ss" navigator="true"/>
+                                pattern="dd/MM/yyyy HH:mm" navigator="true" timeZone="Turkey" locale="tr"/>
                     <br/>
 
 

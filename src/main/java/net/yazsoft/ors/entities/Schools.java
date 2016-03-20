@@ -92,6 +92,10 @@ public class Schools extends BaseEntity implements Serializable {
     private Collection<SchoolsClass> schoolsClassCollection;
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<ResultsSend> resultsSendCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<Distributes> distributesCollection;
+    @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
+    private Collection<DistributesNames> distributesNamesCollection;
 
     public Schools() {
     }
@@ -291,6 +295,22 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setResultsSendCollection(Collection<ResultsSend> resultsSendCollection) {
         this.resultsSendCollection = resultsSendCollection;
+    }
+
+    public Collection<Distributes> getDistributesCollection() {
+        return distributesCollection;
+    }
+
+    public void setDistributesCollection(Collection<Distributes> distributesCollection) {
+        this.distributesCollection = distributesCollection;
+    }
+
+    public Collection<DistributesNames> getDistributesNamesCollection() {
+        return distributesNamesCollection;
+    }
+
+    public void setDistributesNamesCollection(Collection<DistributesNames> distributesNamesCollection) {
+        this.distributesNamesCollection = distributesNamesCollection;
     }
 
     @Override

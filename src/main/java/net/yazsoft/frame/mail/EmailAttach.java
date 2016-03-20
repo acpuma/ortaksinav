@@ -3,6 +3,8 @@ package net.yazsoft.frame.mail;
 
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
+import org.apache.commons.codec.CharEncoding;
+import org.apache.http.util.EncodingUtils;
 import org.apache.log4j.Logger;
 import org.apache.tools.ant.taskdefs.Java;
 import org.springframework.core.io.FileSystemResource;
@@ -15,6 +17,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +51,7 @@ public class EmailAttach {
             MimeMessage message = mailSender.createMimeMessage();
 
             // use the true flag to indicate you need a multipart message
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, CharEncoding.UTF_8);
             helper.setFrom("info@ortaksinav.com.tr");  // dont send without from address
             helper.setTo(to);
             helper.setBcc(bcc);
@@ -60,7 +63,9 @@ public class EmailAttach {
             for (String mailFile:mailFiles) {
                 FileSystemResource filesr = new FileSystemResource(Util.getUploadsFolder()+"/"+mailFolder+ "/" + mailFile);
                 logger.info("LOG02550: FILE : " + filesr.toString());
-                helper.addAttachment(mailFile, filesr);
+                //System.setProperty("mail.mime.decodetext.strict","true"); //for filename encoding problem
+                helper.addAttachment(Util.changeTurtoEng(mailFile), filesr);
+                //helper.addAttachment(MimeUtility.encodeText(mailFile,"UTF-8",null), filesr);
             }
             mailSender.setHost("webmail.ortaksinav.com.tr");
             mailSender.send(message);
@@ -83,6 +88,7 @@ public class EmailAttach {
             Util.catchException(e);
         }
     }
+
 
 
 

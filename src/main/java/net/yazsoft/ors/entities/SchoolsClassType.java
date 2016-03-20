@@ -12,8 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -27,8 +25,8 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SchoolsClass.findAll", query = "SELECT s FROM SchoolsClass s")})
-public class SchoolsClass extends BaseEntity implements Serializable {
+    @NamedQuery(name = "SchoolsClassType.findAll", query = "SELECT t FROM SchoolsClassType t")})
+public class SchoolsClassType extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,42 +34,28 @@ public class SchoolsClass extends BaseEntity implements Serializable {
     @Column(nullable = false)
     private Long tid;
     private Boolean active;
-    @Basic(optional = false)
-    @NotNull
-    @Column(nullable = false)
-    private int version;
+    private Integer version;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
-    private String roomName;
-    private Boolean bUseRoom;
-    private Boolean bIncludeStudents;
-    private int capacity;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refSchoolClass", fetch = FetchType.LAZY)
-    private Collection<Students> studentsCollection;
-    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Schools refSchool;
-    @JoinColumn(name = "ref_school_class_type", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SchoolsClassType refSchoolClassType;
+    @OneToMany(mappedBy = "refSchoolClassType", fetch = FetchType.LAZY)
+    private Collection<SchoolsClass> schoolsClassCollection;
 
-    public SchoolsClass() {
+    public SchoolsClassType() {
     }
 
-    public SchoolsClass(Long tid) {
+    public SchoolsClassType(Long tid) {
         this.tid = tid;
     }
 
-    public SchoolsClass(Long tid, int version, String name) {
+    public SchoolsClassType(Long tid, String name) {
         this.tid = tid;
-        this.version = version;
         this.name = name;
     }
 
@@ -91,11 +75,11 @@ public class SchoolsClass extends BaseEntity implements Serializable {
         this.active = active;
     }
 
-    public int getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
@@ -123,47 +107,16 @@ public class SchoolsClass extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
+    public Collection<SchoolsClass> getSchoolsClassCollection() {
+        return schoolsClassCollection;
+    }
+
+    public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
+        this.schoolsClassCollection = schoolsClassCollection;
+    }
+
     @XmlTransient
-    public Collection<Students> getStudentsCollection() {
-        return studentsCollection;
-    }
 
-    public void setStudentsCollection(Collection<Students> studentsCollection) {
-        this.studentsCollection = studentsCollection;
-    }
-
-    public Schools getRefSchool() {
-        return refSchool;
-    }
-
-    public void setRefSchool(Schools refSchool) {
-        this.refSchool = refSchool;
-    }
-
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public SchoolsClassType getRefSchoolClassType() {
-        return refSchoolClassType;
-    }
-
-    public void setRefSchoolClassType(SchoolsClassType refSchoolClassType) {
-        this.refSchoolClassType = refSchoolClassType;
-    }
 
     @Override
     public int hashCode() {
@@ -175,29 +128,14 @@ public class SchoolsClass extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SchoolsClass)) {
+        if (!(object instanceof SchoolsClassType)) {
             return false;
         }
-        SchoolsClass other = (SchoolsClass) object;
+        SchoolsClassType other = (SchoolsClassType) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }
         return true;
     }
 
-    public Boolean getbUseRoom() {
-        return bUseRoom;
-    }
-
-    public void setbUseRoom(Boolean bUseRoom) {
-        this.bUseRoom = bUseRoom;
-    }
-
-    public Boolean getbIncludeStudents() {
-        return bIncludeStudents;
-    }
-
-    public void setbIncludeStudents(Boolean bIncludeStudents) {
-        this.bIncludeStudents = bIncludeStudents;
-    }
 }

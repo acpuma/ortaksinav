@@ -248,34 +248,19 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                                         parameter.getStart() + parameter.getLength() - 1).trim();
                                 parameterName = parameter.getRefParameter().getNameTr();
                                 switch (parameter.getRefParameter().getTid().intValue()) {
-                                    case 1:
-                                        studentDto.setFullname(parameterValue);
-                                        break;
+                                    case 1:studentDto.setFullname(parameterValue);break;
                                     //case 2: schoolNo=Integer.valueOf(parameterValue);break; //already setted
                                     case 3:
                                         schoolsClass = findSchoolClassByName(parameterValue);
                                         studentDto.setRefSchoolClass(schoolsClass);
                                         break;
-                                    case 4:
-                                        studentDto.setName(parameterValue);
-                                        break;
-                                    case 5:
-                                        studentDto.setSurname(parameterValue);
-                                        break;
-                                    case 6:
-                                        studentDto.setGender(parameterValue);
-                                        break;
-                                    case 7:
-                                        booklet = parameterValue;
-                                        break;
-                                    case 8:
-                                        studentDto.setMernis(parameterValue);
-                                        break;
-                                    case 9:
-                                        studentDto.setPhone(parameterValue);
-                                        break;
-                                    default:
-                                        break;
+                                    case 4:studentDto.setName(parameterValue);break;
+                                    case 5:studentDto.setSurname(parameterValue);break;
+                                    case 6:studentDto.setGender(parameterValue);break;
+                                    case 7:booklet = parameterValue;break;
+                                    case 8:studentDto.setMernis(parameterValue);break;
+                                    case 9:studentDto.setPhone(parameterValue);break;
+                                    default:break;
                                 }
                                 //logger.info(parameterName + " : " + parameterValue);
                             }
@@ -301,26 +286,13 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                                 parameterValue = line.substring(parameter.getStart() - 1,
                                         parameter.getStart() + parameter.getLength() - 1).trim();
                                 switch (parameter.getRefParameter().getTid().intValue()) {
-                                    case 1:
-                                        studentDto.setFullname(parameterValue);
-                                        break;
-                                    case 4:
-                                        studentDto.setName(parameterValue);
-                                        break;
-                                    case 5:
-                                        studentDto.setSurname(parameterValue);
-                                        break;
-                                    case 6:
-                                        studentDto.setGender(parameterValue);
-                                        break;
-                                    case 7:
-                                        booklet = parameterValue;
-                                        break;
-                                    case 9:
-                                        studentDto.setPhone(parameterValue);
-                                        break;
-                                    default:
-                                        break;
+                                    case 1:studentDto.setFullname(parameterValue);break;
+                                    case 4:studentDto.setName(parameterValue);break;
+                                    case 5:studentDto.setSurname(parameterValue);break;
+                                    case 6:studentDto.setGender(parameterValue);break;
+                                    case 7:booklet = parameterValue;break;
+                                    case 9:studentDto.setPhone(parameterValue);
+                                    default:break;
                                 }
                             }
                             answerView = new StudentsAnswersViewDto(studentDto);
@@ -460,13 +432,21 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 for (StudentsAnswersDto dto : answersDto) {
                     dto.setRefSchool(Util.getActiveSchool());
                     //find saved student and set it to dto
-                    stuEntity=studentsDao.findByMernis(dto.getRefStudent().getMernis());
+                    if (Util.getActiveSchool().getUseMernis()==true) {
+                        stuEntity = studentsDao.findByMernis(dto.getRefStudent().getMernis());
+                    } else {
+                        stuEntity = studentsDao.findByNo(dto.getRefStudent().getSchoolNo());
+                    }
                     dto.setRefStudent(stuEntity);
                     studentsAnswersDao.create(dto.toEntity());
                 }
             } else {
                 for (StudentsAnswersDto dto : newAnswersDto) {
-                    stuEntity=studentsDao.findByMernis(dto.getRefStudent().getMernis());
+                    if (Util.getActiveSchool().getUseMernis()==true) {
+                        stuEntity = studentsDao.findByMernis(dto.getRefStudent().getMernis());
+                    } else {
+                        stuEntity = studentsDao.findByNo(dto.getRefStudent().getSchoolNo());
+                    }
                     dto.setRefStudent(stuEntity);
                     dto.setRefSchool(Util.getActiveSchool());
                     studentsAnswersDao.saveOrUpdate(dto.toEntity());
@@ -525,8 +505,14 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                     case "G": answers = answersMap.get(6);break;
                     case "H": answers = answersMap.get(7);break;
                 }
+                if (answers==null) {
+                    logger.info("LOG02990: KITAPCIK YOK : " +  dto.getRefStudent().getMernis()
+                            + " : " + dto.getRefStudent().getSchoolNo() );
+                    Util.setFacesMessageError("KITAPCIK YOK : " +  dto.getRefStudent().getMernis()
+                            + " : " + dto.getRefStudent().getSchoolNo() );
+                }
                 for (int i = 0; i < lesson.getQuestionCount(); i++) {
-                    if (answers.length()>i) {
+                    if ((answers!=null) && (answers.length()>i)) {
                         if (answers.charAt(i)=='X') { //Herkes icin dogru
                             trues++;
                         } else if (answers.charAt(i) == 'Y') { //herkes icin yanlis
@@ -755,9 +741,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             }
 
         } catch (Exception e) {
-            Util.setFacesMessageError(e.getMessage());
-            logger.error(e.getMessage(), e);
-            e.printStackTrace();
+            Util.catchException(e);
         }
     }
 

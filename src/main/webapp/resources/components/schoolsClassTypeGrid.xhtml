@@ -25,29 +25,28 @@
     <cc:attribute default="single"    required="false"   name="sortMode" />
     <cc:attribute default="false"     required="false"   name="stickyHeader" />
     <cc:attribute default="false"     required="false"   name="transient" />
-    <cc:attribute default="widgetLogin"     required="false"   name="widgetVar" />
-    <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute default="widgetSchoolsClassType"     required="false"   name="widgetVar" />
+    <cc:attribute default="" required="false" name="update" />
+    <cc:attribute  required="false" name="tableStyle" />
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:form>
-        <p:dataTable id="loginGrid"
-                     var="loginGrid"
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="schoolsClassTypeGrid"
+                     var="schoolsClassTypeVar"
 
                      filterEvent="enter"
-                     value="#{zlogLoginDao.logs}"
+                     value="#{schoolsClassTypeDao.items}"
                      emptyMessage=" #{msg['global_no_data']}"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
-                 {PreviousPageLink}
-                 {PageLinks} {NextPageLink}
+                 {PreviousPageLink} 
+                 {PageLinks} {NextPageLink} 
                  {LastPageLink} {RowsPerPageDropdown}"
 
                      draggableColumns="#{cc.attrs.draggableColumns}"
 
                      editable="#{cc.attrs.editable}"
-                     editMode="#{cc.attrs.editMode}"
-                     editingRow="#{cc.attrs.editingRow}"
                      expandedRow="#{cc.attrs.expandedRow}"
 
                      paginator="#{cc.attrs.paginator}"
@@ -69,70 +68,59 @@
                      transient="#{cc.attrs.transient}"
                      widgetVar="#{cc.attrs.widgetVar}"
 
+                     selection="#{schoolsClassTypeDao.item}"
+                     rowKey="#{schoolsClassTypeVar.tid}"
+                     tableStyle="#{cc.attrs.tableStyle}"
                      selectionMode="single"
-                     selection="#{zlogLoginDao.item}"
-
-                     rowKey="#{loginGrid.tid}"
-                     tableStyle="width:780px;"
                 >
 
-            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
-                    onstart="PF('blockUIWidget1').block()"
-                    oncomplete="PF('blockUIWidget1').unblock(); PF('resultsDialogWidget').show();"
-                    process="@all"
-                    listener="#{zlogLoginDao.select}"
-                    />
+            <p:ajax event="rowEdit" listener="#{schoolsClassTypeDao.onRowEdit}"
+                    update=":messages "  />
+            <p:ajax event="rowEditCancel" listener="#{schoolsClassTypeDao.onRowCancel}"
+                    update=":messages " />
 
+            <f:facet name="header">
+                #{msg.classtypes}
+            </f:facet>
 
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{schoolsClassTypeVar.tid}  </p:column>
 
-            <p:column headerText="#{msg.global_id}" width="25" rendered="true"  > #{loginGrid.tid}  </p:column>
-
-            <p:column headerText="#{msg.username}" width="60"
-                      filterBy="#{loginGrid.name}"  sortBy="#{loginGrid.name}">
-                #{loginGrid.name}
-            </p:column>
-            <p:column headerText="#{msg.global_name}" width="100" filterBy="#{loginGrid.refStudent.fullname}"
-                      >
-                <p:outputLabel rendered="#{empty loginGrid.refUser}">
-                    <p:outputLabel rendered="#{not empty loginGrid.refStudent.fullname}">
-                        #{loginGrid.refStudent.fullname}
-                    </p:outputLabel>
-                    <p:outputLabel rendered="#{empty loginGrid.refStudent.fullname}">
-                        #{loginGrid.refStudent.name} #{loginGrid.refStudent.surname}
-                    </p:outputLabel>
-                </p:outputLabel>
-
-                <p:outputLabel rendered="#{not empty loginGrid.refUser}">
-                    #{loginGrid.refUser.name} #{loginGrid.refUser.surname}
-                </p:outputLabel>
-            </p:column>
-            <p:column headerText="#{msg.school}" width="150"
-                      sortBy="#{loginGrid.refStudent.refSchool.name}"
-                      filterBy="#{loginGrid.refStudent.refSchool.name}"
-                      >
-                <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
-                    #{loginGrid.refStudent.refSchool.name}
-                </p:outputLabel>
-                <p:outputLabel rendered="#{not empty loginGrid.refUser}">
-                    #{loginGrid.refUser.refActiveSchool.name}
-                </p:outputLabel>
-            </p:column>
-            <p:column headerText="#{msg.class}" width="20"
-                      sortBy="#{loginGrid.refStudent.refSchoolClass.name}"
-                      filterBy="#{loginGrid.refStudent.refSchoolClass.name}"
-                      >
-                <p:outputLabel rendered="#{not empty loginGrid.refStudent}">
-                    #{loginGrid.refStudent.refSchoolClass.name}
-                </p:outputLabel>
+            <p:column headerText="#{msg.global_name}" width="70" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{schoolsClassTypeVar.name}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{schoolsClassTypeVar.name}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
             </p:column>
 
-            <p:column headerText="#{msg.global_date}" width="100"
-                      filterBy="#{loginGrid.created}"
-                        sortBy="#{loginGrid.created}">
-                <p:outputLabel value="#{loginGrid.created}" >
-                    <f:convertDateTime locale="tr" pattern="dd.MM.yyy HH:mm:ss" timeZone="Turkey"/>
-                </p:outputLabel>
+            <p:column headerText="#{msg.global_id}" width="30" rendered="false"
+                      filterBy="#{schoolsClassTypeVar.active}">
+                #{schoolsClassTypeVar.active}
             </p:column>
+
+            <p:column width="20" >
+                <p:rowEditor rendered="#{authsDao.auths.pupdate}"/>
+            </p:column>
+
+
+            <p:column width="40">
+                <p:commandButton value="" update=" :messages schoolsClassTypeGrid"
+                                 icon="ui-icon-trash"
+                                 style="height: 36px; width: 36px;"
+                                 actionListener="#{schoolsClassTypeDao.delete(schoolsClassTypeVar)}"
+                                 disabled="#{not authsDao.auths.pdelete}"
+                >
+                    <p:confirm header="#{msg.global_confirmation}"
+                               message="SEVIYE SİLMEYİ ONAYLIYORMUSUNUZ?" icon="ui-icon-alert"/>
+                </p:commandButton>
+            </p:column>
+
+            <f:facet name="footer">
+                <p:commandButton value="Ekle" onclick="PF('classTypeDialogWidget').show()"
+                                 actionListener="#{schoolsClassTypeDao.reset}"
+                                 disabled="#{not authsDao.auths.padd}"
+                />
+            </f:facet>
 
         </p:dataTable>
     </h:form>
@@ -140,4 +128,3 @@
 
 </cc:implementation>
 </html>
-

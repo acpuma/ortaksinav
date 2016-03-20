@@ -138,7 +138,7 @@
             </p:column>
             <p:column headerText="#{msg.global_date}" width="60" sortBy="#{studentsAnswersVar.rankSchool}">
                 <p:outputLabel value="#{studentsAnswersVar.refExam.date}">
-                    <f:convertDateTime pattern="dd.MM.yyyy hh:mm" />
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" locale="tr" timeZone="Turkey"/>
                         </p:outputLabel>
             </p:column>
 

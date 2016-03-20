@@ -23,9 +23,9 @@ import java.util.*;
 
 @Named
 @ViewScoped
-public class Distribute {
+public class Distributex {
 
-    private static final Logger logger = Logger.getLogger(Distribute.class);
+    private static final Logger logger = Logger.getLogger(Distributex.class);
     private static final int BUFFER_SIZE = 6124;
     Map<Integer,List<Person>> sheetPersons=new LinkedHashMap<>();
     List<Person> persons;

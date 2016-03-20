@@ -10,11 +10,16 @@ import net.yazsoft.ors.entities.SchoolsClass;
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StringType;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.CellEditEvent;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +33,23 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
     List<SchoolsClass> schoolsClasses;
     List<SchoolsClass> foundClasses;
 
+    @Inject SchoolsClassTypeDao schoolsClassTypeDao;
+
+    public void onCellEdit(CellEditEvent event) {
+        Object oldValue = event.getOldValue();
+        Object newValue = event.getNewValue();
+
+        logger.info("SELECTED : " + schoolsClassTypeDao.getSelected());
+        if(newValue != null && !newValue.equals(oldValue)) {
+            //SchoolsClassDto entity =(SchoolsClassDto) ((DataTable)event.getComponent()).getRowData();
+            //entity.setRefSchoolClassType(schoolsClassTypeDao.getSelected());
+        }
+    }
+
+    public List<SchoolsClass> findByActiveSchool() {
+        return findBySchool(Util.getActiveSchool());
+    }
+
     public List findBySchool(Schools school) {
         logger.info("SCHOOL : " + school);
         List list=null;
@@ -36,6 +58,7 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
             c.add(Restrictions.eq("refSchool", school));
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
+            c.addOrder(Order.asc("name"));
             list = c.list();
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -46,7 +69,7 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
     }
 
     /**
-     * Find class from current active schollClasses list
+     * Find class by name from current active schollClasses list
      * @param name class name to find
      * @return
      */
@@ -146,4 +169,6 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
     public void setFoundClasses(List<SchoolsClass> foundClasses) {
         this.foundClasses = foundClasses;
     }
+
+
 }

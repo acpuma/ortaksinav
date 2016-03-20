@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<cc:interface>
+    <cc:attribute default="false"     required="false"   name="disabledSelection"  />
+    <cc:attribute default="false"     required="false"   name="draggableColumns" />
+    <cc:attribute default="false"     required="false"   name="editable" />
+    <cc:attribute default="false"     required="false"   name="editMode" />
+    <cc:attribute default="false"     required="false"   name="editingRow" />
+    <cc:attribute default="false"     required="false"   name="expandedRow" />
+    <cc:attribute default="true"      required="false"   name="paginator" />
+    <cc:attribute default="bottom"    required="false"   name="paginatorPosition" />
+    <cc:attribute default="true"      required="false"   name="paginatorAlwaysVisible" />
+    <cc:attribute default="true"      required="false"   name="resizableColumns" />
+    <cc:attribute default="0"         required="false"   name="rows" />
+    <cc:attribute default="true"      required="false"   name="rendered" />
+    <cc:attribute default="true"      required="false"   name="scrollable" />
+    <cc:attribute default="auto"      required="false"   name="scrollWidth" />
+    <cc:attribute default="auto"      required="false"   name="scrollHeight" />
+    <cc:attribute default="ASCENDING" required="false"   name="sortOrder" />
+    <cc:attribute default="single"    required="false"   name="sortMode" />
+    <cc:attribute default="false"     required="false"   name="stickyHeader" />
+    <cc:attribute default="false"     required="false"   name="transient" />
+    <cc:attribute default="widgetschoolsClassDto"     required="false"   name="widgetVar" />
+    <cc:attribute default=":pageForm" required="false" name="update" />
+    <cc:attribute  required="false" name="tableStyle" />
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:dataTable id="schoolsClassDtoGrid"
+                     var="schoolsClassDtoVar"
+
+                     filterEvent="enter"
+                     value="#{distributeDao.schoolsClassDtos}"
+                     emptyMessage=" #{msg['global_no_data']}"
+                     paginatorTemplate=" {FirstPageLink}
+                 {PreviousPageLink} 
+                 {PageLinks} {NextPageLink} 
+                 {LastPageLink} "
+
+                     draggableColumns="#{cc.attrs.draggableColumns}"
+
+                     editable="#{cc.attrs.editable}"
+                     editMode="#{cc.attrs.editMode}"
+                     expandedRow="#{cc.attrs.expandedRow}"
+
+                     paginator="#{cc.attrs.paginator}"
+                     paginatorPosition="#{cc.attrs.paginatorPosition}"
+                     paginatorAlwaysVisible="#{cc.attrs.paginatorAlwaysVisible}"
+
+                     resizableColumns="#{cc.attrs.resizableColumns}"
+                     rows="#{cc.attrs.rows}"
+                     rendered="#{cc.attrs.rendered}"
+
+                     scrollable="#{cc.attrs.scrollable}"
+                     sortOrder="#{cc.attrs.sortOrder}"
+                     sortMode="#{cc.attrs.sortMode}"
+                     stickyHeader="#{cc.attrs.stickyHeader}"
+                     scrollWidth="#{cc.attrs.scrollWidth}"
+                     scrollHeight="#{cc.attrs.scrollHeight}"
+                     liveResize="true"
+
+                     transient="#{cc.attrs.transient}"
+                     widgetVar="#{cc.attrs.widgetVar}"
+
+                     selection="#{schoolsClassDao.item}"
+                     rowKey="#{schoolsClassDtoVar.id}"
+                     tableStyle="#{cc.attrs.tableStyle}"
+
+                     rowStyleClass="#{schoolsClassDtoVar.tid eq null ? 'bgYellow' : null}"
+
+                >
+            <p:ajax event="rowEdit" listener="#{distributeDao.onRowEdit}" disabled="ture"
+                    update="schoolsClassDtoGrid :messages "  />
+            <p:ajax event="rowEditCancel" listener="#{distributeDao.onRowCancel}" disabled="true"
+                    update=":messages " />
+
+            <p:ajax event="cellEdit" listener="#{schoolsClassDao.onCellEdit}" update=":messages" />
+
+            <f:facet name="header">
+                #{msg.classes}
+            </f:facet>
+
+            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  style="display: none">
+                #{schoolsClassDtoVar.tid}
+            </p:column>
+
+
+            <p:column headerText="#{msg.global_name}" width="40" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{schoolsClassDtoVar.name}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{schoolsClassDtoVar.name}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.distribute_room}" width="40" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{schoolsClassDtoVar.roomName}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{schoolsClassDtoVar.roomName}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.lesson} 1" width="60" rendered="false">
+                #{schoolsClassDtoVar.lesson1}
+            </p:column>
+            <p:column headerText="#{msg.lesson} 2" width="60" rendered="false">
+                #{schoolsClassDtoVar.lesson2}
+            </p:column>
+            <p:column headerText="#{msg.lesson} 3" width="60" rendered="false">
+                #{schoolsClassDtoVar.lesson3}
+            </p:column>
+            <p:column headerText="#{msg.lesson} 4" width="100" rendered="false">
+                #{schoolsClassDtoVar.lesson4}
+            </p:column>
+            <p:column headerText="Öğr." width="20" >
+                #{schoolsClassDtoVar.studentsSize}
+            </p:column>
+            <p:column headerText="Kapasite" width="20" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{schoolsClassDtoVar.capacity}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{schoolsClassDtoVar.capacity}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+            <p:column headerText="#{msg.distribute_useroom}" width="15" >
+                <p:selectBooleanCheckbox itemLabel="" style=""
+                                         value="#{schoolsClassDtoVar.bUseRoom}"/>
+            </p:column>
+
+            <p:column headerText="#{msg.distribute_includestudents}" width="15" >
+                <p:selectBooleanCheckbox itemLabel="" style=""
+                                         value="#{schoolsClassDtoVar.bIncludeStudents}" rendered="true"/>
+            </p:column>
+            <p:column headerText="#{msg.school}" width="40" rendered="false"
+                      >
+                #{schoolsClassDtoVar.refSchool.tid}
+            </p:column>
+
+            <p:column headerText="Seviye" width="20" >
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{schoolsClassDtoVar.refSchoolClassType.name}" /></f:facet>
+                    <f:facet name="input">
+                    <p:selectOneMenu value="#{schoolsClassDtoVar.refSchoolClassType}" id="schoolClassTypeSelect" >
+                        <p:ajax update="schoolsClassDtoGrid" listener="#{schoolsClassTypeDao.classTypeChanged}" disabled="true"/>
+                        <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{schoolsClassTypeDao.all}" var="man"
+                                       itemLabel="#{man.name}" itemValue="#{man}" />
+                    </p:selectOneMenu>
+
+                    </f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column width="15" rendered="false">
+                <p:commandButton value="" update=" :messages "
+                                 icon="ui-icon-pencil"
+                                 style="height: 30px; width: 30px;"
+                                 actionListener="#{schoolsClassDao.delete(sclass)}">
+                </p:commandButton>
+            </p:column>
+
+        </p:dataTable>
+
+        <p:panelGrid columns="2" style="width: 100%;">
+            <p:outputPanel style=" text-align: left;" rendered="true">
+                <p:commandButton icon="ui-icon-disk" rendered="true"
+                                 styleClass="toolbar-button" style="padding:1px 5px;"
+                                 value="#{msg.toolbar_save}"
+                                 actionListener="#{distributeDao.saveClasses}"
+                />
+                <p:commandButton icon="ui-icon-plus" rendered="false"
+                                 styleClass="toolbar-button" style="padding:1px 5px;"
+                                 value="#{msg.toolbar_add}"
+                                 actionListener="#{distributeDao.reset}"
+                                 update="@widgetVar(formDialogWidget)"
+                                 oncomplete="PF('formDialogWidget').show();"
+                                 disabled="#{not authsDao.auths.padd}"
+                />
+                <p:commandButton icon="ui-icon-suitcase" rendered="false"
+                                 styleClass="toolbar-button" style="padding:1px 5px;"
+                                 value="#{msg.distributes}"
+                                 actionListener="#{distributeDao.reset}"
+                />
+
+            </p:outputPanel>
+            <p:outputPanel style="text-align: right;">
+                <p:selectBooleanCheckbox itemLabel="#{msg.distribute_useroomname}" style="padding:0 15px;"
+                                         value="#{distributeDao.bUseRoomName}" rendered="true"/>
+                <p:selectBooleanCheckbox itemLabel="Rastgele" style="padding:0 15px;"
+                                         value="#{distributeDao.bRandom}" rendered="true"/>
+                <p:selectBooleanCheckbox itemLabel="Kelebek" style="padding:0 15px;"
+                                         value="#{distributeDao.bButterfly}" rendered="true"/>
+
+                <p:commandButton icon="ui-icon-arrow-4-diag"
+                                 styleClass="toolbar-button" style="padding:1px 5px;"
+                                 value="#{msg.distribute}"
+                                 update="@widgetVar(distributesGridWidget) :messages"
+                                 actionListener="#{distributeDao.distribute()}"
+                />
+            </p:outputPanel>
+
+        </p:panelGrid>
+    </h:form>
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
+
+</cc:implementation>
+</html>

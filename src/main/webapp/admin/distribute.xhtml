@@ -10,45 +10,23 @@
 <f:view>
     <h:head>
         <title>#{msg.exams}</title>
+        <h:outputStylesheet library="css" name="pages/distribute.css" />
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.exams}" />
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
-    <h:form id="pageForm">
-        <p:panelGrid columns="2" id="pagePanel">
-            <h:form enctype="multipart/form-data" id="uploadForm">
-                <p:fileUpload fileUploadListener="#{distribute.handleFileUpload}"
-                              mode="advanced"
-                              multiple="false"
-                              allowTypes="/(\.|\/)(xls|xlsx)$/"
-                              fileLimit="20000"
-                              label="#{msg.upload_select_file}"
-                              uploadLabel="#{msg.upload}"
-                              cancelLabel="#{msg.global_cancel}"
-                              process="uploadForm"
-                              update=":messages"
-                        />
-            </h:form>
-            <p:outputPanel style="text-align: center;">
-                <p:selectBooleanCheckbox itemLabel="Rastgele" style="margin: 3px 15px;"
-                                         value="#{distribute.randomize}"/>
-                <p:commandButton value="Dağıt" process="@this" actionListener="#{distribute.distribute}" ajax="false"/>
-                <br/>
-                <p:commandLink value="son upload indir" process="@this"
-                               actionListener="#{distribute.downloadExcelUpload}" ajax="false"/>
-                <br/>
-                <p:commandLink value="son download indir" process="@this"
-                               actionListener="#{distribute.downloadExcelDownload}" ajax="false"/>
+    #{authsDao.findAuths("/admin/distribute")}
 
-            </p:outputPanel>
-        </p:panelGrid>
+        <components:schoolsClassesDtoGrid rows="5000" scrollable="true" scrollHeight="400" editable="true" editMode="cell"
+                                          widgetVar="schoolsClassDtoGridWidget" paginator="false" />
+    <h:form id="pageForm">
+
 
     </h:form>
 
-    <p:dialog id="gridDialog" header="#{msg.schools_header}" widgetVar="pageGrid"
-              modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
 
-    </p:dialog>
+    <components:distributesGrid rows="10000" scrollable="true" scrollHeight="400"
+                                      widgetVar="distributesGridWidget" paginator="false" />
 
 </p:outputPanel>
 </ui:decorate>

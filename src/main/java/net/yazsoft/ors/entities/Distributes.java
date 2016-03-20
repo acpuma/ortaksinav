@@ -3,7 +3,6 @@
 package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,19 +15,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SchoolsClass.findAll", query = "SELECT s FROM SchoolsClass s")})
-public class SchoolsClass extends BaseEntity implements Serializable {
+    @NamedQuery(name = "Distributes.findAll", query = "SELECT r FROM Distributes r")})
+public class Distributes extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,39 +36,42 @@ public class SchoolsClass extends BaseEntity implements Serializable {
     @NotNull
     @Column(nullable = false)
     private int version;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(nullable = false, length = 255)
-    private String name;
-    private String roomName;
-    private Boolean bUseRoom;
-    private Boolean bIncludeStudents;
-    private int capacity;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refSchoolClass", fetch = FetchType.LAZY)
-    private Collection<Students> studentsCollection;
+    private int distributeRank; // student distribute rank
+    private String room;
+    private int roomRank;
+    private String name;
+    private String surname;
+    private String mernis;
+    private String schoolNo;
+    private String className;
+    private String lesson1;
+    private String lesson2;
+    private String lesson3;
+    private String lesson4;
+
+
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
-    @JoinColumn(name = "ref_school_class_type", referencedColumnName = "tid")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private SchoolsClassType refSchoolClassType;
 
-    public SchoolsClass() {
+    @JoinColumn(name = "ref_distribute_name", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DistributesNames refDistributeName;
+
+    public Distributes() {
     }
 
-    public SchoolsClass(Long tid) {
+    public Distributes(Long tid) {
         this.tid = tid;
     }
 
-    public SchoolsClass(Long tid, int version, String name) {
+    public Distributes(Long tid, int version) {
         this.tid = tid;
         this.version = version;
-        this.name = name;
     }
 
     public Long getTid() {
@@ -99,14 +98,6 @@ public class SchoolsClass extends BaseEntity implements Serializable {
         this.version = version;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Date getCreated() {
         return created;
     }
@@ -123,15 +114,6 @@ public class SchoolsClass extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    @XmlTransient
-    public Collection<Students> getStudentsCollection() {
-        return studentsCollection;
-    }
-
-    public void setStudentsCollection(Collection<Students> studentsCollection) {
-        this.studentsCollection = studentsCollection;
-    }
-
     public Schools getRefSchool() {
         return refSchool;
     }
@@ -140,29 +122,108 @@ public class SchoolsClass extends BaseEntity implements Serializable {
         this.refSchool = refSchool;
     }
 
-
-    public String getRoomName() {
-        return roomName;
+    public String getRoom() {
+        return room;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getRoomRank() {
+        return roomRank;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setRoomRank(int roomRank) {
+        this.roomRank = roomRank;
     }
 
-    public SchoolsClassType getRefSchoolClassType() {
-        return refSchoolClassType;
+    public String getName() {
+        return name;
     }
 
-    public void setRefSchoolClassType(SchoolsClassType refSchoolClassType) {
-        this.refSchoolClassType = refSchoolClassType;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getMernis() {
+        return mernis;
+    }
+
+    public void setMernis(String mernis) {
+        this.mernis = mernis;
+    }
+
+    public String getSchoolNo() {
+        return schoolNo;
+    }
+
+    public void setSchoolNo(String schoolNo) {
+        this.schoolNo = schoolNo;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getLesson1() {
+        return lesson1;
+    }
+
+    public void setLesson1(String lesson1) {
+        this.lesson1 = lesson1;
+    }
+
+    public String getLesson2() {
+        return lesson2;
+    }
+
+    public void setLesson2(String lesson2) {
+        this.lesson2 = lesson2;
+    }
+
+    public String getLesson3() {
+        return lesson3;
+    }
+
+    public void setLesson3(String lesson3) {
+        this.lesson3 = lesson3;
+    }
+
+    public String getLesson4() {
+        return lesson4;
+    }
+
+    public void setLesson4(String lesson4) {
+        this.lesson4 = lesson4;
+    }
+
+    public int getDistributeRank() {
+        return distributeRank;
+    }
+
+    public void setDistributeRank(int distributeRank) {
+        this.distributeRank = distributeRank;
+    }
+
+    public DistributesNames getRefDistributeName() {
+        return refDistributeName;
+    }
+
+    public void setRefDistributeName(DistributesNames refDistributeName) {
+        this.refDistributeName = refDistributeName;
     }
 
     @Override
@@ -175,29 +236,14 @@ public class SchoolsClass extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SchoolsClass)) {
+        if (!(object instanceof Distributes)) {
             return false;
         }
-        SchoolsClass other = (SchoolsClass) object;
+        Distributes other = (Distributes) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }
         return true;
     }
 
-    public Boolean getbUseRoom() {
-        return bUseRoom;
-    }
-
-    public void setbUseRoom(Boolean bUseRoom) {
-        this.bUseRoom = bUseRoom;
-    }
-
-    public Boolean getbIncludeStudents() {
-        return bIncludeStudents;
-    }
-
-    public void setbIncludeStudents(Boolean bIncludeStudents) {
-        this.bIncludeStudents = bIncludeStudents;
-    }
 }

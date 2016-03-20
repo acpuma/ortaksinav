@@ -5,6 +5,7 @@ package net.yazsoft.ors.schools;
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import net.yazsoft.ors.entities.Schools;
 import net.yazsoft.ors.entities.SchoolsClass;
+import net.yazsoft.ors.entities.SchoolsClassType;
 import net.yazsoft.ors.entities.Students;
 
 import java.util.Collection;
@@ -47,6 +48,15 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
+    private String roomName;
+    private int capacity=0;
+    private Boolean bUseRoom=false;
+    private Boolean bIncludeStudents=false;
+    private int studentsSize;
+    private String lesson1;
+    private String lesson2;
+    private String lesson3;
+    private String lesson4;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -56,18 +66,32 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
+    @JoinColumn(name = "ref_school_class_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SchoolsClassType refSchoolClassType;
 
     public SchoolsClass toEntity(){
-        SchoolsClass tempClass=new SchoolsClass();
-        tempClass.setTid(this.tid);
-        tempClass.setVersion(this.version);
-        tempClass.setActive(this.active);
-        tempClass.setName(this.name);
-        tempClass.setCreated(this.created);
-        tempClass.setUpdated(this.updated);
+        return toEntity(null);
+    }
+
+    public SchoolsClass toEntity(SchoolsClass schoolsClass){
+        if (schoolsClass==null) {
+            schoolsClass=new SchoolsClass();
+        }
+        schoolsClass.setTid(this.tid);
+        schoolsClass.setVersion(this.version);
+        schoolsClass.setActive(this.active);
+        schoolsClass.setName(this.name);
+        schoolsClass.setCreated(this.created);
+        schoolsClass.setUpdated(this.updated);
         //tempClass.setStudentsCollection(this.studentsCollection);
-        tempClass.setRefSchool(this.refSchool);
-        return tempClass;
+        schoolsClass.setRefSchool(this.refSchool);
+        schoolsClass.setRoomName(this.roomName);
+        schoolsClass.setCapacity(this.capacity);
+        schoolsClass.setbIncludeStudents(this.bIncludeStudents);
+        schoolsClass.setbUseRoom(this.bUseRoom);
+        schoolsClass.setRefSchoolClassType(this.refSchoolClassType);
+        return schoolsClass;
     }
 
     public SchoolsClassDto(SchoolsClass schoolsClass) {
@@ -83,6 +107,11 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
         this.updated=schoolsClass.getUpdated();
         this.studentsCollection=schoolsClass.getStudentsCollection();
         this.refSchool=schoolsClass.getRefSchool();
+        this.roomName=schoolsClass.getRoomName();
+        this.capacity=schoolsClass.getCapacity();
+        this.bIncludeStudents=schoolsClass.getbIncludeStudents();
+        this.bUseRoom=schoolsClass.getbUseRoom();
+        this.refSchoolClassType=schoolsClass.getRefSchoolClassType();
     }
 
     public SchoolsClassDto() {
@@ -163,6 +192,14 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
         this.refSchool = refSchool;
     }
 
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -189,5 +226,77 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public Boolean getbIncludeStudents() {
+        return bIncludeStudents;
+    }
+
+    public void setbIncludeStudents(Boolean bIncludeStudents) {
+        this.bIncludeStudents = bIncludeStudents;
+    }
+
+    public Boolean getbUseRoom() {
+        return bUseRoom;
+    }
+
+    public void setbUseRoom(Boolean bUseRoom) {
+        this.bUseRoom = bUseRoom;
+    }
+
+    public int getStudentsSize() {
+        return getStudentsCollection().size();
+    }
+
+    public void setStudentsSize(int studentsSize) {
+        this.studentsSize = studentsSize;
+    }
+
+    public String getLesson1() {
+        return lesson1;
+    }
+
+    public void setLesson1(String lesson1) {
+        this.lesson1 = lesson1;
+    }
+
+    public String getLesson2() {
+        return lesson2;
+    }
+
+    public void setLesson2(String lesson2) {
+        this.lesson2 = lesson2;
+    }
+
+    public String getLesson3() {
+        return lesson3;
+    }
+
+    public void setLesson3(String lesson3) {
+        this.lesson3 = lesson3;
+    }
+
+    public String getLesson4() {
+        return lesson4;
+    }
+
+    public void setLesson4(String lesson4) {
+        this.lesson4 = lesson4;
+    }
+
+    public SchoolsClassType getRefSchoolClassType() {
+        return refSchoolClassType;
+    }
+
+    public void setRefSchoolClassType(SchoolsClassType refSchoolClassType) {
+        this.refSchoolClassType = refSchoolClassType;
     }
 }

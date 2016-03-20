@@ -19,6 +19,6 @@ public class Constants {
     public static final Long CANCELTYPE_YES = 2L; //canceled
     public static final Long CANCELTYPE_TRUE = 3L; //true for everybody
     public static final Long CANCELTYPE_FALSE = 4L; //false for everybody
-
-
+    public static final int  REPORT_LESSON_CLASS= 1;
+    public static final int  REPORT_LESSON_SCORE= 2;
 }

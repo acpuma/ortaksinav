@@ -8,6 +8,7 @@ import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.security.SessionInfo;
 import net.yazsoft.frame.sms.SmsDao;
+import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.students.StudentsAnswersDao;
@@ -33,6 +34,7 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
     Boolean bSms;
     Boolean bReportLesson;
     Boolean bReportLessonAverage;
+    Boolean bReportLessonScore;
 
     List<String> selectedClasses;
     List<String> selectedLessons;
@@ -58,7 +60,11 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         newUser=new Users();
     }
 
-    public void reportLesson() {
+    /**
+     * report lessons according to reportType as defined in Constants class
+     * @param reportType REPORT_LESSON_CLASS group by class, REPORT_LESSON_SCORE list by score
+     */
+    public void reportLesson(int reportType) {
         if (selectedLesson==null) {
             Util.setFacesMessageError("Ders Seciniz");
             return;
@@ -106,8 +112,14 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         */
 
         params.put("pclasses",selectedClasses);
-        report.pdfFile("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
-        mailFiles.add(selectedLesson.getRefLessonName().getNameTr()+".pdf");
+        if (reportType == Constants.REPORT_LESSON_CLASS) {
+            report.pdfFile("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
+            mailFiles.add(selectedLesson.getRefLessonName().getNameTr() + ".pdf");
+        }
+        if (reportType == Constants.REPORT_LESSON_SCORE) {
+            report.pdfFile("repLessonScore", params, selectedLesson.getRefLessonName().getNameTr() + "Puan");
+            mailFiles.add(selectedLesson.getRefLessonName().getNameTr() + "Puan.pdf");
+        }
     }
 
     public void reportLessonAverage() {
@@ -161,16 +173,20 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         mailFiles.add(selectedLesson.getRefLessonName().getNameTr()+"Ortalama.pdf");
     }
 
+
+
     public void send() {
         try {
             logger.info("LOG02540: SELECTED : " + selectedLessons);
             mailFiles=new ArrayList<>();
             if (bEmail) {
+                //System.setProperty("mail.mime.decodetext.strict","false"); //for filename encoding problem
                 for (String lessonStr : selectedLessons) {
                     Lessons lesson = (Lessons) getSession().load(Lessons.class, Long.valueOf(lessonStr));
                     if ((bReportLesson) && (selectedClasses.size() > 0)) {
                         selectedLesson = lesson;
-                        if (bReportLesson) reportLesson();
+                        if (bReportLesson) reportLesson(Constants.REPORT_LESSON_CLASS);
+                        if (bReportLessonScore) reportLesson(Constants.REPORT_LESSON_SCORE);
                         if (bReportLessonAverage) reportLessonAverage();
                     }
                 }
@@ -255,6 +271,7 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         bSms=true;
         bReportLesson=true;
         bReportLessonAverage=true;
+        bReportLessonScore=true;
         selectedLessons=new ArrayList<>();
         selectedClasses=new ArrayList<>();
         selectedUsers=new ArrayList<>();
@@ -361,6 +378,14 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
 
     public void setItems(List<ResultsSend> items) {
         this.items = items;
+    }
+
+    public Boolean getbReportLessonScore() {
+        return bReportLessonScore;
+    }
+
+    public void setbReportLessonScore(Boolean bReportLessonScore) {
+        this.bReportLessonScore = bReportLessonScore;
     }
 
     @Override

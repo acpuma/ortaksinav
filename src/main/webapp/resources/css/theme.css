@@ -77,7 +77,7 @@ footer {
     text-overflow: ellipsis;
 }
 
-.ui-datatable {
+.ui-datatable,.ui-datagrid {
     font-size: 14px !important;
 }
 

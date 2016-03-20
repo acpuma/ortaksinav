@@ -121,7 +121,7 @@
 
             <p:column headerText="Tarih" rendered="true" width="100" sortBy="#{examsGrid.date}" id="examdate">
                 <h:outputText value="#{examsGrid.date}" >
-                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" timeZone="Turkey" locale="tr"/>
                 </h:outputText>
             </p:column>
             <f:facet name="footer">

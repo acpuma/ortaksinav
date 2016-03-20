@@ -26,8 +26,8 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
-          <unit-entry name="reverse:hibernate.cfg.xml" />
-          <unit-entry name="sessionFactory" value="dataSource" />
+          <unit-entry name="reverse:hibernate.cfg.xml" value="83647ec7-f2d1-4721-95a8-b65adc13d2ac" />
+          <unit-entry name="sessionFactory" value="16dc3b47-c4a0-436c-a155-67fd99f1acee" />
         </datasource-map>
         <naming-strategy-map />
         <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/main/resources/reverse/hibernate.cfg.xml" />
@@ -35,20 +35,19 @@
     </facet>
     <facet type="JRebel" name="JRebel">
       <configuration>
-        <option name="autosync" value="false" />
         <option name="deleteUnindexed" value="true" />
         <option name="httpAuthEnabled" value="false" />
         <option name="httpPassword" value="" />
         <option name="httpUsername" value="" />
         <option name="ideModuleStorage">
           <map>
-            <entry key="com.zeroturnaround.jrebel.intellij.remoting.Remote2ModuleSpecificServerMigrationCompleted" value="true" />
+            <entry key="com.zeroturnaround.jrebel.FormatVersion" value="6.3.2" />
+            <entry key="com.zeroturnaround.jrebel.remoting.ModuleRemoteServerSelection" value="off" />
           </map>
         </option>
         <option name="manualXML" value="false" />
         <option name="masterModuleName" />
         <option name="remotingEnabled" value="false" />
-        <option name="scanAllFiles" value="false" />
         <option name="secure" value="true" />
         <option name="url" />
         <option name="xmlDir" />

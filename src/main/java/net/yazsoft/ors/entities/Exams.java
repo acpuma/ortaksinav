@@ -103,6 +103,7 @@ public class Exams extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "refExam", fetch = FetchType.LAZY)
     private Collection<ResultsSend> resultsSendCollection;
 
+
     public Exams() {
     }
 

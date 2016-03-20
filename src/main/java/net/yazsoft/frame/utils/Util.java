@@ -404,4 +404,27 @@ public class Util implements Serializable{
         return BigDecimal.valueOf(d).setScale(decimalPlace,BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
+
+    public static String changeTurtoEng(String data)
+    {
+        for(char c:data.toCharArray())
+        {
+            switch (c)
+            {
+                case 'ş':data = data.replace(c, 's');break;
+                case 'Ş':data = data.replace(c, 'S');break;
+                case 'ç':data = data.replace(c, 'c');break;
+                case 'Ç':data = data.replace(c, 'C');break;
+                case 'ı':data = data.replace(c, 'i'); break;
+                case 'İ':data = data.replace(c, 'I'); break;
+                case 'ğ':data = data.replace(c, 'g');break;
+                case 'Ğ':data = data.replace(c, 'G');break;
+                case 'ü':data = data.replace(c, 'u');break;
+                case 'Ü':data = data.replace(c, 'U');break;
+                case 'ö':data = data.replace(c, 'o');break;
+                case 'Ö':data = data.replace(c, 'O');break;
+            }
+        }
+        return data;
+    }
 }
