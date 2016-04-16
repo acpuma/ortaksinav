@@ -33,18 +33,9 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
     List<SchoolsClass> schoolsClasses;
     List<SchoolsClass> foundClasses;
 
+
     @Inject SchoolsClassTypeDao schoolsClassTypeDao;
 
-    public void onCellEdit(CellEditEvent event) {
-        Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
-
-        logger.info("SELECTED : " + schoolsClassTypeDao.getSelected());
-        if(newValue != null && !newValue.equals(oldValue)) {
-            //SchoolsClassDto entity =(SchoolsClassDto) ((DataTable)event.getComponent()).getRowData();
-            //entity.setRefSchoolClassType(schoolsClassTypeDao.getSelected());
-        }
-    }
 
     public List<SchoolsClass> findByActiveSchool() {
         return findBySchool(Util.getActiveSchool());

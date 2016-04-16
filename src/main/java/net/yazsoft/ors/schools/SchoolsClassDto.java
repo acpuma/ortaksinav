@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public class SchoolsClassDto extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+    private SchoolsClass entity;
     private Long id;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -91,6 +92,7 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
         schoolsClass.setbIncludeStudents(this.bIncludeStudents);
         schoolsClass.setbUseRoom(this.bUseRoom);
         schoolsClass.setRefSchoolClassType(this.refSchoolClassType);
+        entity=schoolsClass;
         return schoolsClass;
     }
 
@@ -99,6 +101,7 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
     }
 
     public void fromEntity(SchoolsClass schoolsClass) {
+        entity=schoolsClass;
         this.tid=schoolsClass.getTid();
         this.version=schoolsClass.getVersion();
         this.active=schoolsClass.getActive();
@@ -125,6 +128,14 @@ public class SchoolsClassDto extends BaseEntity implements Serializable {
         this.tid = tid;
         this.version = version;
         this.name = name;
+    }
+
+    public SchoolsClass getEntity() {
+        return entity;
+    }
+
+    public void setEntity(SchoolsClass entity) {
+        this.entity = entity;
     }
 
     public Long getTid() {

@@ -115,10 +115,11 @@
             <p:column headerText="#{msg.global_surname}" width="90" sortBy="#{distributesVar.surname}">
                 <h:outputText value="#{distributesVar.surname}"/>
             </p:column>
-            <p:column headerText="#{msg.global_mernis}" width="80" sortBy="#{distributesVar.mernis}">
+            <p:column headerText="#{msg.global_mernis_no}" width="80" sortBy="#{distributesVar.mernis}">
                 <h:outputText value="#{distributesVar.mernis}"/>
             </p:column>
-            <p:column headerText="#{msg.students_school_no}" width="30" sortBy="#{distributesVar.schoolNo}">
+            <p:column headerText="#{msg.students_school_no}" width="30" sortBy="#{distributesVar.schoolNo}"
+                sortFunction="#{tools.sortIdByString}">
                 <h:outputText value="#{distributesVar.schoolNo}"/>
             </p:column>
             <p:column headerText="#{msg.class}" width="20" sortBy="#{distributesVar.className}">

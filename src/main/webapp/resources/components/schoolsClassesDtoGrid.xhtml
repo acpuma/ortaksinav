@@ -33,6 +33,7 @@
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
+        <p:remoteCommand name="refreshFooter" update="schoolsClassDtoGrid:footerPanel" process="schoolsClassDtoGrid"/>
         <p:dataTable id="schoolsClassDtoGrid"
                      var="schoolsClassDtoVar"
 
@@ -70,10 +71,11 @@
                      widgetVar="#{cc.attrs.widgetVar}"
 
                      selection="#{schoolsClassDao.item}"
-                     rowKey="#{schoolsClassDtoVar.id}"
+                     rowKey="#{schoolsClassDtoVar.tid}"
                      tableStyle="#{cc.attrs.tableStyle}"
 
                      rowStyleClass="#{schoolsClassDtoVar.tid eq null ? 'bgYellow' : null}"
+                     sortBy="#{schoolsClassDtoVar.name}"
 
                 >
             <p:ajax event="rowEdit" listener="#{distributeDao.onRowEdit}" disabled="ture"
@@ -81,13 +83,14 @@
             <p:ajax event="rowEditCancel" listener="#{distributeDao.onRowCancel}" disabled="true"
                     update=":messages " />
 
-            <p:ajax event="cellEdit" listener="#{schoolsClassDao.onCellEdit}" update=":messages" />
+            <p:ajax event="cellEdit" listener="#{distributeDao.onCellEdit}"
+                    update="schoolsClassDtoGrid :messages" oncomplete="refreshFooter();"/>
 
             <f:facet name="header">
                 #{msg.classes}
             </f:facet>
 
-            <p:column headerText="#{msg.global_id}" width="20" rendered="true"  style="display: none">
+            <p:column headerText="#{msg.global_id}" width="4" rendered="true"  style="">
                 #{schoolsClassDtoVar.tid}
             </p:column>
 
@@ -121,6 +124,13 @@
             <p:column headerText="Öğr." width="20" >
                 #{schoolsClassDtoVar.studentsSize}
             </p:column>
+            <p:column headerText="#{msg.distribute_includestudents}" width="15" >
+                <p:selectBooleanCheckbox itemLabel="" style=""
+                                         value="#{schoolsClassDtoVar.bIncludeStudents}" rendered="true">
+                    <p:ajax listener="#{distributeDao.calculateSelected()}"
+                            process="schoolsClassDtoGrid" update="schoolsClassDtoGrid"/>
+                </p:selectBooleanCheckbox>
+            </p:column>
             <p:column headerText="Kapasite" width="20" >
                 <p:cellEditor>
                     <f:facet name="output"><p:outputLabel value="#{schoolsClassDtoVar.capacity}" /></f:facet>
@@ -130,13 +140,13 @@
             </p:column>
             <p:column headerText="#{msg.distribute_useroom}" width="15" >
                 <p:selectBooleanCheckbox itemLabel="" style=""
-                                         value="#{schoolsClassDtoVar.bUseRoom}"/>
+                                         value="#{schoolsClassDtoVar.bUseRoom}">
+                    <p:ajax listener="#{distributeDao.calculateSelected()}"
+                            process="schoolsClassDtoGrid" update="schoolsClassDtoGrid @widgetVar(distributeButtonWidget)"/>
+                </p:selectBooleanCheckbox>
             </p:column>
 
-            <p:column headerText="#{msg.distribute_includestudents}" width="15" >
-                <p:selectBooleanCheckbox itemLabel="" style=""
-                                         value="#{schoolsClassDtoVar.bIncludeStudents}" rendered="true"/>
-            </p:column>
+
             <p:column headerText="#{msg.school}" width="40" rendered="false"
                       >
                 #{schoolsClassDtoVar.refSchool.tid}
@@ -147,7 +157,6 @@
                     <f:facet name="output"><p:outputLabel value="#{schoolsClassDtoVar.refSchoolClassType.name}" /></f:facet>
                     <f:facet name="input">
                     <p:selectOneMenu value="#{schoolsClassDtoVar.refSchoolClassType}" id="schoolClassTypeSelect" >
-                        <p:ajax update="schoolsClassDtoGrid" listener="#{schoolsClassTypeDao.classTypeChanged}" disabled="true"/>
                         <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
                         <f:selectItems value="#{schoolsClassTypeDao.all}" var="man"
                                        itemLabel="#{man.name}" itemValue="#{man}" />
@@ -157,23 +166,30 @@
                 </p:cellEditor>
             </p:column>
 
-            <p:column width="15" rendered="false">
-                <p:commandButton value="" update=" :messages "
-                                 icon="ui-icon-pencil"
-                                 style="height: 30px; width: 30px;"
-                                 actionListener="#{schoolsClassDao.delete(sclass)}">
-                </p:commandButton>
-            </p:column>
+
+            <f:facet name="footer" >
+                <p:outputPanel style="text-align: right;" id="footerPanel">
+
+                    #{msg.student} : #{distributeDao.selectedStudentsCount}
+
+                    #{msg.distribute_capacity} : #{distributeDao.selectedRoomsCapacity}
+
+
+                    <p:commandButton rendered="true"
+                                     styleClass="toolbar-button" style="padding:0px 5px;"
+                                     value="#{msg.toolbar_save}"
+                                     actionListener="#{distributeDao.saveClasses}"
+                                     />
+                </p:outputPanel>
+            </f:facet>
 
         </p:dataTable>
 
+
+
         <p:panelGrid columns="2" style="width: 100%;">
-            <p:outputPanel style=" text-align: left;" rendered="true">
-                <p:commandButton icon="ui-icon-disk" rendered="true"
-                                 styleClass="toolbar-button" style="padding:1px 5px;"
-                                 value="#{msg.toolbar_save}"
-                                 actionListener="#{distributeDao.saveClasses}"
-                />
+            <p:outputPanel style=" text-align: left; height: 40px;" rendered="true" >
+
                 <p:commandButton icon="ui-icon-plus" rendered="false"
                                  styleClass="toolbar-button" style="padding:1px 5px;"
                                  value="#{msg.toolbar_add}"
@@ -188,20 +204,30 @@
                                  actionListener="#{distributeDao.reset}"
                 />
 
+                <p:selectOneRadio value="#{distributeDao.distributeType}" >
+                    <f:selectItem itemLabel="#{msg.global_absent}" itemValue="y" />
+                    <f:selectItem itemLabel="#{msg.global_number_short}" itemValue="n" />
+                    <f:selectItem itemLabel="#{msg.global_name}" itemValue="a" />
+                    <f:selectItem itemLabel="#{msg.global_surname}" itemValue="s" />
+                    <f:selectItem itemLabel="#{msg.global_mernis}" itemValue="k" />
+                </p:selectOneRadio>
+
+
             </p:outputPanel>
             <p:outputPanel style="text-align: right;">
-                <p:selectBooleanCheckbox itemLabel="#{msg.distribute_useroomname}" style="padding:0 15px;"
+                <p:selectBooleanCheckbox itemLabel="#{msg.distribute_useroomname}" style="padding:0 5px;"
                                          value="#{distributeDao.bUseRoomName}" rendered="true"/>
-                <p:selectBooleanCheckbox itemLabel="Rastgele" style="padding:0 15px;"
+                <p:selectBooleanCheckbox itemLabel="Rastgele" style="padding:0 5px;"
                                          value="#{distributeDao.bRandom}" rendered="true"/>
-                <p:selectBooleanCheckbox itemLabel="Kelebek" style="padding:0 15px;"
+                <p:selectBooleanCheckbox itemLabel="Kelebek" style="padding:0 5px;"
                                          value="#{distributeDao.bButterfly}" rendered="true"/>
 
-                <p:commandButton icon="ui-icon-arrow-4-diag"
+                <p:commandButton icon="ui-icon-arrow-4-diag" id="distributeButton" widgetVar="distributeButtonWidget"
                                  styleClass="toolbar-button" style="padding:1px 5px;"
                                  value="#{msg.distribute}"
                                  update="@widgetVar(distributesGridWidget) :messages"
                                  actionListener="#{distributeDao.distribute()}"
+                                 disabled="#{distributeDao.selectedStudentsCount gt distributeDao.selectedRoomsCapacity}"
                 />
             </p:outputPanel>
 
