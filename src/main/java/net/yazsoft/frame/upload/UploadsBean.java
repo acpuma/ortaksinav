@@ -39,6 +39,7 @@ public class UploadsBean extends BaseDao implements Serializable{
     public static final long BOOKLET = 3L;
     public static final long LOGO = 4L;
     public static final long FILE = 5L;
+    public static final long FMT = 6L;
     public static final String IMAGE_SCHOOL = "school";
     public static final String IMAGE_USER ="user";
     public static final String IMAGE_STUDENT ="student";
@@ -192,11 +193,13 @@ public class UploadsBean extends BaseDao implements Serializable{
                 dirName = uploadsFolder + "/DAT/" + upload.getRefSchool().getTid().toString();
             } else if (fileType.equals(BOOKLET)) {
                 dirName = uploadsFolder + "/BOOKLET/" + upload.getRefSchool().getTid().toString();
+            } else if (fileType.equals(FMT)) {
+                dirName = uploadsFolder + "/FMT/";
             } else {
                 dirName = uploadsFolder + "/files/";
             }
 
-            if (!fileType.equals(FILE)) {
+            if ((!fileType.equals(FILE)) && (!fileType.equals(FMT))) {
                 dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
             }
 
@@ -251,11 +254,13 @@ public class UploadsBean extends BaseDao implements Serializable{
                 dirName = uploadsFolder + "/DAT/" + upload.getRefSchool().getTid().toString();
             } else if (fileType.equals(BOOKLET)) {
                 dirName = uploadsFolder + "/BOOKLET/" + upload.getRefSchool().getTid().toString();
+            } else if (fileType.equals(FMT)) {
+                dirName = uploadsFolder + "/FMT/";
             } else {
                 dirName = uploadsFolder + "/files/";
             }
 
-            if (!fileType.equals(FILE)) {
+            if ((!fileType.equals(FILE)) && (!fileType.equals(FMT)) ) {
                 dirName = dirName + ("/" + upload.getRefExam().getTid().toString());
             }
 
@@ -271,6 +276,7 @@ public class UploadsBean extends BaseDao implements Serializable{
             uploadsDao.delete(upload);
             uploadsDao.setUploads(null);
             uploadsDao.setFileUploads(null);
+            uploadsDao.setUploadsFmt(null);
             //deleting
         } catch (Exception e) {
             logger.error("EXCEPTION: ", e);
@@ -315,6 +321,9 @@ public class UploadsBean extends BaseDao implements Serializable{
         } else if (fileType.equals(FILE)) {
             Util.createDirectory("files");
             dirName="/files/";
+        } else if (fileType.equals(FMT)) {
+            Util.createDirectory("FMT");
+            dirName="/FMT/";
         } else {
             logger.error("LOG02410: UNSUPPORTED UPLOAD TYPE !!!");
         }
@@ -344,6 +353,13 @@ public class UploadsBean extends BaseDao implements Serializable{
         handleFileUpload(event);
     }
 
+    @Transactional
+    public void handleFmtUpload(FileUploadEvent event) {
+        fileType=FMT;
+        uploadType=uploadsTypeDao.getById(FMT);
+        handleFileUpload(event);
+    }
+
 
     @Transactional
     public void handleFileUpload(FileUploadEvent event) {
@@ -352,7 +368,7 @@ public class UploadsBean extends BaseDao implements Serializable{
 
         ExternalContext extContext = FacesContext.getCurrentInstance().getExternalContext();
         try {
-            if (fileType==FILE){
+            if ((fileType==FILE) || (fileType==FMT)){
                 getUploadDirectory(null);
             } else {
                 getUploadDirectory(Util.getActiveExam().getTid().toString());
@@ -367,7 +383,9 @@ public class UploadsBean extends BaseDao implements Serializable{
             upload.setExtension(extension);
             if (fileType!=FILE) {
                 upload.setRefSchool(Util.getActiveSchool());
-                upload.setRefExam(Util.getActiveExam());
+                if (fileType!=FMT) {
+                    upload.setRefExam(Util.getActiveExam());
+                }
             }
             upload.setRefUser(Util.getActiveUser());
             upload.setName(filenameOriginal);
@@ -399,6 +417,7 @@ public class UploadsBean extends BaseDao implements Serializable{
 
             uploadsDao.setUploads(null); //for refresh grid
             uploadsDao.setFileUploads(null);
+            uploadsDao.setUploadsFmt(null);
             Util.setFacesMessage("ID : " + tid.toString() + " ,file name: "
                     + event.getFile().getFileName() + " File size: "
                     + event.getFile().getSize() / 1024 + " Kb Content type: "

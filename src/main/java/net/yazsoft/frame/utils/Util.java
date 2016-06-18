@@ -26,11 +26,12 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
 public class Util implements Serializable{
@@ -426,5 +427,24 @@ public class Util implements Serializable{
             }
         }
         return data;
+    }
+
+    public static List<String> readFileLines(String filename) {
+        logger.info("READING FILE ....");
+        List<String> lines=null;
+        try {
+            String filepath=null;
+            filepath=Util.getUploadsFolder();
+            filepath=filepath.concat(filename);
+            Path file_path = Paths.get(filepath);
+            Charset charset = Charset.forName("ISO-8859-9");
+            lines = Files.readAllLines(file_path, charset);
+            byte[] content=Files.readAllBytes(file_path);
+            String fileContent=new String(content,"ISO-8859-9");
+            logger.info("READFILELINES: FILE : " + fileContent);
+        } catch (Exception e) {
+            catchException(e);
+        }
+        return lines;
     }
 }

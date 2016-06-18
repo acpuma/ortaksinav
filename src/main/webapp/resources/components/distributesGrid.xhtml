@@ -131,9 +131,12 @@
             </p:column>
 
         </p:dataTable>
-        <p:commandButton value="Export as Excel" ajax="false">
+        <p:commandButton value="Export as Excel" ajax="false" disabled="#{not authsDao.auths.preport}">
             <p:dataExporter type="xls" target="distributesGrid" fileName="dagitim"/>
         </p:commandButton>
+        <p:commandButton value="PDF" process="@this" update=":messages"
+                         actionListener="#{distributeDao.reportDistribute()}" ajax="false" rendered="true"
+                         disabled="#{not authsDao.auths.preport}" onclick="this.form.target='_blank'"  />
 
     </h:form>
     <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />

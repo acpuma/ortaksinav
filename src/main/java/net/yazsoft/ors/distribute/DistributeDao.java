@@ -1,6 +1,8 @@
 package net.yazsoft.ors.distribute;
 
+import net.sf.jasperreports.engine.JRParameter;
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
@@ -57,6 +59,7 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
     int selectedStudentsCount,selectedRoomsCapacity;
 
     @Inject SchoolsClassDao schoolsClassDao;
+    @Inject Report report;
 
     @PostConstruct
     public void init() {
@@ -510,6 +513,43 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
 
     public void onRowCancel(RowEditEvent event) {
         //Util.setFacesMessage("Edit Cancelled : " + ((LessonsDto) event.getObject()).getTid());
+    }
+
+
+    /**
+     * report recorded distribute for student signature
+     */
+    public void reportDistribute() {
+        Long distributeNameId=distributeName.getTid();
+        try {
+            if (distributeNameId == null) {
+                Util.setFacesMessageError("Dağıtım Adı Seciniz");
+                return;
+            }
+            //mailFiles=new ArrayList<>();
+            log.info("REPORT DISTRIBUTE : " + distributeNameId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("pSchoolName", Util.getActiveSchool().getName());
+            Date now = Calendar.getInstance(new Locale("TR")).getTime();
+            params.put("pnow", now);
+            if (Util.getActiveSchool().getRefTown() != null) {
+                params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
+            }
+            if (Util.getActiveExam()!=null) {
+                params.put("pyil", Util.getActiveExam().getRefExamYear().getName());
+                params.put("pdonem", Util.getActiveExam().getRefExamSeason().getNameTr());
+            }
+            if (Util.getActiveSchool().getRefImage() != null) {
+                params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
+                        + "." + Util.getActiveSchool().getRefImage().getExtension());
+            }
+            params.put("pDistributeNameId", distributeNameId);
+            Locale trlocale = Locale.forLanguageTag("tr-TR");
+            params.put(JRParameter.REPORT_LOCALE, trlocale);
+            report.pdf("repDistribute", params, "Dagitim");
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
     }
 
     public DistributeDao() {

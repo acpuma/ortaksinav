@@ -99,6 +99,7 @@ public class Report extends BaseDao{
             //JasperExportManager.exportReportToPdfStream(jasperPr;
             output.flush();
             output.close();
+            logger.info("REPORT FINISHEDDDD");
         } catch(Exception e) {
             logger.error(e.getMessage());
             Util.setFacesMessage(e.getMessage());

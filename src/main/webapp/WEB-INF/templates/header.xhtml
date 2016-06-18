@@ -6,13 +6,17 @@
 <ui:insert name="headerMenu">
 <header>
     <p:outputPanel style="width: auto;">
-        <span style="font-size: 24px;float: left; width: 100%; padding: 10px; ">
+        <span style="font-size: 24px;float: left; width: 100%; padding: 10px 0; ">
+            <p:outputPanel id="toggleMenu" styleClass="ui-button menu "
+                           style="height: 30px; width: 40px;padding:5px 0 0;">
+                <p:graphicImage library="images" name="menu2.png" height="24"/>
+            </p:outputPanel>
             #{headerTitle}
         </span>
     </p:outputPanel>
 
     <p:outputPanel style="right:0px; position:absolute; margin:0px; float: left;">
-        <p:outputPanel id="toggleMenu" styleClass="ui-button menu" style="height: 40px; width: 40px;"></p:outputPanel>
+
         <p:panelGrid columns="1" style="float: left;" >
 
         <p:outputPanel id="activeSchool"  style="font-size: 14px; text-align: right; max-width: 500px;" styleClass="truncate" >
@@ -33,6 +37,7 @@
         </h:form>
     </p:outputPanel>
 </header>
+    <hr style="box-shadow: 0 1px 3px #ccc; color: #eeeeee;clear:both;width:auto;" />
 </ui:insert>
 </ui:composition>
 

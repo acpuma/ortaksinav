@@ -31,3 +31,22 @@
 .bold {
 	font-weight: bold;
 }
+
+.wrapcontent {
+	/*position:static;*/
+	/*margin-left:200px;*/
+	float:left;
+	/*float:none !important;*/
+	/*width: auto !important;*/
+	min-height: 700px !important;
+	width: 800px;
+}
+
+.contentfull {
+	margin-left:0px;
+	width: 1000px;
+}
+
+.menuhide {
+	display:none;
+}

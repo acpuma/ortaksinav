@@ -24,6 +24,7 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
 
     List<Uploads> uploads;
     List<Uploads> fileUploads;
+    List<Uploads> uploadsFmt;
 
     @PostConstruct
     public void init() {
@@ -73,6 +74,25 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
             c.add(Restrictions.eq("refUploadType",
                     (UploadsType) getSession().load(UploadsType.class, UploadsBean.FILE) ) );
             c.add(Restrictions.eq("active", true));
+            //c.add(Restrictions.eq("isDeleted", false));
+            list = c.list();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            Util.setFacesMessage(e.getMessage());
+            e.printStackTrace();
+        }
+        fileUploads=list;
+        return list;
+    }
+
+    public List<Uploads> findFmtUploads() {
+        List list=null;
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("refUploadType",
+                    (UploadsType) getSession().load(UploadsType.class, UploadsBean.FMT) ) );
+            c.add(Restrictions.eq("active", true));
+            c.add(Restrictions.eq("refSchool", Util.getActiveSchool()));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();
         } catch (Exception e) {
@@ -140,5 +160,16 @@ public class UploadsDao extends BaseGridDao<Uploads> implements Serializable{
 
     public void setFileUploads(List<Uploads> fileUploads) {
         this.fileUploads = fileUploads;
+    }
+
+    public List<Uploads> getUploadsFmt() {
+        if (uploadsFmt==null) {
+            uploadsFmt=findFmtUploads();
+        }
+        return uploadsFmt;
+    }
+
+    public void setUploadsFmt(List<Uploads> uploadsFmt) {
+        this.uploadsFmt = uploadsFmt;
     }
 }

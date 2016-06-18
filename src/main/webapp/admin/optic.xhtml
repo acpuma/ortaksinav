@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+<f:view>
+    <h:head>
+        <title>#{msg.optic}</title>
+        <h:outputStylesheet library="css" name="pages/optic.css" />
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+        <ui:param name="title" value="#{msg.optic}" />
+        #{authsDao.findAuths("/admin/optic")}
+<p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
+    <p:commandButton value="FMT SEC" icon="fa fa-server"
+                     update=":messages "
+                     oncomplete="PF('selectFmtDialogWidget').show()"
+    />
+    <components:inputUploadFmt update="@widgetVar(uploadsGridWidget)" width="600"/>
+    <h:form id="pageForm">
+
+        <p:outputPanel style="width: 350px; float: left; margin:5px;">
+            <p:tabView>
+                <p:tab title="Metin">
+                    <p:dataList value="#{opticDao.fields}" var="field" paginator="false" type="none">
+                            <p:selectOneMenu value="#{field}" style="width: 80px;" styleClass="fields">
+                                <f:selectItems value="#{opticFieldsTypeDao.all}" var="fieldType"
+                                               itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
+                            </p:selectOneMenu>
+                            <h:inputText value="#{field.leftx}" size="3" styleClass="fields"/>
+                            <h:inputText value="#{field.topy}" size="3" styleClass="fields"/>
+                            <h:inputText value="#{field.fontsize}" size="2" styleClass="fields"/>
+                        <br/>
+                    </p:dataList>
+                </p:tab>
+                <p:tab title="Kod">
+                    <p:dataList value="#{opticDao.parts}" var="part" paginator="false" type="none">
+                        <p:selectOneMenu value="#{field}" style="width: 80px;" styleClass="fields">
+                            <f:selectItems value="#{opticFieldsTypeDao.all}" var="fieldType"
+                                           itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
+                        </p:selectOneMenu>
+                        <h:inputText value="#{part.x}" size="3" styleClass="fields"/>
+                        <h:inputText value="#{part.y}" size="3" styleClass="fields"/>
+                        <br/>
+                    </p:dataList>
+                </p:tab>
+            </p:tabView>
+        </p:outputPanel>
+        <p:outputPanel style=" float:left; width: 640px;">
+            <p:outputPanel style="margin:20px auto;background: white;border:1px solid;width: 420px; height: 597px;">
+                <h:outputText value="#{opticDao.svg}" escape="false"/>
+            </p:outputPanel>
+        </p:outputPanel>
+
+
+    </h:form>
+
+    <p:dialog id="selectFmtDialog" header="#{msg.upload_select_file}" widgetVar="selectFmtDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
+              closeOnEscape="true" width="700" >
+
+        <components:uploadsGridFmt rows="50" scrollable="true" scrollHeight="250" widgetVar="uploadsGridWidget" paginator="false" update="pageForm"/>
+
+    </p:dialog>
+
+
+
+    <h:outputStylesheet>
+        .fields {
+            font-size:14px !important;
+        }
+    </h:outputStylesheet>
+
+</p:outputPanel>
+    </ui:decorate>
+</f:view>
+</html>

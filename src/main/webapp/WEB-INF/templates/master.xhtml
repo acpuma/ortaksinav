@@ -57,7 +57,7 @@
                     </ui:include>
                 </ui:insert>
 
-                <hr style="box-shadow: 0 1px 3px #ccc; color: #eeeeee;" />
+
                 <p:outputPanel id="block" layout="block" style="height:100%;">
                 <p:outputPanel styleClass="pageFormDiv clear" style="margin:0px; padding: 0px;" >
                 <ui:insert />
@@ -91,7 +91,8 @@
         <p:spacer height="0" width="15" />
         <h:outputText value="#{msg.global_loading}" style="white-space: nowrap;"/>
     </pe:blockUI>
-</div>    
+</div>
+        <h:outputScript library="js" name="general.js" />
         </h:body>
 </ui:composition>
     

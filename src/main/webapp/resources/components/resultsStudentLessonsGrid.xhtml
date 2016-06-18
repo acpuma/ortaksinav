@@ -116,24 +116,26 @@
             <p:column headerText="#{msg.answers}" width="250" rendered="false">
                 <p:outputLabel value="#{studentsAnswersVar.answers}" />
             </p:column>
-            <p:column headerText="#{msg.results_true}" width="15" >
+            <p:column headerText="#{msg.results_true}" width="15" style="text-align: right">
                 <p:outputLabel value="#{studentsAnswersVar.trues}" />
             </p:column>
-            <p:column headerText="#{msg.results_false}" width="15" >
+            <p:column headerText="#{msg.results_false}" width="15" style="text-align: right">
                 <p:outputLabel value="#{studentsAnswersVar.falses}" />
             </p:column>
-            <p:column headerText="#{msg.results_net}" width="15" >
+            <p:column headerText="#{msg.results_net}" width="15" style="text-align: right">
                 <p:outputLabel value="#{studentsAnswersVar.nets}" />
             </p:column>
-            <p:column headerText="#{msg.results_score}" width="30" >
+            <p:column headerText="#{msg.results_score}" width="30" style="text-align: right">
                 <p:outputLabel value="#{studentsAnswersVar.score}">
                     <f:convertNumber pattern="#0.00" />
                 </p:outputLabel>
             </p:column>
-            <p:column headerText="#{msg.results_rank_class}" width="30" sortBy="#{studentsAnswersVar.rankClass}">
+            <p:column headerText="#{msg.results_rank_class}" width="30" sortBy="#{studentsAnswersVar.rankClass}"
+                      style="text-align: right">
                 <p:outputLabel value="#{studentsAnswersVar.rankClass}" />
             </p:column>
-            <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{studentsAnswersVar.rankSchool}">
+            <p:column headerText="#{msg.results_rank_school}" width="30" sortBy="#{studentsAnswersVar.rankSchool}"
+                      style="text-align: right">
                 <p:outputLabel value="#{studentsAnswersVar.rankSchool}" />
             </p:column>
             <p:column headerText="#{msg.global_date}" width="60" sortBy="#{studentsAnswersVar.rankSchool}">

@@ -1,0 +1,19 @@
+#wrap.boxed {
+    width: 1200px !important;
+}
+
+.wrapcontent {
+    /*position:static;*/
+    /*margin-left:200px;*/
+    float:left;
+    /*float:none !important;*/
+    /*width: auto !important;*/
+    min-height: 700px !important;
+    width: 1000px !important;
+}
+
+.contentfull {
+    margin-left:0px;
+    width: 1200px !important;
+}
+
