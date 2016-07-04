@@ -21,7 +21,7 @@ develop-eggs
 dist
 downloads
 eggs
-parts
+partsDtos
 tmp
 .sass-cache
 node_modules

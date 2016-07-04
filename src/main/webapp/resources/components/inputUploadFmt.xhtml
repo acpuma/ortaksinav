@@ -22,7 +22,7 @@
 <cc:implementation>
     <p:outputPanel id="uploadFilePanel" layout="inline" >
         <p:commandButton icon="fa fa-upload " value="#{msg.upload_file}"
-                         immediate="true" process="@none" style="height: 36px;"
+                         immediate="true" process="@none" style="height: 34px;"
                          oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
                          disabled="#{not authsDao.auths.padd}"
                 >

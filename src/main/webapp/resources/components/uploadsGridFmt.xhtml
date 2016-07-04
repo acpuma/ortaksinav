@@ -76,7 +76,14 @@
                      selectionMode="single"
                 >
 
-            <p:ajax event="rowSelect" listener="#{uploadsDao.onRowSelect}" />
+            <p:ajax event="rowDblselect" update="#{cc.attrs.update}"
+                    onstart="PF('blockUIWidget1').block()"
+                    oncomplete="PF('blockUIWidget1').unblock(); PF('selectFmtDialogWidget').hide();"
+                    process="@all"
+                    listener="#{opticDao.onFmtSelect}"
+            />
+
+
 
             <f:facet name="header" >
                 #{msg.global_files}
@@ -110,15 +117,6 @@
                                  disabled="#{not authsDao.auths.pdelete}" >
                 </p:commandButton>
             </p:column>
-            <f:facet name="footer">
-                <p:commandButton value="FMT SEC" update=" :messages #{cc.attrs.update} " label="DOSYAYI SEC"
-                                 icon="fa fa-server"
-                                 style="height: 36px;"
-                                 actionListener="#{opticDao.selectFmt()}"
-                                 oncomplete="PF('selectFmtDialogWidget').hide()"
-                />
-
-            </f:facet>
         </p:dataTable>
 
     </h:form>

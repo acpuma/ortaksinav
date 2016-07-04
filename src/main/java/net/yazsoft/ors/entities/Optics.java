@@ -36,10 +36,20 @@ public class Optics extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 255)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY)
+    private Integer marginx;
+    private Integer marginy;
+    private Integer ratio;
+    private Integer ratiop;
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY,orphanRemoval = true)
     private Collection<OpticsFields> opticsFieldsCollection;
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY)
+    private Collection<OpticsParts> opticsPartsCollection;
 
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
     public Optics() {
     }
@@ -104,6 +114,54 @@ public class Optics extends BaseEntity implements Serializable {
 
     public void setOpticsFieldsCollection(Collection<OpticsFields> opticsFieldsCollection) {
         this.opticsFieldsCollection = opticsFieldsCollection;
+    }
+
+    public Integer getMarginx() {
+        return marginx;
+    }
+
+    public void setMarginx(Integer marginx) {
+        this.marginx = marginx;
+    }
+
+    public Integer getMarginy() {
+        return marginy;
+    }
+
+    public void setMarginy(Integer marginy) {
+        this.marginy = marginy;
+    }
+
+    public Integer getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(Integer ratio) {
+        this.ratio = ratio;
+    }
+
+    public Collection<OpticsParts> getOpticsPartsCollection() {
+        return opticsPartsCollection;
+    }
+
+    public void setOpticsPartsCollection(Collection<OpticsParts> opticsPartsCollection) {
+        this.opticsPartsCollection = opticsPartsCollection;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
+    }
+
+    public Integer getRatiop() {
+        return ratiop;
+    }
+
+    public void setRatiop(Integer ratiop) {
+        this.ratiop = ratiop;
     }
 
     @Override

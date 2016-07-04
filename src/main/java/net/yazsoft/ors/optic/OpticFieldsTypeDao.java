@@ -17,12 +17,27 @@ import java.util.List;
 public class OpticFieldsTypeDao extends BaseGridDao<OpticsFieldsType> implements Serializable{
     private OpticsFieldsType selected;
 
+    private List<OpticsFieldsType> items;
+
     public  List<OpticsFieldsType> findDefaultFields() {
         List list=null;
         try {
             Criteria c=getCriteria();
             c.add(Restrictions.eq("active",Boolean.TRUE));
             c.add(Restrictions.eq("addDefault",Boolean.TRUE));
+            c.addOrder(Order.asc("rank"));
+            list=c.list();
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return list;
+    }
+
+    public  List<OpticsFieldsType> findFields() {
+        List list=null;
+        try {
+            Criteria c=getCriteria();
+            c.add(Restrictions.eq("active",Boolean.TRUE));
             c.addOrder(Order.asc("rank"));
             list=c.list();
         } catch (Exception e) {
@@ -42,5 +57,16 @@ public class OpticFieldsTypeDao extends BaseGridDao<OpticsFieldsType> implements
 
     public void setSelected(OpticsFieldsType selected) {
         this.selected = selected;
+    }
+
+    public List<OpticsFieldsType> getItems() {
+        if (items==null) {
+            items = findFields();
+        }
+        return items;
+    }
+
+    public void setItems(List<OpticsFieldsType> items) {
+        this.items = items;
     }
 }

@@ -13,7 +13,7 @@
     <ui:param name="title" value="ADMIN HOME" />
 
 <h:form id="pageForm">
-    <p:outputPanel style="margin:10px; height:440px; overflow-y: scroll;">
+    <p:outputPanel style="margin:10px; height:600px; overflow-y: scroll;">
 
         <p:commandButton value="SMS" process="@this" actionListener="#{smsDao.sendSms}"
                          rendered="false" update=":messages"/>
@@ -25,6 +25,10 @@
                          onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();"
                 />
         <br/>
+
+        <b>Versiyon 1.40 (2016.07.05 02:10) : </b>
+        <br/> - Optik Form Yazdirma
+        <br/><br/>
         <b>Versiyon 1.39 (2016.06.18 21:40) : </b>
         <br/> - Optik Form fmt
         <br/><br/>

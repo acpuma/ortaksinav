@@ -18,43 +18,125 @@
         <ui:param name="title" value="#{msg.optic}" />
         #{authsDao.findAuths("/admin/optic")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
-    <p:commandButton value="FMT SEC" icon="fa fa-server"
-                     update=":messages "
-                     oncomplete="PF('selectFmtDialogWidget').show()"
-    />
-    <components:inputUploadFmt update="@widgetVar(uploadsGridWidget)" width="600"/>
     <h:form id="pageForm">
+        <p:outputPanel style="margin: 2px;float: left;">
 
-        <p:outputPanel style="width: 350px; float: left; margin:5px;">
-            <p:tabView>
-                <p:tab title="Metin">
-                    <p:dataList value="#{opticDao.fields}" var="field" paginator="false" type="none">
-                            <p:selectOneMenu value="#{field}" style="width: 80px;" styleClass="fields">
-                                <f:selectItems value="#{opticFieldsTypeDao.all}" var="fieldType"
+            <p:selectOneMenu value="#{opticDao.selected}" converter="entityConverter" style="width:250px;">
+                <p:ajax update="pageForm" listener="#{opticDao.handleOpticChange}"
+                        onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock(); "/>
+                <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
+                <f:selectItems value="#{opticDao.all}" var="man"
+                               itemLabel="#{man.name} #{man.created} " itemValue="#{man}"/>
+            </p:selectOneMenu>
+
+            #{msg.global_name} : <p:inputText value="#{opticDao.item.name}" required="true"/>
+            <p:commandButton icon="ui-icon-disk" update=":messages "
+                             styleClass="toolbar-button"
+                             value="#{msg.toolbar_save}"
+                             actionListener="#{opticDao.save}"/>
+            <p:commandButton icon="fa fa-file" update="pageForm :messages "
+                             styleClass="toolbar-button"
+                             value="#{msg.toolbar_add}"
+                             process="@this"
+                             actionListener="#{opticDao.reset}">
+                    <p:resetInput target="@form"/>
+            </p:commandButton>
+
+
+            <p:commandButton value="FMT SEC" icon="fa fa-server" process="@this"
+                             update=":messages " style="margin: auto 10px;"
+                             oncomplete="PF('selectFmtDialogWidget').show()" />
+
+        </p:outputPanel>
+
+
+        <p:outputPanel style="width: 450px; float: left; margin:5px;">
+            <p:tabView >
+                <p:tab title="Metin" >
+                    <p:dataList value="#{opticDao.fields}" var="field" paginator="false" type="none" id="listText">
+                            <p:selectOneMenu value="#{field.refFieldType}" style="width: 80px;" styleClass="fieldsTypes"
+                                             converter="entityConverter" rendered="true">
+                                <f:selectItems value="#{opticFieldsTypeDao.items}" var="fieldType"
                                                itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
                             </p:selectOneMenu>
-                            <h:inputText value="#{field.leftx}" size="3" styleClass="fields"/>
-                            <h:inputText value="#{field.topy}" size="3" styleClass="fields"/>
-                            <h:inputText value="#{field.fontsize}" size="2" styleClass="fields"/>
+                            <h:inputText value="#{field.leftx}" size="4" styleClass="fieldsTypes"/>
+                            <h:inputText value="#{field.topy}" size="4" styleClass="fieldsTypes"/>
+                            <h:inputText value="#{field.fontsize}" size="3" styleClass="fieldsTypes"/>
+                            <p:selectBooleanCheckbox value="#{field.active}" style="margin:0 5px;" />
+                            <p:commandLink styleClass="ui-button fa fa-remove" process="listText"
+                                             update="listText :messages " style="margin: auto 10px;"
+                                             action="#{opticDao.deleteField(field)}"
+                            />
+
+                        <br/>
+                    </p:dataList>
+                    <p:commandButton value="Ekle" icon="fa fa-plus" process="@this"
+                                   update="listText :messages " style="margin: auto 10px;"
+                                   action="#{opticDao.addField()}"
+                    />
+                </p:tab>
+                <p:tab title="Kod">
+                    <p:dataList value="#{opticDao.partsDtos}" var="part" paginator="false" type="none">
+                        <p:selectOneMenu value="#{part.refFieldType}" style="width: 80px;" styleClass="fieldsTypes"
+                                converter="entityConverter">
+                            <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
+                            <f:selectItems value="#{opticFieldsTypeDao.items}" var="fieldType"
+                                           itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
+                        </p:selectOneMenu>
+                        <h:inputText value="#{part.x}" size="2" styleClass="fieldsTypes"/>
+                        <h:inputText value="#{part.y}" size="2" styleClass="fieldsTypes"/>
+                        <h:inputText value="#{part.title}" size="4" styleClass="fieldsTypes" readonly="true"/>
+                        <p:selectBooleanCheckbox value="#{part.print}" />
+                        <p:selectBooleanCheckbox value="#{part.printTitle}" />
+
                         <br/>
                     </p:dataList>
                 </p:tab>
-                <p:tab title="Kod">
-                    <p:dataList value="#{opticDao.parts}" var="part" paginator="false" type="none">
-                        <p:selectOneMenu value="#{field}" style="width: 80px;" styleClass="fields">
-                            <f:selectItems value="#{opticFieldsTypeDao.all}" var="fieldType"
-                                           itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
-                        </p:selectOneMenu>
-                        <h:inputText value="#{part.x}" size="3" styleClass="fields"/>
-                        <h:inputText value="#{part.y}" size="3" styleClass="fields"/>
+                <p:tab title="Yazdır">
+                        <p:panelGrid columns="2" layout="grid">
+                            <p:outputLabel for="marginx" value="Sol boşluk" />
+                            <p:inputText value="#{opticDao.item.marginx}" size="4" styleClass="fieldsTypes" id="marginx"/>
+                            <p:outputLabel for="marginy" value="Üst boşluk" />
+                            <p:inputText value="#{opticDao.item.marginy}" size="4" styleClass="fieldsTypes" id="marginy"/>
+                            <p:outputLabel for="ratio" value="Oran" />
+                            <p:inputText value="#{opticDao.item.ratio}" size="4" styleClass="fieldsTypes" id="ratio"/>
+                            <p:outputLabel for="ratiop" value="Yazdırma Oranı" />
+                            <p:inputText value="#{opticDao.item.ratiop}" size="4" styleClass="fieldsTypes" id="ratiop"/>
+                        </p:panelGrid>
+                    <p:selectOneMenu value="#{distributeDao.distributeName}" id="schoolDistributes" converter="entityConverter">
+                        <p:ajax listener="#{distributeDao.distributeChanged}" update="distcount"/>
+                        <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{distributeDao.distributesNames}" var="man"
+                                       itemLabel="#{man.created} #{man.no} #{man.name} " itemValue="#{man}" />
+                    </p:selectOneMenu>
+                    <p:outputPanel id="distcount">
+                    Öğrenci Sayısı : #{distributeDao.getDistributes().size()}
+                    </p:outputPanel>
+                    <p:panelGrid columns="4" layout="grid">
+                    <p:outputLabel for="firstno" value="İlk" />
+                    <p:inputText value="#{opticDao.firstno}" size="4" styleClass="fieldsTypes" id="firstno"/>
+                    <p:outputLabel for="lastno" value="Son" />
+                    <p:inputText value="#{opticDao.lastno}" size="4" styleClass="fieldsTypes" id="lastno"/>
+                    </p:panelGrid>
+                    <p:commandButton value="Hazırla" icon="fa fa-refresh"
+                                     update="pageForm :messages " style="margin: auto 10px;"
+                                     actionListener="#{opticDao.printPreview()}"
+                                     action="#{opticDao.createPrintSvg()}" />
+                    <p:commandButton value="#{msg.toolbar_print}" icon="fa fa-print"
+                                     update="pageForm :messages " style="margin: auto 10px;" >
+                        <p:printer target="pageForm:svgprint" />
+                    </p:commandButton>
                         <br/>
-                    </p:dataList>
                 </p:tab>
             </p:tabView>
         </p:outputPanel>
-        <p:outputPanel style=" float:left; width: 640px;">
+        <p:outputPanel style=" float:left; width: 540px;">
             <p:outputPanel style="margin:20px auto;background: white;border:1px solid;width: 420px; height: 597px;">
-                <h:outputText value="#{opticDao.svg}" escape="false"/>
+                <h:outputText value="#{opticDao.svg}" escape="false" id="svg" style="position: absolute;width: 420px; height: 597px;"/>
+                <h:outputText value="#{opticDao.svgpreview}" escape="false" id="svgpreview" style="position: absolute;width: 420px; height: 597px;"/>
+                <p:outputPanel id="svgprintcontainer" style="display: none; width: 210mm; height: 297mm;">
+                    <h:outputText value="#{opticDao.svgprint}" escape="false" id="svgprint" />
+                </p:outputPanel>
             </p:outputPanel>
         </p:outputPanel>
 
@@ -66,17 +148,25 @@
               closeOnEscape="true" width="700" >
 
         <components:uploadsGridFmt rows="50" scrollable="true" scrollHeight="250" widgetVar="uploadsGridWidget" paginator="false" update="pageForm"/>
+        <components:inputUploadFmt update="@widgetVar(uploadsGridWidget)" width="600"/>
 
     </p:dialog>
 
-
-
     <h:outputStylesheet>
-        .fields {
+        .fieldsTypes {
             font-size:14px !important;
         }
+        .ui-selectonemenu label.ui-selectonemenu-label {
+            padding:2px;
+        }
+        
+        @media all {
+            #svgprint {
+                width: 210mm;
+                height: 297mm;
+            }
+        }
     </h:outputStylesheet>
-
 </p:outputPanel>
     </ui:decorate>
 </f:view>

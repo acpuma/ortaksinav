@@ -34,6 +34,9 @@ public class OpticsFieldsType extends BaseEntity implements Serializable {
     @Size(min = 1, max = 255)
     @Column(nullable = false, length = 255)
     private String name;
+    @Size(min = 1, max = 255)
+    @Column(length = 255)
+    private String nameDist;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -45,6 +48,9 @@ public class OpticsFieldsType extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "refFieldType", fetch = FetchType.LAZY)
     private Collection<OpticsFields> fieldsCollection;
+
+    @OneToMany(mappedBy = "refFieldType", fetch = FetchType.LAZY)
+    private Collection<OpticsParts> partsCollection;
 
     public OpticsFieldsType() {
     }
@@ -153,6 +159,22 @@ public class OpticsFieldsType extends BaseEntity implements Serializable {
 
     public void setRank(int rank) {
         this.rank = rank;
+    }
+
+    public String getNameDist() {
+        return nameDist;
+    }
+
+    public void setNameDist(String nameDist) {
+        this.nameDist = nameDist;
+    }
+
+    public Collection<OpticsParts> getPartsCollection() {
+        return partsCollection;
+    }
+
+    public void setPartsCollection(Collection<OpticsParts> partsCollection) {
+        this.partsCollection = partsCollection;
     }
 
     @Override

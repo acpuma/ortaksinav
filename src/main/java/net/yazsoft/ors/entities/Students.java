@@ -71,6 +71,12 @@ public class Students extends BaseEntity implements Serializable {
     @Size(max = 20)
     @Column(length = 20)
     private String phone;
+    @Size(max = 255)
+    @Column(length = 255)
+    private String email;
+    @Size(max = 500)
+    @Column(length = 500)
+    private String address;
     @OneToMany(mappedBy = "refStudent", fetch = FetchType.LAZY)
     private Collection<StudentsAnswers> studentsAnswersCollection;
     @JoinColumn(name = "ref_image", referencedColumnName = "tid")
@@ -242,6 +248,22 @@ public class Students extends BaseEntity implements Serializable {
 
     public void setRefSchoolClass(SchoolsClass refSchoolClass) {
         this.refSchoolClass = refSchoolClass;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @XmlTransient
