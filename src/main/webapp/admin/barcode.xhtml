@@ -27,13 +27,13 @@
                 <p:panelGrid columns="2" id="pagePanel">
 
                     <h:outputText value="Code39" />
-                    <p:barcode value="#{barcodeSer.barcode}" type="code39" format="png"/>
+                    <p:barcode value="#{barcodeSer.barcode}" type="code39" format="svg"/>
 
                     <h:outputText value="Code128" />
-                    <p:barcode value="#{barcodeSer.barcode}" type="code128" format="png"/>
+                    <p:barcode value="#{barcodeSer.barcode}" type="code128" format="svg"/>
 
                     <h:outputText value="CodeEan13" />
-                    <p:barcode value="#{barcodeSer.barcode}" type="ean13" format="png"/>
+                    <p:barcode value="#{barcodeSer.barcode}" type="ean13" format="svg"/>
                 </p:panelGrid>
             </h:form>
         </p:outputPanel>

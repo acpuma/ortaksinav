@@ -5,6 +5,7 @@ import net.yazsoft.ors.entities.OpticsParts;
 
 public class OpticsPartsDto extends OpticsParts{
     Optics optic;
+    float ratio;
 
     public OpticsPartsDto() {
         super();
@@ -60,20 +61,20 @@ public class OpticsPartsDto extends OpticsParts{
         return entity;
     }
 
-    public int findX() {
-        return optic.getMarginx()+(getX()*optic.getRatio());
+    public float findX() {
+        return optic.getMarginx()+( (getX()-2) * ratio );
     }
 
-    public int findY() {
-        return optic.getMarginy()+(getY()*optic.getRatio());
+    public float findY() {
+        return optic.getMarginy()+(getY()*ratio);
     }
 
-    public int findW() {
-        return ((getW()+1)-getX())*optic.getRatio();
+    public float findW() {
+        return ((getW()+1)-getX())*ratio;
     }
 
-    public int findH() {
-        return ((getH()+1)-getY())*optic.getRatio();
+    public float findH() {
+        return ((getH()+1)-getY())*ratio;
     }
 
     public Optics getOptic() {
@@ -82,6 +83,14 @@ public class OpticsPartsDto extends OpticsParts{
 
     public void setOptic(Optics optic) {
         this.optic = optic;
+    }
+
+    public float getRatio() {
+        return ratio;
+    }
+
+    public void setRatio(float ratio) {
+        this.ratio = ratio;
     }
 
     @Override

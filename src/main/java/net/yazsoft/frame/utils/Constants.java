@@ -1,6 +1,8 @@
 package net.yazsoft.frame.utils;
 
+import org.springframework.stereotype.Component;
 
+@Component
 public class Constants {
     public static final String ROLE_ADMIN ="ADMIN";
     public static final Long ROLE_ADMIN_NO =1L;

@@ -16,26 +16,16 @@
         #{authsDao.findAuths("/admin/settings")}
         <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
             <p:tabView >
-                <p:tab title="Dönemler">
-                    <p:panelGrid columns="2">
-                    <components:examsYearGrid rows="100" scrollable="true" editable="true"
-                                                paginator="false" scrollHeight="250"
-                                                widgetVar="examsYearGridWidget"/>
-                    <components:examsSeasonGrid rows="100" scrollable="true"
-                                              paginator="false" scrollHeight="250"
-                                              widgetVar="examsSeasonGridWidget"/>
-                    </p:panelGrid>
-                </p:tab>
-                <p:tab title="Demo">
+                <p:tab title="Ayarlar">
                     <h:form id="pageForm">
                         <ui:repeat value="#{settingsDao.settings}" var="setting">
                             <p:panelGrid columns="2" id="pagePanel" >
                                 <h:outputLabel value="#{setting.titleTr}" />
-                                <p:inputText value="#{setting.valueStr}"  rendered="#{not empty setting.valueStr}" />
-                                <p:inputText value="#{setting.valueInt}" rendered="#{not empty setting.valueInt}" />
-                                <p:inputText value="#{setting.valueFloat}" rendered="#{not empty setting.valueFloat}"/>
-                                <p:inputText value="#{setting.valueDouble}" rendered="#{not empty setting.valueDouble}"/>
-                                <p:selectBooleanButton value="#{setting.valueBool}" rendered="#{not empty setting.valueBool}"
+                                <p:inputText value="#{setting.valueStr}"  rendered="#{setting.settingType eq 'string'}" />
+                                <p:inputText value="#{setting.valueInt}" rendered="#{setting.settingType eq 'int'}" />
+                                <p:inputText value="#{setting.valueFloat}" rendered="#{setting.settingType eq 'float'}"/>
+                                <p:inputText value="#{setting.valueDouble}" rendered="#{setting.settingType eq 'double'}"/>
+                                <p:selectBooleanButton value="#{setting.valueBool}" rendered="#{setting.settingType eq 'boolean'}"
                                                        offLabel="#{msg.global_no}" onLabel="#{msg.global_yes}"/>
                             </p:panelGrid>
                         </ui:repeat>
@@ -48,9 +38,20 @@
                                          update=":messages"
                                          onstart="PF('blockUIWidget1').block()"
                                          oncomplete="PF('blockUIWidget1').unblock();"
-                                />
+                        />
                     </h:form>
                 </p:tab>
+                <p:tab title="Dönemler">
+                    <p:panelGrid columns="2">
+                    <components:examsYearGrid rows="100" scrollable="true" editable="true"
+                                                paginator="false" scrollHeight="250"
+                                                widgetVar="examsYearGridWidget"/>
+                    <components:examsSeasonGrid rows="100" scrollable="true"
+                                              paginator="false" scrollHeight="250"
+                                              widgetVar="examsSeasonGridWidget"/>
+                    </p:panelGrid>
+                </p:tab>
+
                 <p:tab title="#{msg.classtypes}">
                     <components:schoolsClassTypeGrid rows="100" scrollable="true" editable="true"
                                                 paginator="false" scrollHeight="250"

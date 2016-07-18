@@ -38,8 +38,14 @@ public class Optics extends BaseEntity implements Serializable {
 
     private Integer marginx;
     private Integer marginy;
-    private Integer ratio;
-    private Integer ratiop;
+    private Integer firstno;
+    private Integer lastno;
+
+    @Basic(optional = false)
+    @Size(min = 1, max = 255)
+    @Column(nullable = false, length = 255)
+    private String fontname;
+
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY,orphanRemoval = true)
     private Collection<OpticsFields> opticsFieldsCollection;
@@ -132,13 +138,6 @@ public class Optics extends BaseEntity implements Serializable {
         this.marginy = marginy;
     }
 
-    public Integer getRatio() {
-        return ratio;
-    }
-
-    public void setRatio(Integer ratio) {
-        this.ratio = ratio;
-    }
 
     public Collection<OpticsParts> getOpticsPartsCollection() {
         return opticsPartsCollection;
@@ -156,12 +155,29 @@ public class Optics extends BaseEntity implements Serializable {
         this.refSchool = refSchool;
     }
 
-    public Integer getRatiop() {
-        return ratiop;
+
+    public Integer getFirstno() {
+        return firstno;
     }
 
-    public void setRatiop(Integer ratiop) {
-        this.ratiop = ratiop;
+    public void setFirstno(Integer firstno) {
+        this.firstno = firstno;
+    }
+
+    public Integer getLastno() {
+        return lastno;
+    }
+
+    public void setLastno(Integer lastno) {
+        this.lastno = lastno;
+    }
+
+    public String getFontname() {
+        return fontname;
+    }
+
+    public void setFontname(String fontname) {
+        this.fontname = fontname;
     }
 
     @Override

@@ -305,6 +305,9 @@ public class UploadsBean extends BaseDao implements Serializable{
             Util.createDirectory("images");
             Util.createDirectory("images/"+imageType);
             dirName="/images/"+imageType;
+            /*if (imageType.equals("student")) {
+                dirName="/images/"+imageType+"/"+Util.getActiveSchool().getTid()+"/";
+            }*/
             /*
             switch (imageType) {
                 case (IMAGE_SCHOOL) :

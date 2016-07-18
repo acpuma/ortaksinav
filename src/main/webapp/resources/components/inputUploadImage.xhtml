@@ -28,7 +28,7 @@
 <cc:implementation>
     <c:set var="daobeann" value="#{cc.attrs.daobean}" />
 
-    <p:outputPanel styleClass="image150" id="schoolLogo" rendered="#{cc.attrs.showImage}"
+    <p:outputPanel styleClass="image150" id="imageLogo" rendered="#{cc.attrs.showImage}"
                    style="text-align: center">
         <p:outputLabel value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
                        rendered="false"/>
@@ -36,16 +36,16 @@
                         value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
                 />
     </p:outputPanel>
-    <p:outputPanel id="uploadFilePanel"  style="margin:0 auto 10px; text-align: center;">
+    <p:outputPanel id="uploadPhotoPanel"  style="margin:0 auto 10px; text-align: center;">
         <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_logo}" rendered="#{not empty daobeann.item.tid}"
                          immediate="true" process="@none"
-                         oncomplete="PF('uploadFileWidget_#{cc.id}').show();"
+                         oncomplete="PF('uploadPhotoWidget_#{cc.id}').show();"
                          disabled="#{not authsDao.auths.pupdate}"
                 >
         </p:commandButton>
     </p:outputPanel>
 
-    <p:dialog header="#{msg.upload_file}" modal="true"  widgetVar="uploadFileWidget_#{cc.id}"
+    <p:dialog header="#{msg.upload_file}" modal="true"  widgetVar="uploadPhotoWidget_#{cc.id}"
               closeOnEscape="true" style="z-index: 1 !important;" appendTo="@(body)" dynamic="false">
         <p:outputPanel style="width: #{cc.attrs.width}px; margin: auto;">
             <h:form enctype="multipart/form-data" id="uploadFormImage" >
@@ -56,8 +56,8 @@
                               mode="advanced"
                               multiple="false"
                               allowTypes="/(\.|\/)(jpg|JPG|jpeg|JPEG|png|PNG)$/"
-                              oncomplete="#{cc.attrs.oncomplete}; PF('uploadFileWidget_#{cc.id}').hide();"
-                              update="#{cc.attrs.update} @composite:schoolLogo  :messages"
+                              oncomplete="#{cc.attrs.oncomplete}; PF('uploadPhotoWidget_#{cc.id}').hide();"
+                              update="#{cc.attrs.update} @composite:imageLogo  :messages"
                               fileLimit="20000"
                               label="#{msg.upload_select_file}"
                               uploadLabel="#{msg.upload}"

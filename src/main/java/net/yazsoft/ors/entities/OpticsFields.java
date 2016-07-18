@@ -8,6 +8,7 @@ import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -33,6 +34,12 @@ public class OpticsFields extends BaseEntity implements Serializable {
     private Float leftx;
     private Float topy;
     private Float fontsize;
+    @Size(max = 2000)
+    @Column(length = 2000)
+    private String value1;
+    @Size(max = 2000)
+    @Column(length = 2000)
+    private String value2;
 
     @JoinColumn(name = "ref_optic", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -130,6 +137,22 @@ public class OpticsFields extends BaseEntity implements Serializable {
 
     public void setRefFieldType(OpticsFieldsType refFieldType) {
         this.refFieldType = refFieldType;
+    }
+
+    public String getValue1() {
+        return value1;
+    }
+
+    public void setValue1(String value1) {
+        this.value1 = value1;
+    }
+
+    public String getValue2() {
+        return value2;
+    }
+
+    public void setValue2(String value2) {
+        this.value2 = value2;
     }
 
     @Override

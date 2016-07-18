@@ -1,21 +1,34 @@
 package net.yazsoft.ors.optic;
 
+import com.lowagie.text.pdf.Barcode128;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.distribute.DistributeDao;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.settings.SettingsDao;
 import net.yazsoft.ors.students.StudentsDao;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.krysalis.barcode4j.impl.code39.Code39Bean;
+import org.krysalis.barcode4j.output.svg.SVGCanvasProvider;
+import org.krysalis.barcode4j.tools.UnitConv;
+import org.primefaces.application.resource.DynamicContentType;
+import org.primefaces.application.resource.barcode.BarcodeGenerator;
+import org.primefaces.application.resource.barcode.CodabarGenerator;
+import org.primefaces.component.barcode.Barcode;
+import org.primefaces.component.barcode.BarcodeRenderer;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +46,72 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     private String fmt;
     private List<String> lines;
     private List<OpticsPartsDto> partsDtos;
-    private Integer firstno,lastno;
+    private float ratio;
 
     private List<OpticsFieldsType> fieldsTypes;
     private List<OpticsFields> fields;
+    private List<String> fonts;
+    private List<Optics> optics;
 
     @Inject OpticFieldsTypeDao opticFieldsTypeDao;
     @Inject OpticFieldsDao opticFieldsDao;
     @Inject DistributeDao distributeDao;
     @Inject StudentsDao studentsDao;
+    @Inject OpticsPartsDao opticsPartsDao;
+    @Inject SettingsDao settingsDao;
 
+
+    public boolean showValue1(OpticsFields field) {
+        if ((field.getRefFieldType()==null) || (field.getRefFieldType().getNameDist()==null) ) {
+            return false;
+        }
+        switch (field.getRefFieldType().getNameDist()) {
+            case "text" : return true;
+            case "barcode" : return true;
+            case "photo" : return true;
+            case "lesson" : return true;
+            default:return false;
+        }
+    }
+
+    public boolean showValue2(OpticsFields field) {
+        if ((field.getRefFieldType()==null) || (field.getRefFieldType().getNameDist()==null) ) {
+            return false;
+        }
+        switch (field.getRefFieldType().getNameDist()) {
+            case "photo" : return true;
+            case "barcode" : return true;
+            default:return false;
+        }
+    }
+
+    public List<Optics> findOptics() {
+        List<Optics> list=null;
+        try {
+            log.info("ACTIVE USER : " + Util.getActiveUser());
+            log.info("USER SCHOOLS : " + Util.getActiveUser().getSchoolsCollection());
+            if (!Util.getActiveUser().getSchoolsCollection().isEmpty()) {
+                Criteria c = getCriteria();
+                c.add(Restrictions.eq("active", true));
+                c.add(Restrictions.in("refSchool", Util.getActiveUser().getSchoolsCollection()));
+                list = c.list();
+            }
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return list;
+    }
+    @Override
+    @Transactional
+    public void delete(Optics optic) {
+        for (OpticsFields ofield:optic.getOpticsFieldsCollection()) {
+            opticFieldsDao.delete(ofield);
+        }
+        for (OpticsParts opart:optic.getOpticsPartsCollection()) {
+            opticsPartsDao.delete(opart);
+        }
+        super.delete(optic);
+    }
 
     public  Optics findByName(String name) {
         Optics optic=null;
@@ -70,12 +139,23 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         fields.remove(field);
     }
 
+    @PostConstruct
+    public void init() {
+        fonts=new ArrayList<>();
+        fonts.add("Arial");
+        fonts.add("Impact");
+        fonts.add("Lucida");
+        fonts.add("Tahoma");
+        fonts.add("Verdana");
+        fonts.add("Times");
+    }
+
     public void reset() {
+        super.reset();
         getSession().clear();
-        setItem(new Optics());
+        ratio=settingsDao.findByName("opticRatio").getValueFloat();
         getItem().setMarginx(10);
         getItem().setMarginy(10);
-        getItem().setRatio(9);
         lines=null;
         if (partsDtos!=null) { partsDtos.clear();}
             else { partsDtos = new ArrayList<>();}
@@ -85,18 +165,8 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         createSvg();
     }
 
-    @PostConstruct
-    public void init() {
-        setItem(new Optics());
-        getItem().setMarginx(10);
-        getItem().setMarginy(10);
-        getItem().setRatio(9);
-        lines=null;
-        partsDtos=new ArrayList<>();
-        fields=new ArrayList<>();
-    }
-
-    public void handleOpticChange() {
+    public void handleOpticChange(SelectEvent selectEvent) {
+        selected=(Optics)selectEvent.getObject();
         if (selected!=null) {
             partsDtos=new ArrayList<>();
             fields.clear();
@@ -109,13 +179,14 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             }
             itemsChanged=true;
             createSvg();
+            status=Status.UPDATE;
         }
     }
 
     @Transactional
     public Long save() {
         try {
-            if (findByName(getItem().getName())!=null) { //if same name then update
+            if (status== Status.UPDATE) {
                 getItem().setOpticsFieldsCollection(fields);
                 List<OpticsParts> parts=new ArrayList<>();
                 for (OpticsPartsDto dto:partsDtos) {
@@ -127,7 +198,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                     log.info("PART CHARS: " + part.getChars());
                     getSession().merge(part.toEntity());
                 }
-                //Util.setFacesMessage("KAYIT GUNCELLENDI");
+                Util.setFacesMessage("KAYIT GUNCELLENDI");
             } else {
                 getItem().setCreated(Util.getNow());
                 getItem().setActive(true);
@@ -151,9 +222,8 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 }
                 getSession().flush();
 
-                Util.setFacesMessage("KAYIT EDILDI");
+                Util.setFacesMessage("YENI KAYIT EKLENDI");
             }
-
         } catch (Exception e) {
             Util.catchException(e);
         }
@@ -168,6 +238,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         for (String line:lines) {
             int i=0;
             opticPart=new OpticsPartsDto();
+            opticPart.setActive(true);
             while (line.contains("=")) {
                 String value;
                 int equalpos = 0;
@@ -224,21 +295,28 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         Optics optic=getItem();
         if (getItem()==null) {
             optic = new Optics();
-            optic.setRatio(9);
             optic.setMarginx(10);
             optic.setMarginy(10);
         }
         //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
         //StringBuffer sb=new StringBuffer("<svg width='210mm' height='297mm' viewBox='0 0 420 597'>");
-        StringBuffer sb=new StringBuffer("<svg width='100%' height='100%' >");
-        int recty;
-        for (int i=0; i<60; i++) {
-            recty=(i*9)+30;
-            sb.append("<rect class='rect' x='1' y='" +recty + "' width='10' height='3' fill='black' />");
+        //StringBuffer sb=new StringBuffer("<svg width='100%' height='100%' >");
+
+        StringBuffer sb=new StringBuffer("<svg width='210mm' height='295mm' style='transform:scale(0.55);transform-origin:0 0;'>");
+
+        //draw markers
+        float recty;
+        if (!partsDtos.isEmpty()) {
+            for (int i = 0; i <= partsDtos.get(0).getY(); i++) {
+                recty = optic.getMarginy()+ i * ratio;
+                sb.append("<rect class='rect' x='1' y='" + recty + "' width='" + ratio + "' height='" + (ratio/2) + "' fill='black' />");
+            }
         }
+
         for (OpticsPartsDto opticPart: partsDtos) {
             log.info("OpticsPartsDto : " + opticPart);
             opticPart.setOptic(optic);
+            opticPart.setRatio(ratio);
             /*
             sb.append("<g> <rect class='rect' x='" + opticPart.getX() + "' y='" +opticPart.getY()
                     + "' width='" + opticPart.getW() + "' height='" + opticPart.getH()
@@ -250,11 +328,12 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             int rgb3=rand.nextInt(255);
             for (int i=0; i<(opticPart.getW()-opticPart.getX()+1); i++) {
                 for (int j = 0; j <(opticPart.getH()-opticPart.getY()+1); j++) {
-                    int x = opticPart.findX() + (i * optic.getRatio()) + 1;
-                    int y = opticPart.findY() + (j * optic.getRatio()) + 1;
+                    float x = opticPart.findX() + (i * ratio) + 1;
+
+                    float y = opticPart.findY() + (j * ratio) + 1;
 
                     sb.append("<rect class='rect' x='" + x + "' y='" + y
-                            + "' width='" + (optic.getRatio() - 2) + "' height='" + (optic.getRatio() - 2)
+                            + "' width='" + (ratio - 2) + "' height='" + (ratio - 2)
                             + "' stroke='rgb("+rgb1+","+rgb2+","+rgb3+")' stroke-width='1' fill='none' />");
                 }
             }
@@ -269,11 +348,14 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public void printPreview() {
 
         //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
-        StringBuffer sb=new StringBuffer("<svg width='100%' height='100%'>");
-        if (firstno!=null) {
-            printPage(sb,distributeDao.getDistributes().get(firstno-1),true);
-        } else {
-            printPage(sb, distributeDao.getDistributes().get(0),true);
+        StringBuffer sb=new StringBuffer("<svg width='210mm' height='295mm' style='transform:scale(0.55);transform-origin:0 0;'>");
+        List<Distributes> distributes=distributeDao.getDistributes();
+        if ((distributes!=null) && (distributes.size()>0)) {
+            if (getItem().getFirstno() != null) {
+                printPage(sb, distributes.get(getItem().getFirstno() - 1), true);
+            } else {
+                printPage(sb, distributes.get(0), true);
+            }
         }
         sb.append("</svg>");
         svgpreview=sb.toString();
@@ -282,21 +364,22 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
 
     public void createPrintSvg() {
         //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
-        StringBuffer sb = new StringBuffer(""); //<svg width='210mm' height='297mm' >");
+        StringBuffer sb = new StringBuffer("");
 //        sb.append("<pageSet>");
         int pagecount=1;
         //getItem().setRatio(21);
         for (Distributes dist:distributeDao.getDistributes()) {
-            if ((firstno!=null) && (pagecount<firstno)){
+            if ((getItem().getFirstno()!=null) && (pagecount<getItem().getFirstno())){
                 continue;
             }
-            if ((lastno!=null) && (pagecount>lastno)) {
+            if ((getItem().getLastno()!=null) && (pagecount>getItem().getLastno())) {
                 continue;
             }
 //            sb.append("<page>");
-            sb.append("<svg width='210mm' height='297mm' >");
+            sb.append("<svg width='210mm' height='295mm' class='page-break'>");
             printPage(sb,dist,false);
             sb.append("</svg>");
+//            sb.append("<div class='page-break'></div>");
 //            sb.append("</page>");
             pagecount++;
 
@@ -309,97 +392,180 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public void printPage(StringBuffer sb,Distributes dist,Boolean preview) {
         int recty;
         Optics optic = getItem();
-        int ratio=getItem().getRatio();
-        if (!preview) ratio=getItem().getRatiop(); //print ratio
         Students student;
-        if (dist.getRefSchool().getUseMernis()) {
-            student = studentsDao.findByMernis(dist.getMernis());
-        } else {
-            student = studentsDao.findByNoAndSchool(Integer.valueOf(dist.getSchoolNo()), dist.getRefSchool());
-        }
-        for (OpticsFields field : fields) {
-            log.info("DIST NAME : " + field.getRefFieldType().getNameDist());
-            float x = field.getLeftx() * ratio + optic.getMarginx();
-            float y = field.getTopy() * ratio + optic.getMarginy();
-            if ((field.getActive()) &&(field.getRefFieldType().getNameDist()!=null)){
-                switch (field.getRefFieldType().getNameDist()) {
-                    case "mernis" : if (dist.getMernis()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getMernis() + "</text>"); break;
-                    case "school" : if (dist.getRefSchool()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getRefSchool().getName() + "</text>"); break;
-                    case "fullname" :if (dist.getName()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getName() + " " + dist.getSurname() + "</text>"); break;
-                    case "name" : if (dist.getName()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getName() + "</text>"); break;
-                    case "surname" : if (dist.getSurname()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getSurname() + "</text>"); break;
-                    case "schoolNo" : if (dist.getSchoolNo()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getSchoolNo() + "</text>"); break;
-                    case "room" : if (dist.getRoom()!=null)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getRoom() + "</text>"); break;
-                    case "roomRank" : if (dist.getRoomRank()!=0)
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + dist.getRoomRank() + "</text>");break;
-                    case "gender" : if ((student!=null) && (student.getGender()!=null))
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + student.getGender() + "</text>");break;
-                    case "email" : if ((student!=null) && (student.getEmail()!=null))
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + student.getEmail() + "</text>");break;
-                    case "phone" : if ((student!=null) && (student.getPhone()!=null))
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + student.getPhone() + "</text>");break;
-                    case "classroom" : if ((student!=null) && (student.getRefSchoolClass()!=null))
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + student.getRefSchoolClass().getName() + "</text>");break;
-                    case "address" : if ((student!=null) && (student.getAddress()!=null))
-                                sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='"
-                                + field.getFontsize() + "'>" + student.getAddress() + "</text>");break;
+        try {
+            if (dist.getRefSchool().getUseMernis()) {
+                student = studentsDao.findByMernis(dist.getMernis());
+            } else {
+                student = studentsDao.findByNoAndSchool(Integer.valueOf(dist.getSchoolNo()), dist.getRefSchool());
+            }
+            for (OpticsFields field : fields) {
+                log.info("DIST NAME : " + field.getRefFieldType().getNameDist());
+                float x = (field.getLeftx()-2) * ratio;// + optic.getMarginx();
+                float y = field.getTopy() * ratio;// + optic.getMarginy();
+                if ((field.getActive()) &&(field.getRefFieldType().getNameDist()!=null)){
+                    if (field.getRefFieldType().getNameDist().equals("barcode")) {
+                        Barcode barcode = new Barcode();
+                        barcode.setValue(field.getValue1());
+                        barcode.setType("code128");
+                        BarcodeRendererBean renderer = new BarcodeRendererBean();
+                        sb.append("<image xlink:href='");
+                        sb.append(renderer.encodeSrc(FacesContext.getCurrentInstance(), barcode));
+                        String width= "50" ;
+                        if (field.getValue2()!=null) {
+                            width=field.getValue2();
+                        };
+                        sb.append("' x='" + x + "' y='" + y + "' width='" + width
+                                + "' height='" + width + "' />");
+                    }else if ((field.getRefFieldType().getNameDist().equals("photo")) ) { // && (student.getRefImage()!=null) ) {
+
+                        String filepath="/student/"+student.getRefSchool().getTid()+ "/";
+                        if (student.getRefSchool().getUseMernis()) {
+                            filepath=filepath.concat(student.getMernis() + ".jpg");
+                        } else {
+                            filepath=filepath.concat(student.getSchoolNo() + ".jpg");
+                        }
+                        File file=new File(Util.getImagesFolder()+filepath);
+                        if (file.exists()) {
+                            sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath);
+                            String width="50";
+                            String height="50";
+                            if (field.getValue1()!=null) width=field.getValue1();
+                            if (field.getValue2()!=null) height=field.getValue2();
+
+
+                            sb.append("' x='" + x + "' y='" + y + "' width='" + field.getValue1()
+                                    + "' height='" + field.getValue2() + "' />");
+                        }
+                    } else {
+                        sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='" + field.getFontsize() + "'"
+                                + " font-family='" + optic.getFontname() + "'>");
+                        switch (field.getRefFieldType().getNameDist()) {
+                            case "mernis":
+                                if (dist.getMernis() != null)
+                                    sb.append(dist.getMernis());
+                                break;
+                            case "school":
+                                if (dist.getRefSchool() != null)
+                                    sb.append(dist.getRefSchool().getName());
+                                break;
+                            case "fullname":
+                                if (dist.getName() != null)
+                                    sb.append(dist.getName() + " " + dist.getSurname());
+                                break;
+                            case "name":
+                                if (dist.getName() != null)
+                                    sb.append(dist.getName());
+                                break;
+                            case "surname":
+                                if (dist.getSurname() != null)
+                                    sb.append(dist.getSurname());
+                                break;
+                            case "schoolNo":
+                                if (dist.getSchoolNo() != null)
+                                    sb.append(dist.getSchoolNo());
+                                break;
+                            case "room":
+                                if (dist.getRoom() != null)
+                                    sb.append(dist.getRoom());
+                                break;
+                            case "roomRank":
+                                if (dist.getRoomRank() != 0)
+                                    sb.append(dist.getRoomRank());
+                                break;
+                            case "gender":
+                                if ((student != null) && (student.getGender() != null))
+                                    sb.append(student.getGender());
+                                break;
+                            case "email":
+                                if ((student != null) && (student.getEmail() != null))
+                                    sb.append(student.getEmail());
+                                break;
+                            case "phone":
+                                if ((student != null) && (student.getPhone() != null))
+                                    sb.append(student.getPhone());
+                                break;
+                            case "classroom":
+                                if ((student != null) && (student.getRefSchoolClass() != null))
+                                    sb.append(student.getRefSchoolClass().getName());
+                                break;
+                            case "address":
+                                if ((student != null) && (student.getAddress() != null))
+                                    sb.append(student.getAddress());
+                                break;
+                            case "text":
+                                if (field.getValue1() != null)
+                                    sb.append(field.getValue1());
+                                break;
+                            case "lesson":
+                                if (field.getValue1() != null)
+                                    sb.append(field.getValue1());
+                                break;
+                        }
+                        sb.append("</text>");
+                    }
                 }
             }
+
+            for (OpticsPartsDto part : partsDtos) {
+                part.setOptic(optic);
+                part.setRatio(ratio);
+                log.info("part : " + part);
+                log.info("fieldtype : " + part.getRefFieldType());
+                if (part.getRefFieldType()!=null) {
+                    log.info("namedist : " + part.getRefFieldType().getNameDist());
+                }
+                log.info("student : " + student);
+                if (part.getActive() && part.getRefFieldType()!=null
+                        && part.getRefFieldType().getNameDist()!=null
+                        && student!=null) {
+                    switch (part.getRefFieldType().getNameDist()) {
+                        case "mernis" : printCode(sb,part,dist.getMernis()); break;
+                        case "fullname" : printCode(sb,part,dist.getName() + " " + dist.getSurname());break;
+                        case "name" : printCode(sb,part,dist.getName()); break;
+                        case "surname" : printCode(sb,part,dist.getSurname()); break;
+                        case "schoolNo" : printCode(sb,part,dist.getSchoolNo()); break;
+                        case "room" : printCode(sb,part,dist.getRoom()); break;
+                        case "roomRank" : printCode(sb,part,dist.getRoomRank()); break;
+                        case "gender" : printCode(sb,part,student.getGender()); break;
+                        case "email" : printCode(sb,part,student.getEmail()); break;
+                        case "phone" : printCode(sb,part,student.getPhone()); break;
+                        case "classroom" : printCode(sb,part,findClassLevelAndBranch(student.getRefSchoolClass().getName(),true)); break;
+                        case "address" : printCode(sb,part,student.getAddress()); break;
+                        case "branch" : printCode(sb,part,findClassLevelAndBranch(student.getRefSchoolClass().getName(),false)); break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Util.catchException(e);
         }
 
-        for (OpticsPartsDto part : partsDtos) {
-            part.setOptic(optic);
-            if ((part.getActive()) &&(part.getRefFieldType()!=null)
-                    && (part.getRefFieldType().getNameDist()!=null)
-                    && (student!=null)) {
-                switch (part.getRefFieldType().getNameDist()) {
-                    case "mernis" : printCode(sb,part,dist.getMernis(),ratio); break;
-                    case "fullname" : printCode(sb,part,dist.getName() + " " + dist.getSurname(),ratio);break;
-                    case "name" : printCode(sb,part,dist.getName(),ratio); break;
-                    case "surname" : printCode(sb,part,dist.getSurname(),ratio); break;
-                    case "schoolNo" : printCode(sb,part,dist.getSchoolNo(),ratio); break;
-                    case "room" : printCode(sb,part,dist.getRoom(),ratio); break;
-                    case "roomRank" : printCode(sb,part,dist.getRoomRank(),ratio); break;
-                    case "gender" : printCode(sb,part,student.getGender(),ratio); break;
-                    case "email" : printCode(sb,part,student.getEmail(),ratio); break;
-                    case "phone" : printCode(sb,part,student.getPhone(),ratio); break;
-                    case "classroom" : printCode(sb,part,student.getRefSchoolClass().getName(),ratio); break;
-                    case "address" : printCode(sb,part,student.getAddress(),ratio); break;
-                }
+    }
+
+    public void printCodeTitle(StringBuffer sb,OpticsPartsDto part,Object code) {
+        float x = ((part.getX() - 2)* ratio) + part.getOptic().getMarginx();
+        float y = (part.getY() * ratio) + part.getOptic().getMarginy() - 2;
+        String codeStr=String.valueOf(code);
+
+        if (codeStr != null) {
+            for (int i = 0; i < codeStr.length(); i++) {
+                char charc = codeStr.charAt(i);
+                float xc = x + (i * ratio) + 4;
+                sb.append("<text x='" + xc + "' y='" + y + "' fill='black' font-size='" + ratio + "' > "
+                        + charc + "</text>");
             }
         }
     }
 
-
-
-    public void printCode(StringBuffer sb,OpticsPartsDto part,Object code,int ratio) {
+    public void printCode(StringBuffer sb,OpticsPartsDto part,Object code) {
         log.info("DIST NAME : " + part.getRefFieldType().getNameDist());
-        float x = part.getX()* ratio + part.getOptic().getMarginx();
-        float y = part.getY() * ratio + part.getOptic().getMarginy();
+        float x = part.findX();
+        float y = part.findY();
         //if (part.getCharType().equals("K")) {
         String codeStr=String.valueOf(code);
         if (part.isPrintTitle()) {
-            sb.append("<text x='" + x + "' y='" + (y-ratio/2) + "' fill='black' font-size='" + ratio+ "' > "
-                    + codeStr + "</text>");
+            printCodeTitle(sb,part,code);
+
         }
         if (part.isPrint()) {
             log.info("CODESTR : " + codeStr);
@@ -409,10 +575,10 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                     for (int j = 0; j < part.getChars().length(); j++) {
                         char chart = part.getChars().charAt(j);
                         if (charc == chart) {
-                            float xc = x + i * ratio + ratio / 2 + 1;
-                            float yc = y + j * ratio + ratio / 2 + 1;
+                            float xc = x + i * ratio + ratio / 2 ;
+                            float yc = y + j * ratio + ratio / 2 ;
                             sb.append("<circle class='rect' cx='" + xc + "' cy='" + yc
-                                    + "' r='" + (ratio / 2)
+                                    + "' r='" + ((ratio / 2) - 1.8)
                                     + "' stroke-width='0' fill='black' />");
                         }
                     }
@@ -422,6 +588,30 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
 
     }
 
+    /**
+     * Finds a classname and its level
+     * @param classname classname to divide into level and branch
+     * @param level true:returns level and false: returns branch
+     * @return
+     */
+    public String findClassLevelAndBranch(String classname,boolean level){
+        String sbc = "";
+
+        for (char c:classname.toCharArray()) {
+            log.info("LEVEL : " + level + "CHARACTER : " + c);
+            if (level) {
+                if (Character.isDigit(c)) {
+                    sbc=sbc.concat(String.valueOf(c));
+                }
+            } else {
+                if (Character.isAlphabetic(c)) {
+                    sbc=sbc.concat(String.valueOf(c));
+                }
+            }
+        }
+        log.info("CLASSNAME : " + classname + " SBC : " + sbc);
+        return sbc;
+    }
 
     public void addDefaultFields() {
         log.info("Addind Defaults");
@@ -508,19 +698,21 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         this.svgpreview = svgpreview;
     }
 
-    public Integer getFirstno() {
-        return firstno;
+
+    public List<String> getFonts() {
+        return fonts;
     }
 
-    public void setFirstno(Integer firstno) {
-        this.firstno = firstno;
+    public void setFonts(List<String> fonts) {
+        this.fonts = fonts;
     }
 
-    public Integer getLastno() {
-        return lastno;
+    public List<Optics> getOptics() {
+        optics=findOptics();
+        return optics;
     }
 
-    public void setLastno(Integer lastno) {
-        this.lastno = lastno;
+    public void setOptics(List<Optics> optics) {
+        this.optics = optics;
     }
 }

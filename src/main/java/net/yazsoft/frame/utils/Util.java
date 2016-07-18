@@ -63,6 +63,9 @@ public class Util implements Serializable{
     public static HttpServletResponse getResponse() {
         return (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
     }
+    public static String getContextPath() {
+        return FacesContext.getCurrentInstance().getExternalContext().getContextName();
+    }
 
     public static String getUserName() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);

@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Settings.findAll", query = "SELECT p FROM Settings p")})
+    @NamedQuery(name = "Settings.findAll", query = "SELECT s FROM Settings s")})
 public class Settings extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,6 +51,9 @@ public class Settings extends BaseEntity implements Serializable {
     @Size(max = 255)
     @Column(name = "title_en", length = 255)
     private String titleEn;
+    @Size(max = 255)
+    @Column(name = "setting_type", length = 255)
+    private String settingType;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -179,6 +182,14 @@ public class Settings extends BaseEntity implements Serializable {
 
     public void setValueFloat(Float valueFloat) {
         this.valueFloat = valueFloat;
+    }
+
+    public String getSettingType() {
+        return settingType;
+    }
+
+    public void setSettingType(String settingType) {
+        this.settingType = settingType;
     }
 
     @Override

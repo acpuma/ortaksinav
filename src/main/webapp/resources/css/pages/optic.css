@@ -17,3 +17,26 @@
     width: 1200px !important;
 }
 
+
+.fieldsTypes {
+    font-size:14px !important;
+}
+.ui-selectonemenu label.ui-selectonemenu-label {
+    padding:2px;
+}
+@media all {
+    /*.page-break	{ display: none; }*/
+}
+
+@media all {
+    .page-break	{ display: block; page-break-after: always; }
+}
+
+.ui-tabs .ui-tabs-panel {
+    padding:5px !important;
+}
+
+.ui-datalist-content {
+    padding:5px;
+}
+
