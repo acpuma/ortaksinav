@@ -450,4 +450,12 @@ public class Util implements Serializable{
         }
         return lines;
     }
+
+    public static Date oneHourLater(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR,1);
+
+        return calendar.getTime();
+    }
 }

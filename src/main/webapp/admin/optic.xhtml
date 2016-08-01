@@ -93,7 +93,7 @@
                     </p:dataList>
                 </p:tab>
                 <p:tab title="Yazdır">
-                        <p:panelGrid columns="2" layout="grid">
+                        <p:panelGrid columns="2" layout="grid" columnClasses="width40,width60">
                             <p:outputLabel for="fontname" value="Font" />
                             <p:selectOneMenu value="#{opticDao.item.fontname}" style="width: 80px;" styleClass="fieldsTypes"
                                              editable="true" id="fontname">
@@ -104,23 +104,32 @@
                             <p:inputText value="#{opticDao.item.marginx}" size="4" styleClass="fieldsTypes" id="marginx"/>
                             <p:outputLabel for="marginy" value="Üst boşluk" />
                             <p:inputText value="#{opticDao.item.marginy}" size="4" styleClass="fieldsTypes" id="marginy"/>
+
+                            <p:outputLabel for="scheduleDate" value="Takvim Tarihi" />
+                            <p:calendar id="scheduleDate" value="#{opticDao.scheduleDate}" timeZone="GMT+2" pattern="dd/MM/yyyy"
+                                locale="tr" navigator="true" required="true" requiredMessage="Takvim tarihi seçiniz"/>
+
+                            <p:outputLabel for="schoolDistributes" value="Dağıtım Listesi" />
+                            <p:selectOneMenu value="#{distributeDao.distributeName}" id="schoolDistributes" converter="entityConverter"
+                                             required="true" requiredMessage="Dağıtım Listesi seçiniz">
+                                <p:ajax listener="#{distributeDao.distributeChanged}" update="distcount"/>
+                                <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
+                                <f:selectItems value="#{distributeDao.distributesNames}" var="man"
+                                               itemLabel="#{man.created} #{man.no} #{man.name} " itemValue="#{man}" />
+                            </p:selectOneMenu>
+
                         </p:panelGrid>
-                    <p:selectOneMenu value="#{distributeDao.distributeName}" id="schoolDistributes" converter="entityConverter"
-                            required="true" requiredMessage="Dağıtım Listesi seçiniz">
-                        <p:ajax listener="#{distributeDao.distributeChanged}" update="distcount"/>
-                        <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
-                        <f:selectItems value="#{distributeDao.distributesNames}" var="man"
-                                       itemLabel="#{man.created} #{man.no} #{man.name} " itemValue="#{man}" />
-                    </p:selectOneMenu>
-                    <p:outputPanel id="distcount">
-                    Öğrenci Sayısı : #{distributeDao.getDistributes().size()}
-                    </p:outputPanel>
+
+
                     <p:panelGrid columns="4" layout="grid">
                     <p:outputLabel for="firstno" value="İlk" />
                     <p:inputText value="#{opticDao.item.firstno}" size="4" styleClass="fieldsTypes" id="firstno"/>
                     <p:outputLabel for="lastno" value="Son" />
                     <p:inputText value="#{opticDao.item.lastno}" size="4" styleClass="fieldsTypes" id="lastno"/>
                     </p:panelGrid>
+                    <p:outputPanel id="distcount" style="margin:10px;">
+                        Öğrenci Sayısı : #{distributeDao.getDistributes().size()}
+                    </p:outputPanel>
                     <p:commandButton value="Hazırla" icon="fa fa-refresh"
                                      update="pageForm :messages " style="margin: auto 10px;"
                                      actionListener="#{opticDao.printPreview()}"

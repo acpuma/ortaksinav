@@ -5,19 +5,7 @@ package net.yazsoft.ors.entities;
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -54,8 +42,16 @@ public class LessonsGroup extends BaseEntity implements Serializable {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
+
+    @JoinColumn(name = "ref_school_class_type", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SchoolsClassType refSchoolClassType;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonGroup", fetch = FetchType.LAZY)
     private Collection<LessonsName> lessonsNameCollection;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonGroup", fetch = FetchType.LAZY)
+    private Collection<Schedules> schedulesCollection;
 
     public LessonsGroup() {
     }
@@ -134,6 +130,23 @@ public class LessonsGroup extends BaseEntity implements Serializable {
 
     public void setLessonsNameCollection(Collection<LessonsName> lessonsNameCollection) {
         this.lessonsNameCollection = lessonsNameCollection;
+    }
+
+    public Collection<Schedules> getSchedulesCollection() {
+        return schedulesCollection;
+    }
+
+    public void setSchedulesCollection(Collection<Schedules> schedulesCollection) {
+        this.schedulesCollection = schedulesCollection;
+    }
+
+
+    public SchoolsClassType getRefSchoolClassType() {
+        return refSchoolClassType;
+    }
+
+    public void setRefSchoolClassType(SchoolsClassType refSchoolClassType) {
+        this.refSchoolClassType = refSchoolClassType;
     }
 
     @Override

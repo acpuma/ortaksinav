@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -25,41 +27,50 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "SchoolsClassType.findAll", query = "SELECT t FROM SchoolsClassType t")})
-public class SchoolsClassType extends BaseEntity implements Serializable {
+    @NamedQuery(name = "Schedules.findAll", query = "SELECT s FROM Schedules s")})
+public class Schedules extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     private Long tid;
-    private Boolean active;
-    private Integer version;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(nullable = false, length = 255)
-    private String name;
+    @Column(nullable = false)
+    private int version;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
-    @OneToMany(mappedBy = "refSchoolClassType", fetch = FetchType.LAZY)
-    private Collection<SchoolsClass> schoolsClassCollection;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endDate;
+    private Boolean active;
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools refSchool;
 
-    @OneToMany(mappedBy = "refSchoolClassType", fetch = FetchType.LAZY)
-    private Collection<LessonsGroup> lessonsGroupCollection;
+    @JoinColumn(name = "ref_lesson_group", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LessonsGroup refLessonGroup;
 
-    public SchoolsClassType() {
+    @JoinColumn(name = "ref_lesson_name", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LessonsName refLessonName;
+
+
+    public Schedules() {
     }
 
-    public SchoolsClassType(Long tid) {
+    public Schedules(Long tid) {
         this.tid = tid;
     }
 
-    public SchoolsClassType(Long tid, String name) {
+    public Schedules(Long tid, int version) {
         this.tid = tid;
-        this.name = name;
+        this.version = version;
     }
 
     public Long getTid() {
@@ -70,28 +81,12 @@ public class SchoolsClassType extends BaseEntity implements Serializable {
         this.tid = tid;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public Integer getVersion() {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(int version) {
         this.version = version;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Date getCreated() {
@@ -110,24 +105,53 @@ public class SchoolsClassType extends BaseEntity implements Serializable {
         this.updated = updated;
     }
 
-    public Collection<SchoolsClass> getSchoolsClassCollection() {
-        return schoolsClassCollection;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setSchoolsClassCollection(Collection<SchoolsClass> schoolsClassCollection) {
-        this.schoolsClassCollection = schoolsClassCollection;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    public Collection<LessonsGroup> getLessonsGroupCollection() {
-        return lessonsGroupCollection;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setLessonsGroupCollection(Collection<LessonsGroup> lessonsGroupCollection) {
-        this.lessonsGroupCollection = lessonsGroupCollection;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    @XmlTransient
+    public Date getEndDate() {
+        return endDate;
+    }
 
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Schools getRefSchool() {
+        return refSchool;
+    }
+
+    public void setRefSchool(Schools refSchool) {
+        this.refSchool = refSchool;
+    }
+
+    public LessonsGroup getRefLessonGroup() {
+        return refLessonGroup;
+    }
+
+    public void setRefLessonGroup(LessonsGroup refLessonGroup) {
+        this.refLessonGroup = refLessonGroup;
+    }
+
+    public LessonsName getRefLessonName() {
+        return refLessonName;
+    }
+
+    public void setRefLessonName(LessonsName refLessonName) {
+        this.refLessonName = refLessonName;
+    }
 
     @Override
     public int hashCode() {
@@ -139,10 +163,10 @@ public class SchoolsClassType extends BaseEntity implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof SchoolsClassType)) {
+        if (!(object instanceof Schedules)) {
             return false;
         }
-        SchoolsClassType other = (SchoolsClassType) object;
+        Schedules other = (Schedules) object;
         if ((this.tid == null && other.tid != null) || (this.tid != null && !this.tid.equals(other.tid))) {
             return false;
         }

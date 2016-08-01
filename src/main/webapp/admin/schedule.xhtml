@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
+<f:view>
+    <h:head>
+        <title>#{msg.schedule}</title>
+    </h:head>
+    <ui:decorate template="/WEB-INF/templates/master.xhtml">
+        <ui:param name="title" value="#{msg.schedule}"/>
+        #{authsDao.findAuths("/admin/schedule")}
+        <p:outputPanel styleClass="pageFormDiv clearfix"
+                       style="margin:0px; padding: 0px;float:left;width: 100%;overflow: scroll;">
+            <h:form id="pageForm">
+                <p:panelGrid columns="2" layout="grid" columnClasses="scheduleLevels,scheduleCalendar">
+                    <p:outputPanel>
+                        <p:outputPanel style="height: 90px;"></p:outputPanel>
+                        <ui:repeat value="#{scheduleDao.lessonGroups}" var="lessonGroup" varStatus="index">
+                            <p:outputPanel styleClass="scheduleLevel">
+                                <p:selectOneMenu value="#{scheduleDao.lessonGroups[index.index]}"
+                                                 style="width: 50px;" converter="entityConverter">
+                                    <f:selectItem itemLabel=" " itemValue="#{null}"
+                                                  noSelectionOption="true"/>
+                                    <f:selectItems value="#{lessonsGroupDao.all}" var="man"
+                                                   itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                                    <f:ajax />
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </ui:repeat>
+
+                    </p:outputPanel>
+
+                    <p:outputPanel style="height: 410px;">
+                        <p:schedule id="schedule" value="#{scheduleDao.eventModel}" widgetVar="myschedule"
+                                     style="margin:10px;" locale="tr" timeZone="GMT+2"
+                                    firstHour="8" view="agendaWeek"  allDaySlot="false" showWeekends="true"
+                                     draggable="false" resizable="false" slotDuration="00:60:00"
+                                    minTime="08:00:00" maxTime="20:00:00"
+                                    rightHeaderTemplate="month,agendaWeek"
+                        >
+
+                            <p:ajax event="dateSelect" listener="#{scheduleDao.onDateSelect}" update="pageForm:eventDetails"
+                                    oncomplete="PF('eventDialog').show();"
+                            />
+                            <p:ajax event="eventSelect" listener="#{scheduleDao.onEventSelect}" update="pageForm:eventDetails"
+                                    oncomplete="PF('eventDialog').show();"
+                            />
+                            <p:ajax event="eventMove" listener="#{scheduleDao.onEventMove}" update="messages"/>
+                            <p:ajax event="eventResize" listener="#{scheduleDao.onEventResize}" update="messages"/>
+
+                        </p:schedule>
+                    </p:outputPanel>
+                </p:panelGrid>
+
+
+            <p:dialog widgetVar="eventDialog" header="Ders Ayrıntıları">
+
+                <h:panelGrid id="eventDetails" columns="2">
+                    <p:outputLabel value="Grup adi: "/>
+                    <p:outputLabel value="#{scheduleDao.selected.refLessonGroup.nameTr}" rendered="true"/>
+                    <p:outputLabel value="Ders adi: "/>
+                    <p:selectOneMenu value="#{scheduleDao.selected.refLessonName}" id="selectedLessonName" name="title"
+                                     style="width: 50px;" >
+                        <f:selectItem itemLabel=" " itemValue="#{null}"
+                                      noSelectionOption="true"/>
+                        <f:selectItems value="#{lessonsNameDao.findByGroup(scheduleDao.selected.refLessonGroup)}" var="man"
+                                       itemLabel="#{man.nameTr}" itemValue="#{man}"/>
+                    </p:selectOneMenu>
+
+
+                    <p:commandButton id="addButton" value="Kaydet" actionListener="#{scheduleDao.addEvent}"
+                                     oncomplete="PF('myschedule').update(); PF('eventDialog').hide();"/>
+                    <p:commandButton id="deleteButton" value="Sil" actionListener="#{scheduleDao.deleteEvent()}"
+                                     oncomplete="PF('myschedule').update(); PF('eventDialog').hide();"/>
+                </h:panelGrid>
+            </p:dialog>
+            </h:form>
+        </p:outputPanel>
+
+        <h:outputScript>
+
+
+            $(function () {
+                $(".wrapmenu").toggleClass('menuhide');
+                $(".wrapcontent").toggleClass('contentfull');
+            });
+
+            PrimeFaces.locales['tr'] = {
+                closeText: 'kapat',
+                prevText: 'geri',
+                nextText: 'ileri',
+                currentText: 'bugün',
+                monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+                    'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+                monthNamesShort: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+                    'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+                dayNames: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
+                dayNamesShort: ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'],
+                dayNamesMin: ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'],
+                weekHeader: 'Hf',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                month: 'Ay',
+                week: 'Hafta',
+                day: 'Gün',
+                allDayText: 'Tüm Gün'
+            };
+        </h:outputScript>
+        <h:outputStylesheet>
+            .value {
+                width: 1000px;
+            }
+            .fc-axis, .fc-time {
+                display: none !important;
+            }
+
+            .scheduleLevels {
+                width: 100px;
+                padding: 2px !important;
+            }
+
+            .scheduleCalendar {
+                width: 100%;
+            }
+
+            .scheduleLevel {
+                height: 80px;
+                vertical-align: middle;
+                /*border: 1px solid;*/
+            }
+
+            .schedule {
+                height: 410px;
+            }
+
+            .fc-time-grid-container {
+                height: 325px !important;
+            }
+        </h:outputStylesheet>
+    </ui:decorate>
+</f:view>
+</html>

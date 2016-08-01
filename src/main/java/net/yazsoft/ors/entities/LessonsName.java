@@ -64,6 +64,9 @@ public class LessonsName extends BaseEntity implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonName", fetch = FetchType.LAZY)
     private Collection<Lessons> lessonsCollection;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "refLessonName", fetch = FetchType.LAZY)
+    private Collection<Schedules> schedulesCollection;
+
     public LessonsName() {
     }
 
@@ -140,6 +143,14 @@ public class LessonsName extends BaseEntity implements Serializable {
 
     public void setRefLessonGroup(LessonsGroup refLessonGroup) {
         this.refLessonGroup = refLessonGroup;
+    }
+
+    public Collection<Schedules> getSchedulesCollection() {
+        return schedulesCollection;
+    }
+
+    public void setSchedulesCollection(Collection<Schedules> schedulesCollection) {
+        this.schedulesCollection = schedulesCollection;
     }
 
     @XmlTransient
