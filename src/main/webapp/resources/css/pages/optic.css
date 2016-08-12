@@ -24,13 +24,42 @@
 .ui-selectonemenu label.ui-selectonemenu-label {
     padding:2px;
 }
-@media all {
-    /*.page-break	{ display: none; }*/
+
+body {
+    margin:0 !important;
+    padding: 0;
+    border:0;
 }
 
+
 @media all {
-    .page-break	{ display: block; page-break-after: always; }
+    .page-break	{
+        display: block;
+        page-break-after: auto;
+        margin: 0;
+        padding: 0;
+        border:0;
+    }
+    body {
+        margin:0 !important;
+        padding: 0;
+        border:0;
+    }
+
+    html {
+        height : 100% !important;
+        margin: 0;
+        padding: 0;
+        border : 0;
+    }
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    .main-wrapper .container {
+        margin-top: 0px;
+    }
+}
+
 
 .ui-tabs .ui-tabs-panel {
     padding:5px !important;

@@ -9,7 +9,7 @@
       xmlns:components="http://xmlns.jcp.org/jsf/composite/components">
 <f:view>
     <h:head>
-        <title>Sınavlar</title>
+        <title>#{msg.lessons}</title>
     </h:head>
 <ui:decorate template="/WEB-INF/templates/master.xhtml">
     <ui:param name="title" value="#{msg.lessons}" />
@@ -18,13 +18,13 @@
 
             <p:outputPanel id="pageForm"/>
             <p:panelGrid columns="2" id="pagePanel" style="margin:10px auto 10px;">
-                <p:outputPanel style="width: 340px; margin:2px;">
+                <p:outputPanel style="width: 280px; margin:2px;">
                     <components:lessonsGroupGrid rows="100" scrollable="true" id="lessonsGroupGrid"
                                 update="@widgetVar(lessonsNameGridWidget) @widgetVar(answersSubjectGridWidget)"
                                 paginator="false" scrollHeight="250"
                                 widgetVar="lessonsGroupGridWidget"/>
                 </p:outputPanel>
-                <p:outputPanel style="width: 400px;margin:2px;">
+                <p:outputPanel style="width: 460px;margin:2px;">
                     <components:lessonsNameGrid rows="100" scrollable="true" editable="true"
                                                 paginator="false" scrollHeight="250"
                                                 widgetVar="lessonsNameGridWidget"/>

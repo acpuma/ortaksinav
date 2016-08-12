@@ -65,6 +65,9 @@ public class Settings extends BaseEntity implements Serializable {
     private Integer valueInt;
     private Double valueDouble;
     private Float valueFloat;
+    @Size(max = 255)
+    @Column(name = "default_value", length = 255)
+    private String defaultValue;
 
 
     public Settings() {
@@ -190,6 +193,14 @@ public class Settings extends BaseEntity implements Serializable {
 
     public void setSettingType(String settingType) {
         this.settingType = settingType;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 
     @Override

@@ -52,6 +52,14 @@ public class LessonsName extends BaseEntity implements Serializable {
     @Size(max = 255)
     @Column(name = "name_en", length = 255)
     private String nameEn;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
+    @Column(name = "shortname_tr", length = 255)
+    private String shortnameTr;
+    @Size(max = 255)
+    @Column(name = "shortname_en", length = 255)
+    private String shortnameEn;
     @Temporal(TemporalType.TIMESTAMP)
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
@@ -169,6 +177,22 @@ public class LessonsName extends BaseEntity implements Serializable {
 
     public void setLessonsCollection(Collection<Lessons> lessonsCollection) {
         this.lessonsCollection = lessonsCollection;
+    }
+
+    public String getShortnameTr() {
+        return shortnameTr;
+    }
+
+    public void setShortnameTr(String shortnameTr) {
+        this.shortnameTr = shortnameTr;
+    }
+
+    public String getShortnameEn() {
+        return shortnameEn;
+    }
+
+    public void setShortnameEn(String shortnameEn) {
+        this.shortnameEn = shortnameEn;
     }
 
     @Override

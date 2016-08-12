@@ -106,7 +106,7 @@
             <p:column headerText="#{msg.distribute_room}" width="20" sortBy="#{distributesVar.room}">
                 <h:outputText value="#{distributesVar.room}"/>
             </p:column>
-            <p:column headerText="#{msg.global_rank}" width="30">
+            <p:column headerText="#{msg.global_rank}" width="10">
                 <h:outputText value="#{distributesVar.roomRank}"/>
             </p:column>
             <p:column headerText="#{msg.global_name}" width="90" sortBy="#{distributesVar.name}">
@@ -115,15 +115,18 @@
             <p:column headerText="#{msg.global_surname}" width="90" sortBy="#{distributesVar.surname}">
                 <h:outputText value="#{distributesVar.surname}"/>
             </p:column>
-            <p:column headerText="#{msg.global_mernis_no}" width="80" sortBy="#{distributesVar.mernis}">
+            <p:column headerText="#{msg.global_mernis_no}" width="60" sortBy="#{distributesVar.mernis}">
                 <h:outputText value="#{distributesVar.mernis}"/>
             </p:column>
-            <p:column headerText="#{msg.students_school_no}" width="30" sortBy="#{distributesVar.schoolNo}"
+            <p:column headerText="OkulNo" width="30" sortBy="#{distributesVar.schoolNo}"
                 sortFunction="#{tools.sortIdByString}">
                 <h:outputText value="#{distributesVar.schoolNo}"/>
             </p:column>
             <p:column headerText="#{msg.class}" width="20" sortBy="#{distributesVar.className}">
                 <h:outputText value="#{distributesVar.className}"/>
+            </p:column>
+            <p:column headerText="Kit." width="15" sortBy="#{distributesVar.booklet}">
+                <h:outputText value="#{distributesVar.booklet}"/>
             </p:column>
             <p:column headerText="#{msg.school}" width="40" rendered="false"
                       >

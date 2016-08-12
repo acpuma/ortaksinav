@@ -7,9 +7,11 @@ import net.yazsoft.ors.entities.LessonsGroup;
 import net.yazsoft.ors.entities.Schedules;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.primefaces.component.schedule.Schedule;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -18,6 +20,9 @@ import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
 import javax.annotation.PostConstruct;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -44,10 +49,10 @@ public class ScheduleDao extends BaseGridDao<Schedules> implements Serializable{
         hour--;
 
         switch (hour) {
-            case 8: case 9: case 10 : lessonGroup=lessonGroups.get(0);break;
-            case 11: case 12: case 13 : lessonGroup=lessonGroups.get(1);break;
-            case 14: case 15: case 16 : lessonGroup=lessonGroups.get(2);break;
-            case 17: case 18: case 19 : lessonGroup=lessonGroups.get(3);break;
+            case 0: case 1: case 2 :case 3:case 4 :case 5 : lessonGroup=lessonGroups.get(0);break;
+            case 6: case 7: case 8 :case 9:case 10 :case 11 :lessonGroup=lessonGroups.get(1);break;
+            case 12: case 13: case 14 :case 15:case 16 :case 17 : lessonGroup=lessonGroups.get(2);break;
+            case 18: case 19: case 20 :case 21:case 22 :case 23 :case -1 : lessonGroup=lessonGroups.get(3);break;
         }
         log.info("GROUPS : " + lessonGroups);
         log.info("HOUR : " + hour + " , GROUP : " + lessonGroup);
@@ -157,6 +162,29 @@ public class ScheduleDao extends BaseGridDao<Schedules> implements Serializable{
         return list;
     }
 
+    public List<Schedules> findSchedulesByWeek(Date scheduleDay) {
+        List list=null;
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(scheduleDay);
+        calendar.set(Calendar.DAY_OF_WEEK,calendar.getFirstDayOfWeek());
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        Date startHour=calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_WEEK, 7);
+        Date endHour=calendar.getTime();
+        try {
+            Criteria c = getCriteria();
+            c.add(Restrictions.eq("active", true));
+            c.add(Restrictions.eq("refSchool",Util.getActiveSchool()));
+            c.add(Restrictions.between("startDate",startHour,endHour));
+            c.addOrder(Order.asc("startDate"));
+            list = c.list();
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return list;
+    }
+
 
     public void onEventSelect(SelectEvent e) {
         event = (ScheduleEvent) e.getObject();
@@ -174,6 +202,47 @@ public class ScheduleDao extends BaseGridDao<Schedules> implements Serializable{
         if (selected.getRefLessonGroup()!=null) {
             log.info("SELECTED GROUP : " + selected.getRefLessonGroup().getNameTr());
         }
+    }
+
+    public void onViewChange(SelectEvent e) {
+        //Date date = (Date) e.getObject();
+        log.info("VIEW EVENT : " + e);
+    }
+
+    public void nextPrevious(ActionEvent event){
+        String increment = (String) event.getComponent().getAttributes().get("increment");
+        int moveValue = increment.equals("next")?1:-1;
+        Calendar cal = Calendar.getInstance();
+        UIViewRoot view = FacesContext.getCurrentInstance().getViewRoot();
+        Schedule component = (Schedule)view.findComponent("pageForm:schedule");
+        cal.setTime((Date)component.getInitialDate());
+        cal.add(Calendar.WEEK_OF_MONTH, moveValue);
+        component.setInitialDate(cal.getTime());
+
+        for (int i=0; i<4; i++) {
+            lessonGroups.set(i,null);
+        }
+        List<Schedules> weekschedules=findSchedulesByWeek(cal.getTime());
+        for (Schedules sched:weekschedules) {
+            cal.setTime(sched.getStartDate());
+            int hour=cal.get(Calendar.HOUR_OF_DAY);
+            switch (hour) {
+                case 0: case 1: case 2 :case 3:case 4 :case 5 : lessonGroups.set(0,sched.getRefLessonGroup());break;
+                case 6: case 7: case 8 :case 9:case 10 :case 11 :lessonGroups.set(1,sched.getRefLessonGroup());break;
+                case 12: case 13: case 14 :case 15:case 16 :case 17 : lessonGroups.set(2,sched.getRefLessonGroup());break;
+                case 18: case 19: case 20 :case 21:case 22 :case 23 :case -1 : lessonGroups.set(3,sched.getRefLessonGroup());break;
+            }
+        }
+    }
+
+    public Date getNow() {
+        return Util.getNow();
+    }
+
+    public Date getScheduleDate() {
+        UIViewRoot view = FacesContext.getCurrentInstance().getViewRoot();
+        Schedule component = (Schedule)view.findComponent("pageForm:schedule");
+        return (Date)component.getInitialDate();
     }
 
     public ScheduleDao() {

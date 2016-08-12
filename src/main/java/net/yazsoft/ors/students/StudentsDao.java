@@ -80,8 +80,8 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
 
     public String update() {
         try {
-            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getUsername() + ":" + getItem().getPassword()+ ":"
-                    + ":" + getItem().getName() + ":" + getItem().getSurname() );
+            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getTid() + " : " + getItem().getUsername()
+                    + ":" + getItem().getName() + ":" + getItem().getSurname() + ":" +getItem().getRefSchoolClass() );
             if ( (getItem().getPassword() == null) || (getItem().getPassword().length()==0) ) {
                 String hql = "update Students u set username=:username,name=:name,surname=:surname," +
                         "phone=:phone,fullname=:fullname,schoolNo=:schoolno,refSchoolClass=:sclass," +
@@ -105,8 +105,8 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                 getItem().setPassword(encoder.encode(getItem().getPassword()));
                 super.update();
             }
-            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getUsername() + ":" + getItem().getPassword()+ ":"
-                    + ":" + getItem().getName() + ":" + getItem().getSurname() );
+            logger.info("LOG02680: STUDENT UPDATE : " + getItem().getTid() + " : " + getItem().getUsername()
+                    + ":" + getItem().getName() + ":" + getItem().getSurname() + ":" +getItem().getRefSchoolClass() );
         } catch (Exception e) {
             Util.catchException(e);
         }
@@ -456,7 +456,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         List list=null;
         try {
             Criteria c = getCriteria();
-            c.add(Restrictions.eq("ref_school_class", sclass));
+            c.add(Restrictions.eq("refSchoolClass", sclass));
             c.add(Restrictions.eq("active", true));
             //c.add(Restrictions.eq("isDeleted", false));
             list = c.list();

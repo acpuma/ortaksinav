@@ -16,9 +16,12 @@
     #{authsDao.findAuths("/admin/students")}
 <p:outputPanel styleClass="pageFormDiv clearfix" style="margin:0px; padding: 0px;float:left;width: 100%;" >
     <components:studentsGrid rows="100"  scrollable="true" id="studentsGrid" scrollHeight="460"
-                             widgetVar="studentsGridWidget"/>
+                             widgetVar="studentsGridWidget" update=":#{p:component('formPanel')}"/>
         <p:outputPanel style="text-align: right;">
-            <p:commandButton value="Dosyadan Al" process="@this"
+            <p:commandButton value="Foto Yukle" process="@this" icon="fa fa-photo"
+                             oncomplete="PF('uploadStudentPhotos').show()"
+            />
+            <p:commandButton value="Dosyadan Al" process="@this" icon="fa fa-file"
                              oncomplete="PF('fileDialogWidget').show()"
                        />
             <p:commandButton icon="toolbar-add toolbar-icon"
@@ -31,12 +34,50 @@
                              disabled="#{not authsDao.auths.padd}"
             >
             </p:commandButton>
+
+
         </p:outputPanel>
+
+    <p:dialog header="#{msg.upload_file}" modal="true"  widgetVar="uploadStudentPhotos"
+              onHide="PF('studentsGridWidget').filter();"
+              closeOnEscape="true" style="z-index: 1 !important; min-width: 600px; height :400px;" appendTo="@(body)" dynamic="false">
+    <p:outputPanel style="margin: auto;">
+        <h:form enctype="multipart/form-data" id="uploadStudentImages" >
+            #{uploadsBean.setImageType('student')}
+            #{uploadsBean.setImageHeight(256)}
+            #{uploadsBean.setImageWidth(256)}
+
+            <p:selectOneMenu value="#{uploadsBean.schoolClass}" required="true" requiredMessage="Sinif seciniz" converter="entityConverter"
+                    id="selectSchoolClass">
+                <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}"
+                              noSelectionOption="true" />
+                <f:selectItems value="#{studentsDao.schoolsClasses}" var="man"
+                               itemLabel="#{man.name}" itemValue="#{man}"/>
+                <p:ajax listener="#{uploadsBean.handleSchoolClassChange}"/>
+            </p:selectOneMenu>
+
+            <p:fileUpload fileUploadListener="#{uploadsBean.handleStudentImages}"
+                          mode="advanced"
+                          multiple="true"
+                          allowTypes="/(\.|\/)(jpg|JPG|jpeg|JPEG|png|PNG)$/"
+                          update=" :messages"
+                          fileLimit="20000"
+                          label="#{msg.upload_select_file}"
+                          uploadLabel="#{msg.upload}"
+                          cancelLabel="#{msg.global_cancel}"
+                          process="uploadStudentImages"
+                          sequential="true"
+            />
+        </h:form>
+    </p:outputPanel>
+    </p:dialog>
+
 
     <p:dialog id="gridDialog" header="#{msg.student}" widgetVar="formDialogWidget"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
+        <p:outputPanel id="formPanel">
+        <components:inputUploadImage widgetVar="uploadPhotoWidget" imageType="student" daobean="#{studentsDao}"/>
         <h:form id="pageForm">
-            <components:inputUploadImage widgetVar="uploadPhotoWidget" imageType="student" daobean="#{studentsDao}"/>
             <p:panelGrid columns="4" id="pagePanel">
                 <p:outputLabel value="#{msg.username}" for="username" />
                 <p:inputText id="username" value="#{studentsDao.item.username}" title="username" required="true"/>
@@ -44,7 +85,8 @@
                 <p:password id="password" value="#{studentsDao.item.password}" title="Password" />
 
                 <p:outputLabel value="#{msg.class}:" for="refSchoolClass" />
-                <p:selectOneMenu value="#{studentsDao.item.refSchoolClass}"  rendered="true" id="refSchoolClass">
+                <p:selectOneMenu value="#{studentsDao.item.refSchoolClass}"  rendered="true" id="refSchoolClass"
+                                 converter="entityConverter">
                     <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}"
                                   noSelectionOption="true" />
                     <f:selectItems value="#{studentsDao.schoolsClasses}" var="man"
@@ -77,6 +119,7 @@
                                 print="false" search="false" new="false"
                                 oncomplete="PF('formDialogWidget').hide(); PF('studentsGridWidget').filter();"/>
         </h:form>
+        </p:outputPanel>
 
     </p:dialog>
 

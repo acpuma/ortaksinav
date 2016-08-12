@@ -222,8 +222,14 @@
                 <p:selectBooleanCheckbox itemLabel="Kelebek" style="padding:0 5px;"
                                          value="#{distributeDao.bButterfly}" rendered="true"/>
 
+                <p:selectOneMenu id="bookletCount" value="#{distributeDao.bookletType}" title="bookletType"
+                                 style="top:8px;"
+                                 required="true" requiredMessage="bookletType alanini seciniz">
+                    <f:selectItems value="#{examsBookletTypeDao.all}" var="man"
+                                   itemLabel="#{man.name}" itemValue="#{man}"/>
+                </p:selectOneMenu>
                 <p:commandButton icon="ui-icon-arrow-4-diag" id="distributeButton" widgetVar="distributeButtonWidget"
-                                 styleClass="toolbar-button" style="padding:1px 5px;"
+                                 styleClass="toolbar-button" style="padding:1px 5px; width: 95px; margin:3px;"
                                  value="#{msg.distribute}"
                                  update="@widgetVar(distributesGridWidget) :messages"
                                  actionListener="#{distributeDao.distribute()}"

@@ -18,8 +18,18 @@
                        style="margin:0px; padding: 0px;float:left;width: 100%;overflow: scroll;">
             <h:form id="pageForm">
                 <p:panelGrid columns="2" layout="grid" columnClasses="scheduleLevels,scheduleCalendar">
-                    <p:outputPanel>
-                        <p:outputPanel style="height: 90px;"></p:outputPanel>
+                    <p:outputPanel id="levelPanel">
+                        <p:outputPanel style="height: 30px; margin: 0 5px 2px;">
+                            <p:commandButton  update="schedule levelPanel" icon="fa fa-arrow-left" style="height:30px;"
+                                           actionListener="#{scheduleDao.nextPrevious}" process="@this">
+                                <f:attribute name="increment" value="previous"/>
+                            </p:commandButton>
+                            <p:commandButton update="schedule levelPanel" icon="fa fa-arrow-right" style="height:30px;"
+                                           actionListener="#{scheduleDao.nextPrevious}" process="@this">
+                                <f:attribute name="increment" value="next"/>
+                            </p:commandButton>
+
+                        </p:outputPanel>
                         <ui:repeat value="#{scheduleDao.lessonGroups}" var="lessonGroup" varStatus="index">
                             <p:outputPanel styleClass="scheduleLevel">
                                 <p:selectOneMenu value="#{scheduleDao.lessonGroups[index.index]}"
@@ -35,13 +45,15 @@
 
                     </p:outputPanel>
 
-                    <p:outputPanel style="height: 410px;">
+                    <p:outputPanel style="height: 740px;">
+
                         <p:schedule id="schedule" value="#{scheduleDao.eventModel}" widgetVar="myschedule"
-                                     style="margin:10px;" locale="tr" timeZone="GMT+2"
-                                    firstHour="8" view="agendaWeek"  allDaySlot="false" showWeekends="true"
+                                     style="margin:2px;" locale="tr" timeZone="GMT+2"
+                                    firstHour="0" view="agendaWeek"  allDaySlot="false" showWeekends="true"
                                      draggable="false" resizable="false" slotDuration="00:60:00"
-                                    minTime="08:00:00" maxTime="20:00:00"
-                                    rightHeaderTemplate="month,agendaWeek"
+                                    minTime="00:00:00" maxTime="24:00:00"
+                                    rightHeaderTemplate="month,agendaWeek" initialDate="#{scheduleDao.now}"
+                                    showHeader="false"
                         >
 
                             <p:ajax event="dateSelect" listener="#{scheduleDao.onDateSelect}" update="pageForm:eventDetails"
@@ -52,6 +64,7 @@
                             />
                             <p:ajax event="eventMove" listener="#{scheduleDao.onEventMove}" update="messages"/>
                             <p:ajax event="eventResize" listener="#{scheduleDao.onEventResize}" update="messages"/>
+                            <p:ajax event="viewChange" listener="#{scheduleDao.onViewChange}" update="messages"/>
 
                         </p:schedule>
                     </p:outputPanel>
@@ -83,12 +96,12 @@
         </p:outputPanel>
 
         <h:outputScript>
-
-
+            /*
             $(function () {
                 $(".wrapmenu").toggleClass('menuhide');
                 $(".wrapcontent").toggleClass('contentfull');
             });
+             */
 
             PrimeFaces.locales['tr'] = {
                 closeText: 'kapat',
@@ -122,7 +135,7 @@
             }
 
             .scheduleLevels {
-                width: 100px;
+                width: 120px;
                 padding: 2px !important;
             }
 
@@ -131,17 +144,20 @@
             }
 
             .scheduleLevel {
-                height: 80px;
+                height: 160px;
                 vertical-align: middle;
                 /*border: 1px solid;*/
             }
 
             .schedule {
-                height: 410px;
+                height: 710px;
             }
 
             .fc-time-grid-container {
-                height: 325px !important;
+                height: 650px !important;
+            }
+            .fc-toolbar {
+                margin-bottom: 4px;
             }
         </h:outputStylesheet>
     </ui:decorate>

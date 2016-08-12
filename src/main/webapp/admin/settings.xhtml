@@ -21,12 +21,17 @@
                         <ui:repeat value="#{settingsDao.settings}" var="setting">
                             <p:panelGrid columns="2" id="pagePanel" >
                                 <h:outputLabel value="#{setting.titleTr}" />
-                                <p:inputText value="#{setting.valueStr}"  rendered="#{setting.settingType eq 'string'}" />
-                                <p:inputText value="#{setting.valueInt}" rendered="#{setting.settingType eq 'int'}" />
-                                <p:inputText value="#{setting.valueFloat}" rendered="#{setting.settingType eq 'float'}"/>
-                                <p:inputText value="#{setting.valueDouble}" rendered="#{setting.settingType eq 'double'}"/>
+                                <p:inputText value="#{setting.valueStr}"  rendered="#{setting.settingType eq 'string'}"
+                                             title="#{setting.defaultValue}" />
+                                <p:inputText value="#{setting.valueInt}" rendered="#{setting.settingType eq 'int'}"
+                                             title="#{setting.defaultValue}" />
+                                <p:inputText value="#{setting.valueFloat}" rendered="#{setting.settingType eq 'float'}"
+                                             title="#{setting.defaultValue}" />
+                                <p:inputText value="#{setting.valueDouble}" rendered="#{setting.settingType eq 'double'}"
+                                             title="#{setting.defaultValue}" />
                                 <p:selectBooleanButton value="#{setting.valueBool}" rendered="#{setting.settingType eq 'boolean'}"
-                                                       offLabel="#{msg.global_no}" onLabel="#{msg.global_yes}"/>
+                                                       offLabel="#{msg.global_no}" onLabel="#{msg.global_yes}"
+                                                       title="#{setting.defaultValue}" />
                             </p:panelGrid>
                         </ui:repeat>
                         <h:inputHidden id="tid" value="#{settingsDao.item.tid}"/>

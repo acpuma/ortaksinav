@@ -96,10 +96,18 @@
             <p:column headerText="#{msg.global_id}" width="20" rendered="true"  > #{lessonsNameGrid.tid}  </p:column>
 
 
-            <p:column headerText="#{msg.global_name}" width="220" filterBy="#{lessonsNameGrid.nameTr}">
+            <p:column headerText="#{msg.global_name}" width="160" filterBy="#{lessonsNameGrid.nameTr}">
                 <p:cellEditor>
                     <f:facet name="output"><p:outputLabel value="#{lessonsNameGrid.nameTr}" /></f:facet>
                     <f:facet name="input"><p:inputText value="#{lessonsNameGrid.nameTr}"
+                                                       style="width:100%"/></f:facet>
+                </p:cellEditor>
+            </p:column>
+
+            <p:column headerText="#{msg.global_shortname}" width="100" filterBy="#{lessonsNameGrid.shortnameTr}">
+                <p:cellEditor>
+                    <f:facet name="output"><p:outputLabel value="#{lessonsNameGrid.shortnameTr}" /></f:facet>
+                    <f:facet name="input"><p:inputText value="#{lessonsNameGrid.shortnameTr}"
                                                        style="width:100%"/></f:facet>
                 </p:cellEditor>
             </p:column>
@@ -107,17 +115,17 @@
                       filterBy="#{lessonsNameGrid.refLessonGroup.tid}">
                 #{lessonsNameGrid.refLessonGroup.tid}
             </p:column>
-
-            <p:column width="100%" >
+            <p:column width="20" >
                 <p:rowEditor rendered="#{authsDao.auths.pupdate}"/>
             </p:column>
+
             <p:column width="40">
                 <p:commandButton value="" update=" :messages lessonsNameGrid"
                                  icon="ui-icon-trash"
                                  style="height: 36px; width: 36px;"
                                  actionListener="#{lessonsGroupDao.deleteLessonName(lessonsNameGrid)}"
                                  disabled="#{not authsDao.auths.pdelete}"
-                        >
+                >
                 </p:commandButton>
             </p:column>
 

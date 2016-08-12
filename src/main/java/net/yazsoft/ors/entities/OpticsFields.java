@@ -41,6 +41,8 @@ public class OpticsFields extends BaseEntity implements Serializable {
     @Column(length = 2000)
     private String value2;
 
+    private int rank;
+
     @JoinColumn(name = "ref_optic", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Optics refOptic;
@@ -153,6 +155,14 @@ public class OpticsFields extends BaseEntity implements Serializable {
 
     public void setValue2(String value2) {
         this.value2 = value2;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     @Override

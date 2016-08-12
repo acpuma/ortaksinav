@@ -13,12 +13,14 @@ import net.yazsoft.ors.students.StudentsDao;
 import net.yazsoft.ors.weblinks.WebLinksDao;
 import net.yazsoft.ors.webslides.WebSlidesDao;
 import org.apache.log4j.Logger;
+import org.primefaces.component.selectonemenu.SelectOneMenu;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
@@ -28,6 +30,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.List;
 
 @Named
 @ViewScoped
@@ -56,6 +59,8 @@ public class UploadsBean extends BaseDao implements Serializable{
     String imageType;
     Integer imageWidth;
     Integer imageHeight;
+    SchoolsClass schoolClass;
+    Students student;
 
     @Inject UploadsDao uploadsDao;
     @Inject UploadsTypeDao uploadsTypeDao;
@@ -76,6 +81,38 @@ public class UploadsBean extends BaseDao implements Serializable{
         fileType=FILE;
     }
 
+
+    public void handleSchoolClassChange() {
+        logger.info("School Class : " +schoolClass);
+    }
+
+    @Transactional
+    public void handleStudentImages(FileUploadEvent event) {
+        try {
+            logger.info("SCHOOL CLASs : " + schoolClass);
+            if (schoolClass==null) {
+                throw new Exception("Sinif seciniz");
+            }
+            String filename=event.getFile().getFileName();
+
+            logger.info("Stdunet Filename : " + filename);
+            Integer schoolNo=Integer.valueOf(filename.substring(0,filename.lastIndexOf(".")).toLowerCase());
+            logger.info("STUDENT NO : " + schoolNo);
+            List<Students> studentsList=studentsDao.findBySchoolClass(schoolClass);
+            logger.info("STUDENTS LIST : " + studentsList);
+            for (Students tempStudent:studentsList) {
+                if (tempStudent.getSchoolNo().equals(schoolNo)) {
+                    student=tempStudent;
+                }
+            }
+            logger.info("STUDENT : " + student );
+            handleImageUpload(event);
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
+
+
     @Transactional
     public void handleImageUpload(FileUploadEvent event) {
         logger.info("UPLOADING IMAGE.......");
@@ -84,7 +121,13 @@ public class UploadsBean extends BaseDao implements Serializable{
         switch (imageType){
             case IMAGE_SCHOOL: tid=schoolsDao.getItem().getTid();break;
             case IMAGE_USER: tid=usersDao.getItem().getTid();break;
-            case IMAGE_STUDENT: tid=studentsDao.getItem().getTid();break;
+            case IMAGE_STUDENT:
+                if (student!=null) {
+                    tid=student.getTid();
+                } else {
+                    tid = studentsDao.getItem().getTid();
+                }
+                break;
             case IMAGE_SLIDE: tid=webSlidesDao.getItem().getTid();break;
             case IMAGE_PRODUCT: tid=productsDao.getItem().getTid();break;
             case IMAGE_WEBLINK: tid=webLinksDao.getItem().getTid();break;
@@ -94,7 +137,9 @@ public class UploadsBean extends BaseDao implements Serializable{
         try {
             getUploadDirectory(null);
             String filenameOriginal=event.getFile().getFileName();
+
             String extension=UploadsDao.getFileExtension(filenameOriginal);
+
 
             InputStream inputStream;
             inputStream = event.getFile().getInputstream();
@@ -158,7 +203,14 @@ public class UploadsBean extends BaseDao implements Serializable{
                 case (IMAGE_SCHOOL) :
                     schoolsDao.getItem().setRefImage(image); schoolsDao.update();break;
                 case (IMAGE_STUDENT) :
-                    studentsDao.getItem().setRefImage(image); studentsDao.update();break;
+                    if (student==null) {
+                        studentsDao.getItem().setRefImage(image);
+                        studentsDao.update();
+                    } else {
+                        student.setRefImage(image);
+                        studentsDao.update(student);
+                    }
+                    break;
                 case (IMAGE_SLIDE) :
                     webSlidesDao.getItem().setRefImage(image); webSlidesDao.update();break;
                 case (IMAGE_PRODUCT) :
@@ -305,9 +357,9 @@ public class UploadsBean extends BaseDao implements Serializable{
             Util.createDirectory("images");
             Util.createDirectory("images/"+imageType);
             dirName="/images/"+imageType;
-            /*if (imageType.equals("student")) {
+            if (imageType.equals("student")) {
                 dirName="/images/"+imageType+"/"+Util.getActiveSchool().getTid()+"/";
-            }*/
+            }
             /*
             switch (imageType) {
                 case (IMAGE_SCHOOL) :
@@ -485,6 +537,14 @@ public class UploadsBean extends BaseDao implements Serializable{
 
     public void setImageHeight(Integer imageHeight) {
         this.imageHeight = imageHeight;
+    }
+
+    public SchoolsClass getSchoolClass() {
+        return schoolClass;
+    }
+
+    public void setSchoolClass(SchoolsClass schoolClass) {
+        this.schoolClass = schoolClass;
     }
 }
 

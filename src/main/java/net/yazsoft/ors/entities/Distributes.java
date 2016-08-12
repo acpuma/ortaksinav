@@ -52,6 +52,7 @@ public class Distributes extends BaseEntity implements Serializable {
     private String lesson2;
     private String lesson3;
     private String lesson4;
+    private String booklet;
 
 
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
@@ -224,6 +225,14 @@ public class Distributes extends BaseEntity implements Serializable {
 
     public void setRefDistributeName(DistributesNames refDistributeName) {
         this.refDistributeName = refDistributeName;
+    }
+
+    public String getBooklet() {
+        return booklet;
+    }
+
+    public void setBooklet(String booklet) {
+        this.booklet = booklet;
     }
 
     @Override

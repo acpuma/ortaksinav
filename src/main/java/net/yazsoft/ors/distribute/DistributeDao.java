@@ -4,23 +4,19 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
-import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
+import net.yazsoft.ors.exams.ExamsBookletTypeDao;
 import net.yazsoft.ors.schools.SchoolsClassDao;
 import net.yazsoft.ors.schools.SchoolsClassDto;
 import org.apache.commons.beanutils.BeanComparator;
-import org.apache.commons.collections.comparators.ComparatorChain;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
-import sun.rmi.log.LogInputStream;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -43,6 +39,7 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
     DistributesNames distributeName;
     String distributeNameInput;
     String distributeType;
+    ExamsBookletType bookletType;
 
     List<SchoolsClassDto> studentsClasses=null;
     List<SchoolsClassType> studentsClassTypes=null;
@@ -57,9 +54,11 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
     int previousDistTypeClassNo=0;
 
     int selectedStudentsCount,selectedRoomsCapacity;
+    int currentBooklet =0;
 
     @Inject SchoolsClassDao schoolsClassDao;
     @Inject Report report;
+    @Inject ExamsBookletTypeDao examsBookletTypeDao;
 
     @PostConstruct
     public void init() {
@@ -113,6 +112,7 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
 
     public List<Distributes> findDistributes() {
         List list=null;
+        if (distributeName==null) return null;
         log.info("LOG03130: DISTRIBUTE NAME : " + distributeName.getName());
         try {
             Criteria c = getCriteria();
@@ -120,9 +120,7 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
             c.add(Restrictions.eq("refDistributeName", distributeName));
             list=c.list();
         } catch (Exception e) {
-            log.error("LOG03090:",e);
-            Util.setFacesMessage(e.getMessage());
-            e.printStackTrace();
+            Util.catchException(e);
         }
         return list;
     }
@@ -454,13 +452,14 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
 
             log.info("DISTRIBUTE TYOE : " + distributeType);
             if ((distributeType!=null) && (!distributeType.equals("")) && (!distributeType.equals("y")) ) {
-
                 findOrderedStudents();
             }
 
+            List<ExamsBookletType> bookletTypes = examsBookletTypeDao.findUntilBookletType(bookletType);
 
             for (SchoolsClassDto cdto:distributeClasses) {
                 log.info("LOG03060: DISTRIBUTE  ROOM : " + cdto.getName());
+                currentBooklet=0;
                 for (int i=0; i<cdto.getCapacity(); i++) {
                     distribute = new Distributes();
                     distribute.setRefSchool(Util.getActiveSchool());
@@ -485,6 +484,11 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                         distribute.setClassName(student.getRefSchoolClass().getName());
                         distribute.setMernis(student.getMernis());
                         distribute.setSchoolNo(String.valueOf(student.getSchoolNo()) );
+                        distribute.setBooklet(bookletTypes.get(currentBooklet).getName());
+                        currentBooklet++;
+                        if (currentBooklet>=bookletTypes.size()) {
+                            currentBooklet=0;
+                        }
                         distributes.add(distribute);
                     }
                 }
@@ -670,4 +674,11 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
         this.distributeType = distributeType;
     }
 
+    public ExamsBookletType getBookletType() {
+        return bookletType;
+    }
+
+    public void setBookletType(ExamsBookletType bookletType) {
+        this.bookletType = bookletType;
+    }
 }

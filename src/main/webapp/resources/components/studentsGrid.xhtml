@@ -95,6 +95,12 @@
             <p:column headerText="#{msg.school}" width="120" rendered="false" >
                 #{studentsVar.refSchool.name}
             </p:column>
+
+            <p:column headerText="Foto" width="45" rendered="true">
+                <p:graphicImage style="max-height:50px; max-width: 50px;" cache="false" rendered="#{not empty studentsVar.refImage}"
+                            value="/images/student/#{sessionInfo.school.tid}/#{studentsVar.tid}.#{studentsVar.refImage.extension}"
+            />
+            </p:column>
             <p:column headerText="#{msg.class}" width="50"
                       filterBy="#{studentsVar.refSchoolClass}"
                       sortBy="#{studentsVar.refSchoolClass.name}">

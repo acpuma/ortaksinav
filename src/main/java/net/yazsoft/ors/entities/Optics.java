@@ -46,6 +46,8 @@ public class Optics extends BaseEntity implements Serializable {
     @Column(nullable = false, length = 255)
     private String fontname;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date scheduleDate;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY,orphanRemoval = true)
     private Collection<OpticsFields> opticsFieldsCollection;
@@ -56,6 +58,10 @@ public class Optics extends BaseEntity implements Serializable {
     @JoinColumn(name = "ref_school", referencedColumnName = "tid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
+
+    @JoinColumn(name = "ref_distribute_name", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DistributesNames refDistributeName;
 
     public Optics() {
     }
@@ -178,6 +184,22 @@ public class Optics extends BaseEntity implements Serializable {
 
     public void setFontname(String fontname) {
         this.fontname = fontname;
+    }
+
+    public Date getScheduleDate() {
+        return scheduleDate;
+    }
+
+    public void setScheduleDate(Date scheduleDate) {
+        this.scheduleDate = scheduleDate;
+    }
+
+    public DistributesNames getRefDistributeName() {
+        return refDistributeName;
+    }
+
+    public void setRefDistributeName(DistributesNames refDistributeName) {
+        this.refDistributeName = refDistributeName;
     }
 
     @Override

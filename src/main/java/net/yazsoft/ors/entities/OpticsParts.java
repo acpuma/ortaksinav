@@ -33,7 +33,7 @@ public class OpticsParts extends BaseEntity implements Serializable {
     private Date updated;
 
     private Integer rank;
-    private int x,y,w,h;
+    private float x,y,w,h;
     private boolean horizontal;
     private boolean print;
     private boolean printTitle;
@@ -114,35 +114,35 @@ public class OpticsParts extends BaseEntity implements Serializable {
         this.rank = rank;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(float x) {
         this.x = x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(float y) {
         this.y = y;
     }
 
-    public int getW() {
+    public float getW() {
         return w;
     }
 
-    public void setW(int w) {
+    public void setW(float w) {
         this.w = w;
     }
 
-    public int getH() {
+    public float getH() {
         return h;
     }
 
-    public void setH(int h) {
+    public void setH(float h) {
         this.h = h;
     }
 

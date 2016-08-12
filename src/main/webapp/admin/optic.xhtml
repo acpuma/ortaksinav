@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -50,30 +49,33 @@
         <p:outputPanel style="width: 510px; float: left; margin:5px;">
             <p:tabView >
                 <p:tab title="Metin"  >
-                    <p:dataList value="#{opticDao.fields}" var="field" paginator="false" type="none" id="listText" style="padding: 10px;">
-                            <p:selectOneMenu value="#{field.refFieldType}" style="width: 80px;" styleClass="fieldsTypes"
-                                             converter="entityConverter" rendered="true">
-                                <p:ajax update="listText" />
-                                <f:selectItems value="#{opticFieldsTypeDao.items}" var="fieldType"
-                                               itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
-                            </p:selectOneMenu>
-                            <h:inputText value="#{field.topy}" size="4" styleClass="fieldsTypes"/>
-                            <h:inputText value="#{field.leftx}" size="4" styleClass="fieldsTypes"/>
-                            <h:inputText value="#{field.fontsize}" size="3" styleClass="fieldsTypes"/>
-                            <p:selectBooleanCheckbox value="#{field.active}" style="margin:0 5px;" />
-                            <p:commandLink styleClass="ui-button fa fa-remove" process="listText"
-                                             update="listText :messages " style="margin: auto 10px;"
-                                             action="#{opticDao.deleteField(field)}"
-                            />
+                    <p:dataList value="#{opticDao.fields}" var="field" paginator="false" type="none" id="listText"
+                                style="padding: 10px;" rendered="true">
+                        <h:inputText value="#{field.rank}" size="2" styleClass="fieldsTypes" />
+                        <p:selectOneMenu value="#{field.refFieldType}" style="width: 80px;" styleClass="fieldsTypes"
+                                         converter="entityConverter" rendered="true">
+                            <p:ajax update="listText" />
+                            <f:selectItems value="#{opticFieldsTypeDao.items}" var="fieldType"
+                                           itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
+                        </p:selectOneMenu>
+                        <h:inputText value="#{field.topy}" size="4" styleClass="fieldsTypes"/>
+                        <h:inputText value="#{field.leftx}" size="4" styleClass="fieldsTypes"/>
+                        <h:inputText value="#{field.fontsize}" size="3" styleClass="fieldsTypes"/>
+                        <p:selectBooleanCheckbox value="#{field.active}" style="margin:0 5px;" />
+                        <p:commandLink styleClass="ui-button fa fa-remove" process="listText"
+                                       update="listText :messages " style="margin: auto 10px;"
+                                       action="#{opticDao.deleteField(field)}"
+                        />
                         <h:inputText value="#{field.value1}" size="10" styleClass="fieldsTypes" rendered="#{opticDao.showValue1(field)}"/>
                         <h:inputText value="#{field.value2}" size="10" styleClass="fieldsTypes" rendered="#{opticDao.showValue2(field)}"/>
 
                         <br/>
                     </p:dataList>
                     <p:commandButton value="Ekle" icon="fa fa-plus" process="@this"
-                                   update="listText :messages " style="margin: auto 10px;"
-                                   action="#{opticDao.addField()}"
+                                     update="listText :messages " style="margin: auto 10px;"
+                                     action="#{opticDao.addField()}"
                     />
+
                 </p:tab>
                 <p:tab title="Kod">
                     <p:dataList value="#{opticDao.partsDtos}" var="part" paginator="false" type="none">
@@ -83,9 +85,10 @@
                             <f:selectItems value="#{opticFieldsTypeDao.items}" var="fieldType"
                                            itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
                         </p:selectOneMenu>
-                        <h:inputText value="#{part.y}" size="2" styleClass="fieldsTypes"/>
-                        <h:inputText value="#{part.x}" size="2" styleClass="fieldsTypes"/>
-                        <h:inputText value="#{part.title}" size="6" styleClass="fieldsTypes" readonly="true"/>
+                        <h:inputText value="#{part.y}" size="5" styleClass="fieldsTypes"/>
+                        <h:inputText value="#{part.x}" size="5" styleClass="fieldsTypes"/>
+                        <h:inputText value="#{part.title}" size="15" styleClass="fieldsTypes" readonly="true"/>
+                        <p:selectBooleanCheckbox value="#{part.horizontal}" />
                         <p:selectBooleanCheckbox value="#{part.print}" />
                         <p:selectBooleanCheckbox value="#{part.printTitle}" />
 
@@ -106,13 +109,14 @@
                             <p:inputText value="#{opticDao.item.marginy}" size="4" styleClass="fieldsTypes" id="marginy"/>
 
                             <p:outputLabel for="scheduleDate" value="Takvim Tarihi" />
-                            <p:calendar id="scheduleDate" value="#{opticDao.scheduleDate}" timeZone="GMT+2" pattern="dd/MM/yyyy"
+                            <p:calendar id="scheduleDate" value="#{opticDao.item.scheduleDate}" timeZone="GMT+2" pattern="dd/MM/yyyy"
                                 locale="tr" navigator="true" required="true" requiredMessage="Takvim tarihi seçiniz"/>
 
                             <p:outputLabel for="schoolDistributes" value="Dağıtım Listesi" />
-                            <p:selectOneMenu value="#{distributeDao.distributeName}" id="schoolDistributes" converter="entityConverter"
+                            <p:selectOneMenu value="#{opticDao.item.refDistributeName}" id="schoolDistributes"
+                                             converter="entityConverter" style="width:180px;"
                                              required="true" requiredMessage="Dağıtım Listesi seçiniz">
-                                <p:ajax listener="#{distributeDao.distributeChanged}" update="distcount"/>
+                                <p:ajax listener="#{opticDao.distributeChanged}" update="distcount"/>
                                 <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{distributeDao.distributesNames}" var="man"
                                                itemLabel="#{man.created} #{man.no} #{man.name} " itemValue="#{man}" />

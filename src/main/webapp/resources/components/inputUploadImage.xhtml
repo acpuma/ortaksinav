@@ -32,9 +32,12 @@
                    style="text-align: center">
         <p:outputLabel value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
                        rendered="false"/>
-        <p:graphicImage height="150"  style="height:150px; " cache="false"
+        <p:graphicImage height="150"  style="height:150px; " cache="false" rendered="#{cc.attrs.imageType ne 'student'}"
                         value="/images/#{cc.attrs.imageType}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
                 />
+        <p:graphicImage height="150"  style="height:150px; " cache="false" rendered="#{cc.attrs.imageType eq 'student'}"
+                        value="/images/#{cc.attrs.imageType}/#{sessionInfo.school.tid}/#{daobeann.item.tid}.#{daobeann.item.refImage.extension}"
+        />
     </p:outputPanel>
     <p:outputPanel id="uploadPhotoPanel"  style="margin:0 auto 10px; text-align: center;">
         <p:commandButton styleClass="module-button module-edit " value="#{msg.upload_logo}" rendered="#{not empty daobeann.item.tid}"
@@ -54,7 +57,7 @@
                 #{uploadsBean.setImageWidth(cc.attrs.imageWidth)}
                 <p:fileUpload fileUploadListener="#{uploadsBean.handleImageUpload}"
                               mode="advanced"
-                              multiple="false"
+                              multiple="#{cc.attrs.multiple}"
                               allowTypes="/(\.|\/)(jpg|JPG|jpeg|JPEG|png|PNG)$/"
                               oncomplete="#{cc.attrs.oncomplete}; PF('uploadPhotoWidget_#{cc.id}').hide();"
                               update="#{cc.attrs.update} @composite:imageLogo  :messages"
