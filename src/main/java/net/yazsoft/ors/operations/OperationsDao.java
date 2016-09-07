@@ -1,14 +1,11 @@
 package net.yazsoft.ors.operations;
 
-import com.sun.faces.util.CollectionsUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.upload.UploadsBean;
 import net.yazsoft.frame.upload.UploadsDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.answers.AnswersDao;
-import net.yazsoft.ors.answers.AnswersDto;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.examsParameters.ExamsParametersDao;
 import net.yazsoft.ors.examsParameters.ExamsParametersDto;
@@ -21,15 +18,12 @@ import net.yazsoft.ors.schools.SchoolsClassDao;
 import net.yazsoft.ors.schools.SchoolsClassDto;
 import net.yazsoft.ors.students.*;
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.file.Files;

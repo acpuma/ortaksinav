@@ -48,13 +48,21 @@
             #{uploadsBean.setImageWidth(256)}
 
             <p:selectOneMenu value="#{uploadsBean.schoolClass}" required="true" requiredMessage="Sinif seciniz" converter="entityConverter"
-                    id="selectSchoolClass">
+                    id="selectSchoolClass" >
                 <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}"
                               noSelectionOption="true" />
                 <f:selectItems value="#{studentsDao.schoolsClasses}" var="man"
                                itemLabel="#{man.name}" itemValue="#{man}"/>
-                <p:ajax listener="#{uploadsBean.handleSchoolClassChange}"/>
+                <p:ajax listener="#{uploadsBean.handleSchoolClassChange}" update="uploadStudentImages" />
             </p:selectOneMenu>
+
+            <p:commandButton value="Sınıf Fotolarını Sil" update=":messages" style="margin:0 10px; top:-7px;"
+                             icon="fa fa-trash"
+                             disabled="#{not authsDao.auths.pdelete or empty uploadsBean.schoolClass}"
+                             process="uploadStudentImages selectSchoolClass"
+                             action="#{uploadsBean.deleteClassStudentsImages()}"
+            >
+            </p:commandButton>
 
             <p:fileUpload fileUploadListener="#{uploadsBean.handleStudentImages}"
                           mode="advanced"
@@ -76,7 +84,8 @@
     <p:dialog id="gridDialog" header="#{msg.student}" widgetVar="formDialogWidget"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)"  >
         <p:outputPanel id="formPanel">
-        <components:inputUploadImage widgetVar="uploadPhotoWidget" imageType="student" daobean="#{studentsDao}"/>
+        <components:inputUploadImage widgetVar="uploadPhotoWidget" imageType="student"
+                                     daobean="#{studentsDao}" showDelete="true"/>
         <h:form id="pageForm">
             <p:panelGrid columns="4" id="pagePanel">
                 <p:outputLabel value="#{msg.username}" for="username" />

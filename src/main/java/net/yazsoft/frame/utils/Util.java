@@ -458,4 +458,30 @@ public class Util implements Serializable{
 
         return calendar.getTime();
     }
+
+
+    /**
+     * Finds a classname and its level
+     * @param classname classname to divide into level and branch
+     * @param level true:returns level and false: returns branch
+     * @return
+     */
+    public static String findClassLevelAndBranch(String classname,boolean level){
+        String sbc = "";
+
+        for (char c:classname.toCharArray()) {
+            //logger.info("LEVEL : " + level + "CHARACTER : " + c);
+            if (level) {
+                if (Character.isDigit(c)) {
+                    sbc=sbc.concat(String.valueOf(c));
+                }
+            } else {
+                if (Character.isAlphabetic(c)) {
+                    sbc=sbc.concat(String.valueOf(c));
+                }
+            }
+        }
+        //logger.info("CLASSNAME : " + classname + " SBC : " + sbc);
+        return sbc;
+    }
 }

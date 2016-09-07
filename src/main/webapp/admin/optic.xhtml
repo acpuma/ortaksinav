@@ -49,6 +49,17 @@
         <p:outputPanel style="width: 510px; float: left; margin:5px;">
             <p:tabView >
                 <p:tab title="Metin"  >
+                    <p:panelGrid columns="9" layout="grid" style="font-size: 13px;">
+                        <p:outputPanel style="width: 8px;">Sıra</p:outputPanel>
+                        <p:outputPanel style="width: 96px;">Tur</p:outputPanel>
+                        <p:outputPanel style="width: 16px;">Y</p:outputPanel>
+                        <p:outputPanel style="width: 16px;">X</p:outputPanel>
+                        <p:outputPanel style="width: 16px;">Font</p:outputPanel>
+                        <p:outputPanel style="width: 6px;font-size: 11px;">Yaz.</p:outputPanel>
+                        <p:outputPanel style="width: 6px;font-size: 11px;">Sil</p:outputPanel>
+                        <p:outputPanel style="width: 70px;font-size: 11px;">Alan 1</p:outputPanel>
+                        <p:outputPanel style="width: 50px;font-size: 11px;">Alan 2</p:outputPanel>
+                    </p:panelGrid>
                     <p:dataList value="#{opticDao.fields}" var="field" paginator="false" type="none" id="listText"
                                 style="padding: 10px;" rendered="true">
                         <h:inputText value="#{field.rank}" size="2" styleClass="fieldsTypes" />
@@ -78,9 +89,18 @@
 
                 </p:tab>
                 <p:tab title="Kod">
+                    <p:panelGrid columns="7" layout="grid" style="font-size: 13px;">
+                    <p:outputPanel style="width: 96px;">Tur</p:outputPanel>
+                    <p:outputPanel style="width: 28px;">Y</p:outputPanel>
+                    <p:outputPanel style="width: 28px;">X</p:outputPanel>
+                    <p:outputPanel style="width: 80px;">Ad</p:outputPanel>
+                    <p:outputPanel style="width: 4px;font-size: 11px;">Dik.</p:outputPanel>
+                    <p:outputPanel style="width: 4px;font-size: 11px;">Yaz.</p:outputPanel>
+                    <p:outputPanel style="width: 4px;font-size: 11px;">Baş.</p:outputPanel>
+                    </p:panelGrid>
                     <p:dataList value="#{opticDao.partsDtos}" var="part" paginator="false" type="none">
                         <p:selectOneMenu value="#{part.refFieldType}" style="width: 80px;" styleClass="fieldsTypes"
-                                converter="entityConverter">
+                                converter="entityConverter" >
                             <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
                             <f:selectItems value="#{opticFieldsTypeDao.items}" var="fieldType"
                                            itemLabel="#{fieldType.name}" itemValue="#{fieldType}"/>
@@ -116,13 +136,16 @@
                             <p:selectOneMenu value="#{opticDao.item.refDistributeName}" id="schoolDistributes"
                                              converter="entityConverter" style="width:180px;"
                                              required="true" requiredMessage="Dağıtım Listesi seçiniz">
-                                <p:ajax listener="#{opticDao.distributeChanged}" update="distcount"/>
+                                <p:ajax listener="#{opticDao.distributeChanged}" update="distcount @widgetVar(distributesGridWidget)"/>
                                 <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
                                 <f:selectItems value="#{distributeDao.distributesNames}" var="man"
                                                itemLabel="#{man.created} #{man.no} #{man.name} " itemValue="#{man}" />
                             </p:selectOneMenu>
 
                         </p:panelGrid>
+                    <p:commandButton value="#{msg.distributes}" icon="fa fa-search"
+                                     oncomplete="PF('distributesDialogWidget').show()"
+                                     update="pageForm :messages " style="margin: auto 10px;" />
 
 
                     <p:panelGrid columns="4" layout="grid">
@@ -143,6 +166,17 @@
                         <p:printer target="pageForm:svgprint" />
                     </p:commandButton>
                         <br/>
+
+                </p:tab>
+                <p:tab title="Yardım">
+                    <b>Logo</b> 1: Uzunluk 2:Yükseklik <br/>
+                    <b>Metin</b> 1: Yazdırılacak yazı<br/>
+                    <b>Barcode</b> 1: Yazı 2: Uzunluk<br/>
+                    <b>Fotoğraf</b> 1: Uzunluk 2: Yükseklik<br/>
+                    <b>Metin kodları: </b> <br/>
+                    #kimlik,#no,#adsoyad,#ad,#soyad,#okul,#sinif,#sube,<br/>
+                    #salon,#sira,#kitapcik,#cins,#tel,#email,#adres,<br/>
+                    #ders1,#ders2,#ders3,#ders4,#il,#ilce,#okulkodu,#tarih
                 </p:tab>
             </p:tabView>
         </p:outputPanel>
@@ -174,6 +208,13 @@
         <components:opticsGrid rows="100" scrollable="true"  daobean="#{opticDao}" update=":#{p:component('pageForm')}"
                                id="opticsGrid" oncomplete="PF('selectOpticDialogWidget').hide()"
                                widgetVar="opticsGridWidget" scrollHeight="400" />
+    </p:dialog>
+
+    <p:dialog id="distributesDialog" header="#{msg.distributes}" widgetVar="distributesDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
+              closeOnEscape="true" width="700" >
+        <components:distributesGrid rows="10000" scrollable="true" scrollHeight="400" showButtons="false"
+                                    widgetVar="distributesGridWidget" paginator="false" />
     </p:dialog>
 
     <p:confirmDialog global="true">

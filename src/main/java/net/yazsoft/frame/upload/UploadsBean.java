@@ -112,6 +112,26 @@ public class UploadsBean extends BaseDao implements Serializable{
         }
     }
 
+    @Transactional
+    public void deleteClassStudentsImages() {
+        try {
+            logger.info("SCHOOL CLASs : " + schoolClass);
+            if (schoolClass==null) {
+                throw new Exception("Sinif seciniz");
+            }
+            List<Students> studentsList=studentsDao.findBySchoolClass(schoolClass);
+            logger.info("STUDENTS LIST : " + studentsList);
+            for (Students tempStudent:studentsList) {
+                if (tempStudent.getRefImage()!=null) {
+                    deleteStudentImage(tempStudent);
+                }
+            }
+            Util.setFacesMessage(schoolClass.getName()+" SINIF FOTOGRAFLARI SILINDI");
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
+
 
     @Transactional
     public void handleImageUpload(FileUploadEvent event) {
@@ -287,6 +307,79 @@ public class UploadsBean extends BaseDao implements Serializable{
         }
     }
 
+    @Transactional
+    public void deleteStudentImage(Students student) {
+        try {
+            logger.info("DELETING IMAGE.......");
+            logger.info("FILE TYPE : " + fileType);
+            logger.info("IMAGE TYPE : " + imageType);
+            fileType=IMAGE;
+            imageType=IMAGE_STUDENT;
+            String uploadsFolder = getUploadDirectory(null).toString();
+            String dirName;
+            Images image=null;
+            Long tid=null;
+            image = student.getRefImage();
+            tid = student.getTid();
+
+
+            File file = new File(getUploadDirectory(null) + "/" + tid.toString()+"."+image.getExtension());
+            if (file.delete()) {
+                logger.info(file.getName() + " is deleted!");
+            } else {
+                logger.info("DELETING : " + file.toString()); // + "/" + image.getTid().toString()+"."+image.getExtension());
+                logger.error("Delete operation is failed.");
+                Util.setFacesMessageError("Kayit silindi, dosya silineMEdi.");
+            }
+            student.setRefImage(null);
+            studentsDao.update(student);
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
+
+    @Transactional
+    public void deleteImage() {
+        try {
+            logger.info("DELETING IMAGE.......");
+            logger.info("FILE TYPE : " + fileType);
+            logger.info("IMAGE TYPE : " + imageType);
+            fileType=IMAGE;
+            String uploadsFolder = getUploadDirectory(null).toString();
+            String dirName;
+            Images image=null;
+            Long tid=null;
+            switch (imageType) {
+                case (IMAGE_USER) : image=usersDao.getItem().getRefImage(); tid=usersDao.getItem().getTid(); break;
+                case (IMAGE_SCHOOL) : image = schoolsDao.getItem().getRefImage(); tid=schoolsDao.getItem().getTid(); break;
+                case (IMAGE_STUDENT) : image = studentsDao.getItem().getRefImage(); tid=studentsDao.getItem().getTid(); break;
+                case (IMAGE_SLIDE) : image = webSlidesDao.getItem().getRefImage(); tid=webSlidesDao.getItem().getTid(); break;
+                case (IMAGE_PRODUCT) : image = productsDao.getItem().getRefImage(); tid=productsDao.getItem().getTid(); break;
+                case (IMAGE_WEBLINK) : image = webLinksDao.getItem().getRefImage(); tid=webLinksDao.getItem().getTid(); break;
+            }
+
+            File file = new File(getUploadDirectory(null) + "/" + tid.toString()+"."+image.getExtension());
+            if (file.delete()) {
+                logger.info(file.getName() + " is deleted!");
+            } else {
+                logger.info("DELETING : " + file.toString()); // + "/" + image.getTid().toString()+"."+image.getExtension());
+                logger.error("Delete operation is failed.");
+                Util.setFacesMessageError("Kayit silindi, dosya silineMEdi.");
+            }
+            switch (imageType) {
+                case (IMAGE_USER) : usersDao.getItem().setRefImage(null); usersDao.update(); break;
+                case (IMAGE_SCHOOL) : schoolsDao.getItem().setRefImage(null); schoolsDao.update(); break;
+                case (IMAGE_STUDENT) : studentsDao.getItem().setRefImage(null); studentsDao.update(); break;
+                case (IMAGE_SLIDE) : webSlidesDao.getItem().setRefImage(null);  webSlidesDao.update(); break;
+                case (IMAGE_PRODUCT) : productsDao.getItem().setRefImage(null); productsDao.update(); break;
+                case (IMAGE_WEBLINK) : webLinksDao.getItem().setRefImage(null); webLinksDao.update(); break;
+            }
+
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+
+    }
 
     @Transactional
     public void deleteUpload(Uploads upload) {

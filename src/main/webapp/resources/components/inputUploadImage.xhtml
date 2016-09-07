@@ -21,6 +21,8 @@
     <cc:attribute name="showImage" default="true" />
     <cc:attribute name="imageWidth" />
     <cc:attribute name="imageHeight" />
+    <cc:attribute name="showDelete" default="false" />
+
 
 </cc:interface>
 
@@ -45,6 +47,13 @@
                          oncomplete="PF('uploadPhotoWidget_#{cc.id}').show();"
                          disabled="#{not authsDao.auths.pupdate}"
                 >
+        </p:commandButton>
+        <p:commandButton styleClass="module-button module-edit " value="#{msg.global_delete}"
+                         rendered="#{not empty daobeann.item.refImage and cc.attrs.showDelete eq true}"
+                         immediate="true" process="@this" update="imageLogo"
+                         disabled="#{not authsDao.auths.pdelete}"
+                         action="#{uploadsBean.deleteImage}"
+        >
         </p:commandButton>
     </p:outputPanel>
 

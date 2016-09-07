@@ -28,24 +28,34 @@
     <cc:attribute default="widgetDistributes"     required="false"   name="widgetVar" />
     <cc:attribute default=":pageForm" required="false" name="update" />
     <cc:attribute  required="false" name="tableStyle" />
+    <cc:attribute  required="false" name="showButtons" default="true"/>
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
     <h:form onkeypress="if (event.keyCode == 13) {return false; }">
 
-        <p:selectOneMenu value="#{distributeDao.distributeName}" id="schoolDistributes" >
+        <p:selectOneMenu value="#{distributeDao.distributeName}" id="schoolDistributes"
+                         style="width: 200px;" rendered="#{cc.attrs.showButtons}">
             <p:ajax update="distributesGrid" listener="#{distributeDao.distributeChanged}"/>
             <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}" noSelectionOption="true"/>
             <f:selectItems value="#{distributeDao.distributesNames}" var="man"
                            itemLabel="#{man.created} #{man.no} #{man.name} " itemValue="#{man}" />
         </p:selectOneMenu>
 
-        #{msg.global_name} : <p:inputText value="#{distributeDao.distributeNameInput}" />
+        <p:outputLabel value="#{msg.global_name} :" rendered="#{cc.attrs.showButtons}"/>
+        <p:inputText value="#{distributeDao.distributeNameInput}" rendered="#{cc.attrs.showButtons}"/>
         <p:commandButton icon="ui-icon-disk" update=":messages schoolDistributes"
-                         styleClass="toolbar-button"
+                         styleClass="toolbar-button" style="margin:0 10px;"
                          value="#{msg.toolbar_save}"
                          actionListener="#{distributeDao.save}"
+                         rendered="#{cc.attrs.showButtons}"
+        />
+        <p:commandButton icon="fa fa-calculator" update=":messages @widgetVar(levelBookletsDialogWidget)"
+                         styleClass="toolbar-button"
+                         value="#{msg.global_booklet} Sayısı"
+
+                         oncomplete="PF('levelBookletsDialogWidget').show()"
         />
 
         <p:dataTable id="distributesGrid"
@@ -100,32 +110,34 @@
             </p:column>
 
 
-            <p:column headerText="#{msg.distribute_no}" width="20" sortBy="#{distributesVar.distributeRank}">
+            <p:column headerText="#{msg.distribute_no}" width="20" sortBy="#{distributesVar.distributeRank}"
+                      filterBy="#{distributesVar.distributeRank}">
                 <h:outputText value="#{distributesVar.distributeRank}"/>
             </p:column>
-            <p:column headerText="#{msg.distribute_room}" width="20" sortBy="#{distributesVar.room}">
+            <p:column headerText="#{msg.distribute_room}" width="20" sortBy="#{distributesVar.room}"
+                      filterBy="#{distributesVar.room}">
                 <h:outputText value="#{distributesVar.room}"/>
             </p:column>
-            <p:column headerText="#{msg.global_rank}" width="10">
+            <p:column headerText="#{msg.global_rank}" width="10" filterBy="#{distributesVar.roomRank}">
                 <h:outputText value="#{distributesVar.roomRank}"/>
             </p:column>
-            <p:column headerText="#{msg.global_name}" width="90" sortBy="#{distributesVar.name}">
+            <p:column headerText="#{msg.global_name}" width="90" sortBy="#{distributesVar.name}" filterBy="#{distributesVar.name}">
                 <h:outputText value="#{distributesVar.name}"/>
             </p:column>
-            <p:column headerText="#{msg.global_surname}" width="90" sortBy="#{distributesVar.surname}">
+            <p:column headerText="#{msg.global_surname}" width="90" sortBy="#{distributesVar.surname}" filterBy="#{distributesVar.surname}">
                 <h:outputText value="#{distributesVar.surname}"/>
             </p:column>
-            <p:column headerText="#{msg.global_mernis_no}" width="60" sortBy="#{distributesVar.mernis}">
+            <p:column headerText="#{msg.global_mernis_no}" width="60" sortBy="#{distributesVar.mernis}" filterBy="#{distributesVar.mernis}">
                 <h:outputText value="#{distributesVar.mernis}"/>
             </p:column>
             <p:column headerText="OkulNo" width="30" sortBy="#{distributesVar.schoolNo}"
-                sortFunction="#{tools.sortIdByString}">
+                sortFunction="#{tools.sortIdByString}" filterBy="#{distributesVar.schoolNo}">
                 <h:outputText value="#{distributesVar.schoolNo}"/>
             </p:column>
-            <p:column headerText="#{msg.class}" width="20" sortBy="#{distributesVar.className}">
+            <p:column headerText="#{msg.class}" width="20" sortBy="#{distributesVar.className}" filterBy="#{distributesVar.className}">
                 <h:outputText value="#{distributesVar.className}"/>
             </p:column>
-            <p:column headerText="Kit." width="15" sortBy="#{distributesVar.booklet}">
+            <p:column headerText="Kit." width="15" sortBy="#{distributesVar.booklet}" filterBy="#{distributesVar.booklet}">
                 <h:outputText value="#{distributesVar.booklet}"/>
             </p:column>
             <p:column headerText="#{msg.school}" width="40" rendered="false"
@@ -134,11 +146,11 @@
             </p:column>
 
         </p:dataTable>
-        <p:commandButton value="Export as Excel" ajax="false" disabled="#{not authsDao.auths.preport}">
+        <p:commandButton value="Export as Excel" ajax="false" disabled="#{not authsDao.auths.preport}" rendered="#{cc.attrs.showButtons}">
             <p:dataExporter type="xls" target="distributesGrid" fileName="dagitim"/>
         </p:commandButton>
         <p:commandButton value="PDF" process="@this" update=":messages"
-                         actionListener="#{distributeDao.reportDistribute()}" ajax="false" rendered="true"
+                         actionListener="#{distributeDao.reportDistribute()}" ajax="false" rendered="#{cc.attrs.showButtons}"
                          disabled="#{not authsDao.auths.preport}" onclick="this.form.target='_blank'"  />
 
     </h:form>

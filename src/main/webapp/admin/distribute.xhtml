@@ -28,6 +28,13 @@
     <components:distributesGrid rows="10000" scrollable="true" scrollHeight="400"
                                       widgetVar="distributesGridWidget" paginator="false" />
 
+    <p:dialog id="levelBookletsDialog" header="#{msg.global_booklet} Sayıları" widgetVar="levelBookletsDialogWidget"
+              modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
+              closeOnEscape="true" width="300" >
+
+               <p:outputLabel value="#{distributeDao.calculateBooklets()}" escape="false" />
+    </p:dialog>
+
 </p:outputPanel>
 </ui:decorate>
 </f:view>

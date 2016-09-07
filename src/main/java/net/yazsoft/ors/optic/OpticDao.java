@@ -23,10 +23,7 @@ import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -370,9 +367,11 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
         StringBuffer sb = new StringBuffer("");
 //        sb.append("<pageSet>");
-        int pagecount=1;
+        int pagecount=0;
         //getItem().setRatio(21);
         for (Distributes dist:distributeDao.getDistributes()) {
+            pagecount++;
+            //log.info("PAGECOUNT: " + pagecount);
             if ((getItem().getFirstno()!=null) && (pagecount<getItem().getFirstno())){
                 continue;
             }
@@ -380,17 +379,33 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 continue;
             }
 //            sb.append("<page>");
+            log.info("PAGECOUNT: " + pagecount);
             sb.append("<svg width='210mm' height='295mm' class='page-break'>");
             printPage(sb,dist,false);
             sb.append("</svg>");
 //            sb.append("<div class='page-break'></div>");
 //            sb.append("</page>");
-            pagecount++;
+
 
         }
 //        sb.append("</pageSet>");
 //        sb.append("</svg>");
         svgprint=sb.toString();
+    }
+
+    public void svgAppendImage(OpticsFields field,StringBuffer sb,String filepath,float x, float y) {
+        File file = new File(Util.getImagesFolder() + filepath);
+        if (file.exists()) {
+            //sb.append("<image xlink:href='/images" + filepath); //TODO: for remote
+            sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath); //TODO: for local
+            String width = "50";
+            String height = "50";
+            if (field.getValue1() != null) width = field.getValue1();
+            if (field.getValue2() != null) height = field.getValue2();
+
+            sb.append("' x='" + x + "' y='" + y + "' width='" + width
+                    + "' height='" + height + "' />");
+        }
     }
 
     public void printPage(StringBuffer sb,Distributes dist,Boolean preview) {
@@ -410,7 +425,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 if ((field.getActive()) &&(field.getRefFieldType().getNameDist()!=null)){
                     if (field.getRefFieldType().getNameDist().equals("barcode")) {
                         Barcode barcode = new Barcode();
-                        barcode.setValue(field.getValue1());
+                        barcode.setValue(solveText(field.getValue1(),student,dist));
                         String codeType=settingsDao.findByName("opticBarcode").getValueStr();
                         if (codeType!=null) {
                             barcode.setType(codeType);
@@ -430,36 +445,13 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                         if (student.getRefImage()!=null) {
                             String filepath = "/student/" + student.getRefSchool().getTid() + "/"
                                     + student.getTid() + "." + student.getRefImage().getExtension();
-                            File file = new File(Util.getImagesFolder() + filepath);
-                            if (file.exists()) {
-                                sb.append("<image xlink:href='/images" + filepath);
-                                //sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath);
-                                String width = "50";
-                                String height = "50";
-                                if (field.getValue1() != null) width = field.getValue1();
-                                if (field.getValue2() != null) height = field.getValue2();
-
-
-                                sb.append("' x='" + x + "' y='" + y + "' width='" + field.getValue1()
-                                        + "' height='" + field.getValue2() + "' />");
-                            }
+                            svgAppendImage(field,sb,filepath,x,y);
                         }
                     }else if ((field.getRefFieldType().getNameDist().equals("logo")) ) { // && (student.getRefImage()!=null) ) {
                         if (Util.getActiveSchool().getRefImage()!=null) {
                             String filepath = "/school/" + Util.getActiveSchool().getTid()
                                     + "." + Util.getActiveSchool().getRefImage().getExtension();
-                            File file = new File(Util.getImagesFolder() + filepath);
-                            if (file.exists()) {
-                                sb.append("<image xlink:href='/images" + filepath);
-                                //sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath);
-                                String width = "50";
-                                String height = "50";
-                                if (field.getValue1() != null) width = field.getValue1();
-                                if (field.getValue2() != null) height = field.getValue2();
-
-                                sb.append("' x='" + x + "' y='" + y + "' width='" + field.getValue1()
-                                        + "' height='" + field.getValue2() + "' />");
-                            }
+                            svgAppendImage(field,sb,filepath,x,y);
                         }
                     } else {
                         sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='" + field.getFontsize() + "'"
@@ -515,7 +507,11 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                                 break;
                             case "classroom":
                                 if ((student != null) && (student.getRefSchoolClass() != null))
-                                    appendText(sb,student.getRefSchoolClass().getName());
+                                    appendText(sb,Util.findClassLevelAndBranch(student.getRefSchoolClass().getName(),true));
+                                break;
+                            case "branch":
+                                if ((student != null) && (student.getRefSchoolClass() != null))
+                                    appendText(sb,Util.findClassLevelAndBranch(student.getRefSchoolClass().getName(),false));
                                 break;
                             case "address":
                                 if ((student != null) && (student.getAddress() != null))
@@ -523,7 +519,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                                 break;
                             case "text":
                                 if (field.getValue1() != null)
-                                    appendText(sb,solveText(field.getValue1(),student));
+                                    appendText(sb,solveText(field.getValue1(),student,dist));
                                 break;
                             case "lesson1":
                                 if (student != null)
@@ -580,9 +576,9 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                         case "gender" : printCode(sb,part,student.getGender()); break;
                         case "email" : printCode(sb,part,student.getEmail()); break;
                         case "phone" : printCode(sb,part,student.getPhone()); break;
-                        case "classroom" : printCode(sb,part,findClassLevelAndBranch(student.getRefSchoolClass().getName(),true)); break;
+                        case "classroom" : printCode(sb,part,Util.findClassLevelAndBranch(student.getRefSchoolClass().getName(),true)); break;
                         case "address" : printCode(sb,part,student.getAddress()); break;
-                        case "branch" : printCode(sb,part,findClassLevelAndBranch(student.getRefSchoolClass().getName(),false)); break;
+                        case "branch" : printCode(sb,part,Util.findClassLevelAndBranch(student.getRefSchoolClass().getName(),false)); break;
                         case "lesson1" : printCodeTitle(sb,part,findLessonName(student,0)); break;
                         case "lesson2" : printCodeTitle(sb,part,findLessonName(student,1));break;
                         case "lesson3" : printCodeTitle(sb,part,findLessonName(student,2)); break;
@@ -598,7 +594,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
 
     }
 
-    public String solveText(String text, Students student) {
+    public String solveText(String text, Students student,Distributes dist) {
         if (text.contains("#")) {
             int counter = 0;
             for( int i=0; i<text.length(); i++ ) {
@@ -625,8 +621,33 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 String textvalue=null;
                 switch (texttype) {
                     case "kimlik" : textvalue = student.getMernis(); break;
+                    case "no" : textvalue = student.getSchoolNo().toString(); break;
+                    case "adsoyad" : textvalue = student.getName() + " " + student.getSurname(); break;
                     case "ad" : textvalue = student.getName(); break;
                     case "soyad" : textvalue = student.getSurname(); break;
+                    case "okul" : textvalue = Util.getActiveSchool().getName(); break;
+                    case "salon" : textvalue = dist.getRoom(); break;
+                    case "sira" : textvalue = String.valueOf(dist.getRoomRank()); break;
+                    case "cins" : textvalue = student.getGender(); break;
+                    case "sinif" : textvalue = Util.findClassLevelAndBranch(student.getRefSchoolClass().getName(),true); break;
+                    case "sube" : textvalue = Util.findClassLevelAndBranch(student.getRefSchoolClass().getName(),false); break;
+                    case "kitapcik" : textvalue = dist.getBooklet(); break;
+                    case "tel" : textvalue = student.getPhone(); break;
+                    case "email" : textvalue = student.getEmail(); break;
+                    case "adres" : textvalue = student.getAddress(); break;
+                    case "ders1" : textvalue = dist.getLesson1(); break;
+                    case "ders2" : textvalue = dist.getLesson2(); break;
+                    case "ders3" : textvalue = dist.getLesson3(); break;
+                    case "ders4" : textvalue = dist.getLesson4(); break;
+                    case "il" : textvalue = Util.getActiveSchool().getRefCity().getName(); break;
+                    case "ilce" : textvalue = Util.getActiveSchool().getRefTown().getName(); break;
+                    case "okulkodu" : textvalue = Util.getActiveSchool().getMebCode(); break;
+
+                    case "tarih" :
+                        Calendar calendar=Calendar.getInstance();
+                        calendar.setTime(getItem().getScheduleDate());
+                        textvalue =  calendar.get(Calendar.DAY_OF_MONTH) + " "
+                                + calendar.getDisplayName(Calendar.MONTH,Calendar.LONG_STANDALONE,new Locale("TR"));
                 }
                 log.info("texttype : " + texttype + ", textvalue : " + textvalue);
                 if (y > -1 ) {
@@ -734,31 +755,6 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             }
         }
 
-    }
-
-    /**
-     * Finds a classname and its level
-     * @param classname classname to divide into level and branch
-     * @param level true:returns level and false: returns branch
-     * @return
-     */
-    public String findClassLevelAndBranch(String classname,boolean level){
-        String sbc = "";
-
-        for (char c:classname.toCharArray()) {
-            log.info("LEVEL : " + level + "CHARACTER : " + c);
-            if (level) {
-                if (Character.isDigit(c)) {
-                    sbc=sbc.concat(String.valueOf(c));
-                }
-            } else {
-                if (Character.isAlphabetic(c)) {
-                    sbc=sbc.concat(String.valueOf(c));
-                }
-            }
-        }
-        log.info("CLASSNAME : " + classname + " SBC : " + sbc);
-        return sbc;
     }
 
     public void addDefaultFields() {

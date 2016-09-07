@@ -65,6 +65,54 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
         distributeType="y";
     }
 
+    public StringBuffer calculateBooklets() {
+        StringBuffer sb=null;
+        try {
+            if (distributes!=null) {
+                List<String> booklets = new ArrayList<>();
+                List<String> levels = new ArrayList<>();
+                for (Distributes dist : distributes) {
+                    if (!booklets.contains(dist.getBooklet())) {
+                        booklets.add(dist.getBooklet());
+                    }
+
+                    String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
+                    if (!levels.contains(level)) {
+                        levels.add(level);
+                    }
+                }
+
+
+                int levelbooklets[][] = new int[levels.size()][booklets.size()];
+                for (Distributes dist : distributes) {
+                    for (int i = 0; i < levels.size(); i++) {
+                        for (int j = 0; j < booklets.size(); j++) {
+                            if (dist.getBooklet() != null) {
+                                String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
+                                if ((booklets.get(j).equals(dist.getBooklet()))
+                                        && (levels.get(i).equals(level))) {
+                                    levelbooklets[i][j]++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                sb = new StringBuffer();
+                for (int i = 0; i < levels.size(); i++) {
+                    for (int j = 0; j < booklets.size(); j++) {
+                        sb.append("Seviye | Kitapçık  : " + levels.get(i) + " | " + booklets.get(j) + " : " + levelbooklets[i][j] + "<br/>");
+                        log.info("level | booklet  : " + levels.get(i) + " | " + booklets.get(j) + " : " + levelbooklets[i][j]);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+
+        return sb;
+    }
+
     public void calculateSelected() {
         selectedStudentsCount=0;
         selectedRoomsCapacity=0;
