@@ -84,6 +84,9 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
+        if (Util.getActiveSchool().getRefCity()!=null) {
+            params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        }
         if (Util.getActiveSchool().getRefTown()!=null) {
             params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
         }
@@ -156,7 +159,9 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
-        params.put("pil",Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        if (Util.getActiveSchool().getRefCity()!=null) {
+            params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        }
         if (Util.getActiveSchool().getRefTown()!=null) {
             params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
         }

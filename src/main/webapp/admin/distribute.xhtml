@@ -30,11 +30,24 @@
 
     <p:dialog id="levelBookletsDialog" header="#{msg.global_booklet} Sayıları" widgetVar="levelBookletsDialogWidget"
               modal="true" resizable="true" dynamic="true" appendTo="@(body)" showHeader="true" closable="true"
-              closeOnEscape="true" width="300" >
+              closeOnEscape="true" width="800" >
 
-               <p:outputLabel value="#{distributeDao.calculateBooklets()}" escape="false" />
+        <p:commandButton value="#{msg.toolbar_print}" icon="fa fa-print"
+                         update=":messages " style="margin: auto 10px;" >
+            <p:printer target="@parent:calculateBookletPanel" />
+        </p:commandButton>
+        <p:outputPanel id="calculateBookletPanel">
+            <p:outputLabel value="#{distributeDao.calculateBooklets()}" escape="false" />
+        </p:outputPanel>
+
     </p:dialog>
 
+    <h:outputStylesheet>
+        .roomblock {
+            float: left;
+            margin:10px;
+        }
+    </h:outputStylesheet>
 </p:outputPanel>
 </ui:decorate>
 </f:view>

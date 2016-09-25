@@ -5,11 +5,9 @@ import net.yazsoft.ors.entities.Students;
 
 import java.util.List;
 
-/**
- * Created by fec on 13/04/16.
- */
 public class ClassTypeStudents {
     List<Students> students;
+    List<Integer> booklets;
     SchoolsClassType classType;
 
     public List<Students> getStudents() {
@@ -26,5 +24,13 @@ public class ClassTypeStudents {
 
     public void setClassType(SchoolsClassType classType) {
         this.classType = classType;
+    }
+
+    public List<Integer> getBooklets() {
+        return booklets;
+    }
+
+    public void setBooklets(List<Integer> booklets) {
+        this.booklets = booklets;
     }
 }

@@ -48,6 +48,7 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
     List<DistributesNames> distributesNames;
     List<Students> orderedStudents;
     List<ClassTypeStudents> classTypeStudents;
+    List<ExamsBookletType> bookletTypes=null;
 
     int studentsCount=0;
     int previousDistClassNo=0;
@@ -69,41 +70,57 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
         StringBuffer sb=null;
         try {
             if (distributes!=null) {
+                List<String> rooms = new ArrayList<>();
                 List<String> booklets = new ArrayList<>();
                 List<String> levels = new ArrayList<>();
+                sb = new StringBuffer();
                 for (Distributes dist : distributes) {
-                    if (!booklets.contains(dist.getBooklet())) {
-                        booklets.add(dist.getBooklet());
-                    }
-
-                    String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
-                    if (!levels.contains(level)) {
-                        levels.add(level);
+                    if (!rooms.contains(dist.getRoom())) {
+                        rooms.add(dist.getRoom());
                     }
                 }
 
+                for (int r=0;  r<rooms.size();  r++) {
+                    for (Distributes dist : distributes) {
+                        if ((dist.getRoom().equals(rooms.get(r)))
+                            && (!booklets.contains(dist.getBooklet())) ) {
+                            booklets.add(dist.getBooklet());
+                        }
 
-                int levelbooklets[][] = new int[levels.size()][booklets.size()];
-                for (Distributes dist : distributes) {
-                    for (int i = 0; i < levels.size(); i++) {
-                        for (int j = 0; j < booklets.size(); j++) {
-                            if (dist.getBooklet() != null) {
-                                String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
-                                if ((booklets.get(j).equals(dist.getBooklet()))
-                                        && (levels.get(i).equals(level))) {
-                                    levelbooklets[i][j]++;
+                        String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
+                        if (!levels.contains(level)) {
+                            levels.add(level);
+                        }
+                    }
+
+
+                    int levelbooklets[][][] = new int[rooms.size()][levels.size()][booklets.size()];
+                    for (Distributes dist : distributes) {
+                        for (int i = 0; i < levels.size(); i++) {
+                            for (int j = 0; j < booklets.size(); j++) {
+                                if (dist.getBooklet() != null) {
+                                    String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
+                                    if ((booklets.get(j).equals(dist.getBooklet()))
+                                            && (levels.get(i).equals(level))) {
+                                        levelbooklets[r][i][j]++;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-
-                sb = new StringBuffer();
-                for (int i = 0; i < levels.size(); i++) {
-                    for (int j = 0; j < booklets.size(); j++) {
-                        sb.append("Seviye | Kitapçık  : " + levels.get(i) + " | " + booklets.get(j) + " : " + levelbooklets[i][j] + "<br/>");
-                        log.info("level | booklet  : " + levels.get(i) + " | " + booklets.get(j) + " : " + levelbooklets[i][j]);
+                    sb.append("<div class='roomblock'>");
+                    sb.append("Salon : "  + rooms.get(r) + "<br/>");
+                    for (int i = 0; i < levels.size(); i++) {
+                        sb.append( levels.get(i)  + "  |   " );
+                        for (int j = 0; j < booklets.size(); j++) {
+                            sb.append( booklets.get(j) + " : " + levelbooklets[r][i][j] + "  ");
+                            log.info(" level | booklet  : " +  rooms.get(r) + " | " + levels.get(i) + " | "
+                                    + booklets.get(j) + " : " + levelbooklets[r][i][j]);
+                        }
+                        sb.append("<br/>");
                     }
+                    sb.append("</div>");
+
                 }
             }
         } catch (Exception e) {
@@ -362,6 +379,20 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                 typeStudents=new ClassTypeStudents();
                 typeStudents.setClassType(schoolsClassType);
                 typeStudents.setStudents(students);
+
+                //Set booklets for classType
+                List<Integer> booklets=new ArrayList<>();
+                currentBooklet=0;
+                for (int i=0; i<students.size(); i++) {
+                    booklets.add(currentBooklet);
+                    currentBooklet++;
+                    if (currentBooklet>=bookletTypes.size()) {
+                        currentBooklet=0;
+                    }
+                }
+                typeStudents.setBooklets(booklets);
+                log.info("CLASS TYPE BOOKLETS : " + booklets);
+
                 classTypeStudents.add(typeStudents);
 
                 //Collections.sort(orderedStudents,fieldComparator);
@@ -370,7 +401,8 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                 for (Students ostudents:students) {
                     log.info("ORDERED STUDENT : " + x + " : " +ostudents.getSchoolNo() + " "
                             +ostudents.getName() + " " + ostudents.getMernis() + " "
-                            +ostudents.getRefSchoolClass().getRefSchoolClassType().getName());
+                            +ostudents.getRefSchoolClass().getRefSchoolClassType().getName()
+                            +" BOOKLET : " + typeStudents.getBooklets().get(x-1) );
                     x++;
                 }
             }
@@ -400,6 +432,10 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                     log.info("LOG03070: DISTRIBUTE STUDENT : " + student.getRefSchoolClass().getName() + " "
                             + student.getName() + " " + student.getFullname());
                     studentsIterator.remove();
+                    currentBooklet++;
+                    if (currentBooklet>bookletTypes.size()) {
+                        currentBooklet=1;
+                    }
                     return student;
                 }
             } else {
@@ -417,7 +453,6 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
         for (int i=0; i<studentsClassTypes.size(); i++) { //search all class types
             if (previousDistTypeClassNo==studentsClassTypes.size()) previousDistTypeClassNo=0;
             typeStudents=classTypeStudents.get(previousDistTypeClassNo);
-
             if (typeStudents.getStudents().size()==0) {
                 previousDistTypeClassNo = previousDistTypeClassNo + 1;
                 continue;
@@ -426,9 +461,11 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                     previousDistTypeClassNo = previousDistTypeClassNo + 1;
                 }
                 student = typeStudents.getStudents().get(0); //get first student
+                currentBooklet = typeStudents.getBooklets().get(0);
                 if (student != null) {
-                    log.info("STUDENT : " + " " + student.getName() + " " + student.getSurname());
+                    log.info("STUDENT : " + student.getSchoolNo() + " : " + student.getName() + " " + student.getSurname() +" BOOKLET : " + currentBooklet);
                     typeStudents.getStudents().remove(0);
+                    typeStudents.getBooklets().remove(0);
                     return student;
                 } else {
                     log.info("STUDENT NULL !!!");
@@ -498,16 +535,17 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
             //orderStudentClassesByType();
             studentsCount=findStudentsCount();
 
+            bookletTypes = examsBookletTypeDao.findUntilBookletType(bookletType);
+
             log.info("DISTRIBUTE TYOE : " + distributeType);
             if ((distributeType!=null) && (!distributeType.equals("")) && (!distributeType.equals("y")) ) {
                 findOrderedStudents();
             }
 
-            List<ExamsBookletType> bookletTypes = examsBookletTypeDao.findUntilBookletType(bookletType);
-
+            currentBooklet=0;
             for (SchoolsClassDto cdto:distributeClasses) {
                 log.info("LOG03060: DISTRIBUTE  ROOM : " + cdto.getName());
-                currentBooklet=0;
+
                 for (int i=0; i<cdto.getCapacity(); i++) {
                     distribute = new Distributes();
                     distribute.setRefSchool(Util.getActiveSchool());
@@ -516,8 +554,10 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                     Students student = null;
                     if ((distributeType!=null) && (!distributeType.equals("")) && (!distributeType.equals("y")) ) {
                         student=getNextOrderedStudent();
+                        distribute.setBooklet(bookletTypes.get(currentBooklet).getName());
                     } else {
                         student=getNextStudent();
+                        distribute.setBooklet(bookletTypes.get(currentBooklet-1).getName());
                     }
                     if (student!=null) {
                         distrank++;
@@ -532,11 +572,7 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                         distribute.setClassName(student.getRefSchoolClass().getName());
                         distribute.setMernis(student.getMernis());
                         distribute.setSchoolNo(String.valueOf(student.getSchoolNo()) );
-                        distribute.setBooklet(bookletTypes.get(currentBooklet).getName());
-                        currentBooklet++;
-                        if (currentBooklet>=bookletTypes.size()) {
-                            currentBooklet=0;
-                        }
+                        log.info("CURRENT BOOKLET : " + currentBooklet);
                         distributes.add(distribute);
                     }
                 }
@@ -584,6 +620,9 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
             params.put("pSchoolName", Util.getActiveSchool().getName());
             Date now = Calendar.getInstance(new Locale("TR")).getTime();
             params.put("pnow", now);
+            if (Util.getActiveSchool().getRefCity()!=null) {
+                params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+            }
             if (Util.getActiveSchool().getRefTown() != null) {
                 params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
             }

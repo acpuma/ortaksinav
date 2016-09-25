@@ -31,10 +31,16 @@
             </p:commandButton>
 
             #{msg.global_name} : <p:inputText value="#{opticDao.item.name}" required="true" requiredMessage="Optik Adını Doldurunuz"/>
-            <p:commandButton icon="ui-icon-disk" update=":messages "
+            <p:commandButton icon="ui-icon-disk" update=":messages @widgetVar(opticsGridWidget)"
                              styleClass="toolbar-button"
                              value="#{msg.toolbar_save}"
+                             onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();"
                              actionListener="#{opticDao.save}"/>
+            <p:commandButton icon="ui-icon-disk" update=":messages @widgetVar(opticsGridWidget)" disabled="#{empty opticDao.item.tid}"
+                             styleClass="toolbar-button"
+                             value="Farklı Kaydet"
+                             onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();"
+                             actionListener="#{opticDao.saveas()}"/>
             <p:commandButton value="#{msg.optic} #{msg.select}" icon="fa fa-bullseye" process="@this"
                              update=":messages "
                              oncomplete="PF('selectOpticDialogWidget').show()" />
@@ -46,16 +52,17 @@
         </p:outputPanel>
 
 
-        <p:outputPanel style="width: 510px; float: left; margin:5px;">
+        <p:outputPanel style="width: 530px; float: left; margin:1px;">
             <p:tabView >
                 <p:tab title="Metin"  >
-                    <p:panelGrid columns="9" layout="grid" style="font-size: 13px;">
+                    <p:panelGrid columns="10" layout="grid" style="font-size: 13px;">
                         <p:outputPanel style="width: 8px;">Sıra</p:outputPanel>
                         <p:outputPanel style="width: 96px;">Tur</p:outputPanel>
                         <p:outputPanel style="width: 16px;">Y</p:outputPanel>
                         <p:outputPanel style="width: 16px;">X</p:outputPanel>
                         <p:outputPanel style="width: 16px;">Font</p:outputPanel>
                         <p:outputPanel style="width: 6px;font-size: 11px;">Yaz.</p:outputPanel>
+                        <p:outputPanel style="width: 4px;font-size: 11px;">Dik.</p:outputPanel>
                         <p:outputPanel style="width: 6px;font-size: 11px;">Sil</p:outputPanel>
                         <p:outputPanel style="width: 70px;font-size: 11px;">Alan 1</p:outputPanel>
                         <p:outputPanel style="width: 50px;font-size: 11px;">Alan 2</p:outputPanel>
@@ -73,12 +80,13 @@
                         <h:inputText value="#{field.leftx}" size="4" styleClass="fieldsTypes"/>
                         <h:inputText value="#{field.fontsize}" size="3" styleClass="fieldsTypes"/>
                         <p:selectBooleanCheckbox value="#{field.active}" style="margin:0 5px;" />
+                        <p:selectBooleanCheckbox value="#{field.horizontal}" style="margin:0 5px;"/>
                         <p:commandLink styleClass="ui-button fa fa-remove" process="listText"
                                        update="listText :messages " style="margin: auto 10px;"
                                        action="#{opticDao.deleteField(field)}"
                         />
-                        <h:inputText value="#{field.value1}" size="10" styleClass="fieldsTypes" rendered="#{opticDao.showValue1(field)}"/>
-                        <h:inputText value="#{field.value2}" size="10" styleClass="fieldsTypes" rendered="#{opticDao.showValue2(field)}"/>
+                        <h:inputText value="#{field.value1}" size="8" styleClass="fieldsTypes" rendered="#{opticDao.showValue1(field)}"/>
+                        <h:inputText value="#{field.value2}" size="8" styleClass="fieldsTypes" rendered="#{opticDao.showValue2(field)}"/>
 
                         <br/>
                     </p:dataList>
@@ -180,7 +188,7 @@
                 </p:tab>
             </p:tabView>
         </p:outputPanel>
-        <p:outputPanel style=" float:left; width: 480px;">
+        <p:outputPanel style=" float:left; width: 460px;">
             <p:outputPanel style="margin:20px auto;background: white;border:1px solid;width: 440px; height: 625px;">
                 <h:outputText value="#{opticDao.svg}" escape="false" id="svg" style="position: absolute;width: 440px; height: 625px;"/>
                 <h:outputText value="#{opticDao.svgpreview}" escape="false" id="svgpreview" style="position: absolute;width: 440px; height: 625px;"/>

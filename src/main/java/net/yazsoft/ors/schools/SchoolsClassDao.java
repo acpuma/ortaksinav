@@ -116,8 +116,11 @@ public class SchoolsClassDao extends BaseGridDao<SchoolsClass> implements Serial
         List<SchoolsClass> schoolsClasses=new ArrayList<>();
         List<Long> classTids=new ArrayList<>();
         for (Results result:list) {
-            if (!classTids.contains(result.getRefStudent().getRefSchoolClass().getTid())) {
-                classTids.add(result.getRefStudent().getRefSchoolClass().getTid());
+            if ( (result!=null) && (result.getRefStudent()!=null) && (result.getRefStudent().getRefSchoolClass()!=null)
+                    && (result.getRefStudent().getRefSchoolClass().getTid()!=null) ) {
+                if (!classTids.contains(result.getRefStudent().getRefSchoolClass().getTid())) {
+                    classTids.add(result.getRefStudent().getRefSchoolClass().getTid());
+                }
             }
         }
 

@@ -52,6 +52,21 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     @Inject SettingsDao settingsDao;
     @Inject ScheduleDao scheduleDao;
 
+    public void svgAppendImage(OpticsFields field,StringBuffer sb,String filepath,float x, float y) {
+        File file = new File(Util.getImagesFolder() + filepath);
+        if (file.exists()) {
+            sb.append("<image xlink:href='/images" + filepath); //TODO: for remote
+            //sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath); //TODO: for local
+            String width = "50";
+            String height = "50";
+            if (field.getValue1() != null) width = field.getValue1();
+            if (field.getValue2() != null) height = field.getValue2();
+
+            sb.append("' x='" + x + "' y='" + y + "' width='" + width
+                    + "' height='" + height + "' />");
+        }
+    }
+
     public void distributeChanged() {
         distributeDao.setDistributeName(getItem().getRefDistributeName());
         distributeDao.distributeChanged();
@@ -180,6 +195,29 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             createSvg();
             status=Status.UPDATE;
         }
+    }
+
+    public Long saveas() {
+        try {
+            if (getItem().getTid()==null) {
+                throw new Exception("ONCE KAYITLI BIR OPTIK SECINIZ");
+            }
+            Optics optic = (Optics) getItem().clone();
+            Long tid=super.create(optic);
+            for (OpticsParts opart:optic.getOpticsPartsCollection()) {
+                opart.setRefOptic(optic);
+            }
+            for (OpticsFields ofield:optic.getOpticsFieldsCollection()) {
+                ofield.setRefOptic(optic);
+            }
+            update(optic);
+            setItem(optic);
+            log.info("CLONE OPTIC ID : " + tid);
+            Util.setFacesMessage("FARKLI KAYIT EDILDI");
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+        return null;
     }
 
     @Transactional
@@ -393,20 +431,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         svgprint=sb.toString();
     }
 
-    public void svgAppendImage(OpticsFields field,StringBuffer sb,String filepath,float x, float y) {
-        File file = new File(Util.getImagesFolder() + filepath);
-        if (file.exists()) {
-            //sb.append("<image xlink:href='/images" + filepath); //TODO: for remote
-            sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath); //TODO: for local
-            String width = "50";
-            String height = "50";
-            if (field.getValue1() != null) width = field.getValue1();
-            if (field.getValue2() != null) height = field.getValue2();
 
-            sb.append("' x='" + x + "' y='" + y + "' width='" + width
-                    + "' height='" + height + "' />");
-        }
-    }
 
     public void printPage(StringBuffer sb,Distributes dist,Boolean preview) {
         int recty;
@@ -455,7 +480,12 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                         }
                     } else {
                         sb.append("<text x='" + x + "' y='" + y + "' fill='black' font-size='" + field.getFontsize() + "'"
-                                + " font-family='" + optic.getFontname() + "'>");
+                                + " font-family='" + optic.getFontname() + "'");
+                        if (field.isHorizontal()) {
+                            sb.append(" transform='rotate(270," + x+ "," + y + ")'" );
+                            //sb.append(" transform='translate(" + ")'");
+                        }
+                        sb.append(">");
                         switch (field.getRefFieldType().getNameDist()) {
                             case "mernis":
                                 if (dist.getMernis() != null)

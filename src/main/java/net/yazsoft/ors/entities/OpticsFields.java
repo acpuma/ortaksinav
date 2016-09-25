@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "OpticsFields.findAll", query = "SELECT f FROM OpticsFields f")})
-public class OpticsFields extends BaseEntity implements Serializable {
+public class OpticsFields extends BaseEntity implements Serializable,Cloneable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +42,7 @@ public class OpticsFields extends BaseEntity implements Serializable {
     private String value2;
 
     private int rank;
+    private boolean horizontal;
 
     @JoinColumn(name = "ref_optic", referencedColumnName = "tid", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -165,6 +166,14 @@ public class OpticsFields extends BaseEntity implements Serializable {
         this.rank = rank;
     }
 
+    public boolean isHorizontal() {
+        return horizontal;
+    }
+
+    public void setHorizontal(boolean horizontal) {
+        this.horizontal = horizontal;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -185,4 +194,10 @@ public class OpticsFields extends BaseEntity implements Serializable {
         return true;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        OpticsFields opticsField=(OpticsFields) super.clone();
+        opticsField.setTid(null);
+        return super.clone();
+    }
 }

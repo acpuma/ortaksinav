@@ -4,6 +4,7 @@ package net.yazsoft.ors.entities;
 
 import java.io.Serializable; import net.yazsoft.frame.hibernate.BaseEntity;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Optics.findAll", query = "SELECT o FROM Optics o")})
-public class Optics extends BaseEntity implements Serializable {
+public class Optics extends BaseEntity implements Serializable,Cloneable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +50,7 @@ public class Optics extends BaseEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date scheduleDate;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY)
     private Collection<OpticsFields> opticsFieldsCollection;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY)
@@ -222,4 +223,17 @@ public class Optics extends BaseEntity implements Serializable {
         return true;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+
+        for (OpticsParts opart:opticsPartsCollection) {
+            opart.setTid(null);
+        }
+        for (OpticsFields ofield:opticsFieldsCollection) {
+            ofield.setTid(null);
+        }
+        Optics optic=(Optics) super.clone();
+        optic.setTid(null);
+        return optic;
+    }
 }

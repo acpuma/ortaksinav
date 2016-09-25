@@ -73,6 +73,10 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
+        if (Util.getActiveSchool().getRefCity()!=null) {
+            logger.info("CITY : " + Util.getActiveSchool().getRefCity().getName());
+            params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        }
         if (Util.getActiveSchool().getRefTown()!=null) {
             params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
         }
@@ -119,7 +123,10 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         params.put("pdate",Util.getActiveExam().getDate());
         Date now=Calendar.getInstance(new Locale("TR")).getTime();
         params.put("pnow",now);
-        params.put("pil",Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        if (Util.getActiveSchool().getRefCity()!=null) {
+            logger.info("CITY : " + Util.getActiveSchool().getRefCity().getName());
+            params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        }
         if (Util.getActiveSchool().getRefTown()!=null) {
             params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
         }
