@@ -44,16 +44,23 @@
                     </p:outputPanel>
 
                     <p:outputLabel value="Sınıflar" />
-                    <p:selectCheckboxMenu value="#{resultsSendDao.selectedClasses}" label="#{msg.global_select}"
-                                          >
+                    <p:selectCheckboxMenu value="#{resultsSendDao.selectedClasses}"
+                                          label="#{resultsSendDao.selectedClassesLabel}"
+                                          widgetVar="selectedClassWidget" style="max-width: 200px;">
                         <f:selectItems value="#{resultsDao.classes}" var="man"
                                        itemLabel="#{man.name}" itemValue="#{man.tid}"/>
+                        <p:ajax oncomplete="PF('selectedClassWidget').show()" update="@this"
+                                listener="#{resultsSendDao.populateSelectedClassLabel}"/>
                     </p:selectCheckboxMenu>
+
                     <p:outputLabel value="Dersler" />
-                    <p:selectCheckboxMenu value="#{resultsSendDao.selectedLessons}" label="#{msg.global_select}"
-                                          >
+                    <p:selectCheckboxMenu value="#{resultsSendDao.selectedLessons}"
+                                          label="#{resultsSendDao.selectedLessonsLabel}"
+                                          widgetVar="selectedLessonsWidget" style="max-width: 200px;" >
                         <f:selectItems value="#{resultsDao.lessons}" var="man"
                                        itemLabel="#{man.refLessonName.nameTr}" itemValue="#{man.tid}"/>
+                        <p:ajax update="@this" listener="#{resultsSendDao.populateSelectedLessonsLabel}"
+                                oncomplete="PF('selectedLessonsWidget').show()"/>
                     </p:selectCheckboxMenu>
 
                     <h:outputLabel value="EMAİL BAŞLIK : " for="mailTitle" />

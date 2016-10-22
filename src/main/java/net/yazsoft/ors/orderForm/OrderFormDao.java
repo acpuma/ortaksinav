@@ -5,11 +5,13 @@ import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.mail.Email;
 import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
+import net.yazsoft.frame.sms.SmsDao;
 import net.yazsoft.frame.utils.Constants;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.OrderForm;
 import net.yazsoft.ors.entities.OrderFormProducts;
 import net.yazsoft.ors.entities.Products;
+import net.yazsoft.ors.settings.SettingsDao;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
@@ -35,6 +37,8 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
     @Inject OrderFormProductsDao orderFormProductsDao;
     @Inject Report report;
     @Inject Email email;
+    @Inject SmsDao smsDao;
+    @Inject SettingsDao settingsDao;
 
     @Transactional
     public void delete(OrderForm of) {
@@ -122,6 +126,17 @@ public class OrderFormDao extends BaseGridDao<OrderForm> implements Serializable
                         +"\nAciklama : " + orderForm.getComment();
                 email.sendMail(Constants.EMAIL_NOTIFICATION, "Ortak Sinav Yeni Siparis Formu",body);
                 //email.sendMail("info@ortaksinav.com.tr", "Ortak Sinav Yeni Siparis Formu",body);
+
+                String systemCellphone=settingsDao.findByName("systemCellphone").getValueStr();
+                ArrayList<String> phones = new ArrayList<>();
+                phones.add(systemCellphone);
+                phones.add(orderForm.getPhone());
+                smsDao.setPhones(phones);
+                smsDao.setMesaj("Siparisiniz alindi."
+                        +" Ad : "  + orderForm.getName()
+                    +" Eposta : " + orderForm.getEmail());
+                smsDao.sendSms();
+
             }
             //Util.setFacesMessage("SIPARISINIZ ALINDI");
             //reportOrderForm();

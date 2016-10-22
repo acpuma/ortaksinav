@@ -47,12 +47,52 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
 
     Users newUser;
 
+    String selectedClassesLabel="Seçiniz";
+    String selectedLessonsLabel="Seçiniz";
+
     @Inject ResultsDao resultsDao;
     @Inject EmailAttach emailAttach;
     @Inject Email email;
     @Inject StudentsAnswersDao studentsAnswersDao;
     @Inject Report report;
     @Inject SmsDao smsDao;
+
+    public void populateSelectedLessonsLabel() {
+        selectedLessonsLabel = new String("");
+        if (selectedLessons.size() == 0) {
+            selectedLessonsLabel = "Seçiniz";
+        } else {
+            for (int i = 0; i < selectedLessons.size(); i++) {
+                Lessons slesson=(Lessons)getSession().load(Lessons.class,Long.valueOf(selectedLessons.get(i)));
+                if (selectedLessonsLabel.length() == 0) {
+                    selectedLessonsLabel = slesson.getRefLessonName().getNameTr();
+                } else {
+                    if (selectedLessonsLabel.length()<18) {
+                        selectedLessonsLabel = selectedLessonsLabel + ","
+                                + slesson.getRefLessonName().getNameTr();
+                    }
+                }
+            }
+        }
+    }
+
+    public void populateSelectedClassLabel() {
+        selectedClassesLabel = new String("");
+        if (selectedClasses.size() == 0) {
+            selectedClassesLabel = "Seçiniz";
+        } else {
+            for (int i = 0; i < selectedClasses.size(); i++) {
+                SchoolsClass sclass=(SchoolsClass)getSession().load(SchoolsClass.class,Long.valueOf(selectedClasses.get(i)));
+                if (selectedClassesLabel.length() == 0) {
+                    selectedClassesLabel = sclass.getName();
+                } else {
+                    if (selectedClassesLabel.length()<18) {
+                        selectedClassesLabel = selectedClassesLabel + "," + sclass.getName();
+                    }
+                }
+            }
+        }
+    }
 
     public void addUser() {
         System.out.println("ADDING USER : ");
@@ -391,6 +431,22 @@ public class ResultsSendDao extends BaseGridDao<ResultsSend> implements Serializ
 
     public void setbReportLessonScore(Boolean bReportLessonScore) {
         this.bReportLessonScore = bReportLessonScore;
+    }
+
+    public String getSelectedClassesLabel() {
+        return selectedClassesLabel;
+    }
+
+    public void setSelectedClassesLabel(String selectedClassesLabel) {
+        this.selectedClassesLabel = selectedClassesLabel;
+    }
+
+    public String getSelectedLessonsLabel() {
+        return selectedLessonsLabel;
+    }
+
+    public void setSelectedLessonsLabel(String selectedLessonsLabel) {
+        this.selectedLessonsLabel = selectedLessonsLabel;
     }
 
     @Override

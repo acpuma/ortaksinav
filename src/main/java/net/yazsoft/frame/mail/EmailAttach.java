@@ -41,7 +41,7 @@ public class EmailAttach {
         try {
             /*
             JavaMailSenderImpl sender = new JavaMailSenderImpl();
-            sender.setHost("webmail.ortaksinav.com.tr");
+            sender.setHost("smtp.yandex.com.tr");
             sender.setPort(587);
             sender.setUsername("info@ortaksinav.com.tr");
             sender.setPassword("sin21");
@@ -67,7 +67,7 @@ public class EmailAttach {
                 helper.addAttachment(Util.changeTurtoEng(mailFile), filesr);
                 //helper.addAttachment(MimeUtility.encodeText(mailFile,"UTF-8",null), filesr);
             }
-            mailSender.setHost("webmail.ortaksinav.com.tr");
+            mailSender.setHost("smtp.yandex.com.tr");
             mailSender.send(message);
         } catch (Exception e) {
             Util.catchException(e);
