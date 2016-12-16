@@ -73,6 +73,7 @@ jQuery(document).ready(function($) {
             },
             transition: true
         };
+
         $(".carouFredSel").each(function() {
             var $this = $(this);
             // prev and next buttons
@@ -97,6 +98,12 @@ jQuery(document).ready(function($) {
             // RUN THE CAROUSEL
             $this.carouFredSel(configuration);
         });
+
+        configuration.prev.button = $("#newItemsLeft");
+        configuration.next.button = $("#newItemsRight");
+        configuration.scroll.items=4;
+        configuration.items=4;
+        $(".newItemsCaro").carouFredSel(configuration);
     });
 
 

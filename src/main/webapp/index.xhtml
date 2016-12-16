@@ -207,12 +207,16 @@
                 <div class="span12">
                     <div class="main-titles lined">
                         <h2 class="title"> Yeni Ürünler</h2>
+                        <div class="arrows">
+                            <a href="#" class="icon-chevron-left" id="newItemsLeft"></a>
+                            <a href="#" class="icon-chevron-right" id="newItemsRight"></a>
+                        </div>
                     </div>
                 </div>
             </div> <!-- /title -->
 
-            <div class="row popup-products blocks-spacer">
 
+            <div class="newItemsCaro" data-autoplay="false" data-nav="newItems" >
                 <ui:repeat value="#{productsDao.news}" var="item" varStatus="index">
 
                 <!--  ==========  -->
@@ -249,8 +253,6 @@
                         </p>
                     </div>
                 </div> <!-- /product -->
-
-                    <h:panelGroup layout="block" class="clearfix" rendered="#{(index.index+1)%4==0}" />
 
                 </ui:repeat>
 

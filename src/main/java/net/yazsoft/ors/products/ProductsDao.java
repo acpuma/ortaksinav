@@ -109,7 +109,7 @@ public class ProductsDao extends BaseGridDao<Products> implements Serializable{
             c.add(Restrictions.eq("active", true));
             c.addOrder(Order.desc("date"));
             //c.add(Restrictions.eq("isDeleted", false));
-            c.setMaxResults(8);
+            //c.setMaxResults(8);
             list = c.list();
         } catch (Exception e) {
             Util.catchException(e);
