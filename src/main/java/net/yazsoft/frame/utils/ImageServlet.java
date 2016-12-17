@@ -26,7 +26,7 @@ public class ImageServlet extends HttpServlet {
             //TODO: get folder from web.xml or properties file
             //final File homeDir = new File(System.getProperty("user.home"));
             final File homeDir = new File(Util.getImagesFolder());
-            logger.info("HOME DIR : " + homeDir.toString());
+            logger.info("HOME DIR : " + homeDir.toString() + " ,FILENAME : " + filename);
             //String dirName="images";
             //File targetFolder = new File(homeDir,dirName);
             //File targetFolder = new File(homeDir);
