@@ -2,14 +2,17 @@ package net.yazsoft.frame.utils;
 
 import org.apache.log4j.Logger;
 
+import javax.imageio.ImageIO;
 import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 
@@ -34,6 +37,12 @@ public class ImageServlet extends HttpServlet {
             response.setHeader("Content-Type", getServletContext().getMimeType(filename));
             response.setHeader("Content-Length", String.valueOf(file.length()));
             response.setHeader("Content-Disposition", "inline; filename=\"" + filename + "\"");
+            /*
+            BufferedImage bi = ImageIO.read(file);
+            OutputStream out = response.getOutputStream();
+            ImageIO.write(bi, "jpg", out);
+            out.close();
+            */
             Files.copy(file.toPath(), response.getOutputStream());
         } catch (NoSuchFileException e) {
             //e.printStackTrace();

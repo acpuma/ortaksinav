@@ -48,7 +48,7 @@ public class Util implements Serializable{
         if (HOMEDIR.indexOf("root")>-1 ) {
             HOMEDIR="/home/admin/";
         }
-        logger.info("LOG01590: HOMEDIR : " + HOMEDIR);
+        //logger.info("LOG01590: HOMEDIR : " + HOMEDIR);
         return HOMEDIR;
     }
 

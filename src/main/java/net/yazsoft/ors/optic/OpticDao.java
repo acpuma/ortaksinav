@@ -101,8 +101,8 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public List<Optics> findOptics() {
         List<Optics> list=null;
         try {
-            log.info("ACTIVE USER : " + Util.getActiveUser());
-            log.info("USER SCHOOLS : " + Util.getActiveUser().getSchoolsCollection());
+            //log.info("ACTIVE USER : " + Util.getActiveUser());
+            //log.info("USER SCHOOLS : " + Util.getActiveUser().getSchoolsCollection());
             if (!Util.getActiveUser().getSchoolsCollection().isEmpty()) {
                 Criteria c = getCriteria();
                 c.add(Restrictions.eq("active", true));
@@ -212,7 +212,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             }
             update(optic);
             setItem(optic);
-            log.info("CLONE OPTIC ID : " + tid);
+            //log.info("CLONE OPTIC ID : " + tid);
             Util.setFacesMessage("FARKLI KAYIT EDILDI");
         } catch (Exception e) {
             Util.catchException(e);
@@ -244,7 +244,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 getItem().setRefSchool(Util.getActiveSchool());
                 Long opticId=super.create();
                 setItem((Optics)getSession().load(Optics.class,opticId));
-                log.info("OPTIC SAVED NAME : " + getItem().getName());
+                //log.info("OPTIC SAVED NAME : " + getItem().getName());
                 getSession().flush();
                 for (OpticsFields ofield: fields) {
                     ofield.setRefOptic(getItem());
@@ -256,7 +256,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                     part.setRefOptic(getItem());
                     part.setCreated(Util.getNow());
                     part.setActive(true);
-                    log.info("PART CHARS: " + part.getChars());
+                    //log.info("PART CHARS: " + part.getChars());
                     getSession().saveOrUpdate(part.toEntity());
                 }
                 getSession().flush();
@@ -353,7 +353,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         }
 
         for (OpticsPartsDto opticPart: partsDtos) {
-            log.info("OpticsPartsDto : " + opticPart);
+            //log.info("OpticsPartsDto : " + opticPart);
             opticPart.setOptic(optic);
             opticPart.setRatio(ratio);
             /*
@@ -444,7 +444,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 student = studentsDao.findByNoAndSchool(Integer.valueOf(dist.getSchoolNo()), dist.getRefSchool());
             }
             for (OpticsFields field : fields) {
-                log.info("DIST NAME : " + field.getRefFieldType().getNameDist());
+                //log.info("DIST NAME : " + field.getRefFieldType().getNameDist());
                 float x = (field.getLeftx()-2) * ratio;// + optic.getMarginx();
                 float y = field.getTopy() * ratio;// + optic.getMarginy();
                 if ((field.getActive()) &&(field.getRefFieldType().getNameDist()!=null)){
@@ -585,12 +585,12 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             for (OpticsPartsDto part : partsDtos) {
                 part.setOptic(optic);
                 part.setRatio(ratio);
-                log.info("part : " + part);
-                log.info("fieldtype : " + part.getRefFieldType());
+                //log.info("part : " + part);
+                //log.info("fieldtype : " + part.getRefFieldType());
                 if (part.getRefFieldType()!=null) {
-                    log.info("namedist : " + part.getRefFieldType().getNameDist());
+                    //log.info("namedist : " + part.getRefFieldType().getNameDist());
                 }
-                log.info("student : " + student);
+                //log.info("student : " + student);
                 if (part.getActive() && part.getRefFieldType()!=null
                         && part.getRefFieldType().getNameDist()!=null
                         && student!=null) {
@@ -640,7 +640,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 if (text.substring(x).indexOf(" ")>-1) {
                     y=x+text.substring(x).indexOf(" ");
                 }
-                log.info("X : " + x + " , Y : " + y);
+                //log.info("X : " + x + " , Y : " + y);
 
                 String texttype=null;
                 if (y>-1) {
@@ -679,7 +679,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                         textvalue =  calendar.get(Calendar.DAY_OF_MONTH) + " "
                                 + calendar.getDisplayName(Calendar.MONTH,Calendar.LONG_STANDALONE,new Locale("TR"));
                 }
-                log.info("texttype : " + texttype + ", textvalue : " + textvalue);
+                //log.info("texttype : " + texttype + ", textvalue : " + textvalue);
                 if (y > -1 ) {
                     if (textvalue==null) {
                         text = text.substring(0, x).concat(text.substring(y));
@@ -708,17 +708,17 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public String findLessonName(Students student, int lessonIndex) {
         String lessonName=null;
         List<Schedules> schedules=scheduleDao.findDaySchedules(getItem().getScheduleDate());
-        log.info("SCHEDULES : " + schedules);
+        //log.info("SCHEDULES : " + schedules);
         ArrayList<Schedules> studentSchedules=new ArrayList<>();
         for (Schedules schedule:schedules) {
-            log.info("SCHEDULE CLASS TYPE : " + schedule.getRefLessonGroup().getRefSchoolClassType());
-            log.info("STUDENT CLASS TYPE : " + student.getRefSchoolClass().getRefSchoolClassType());
+            //log.info("SCHEDULE CLASS TYPE : " + schedule.getRefLessonGroup().getRefSchoolClassType());
+            //log.info("STUDENT CLASS TYPE : " + student.getRefSchoolClass().getRefSchoolClassType());
             if (schedule.getRefLessonGroup().getRefSchoolClassType().getTid().equals(
                     student.getRefSchoolClass().getRefSchoolClassType().getTid())) {
                 studentSchedules.add(schedule);
             }
         }
-        log.info("STUDENT SCHEDULES : " + studentSchedules);
+        //log.info("STUDENT SCHEDULES : " + studentSchedules);
         for (int i=0; i<studentSchedules.size(); i++) {
             if (i==lessonIndex) {
                 if ((studentSchedules.get(i).getRefLessonName().getShortnameTr()!=null) &&
@@ -729,7 +729,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 }
             }
         }
-        log.info("LESSON INDEX : " + lessonIndex + " , NAME : |" + lessonName + "|");
+        //log.info("LESSON INDEX : " + lessonIndex + " , NAME : |" + lessonName + "|");
         return lessonName;
     }
 
@@ -738,7 +738,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             float x = ((part.getX() - 2) * ratio) + part.getOptic().getMarginx();
             float y = (part.getY() * ratio) + part.getOptic().getMarginy() - 2;
             String codeStr = String.valueOf(code);
-            log.info("CODESTR : |" + codeStr + "|");
+            //log.info("CODESTR : |" + codeStr + "|");
             if ( (codeStr != null) && (!codeStr.equals("null")) ) {
                 for (int i = 0; i < codeStr.length(); i++) {
                     char charc = codeStr.charAt(i);
@@ -751,7 +751,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     }
 
     public void printCode(StringBuffer sb,OpticsPartsDto part,Object code) {
-        log.info("DIST NAME : " + part.getRefFieldType().getNameDist());
+        //log.info("DIST NAME : " + part.getRefFieldType().getNameDist());
         float x = part.findX();
         float y = part.findY();
         //if (part.getCharType().equals("K")) {
@@ -761,7 +761,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
 
         }
         if (part.isPrint()) {
-            log.info("CODESTR : " + codeStr);
+            //log.info("CODESTR : " + codeStr);
             if (codeStr != null) {
                 for (int i = 0; i < codeStr.length(); i++) {
                     char charc = codeStr.charAt(i);
