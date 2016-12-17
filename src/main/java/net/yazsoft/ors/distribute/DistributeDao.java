@@ -100,7 +100,8 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                             for (int j = 0; j < booklets.size(); j++) {
                                 if (dist.getBooklet() != null) {
                                     String level = Util.findClassLevelAndBranch(dist.getClassName(), true);
-                                    if ((booklets.get(j).equals(dist.getBooklet()))
+                                    if ( (dist.getRoom().equals(rooms.get(r)))
+                                            && (booklets.get(j).equals(dist.getBooklet()))
                                             && (levels.get(i).equals(level))) {
                                         levelbooklets[r][i][j]++;
                                     }

@@ -46,7 +46,7 @@ public class ScheduleDao extends BaseGridDao<Schedules> implements Serializable{
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(date);
         int hour=calendar.get(Calendar.HOUR_OF_DAY);
-        hour--;
+        //hour--;
 
         switch (hour) {
             case 0: case 1: case 2 :case 3:case 4 :case 5 : lessonGroup=lessonGroups.get(0);break;
@@ -121,9 +121,13 @@ public class ScheduleDao extends BaseGridDao<Schedules> implements Serializable{
             eventModel = new DefaultScheduleModel();
         }
         for (Schedules schedule:findSchoolSchedules()) {
-            log.info("schedule : " + schedule.getRefLessonName().getNameTr() + schedule.getStartDate());
-            eventModel.addEvent(new DefaultScheduleEvent(schedule.getRefLessonName().getNameTr(),
-                    schedule.getStartDate(),schedule.getEndDate(),schedule));
+            if (schedule.getRefLessonName()!=null) {
+                log.info("schedule : " + schedule.getRefLessonName().getNameTr() + schedule.getStartDate());
+                eventModel.addEvent(new DefaultScheduleEvent(schedule.getRefLessonName().getNameTr(),
+                        schedule.getStartDate(), schedule.getEndDate(), schedule));
+            } else {
+                log.info("schedule : " + schedule.getStartDate() + " lesson name is null" );
+            }
 
         }
     }
