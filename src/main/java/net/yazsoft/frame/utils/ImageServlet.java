@@ -17,7 +17,7 @@ import java.nio.file.NoSuchFileException;
 @Named
 @WebServlet("/images/*")
 public class ImageServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(ImageServlet.class.getName());
+    //private static final Logger logger = Logger.getLogger(ImageServlet.class.getName());
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -26,7 +26,7 @@ public class ImageServlet extends HttpServlet {
             //TODO: get folder from web.xml or properties file
             //final File homeDir = new File(System.getProperty("user.home"));
             final File homeDir = new File(Util.getImagesFolder());
-            logger.info("HOME DIR : " + homeDir.toString() + " ,FILENAME : " + filename);
+            //logger.info("HOME DIR : " + homeDir.toString() + " ,FILENAME : " + filename);
             //String dirName="images";
             //File targetFolder = new File(homeDir,dirName);
             //File targetFolder = new File(homeDir);
@@ -37,6 +37,8 @@ public class ImageServlet extends HttpServlet {
             Files.copy(file.toPath(), response.getOutputStream());
         } catch (NoSuchFileException e) {
             //e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
