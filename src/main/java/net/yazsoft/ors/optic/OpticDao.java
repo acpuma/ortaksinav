@@ -446,7 +446,9 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             ServletOutputStream out = response.getOutputStream();
             String head = "<!DOCTYPE html> <html lang='tr'>"
                     + "<head> <meta charset='utf-8'>"
-                    + "<meta http-equiv='content-type' content='text/html; charset=UTF-8'/>";
+                    + "<meta http-equiv='content-type' content='text/html; charset=UTF-8'/>"
+                    + "<link type='text/css' rel='stylesheet' "
+                    + "href='http://www.ortaksinav.com.tr/javax.faces.resource/pages/optic.css?ln=css' />";
             out.write(head.getBytes());
             out.write("</head>".getBytes());
             out.write(svgprint.getBytes("UTF-8"));
