@@ -417,7 +417,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 continue;
             }
 //            sb.append("<page>");
-            log.info("PAGECOUNT: " + pagecount);
+            //log.info("PAGECOUNT: " + pagecount);
             sb.append("<svg width='210mm' height='295mm' class='page-break'>");
             printPage(sb,dist,false);
             sb.append("</svg>");

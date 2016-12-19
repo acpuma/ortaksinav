@@ -4,3 +4,7 @@ target
 atlassian-ide-plugin.xml
 *.DS_Store
 Archive.zip
+/deployments/
+deployments/
+out/
+
