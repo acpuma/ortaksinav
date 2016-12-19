@@ -444,7 +444,13 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         response.setHeader("Content-Disposition","attachment;filename=optic.html");
         try {
             ServletOutputStream out = response.getOutputStream();
+            String head = "<!DOCTYPE html> <html lang='tr'>"
+                    + "<head> <meta charset='utf-8'>"
+                    + "<meta http-equiv='content-type' content='text/html; charset=UTF-8'/>";
+            out.write(head.getBytes());
+            out.write("</head>".getBytes());
             out.write(svgprint.getBytes());
+            out.write("</html>".getBytes());
             out.flush();
             out.close();
         } catch (IOException e) {
