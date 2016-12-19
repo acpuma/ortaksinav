@@ -20,8 +20,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
@@ -55,7 +59,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public void svgAppendImage(OpticsFields field,StringBuffer sb,String filepath,float x, float y) {
         File file = new File(Util.getImagesFolder() + filepath);
         if (file.exists()) {
-            sb.append("<image xlink:href='/images" + filepath); //TODO: for remote
+            sb.append("<image xlink:href='http://www.ortaksinav.com.tr/images" + filepath); //TODO: for remote
             //sb.append("<image xlink:href='/"+Util.getContextPath().toLowerCase() +"/images" + filepath); //TODO: for local
             String width = "50";
             String height = "50";
@@ -63,7 +67,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             if (field.getValue2() != null) height = field.getValue2();
 
             sb.append("' x='" + x + "' y='" + y + "' width='" + width
-                    + "' height='" + height + "' />");
+                    + "px' height='" + height + "px' />");
         }
     }
 
@@ -431,6 +435,21 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         svgprint=sb.toString();
     }
 
+    public void downloadOptic() {
+        HttpServletResponse response = (HttpServletResponse)
+                FacesContext.getCurrentInstance().getExternalContext().getResponse();
+
+        response.setContentType("text/htmll");
+        response.setHeader("Content-Disposition","attachment;filename=optic.html");
+        try {
+            ServletOutputStream out = response.getOutputStream();
+            out.write(svgprint.getBytes());
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void printPage(StringBuffer sb,Distributes dist,Boolean preview) {
@@ -458,7 +477,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                             barcode.setType("code128");
                         }
                         BarcodeRendererBean renderer = new BarcodeRendererBean();
-                        sb.append("<image xlink:href='");
+                        sb.append("<image xlink:href='http://www.ortaksinav.com.tr");
                         sb.append(renderer.encodeSrc(FacesContext.getCurrentInstance(), barcode));
                         String width= "50" ;
                         if (field.getValue2()!=null) {

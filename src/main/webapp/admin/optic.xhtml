@@ -173,6 +173,9 @@
                                      update="pageForm :messages " style="margin: auto 10px;" >
                         <p:printer target="pageForm:svgprint" />
                     </p:commandButton>
+
+                    <p:commandButton action="#{opticDao.downloadOptic()}"
+                                     value="Dosyaya Kaydet" ajax="false"/>
                         <br/>
 
                 </p:tab>
@@ -231,6 +234,20 @@
         <p:commandButton value="#{msg.global_no}" type="button"
                          styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
     </p:confirmDialog>
+
+    <h:outputScript>
+        function downloadInnerHtml(filename, elId) {
+            var elHtml = document.getElementById(elId).innerHTML;
+            var link = document.createElement('a');
+            var mimeType = 'text/html';
+            link.setAttribute('download', filename);
+            link.setAttribute('href', 'data:' + mimeType  +  ';charset=utf-8,' + encodeURIComponent(elHtml));
+            link.click();
+        }
+    </h:outputScript>
+
+
+    <a id="exportxt" href="#">SAVE PROJECT IN TXT FILE</a>
 </p:outputPanel>
     </ui:decorate>
 </f:view>
