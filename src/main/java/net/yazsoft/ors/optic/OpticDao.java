@@ -439,7 +439,8 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         HttpServletResponse response = (HttpServletResponse)
                 FacesContext.getCurrentInstance().getExternalContext().getResponse();
 
-        response.setContentType("text/htmll");
+        response.setContentType("text/html; charset=UTF-8\"");
+        response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-Disposition","attachment;filename=optic.html");
         try {
             ServletOutputStream out = response.getOutputStream();
@@ -727,19 +728,19 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public String findLessonName(Students student, int lessonIndex) {
         String lessonName=null;
         List<Schedules> schedules=scheduleDao.findDaySchedules(getItem().getScheduleDate());
-        //log.info("SCHEDULES : " + schedules);
+        log.info("SCHEDULES : " + schedules);
         ArrayList<Schedules> studentSchedules=new ArrayList<>();
         for (Schedules schedule:schedules) {
-            //log.info("SCHEDULE CLASS TYPE : " + schedule.getRefLessonGroup().getRefSchoolClassType());
-            //log.info("STUDENT CLASS TYPE : " + student.getRefSchoolClass().getRefSchoolClassType());
+            log.info("SCHEDULE CLASS TYPE : " + schedule.getRefLessonGroup().getRefSchoolClassType());
+            log.info("STUDENT CLASS TYPE : " + student.getRefSchoolClass().getRefSchoolClassType());
             if (schedule.getRefLessonGroup().getRefSchoolClassType().getTid().equals(
                     student.getRefSchoolClass().getRefSchoolClassType().getTid())) {
                 studentSchedules.add(schedule);
             }
         }
-        //log.info("STUDENT SCHEDULES : " + studentSchedules);
+        log.info("STUDENT SCHEDULES : " + studentSchedules);
         for (int i=0; i<studentSchedules.size(); i++) {
-            if (i==lessonIndex) {
+            if ( (i==lessonIndex) && (studentSchedules.get(i).getRefLessonName()!=null)) {
                 if ((studentSchedules.get(i).getRefLessonName().getShortnameTr()!=null) &&
                     (!studentSchedules.get(i).getRefLessonName().getShortnameTr().equals("")) ) {
                     lessonName = studentSchedules.get(i).getRefLessonName().getShortnameTr();
@@ -748,7 +749,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 }
             }
         }
-        //log.info("LESSON INDEX : " + lessonIndex + " , NAME : |" + lessonName + "|");
+        log.info("LESSON INDEX : " + lessonIndex + " , NAME : |" + lessonName + "|");
         return lessonName;
     }
 
