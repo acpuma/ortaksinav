@@ -389,50 +389,57 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     }
 
     public void printPreview() {
-
-        //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
-        StringBuffer sb=new StringBuffer("<svg width='210mm' height='295mm' style='transform:scale(0.55);transform-origin:0 0;'>");
-        List<Distributes> distributes=distributeDao.getDistributes();
-        if ((distributes!=null) && (distributes.size()>0)) {
-            if (getItem().getFirstno() != null) {
-                printPage(sb, distributes.get(getItem().getFirstno() - 1), true);
-            } else {
-                printPage(sb, distributes.get(0), true);
+        try {
+            //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
+            StringBuffer sb = new StringBuffer("<svg width='210mm' height='295mm' style='transform:scale(0.55);transform-origin:0 0;'>");
+            List<Distributes> distributes = distributeDao.getDistributes();
+            if ((distributes != null) && (distributes.size() > 0)) {
+                if (getItem().getFirstno() != null) {
+                    printPage(sb, distributes.get(getItem().getFirstno() - 1), true);
+                } else {
+                    printPage(sb, distributes.get(0), true);
+                }
             }
+            sb.append("</svg>");
+            svgpreview = sb.toString();
+        } catch (Exception e) {
+            Util.catchException(e);
         }
-        sb.append("</svg>");
-        svgpreview=sb.toString();
     }
 
 
     public void createPrintSvg() {
-        //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
-        StringBuffer sb = new StringBuffer("");
+        try {
+            //StringBuffer sb=new StringBuffer("<svg width=\"420\" height=\"597\">");
+            StringBuffer sb = new StringBuffer("");
 //        sb.append("<pageSet>");
-        int pagecount=0;
-        //getItem().setRatio(21);
-        for (Distributes dist:distributeDao.getDistributes()) {
-            pagecount++;
-            //log.info("PAGECOUNT: " + pagecount);
-            if ((getItem().getFirstno()!=null) && (pagecount<getItem().getFirstno())){
-                continue;
-            }
-            if ((getItem().getLastno()!=null) && (pagecount>getItem().getLastno())) {
-                continue;
-            }
+            int pagecount = 0;
+            //getItem().setRatio(21);
+            for (Distributes dist : distributeDao.getDistributes()) {
+                pagecount++;
+                //log.info("PAGECOUNT: " + pagecount);
+                if ((getItem().getFirstno() != null) && (pagecount < getItem().getFirstno())) {
+                    continue;
+                }
+                if ((getItem().getLastno() != null) && (pagecount > getItem().getLastno())) {
+                    continue;
+                }
 //            sb.append("<page>");
-            //log.info("PAGECOUNT: " + pagecount);
-            sb.append("<svg width='210mm' height='295mm' class='page-break'>");
-            printPage(sb,dist,false);
-            sb.append("</svg>");
+                //log.info("PAGECOUNT: " + pagecount);
+                sb.append("<svg width='210mm' height='295mm' class='page-break'>");
+                printPage(sb, dist, false);
+                sb.append("</svg>");
 //            sb.append("<div class='page-break'></div>");
 //            sb.append("</page>");
 
 
-        }
+            }
 //        sb.append("</pageSet>");
 //        sb.append("</svg>");
-        svgprint=sb.toString();
+            svgprint = sb.toString();
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
     }
 
     public void downloadOptic() {
@@ -472,7 +479,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
                 student = studentsDao.findByNoAndSchool(Integer.valueOf(dist.getSchoolNo()), dist.getRefSchool());
             }
             for (OpticsFields field : fields) {
-                //log.info("DIST NAME : " + field.getRefFieldType().getNameDist());
+                log.info("DIST NAME : " + field.getRefFieldType().getNameDist());
                 float x = (field.getLeftx()-2) * ratio;// + optic.getMarginx();
                 float y = field.getTopy() * ratio;// + optic.getMarginy();
                 if ((field.getActive()) &&(field.getRefFieldType().getNameDist()!=null)){
@@ -613,12 +620,12 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
             for (OpticsPartsDto part : partsDtos) {
                 part.setOptic(optic);
                 part.setRatio(ratio);
-                //log.info("part : " + part);
-                //log.info("fieldtype : " + part.getRefFieldType());
+                log.info("part : " + part);
+                log.info("fieldtype : " + part.getRefFieldType());
                 if (part.getRefFieldType()!=null) {
                     //log.info("namedist : " + part.getRefFieldType().getNameDist());
                 }
-                //log.info("student : " + student);
+                log.info("student : " + student);
                 if (part.getActive() && part.getRefFieldType()!=null
                         && part.getRefFieldType().getNameDist()!=null
                         && student!=null) {
@@ -779,7 +786,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     }
 
     public void printCode(StringBuffer sb,OpticsPartsDto part,Object code) {
-        //log.info("DIST NAME : " + part.getRefFieldType().getNameDist());
+        log.info("DIST NAME : " + part.getRefFieldType().getNameDist());
         float x = part.findX();
         float y = part.findY();
         //if (part.getCharType().equals("K")) {
@@ -789,7 +796,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
 
         }
         if (part.isPrint()) {
-            //log.info("CODESTR : " + codeStr);
+            log.info("CODESTR : " + codeStr);
             if (codeStr != null) {
                 for (int i = 0; i < codeStr.length(); i++) {
                     char charc = codeStr.charAt(i);
