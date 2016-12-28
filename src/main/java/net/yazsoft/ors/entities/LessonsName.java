@@ -53,7 +53,6 @@ public class LessonsName extends BaseEntity implements Serializable {
     @Column(name = "name_en", length = 255)
     private String nameEn;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "shortname_tr", length = 255)
     private String shortnameTr;
