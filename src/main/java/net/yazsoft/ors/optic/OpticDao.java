@@ -228,6 +228,7 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
     public Long save() {
         try {
             if (status== Status.UPDATE) {
+                log.info("FIELDS : " + fields);
                 getItem().setOpticsFieldsCollection(fields);
                 List<OpticsParts> parts=new ArrayList<>();
                 for (OpticsPartsDto dto:partsDtos) {

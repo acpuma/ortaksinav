@@ -50,7 +50,7 @@ public class Optics extends BaseEntity implements Serializable,Cloneable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date scheduleDate;
 
-    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",orphanRemoval = true)
     private Collection<OpticsFields> opticsFieldsCollection;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "refOptic",fetch = FetchType.LAZY)
