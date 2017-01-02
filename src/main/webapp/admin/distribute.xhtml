@@ -49,6 +49,15 @@
         }
     </h:outputStylesheet>
 </p:outputPanel>
+
+    <p:confirmDialog global="true">
+        <p:commandButton value="#{msg.global_yes}" type="button"
+                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+        <p:commandButton value="#{msg.global_no}" type="button"
+                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+    </p:confirmDialog>
+
+    <p:ajaxStatus  onstart="PF('blockUIWidget1').block()" oncomplete="PF('blockUIWidget1').unblock();" />
 </ui:decorate>
 </f:view>
 </html>
