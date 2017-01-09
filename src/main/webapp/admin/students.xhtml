@@ -19,6 +19,14 @@
                              widgetVar="studentsGridWidget" update=":#{p:component('formPanel')}"/>
         <p:outputPanel style="text-align: right;">
             <h:form>
+                <p:commandButton value="Şifreleri Sıfırla" update=":messages"
+                                 actionListener="#{studentsDao.resetCredits()}"
+                                 disabled="#{not authsDao.auths.pupdate}"
+                                 onstart="PF('blockUIWidget1').block()"
+                                 oncomplete="PF('blockUIWidget1').unblock();">
+                <p:confirm header="Tüm öğrencilerin şifreleri sıfırlansınmı?"
+                           message="#{msg.toolbar_save_confirm}" icon="ui-icon-alert"/>
+                </p:commandButton>
             <p:commandButton value="Foto Yazdir" update=":messages"
                              actionListener="#{studentsDao.reportPhotos}" ajax="false"
                              disabled="#{not authsDao.auths.preport}" onclick="this.form.target='_blank'"  />
@@ -189,6 +197,12 @@
                                  widgetVar="studentsDtosGridWidget" />
 
     </p:dialog>
+    <p:confirmDialog global="true">
+        <p:commandButton value="#{msg.global_yes}" type="button"
+                         styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+        <p:commandButton value="#{msg.global_no}" type="button"
+                         styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+    </p:confirmDialog>
 
 </p:outputPanel>
 </ui:decorate>

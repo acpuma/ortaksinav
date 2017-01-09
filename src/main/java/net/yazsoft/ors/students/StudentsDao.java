@@ -49,6 +49,27 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     @Inject Report report;
 
 
+    public void resetCredits() {
+        String credit;
+        try {
+            for (Students student : findBySchool(Util.getActiveSchool())) {
+                if (Util.getActiveSchool().getUseMernis()) {
+                    credit = student.getMernis();
+                } else {
+                    credit = Util.getActiveSchool().getMebCode().concat(student.getSchoolNo().toString());
+                }
+                //logger.info("LOG02720: CREDIT : " + credit);
+                student.setUsername(credit);
+                if (credit != null) {
+                    student.setPassword(encoder.encode(credit));
+                }
+                update(student);
+            }
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
+
     public void handleClassChange() {
         logger.info("selected class : " + selectedClass);
     }
@@ -460,7 +481,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
         excel.handleFileUpload(event,FILENAME,null);
     }
 
-    public List findBySchool(Schools school) {
+    public List<Students> findBySchool(Schools school) {
         logger.info("SCHOOL : " + school);
         List list=null;
         try {
