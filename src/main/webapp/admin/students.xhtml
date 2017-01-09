@@ -18,6 +18,10 @@
     <components:studentsGrid rows="100"  scrollable="true" id="studentsGrid" scrollHeight="460"
                              widgetVar="studentsGridWidget" update=":#{p:component('formPanel')}"/>
         <p:outputPanel style="text-align: right;">
+            <h:form>
+            <p:commandButton value="Foto Yazdir" update=":messages"
+                             actionListener="#{studentsDao.reportPhotos}" ajax="false"
+                             disabled="#{not authsDao.auths.preport}" onclick="this.form.target='_blank'"  />
             <p:commandButton value="Foto Yukle" process="@this" icon="fa fa-photo"
                              oncomplete="PF('uploadStudentPhotos').show()"
             />
@@ -34,7 +38,7 @@
                              disabled="#{not authsDao.auths.padd}"
             >
             </p:commandButton>
-
+            </h:form>
 
         </p:outputPanel>
 

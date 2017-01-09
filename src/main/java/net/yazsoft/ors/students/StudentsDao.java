@@ -1,6 +1,8 @@
 package net.yazsoft.ors.students;
 
+import net.sf.jasperreports.engine.JRParameter;
 import net.yazsoft.frame.hibernate.BaseGridDao;
+import net.yazsoft.frame.report.Report;
 import net.yazsoft.frame.scopes.ViewScoped;
 import net.yazsoft.frame.utils.Excel;
 import net.yazsoft.frame.utils.Util;
@@ -24,9 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -41,10 +41,54 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     List<Students> gridStudents;
     List<StudentsDto> studentsDtos;
     List<Students> foundStudents;
+    SchoolsClass selectedClass;
 
     @Inject SchoolsClassDao schoolsClassDao;
     @Inject Excel excel;
     @Inject private BCryptPasswordEncoder encoder;
+    @Inject Report report;
+
+
+    public void handleClassChange() {
+        logger.info("selected class : " + selectedClass);
+    }
+    public void reportPhotos() {
+        try {
+
+            logger.info("LOG01610: selelectedClass : " + selectedClass);
+            Map<String, Object> params = new HashMap<>();
+            params.put("pSchoolName", Util.getActiveSchool().getName());
+            params.put("pschool", Util.getActiveSchool().getTid());
+            if (selectedClass == null) {
+                //Util.setFacesMessageError("Sinif Seciniz");
+                //return;
+                params.put("pclass", null);
+            } else {
+                params.put("pclass", selectedClass);
+            }
+            params.put("pdate", Util.getActiveExam().getDate());
+            Date now = Calendar.getInstance(new Locale("TR")).getTime();
+            params.put("pnow", now);
+            if (Util.getActiveSchool().getRefCity() != null) {
+                logger.info("CITY : " + Util.getActiveSchool().getRefCity().getName());
+                params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+            }
+            if (Util.getActiveSchool().getRefTown() != null) {
+                params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
+            }
+            params.put("pyil", Util.getActiveExam().getRefExamYear().getName());
+            params.put("pdonem", Util.getActiveExam().getRefExamSeason().getNameTr());
+            if (Util.getActiveSchool().getRefImage() != null) {
+                params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
+                        + "." + Util.getActiveSchool().getRefImage().getExtension());
+            }
+            Locale trlocale = Locale.forLanguageTag("tr-TR");
+            params.put(JRParameter.REPORT_LOCALE, trlocale);
+            report.pdf("repPhotosStudent", params, Util.getActiveSchool().getName());
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
 
     @Override
     public void delete() {
@@ -595,5 +639,14 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
 
     public void setStudentsDtos(List<StudentsDto> studentsDtos) {
         this.studentsDtos = studentsDtos;
+    }
+
+
+    public SchoolsClass getSelectedClass() {
+        return selectedClass;
+    }
+
+    public void setSelectedClass(SchoolsClass selectedClass) {
+        this.selectedClass = selectedClass;
     }
 }

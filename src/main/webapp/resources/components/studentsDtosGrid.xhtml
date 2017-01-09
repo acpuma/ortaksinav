@@ -98,7 +98,8 @@
                       filterBy="#{studentsDtosVar.refSchoolClass}"
                       sortBy="#{studentsDtosVar.refSchoolClass.name}">
                 <f:facet name="filter">
-                    <p:selectOneMenu onchange="PF('#{cc.attrs.widgetVar}').filter()" >
+                    <p:selectOneMenu  value="#{studentsDao.selectedClass}" converter="entityConverter" >
+                        <p:ajax event="valueChange" update="@widgetVar(#{cc.attrs.widgetVar})" listener="#{studentsDao.handleClassChange()}"/>
                         <f:selectItem itemLabel="#{msg.global_all}" itemValue="#{null}"
                                       noSelectionOption="true" />
                         <f:selectItems value="#{studentsDao.schoolsClasses}" var="man"

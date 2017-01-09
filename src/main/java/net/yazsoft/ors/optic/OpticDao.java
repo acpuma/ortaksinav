@@ -741,14 +741,20 @@ public class OpticDao extends BaseGridDao<Optics> implements Serializable{
         }
     }
 
-    public String findLessonName(Students student, int lessonIndex) {
+    public String findLessonName(Students student, int lessonIndex) throws Exception {
         String lessonName=null;
         List<Schedules> schedules=scheduleDao.findDaySchedules(getItem().getScheduleDate());
         log.info("SCHEDULES : " + schedules);
         ArrayList<Schedules> studentSchedules=new ArrayList<>();
         for (Schedules schedule:schedules) {
             log.info("SCHEDULE CLASS TYPE : " + schedule.getRefLessonGroup().getRefSchoolClassType());
+            if (student.getRefSchoolClass().getRefSchoolClassType()==null) {
+                throw new Exception(student.getRefSchoolClass().getName() + " Datigim Sinif seviyesi bos");
+            }
             log.info("STUDENT CLASS TYPE : " + student.getRefSchoolClass().getRefSchoolClassType());
+            if (student.getRefSchoolClass().getRefSchoolClassType()==null) {
+                throw new Exception(student.getRefSchoolClass().getName() + " Ogrenci Sinif seviyesi bos");
+            }
             if (schedule.getRefLessonGroup().getRefSchoolClassType().getTid().equals(
                     student.getRefSchoolClass().getRefSchoolClassType().getTid())) {
                 studentSchedules.add(schedule);
