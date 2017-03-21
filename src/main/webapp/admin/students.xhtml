@@ -19,6 +19,11 @@
                              widgetVar="studentsGridWidget" update=":#{p:component('formPanel')}"/>
         <p:outputPanel style="text-align: right;">
             <h:form>
+                <p:commandButton value="FotoIndir" update=":messages" ajax="false"
+                                 actionListener="#{studentsDao.downloadAllPhotos}"
+                                 onstart="PF('blockUIWidget1').block()"
+                                 oncomplete="PF('blockUIWidget1').unblock();">
+                </p:commandButton>
                 <p:commandButton value="Şifreleri Sıfırla" update=":messages"
                                  actionListener="#{studentsDao.resetCredits()}"
                                  disabled="#{not authsDao.auths.pupdate}"

@@ -1,9 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
-target
-.idea
+target/
+.idea/
 atlassian-ide-plugin.xml
 *.DS_Store
 Archive.zip
 /deployments/
 deployments/
 out/
+/.idea/

@@ -1,5 +1,6 @@
 package net.yazsoft.ors.students;
 
+import com.google.common.io.Files;
 import net.sf.jasperreports.engine.JRParameter;
 import net.yazsoft.frame.hibernate.BaseGridDao;
 import net.yazsoft.frame.report.Report;
@@ -17,16 +18,20 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 import org.primefaces.event.FileUploadEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.zeroturnaround.zip.ZipUtil;
 
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.*;
+
 
 @Named
 @ViewScoped
@@ -49,6 +54,78 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     @Inject Report report;
 
 
+    public void downloadAllPhotos() throws IOException {
+        try {
+
+            File tempFolder = new File(Util.getUploadsFolder()+"/temp");
+            //Util.createDirectory(tempFolder);
+            String imagesFolder = Util.getImagesFolder()+"/student";
+            int i=0;
+            int count=0;
+            String notcopied="";
+            for (Students student:Util.getActiveSchool().getStudentsCollection()) {
+                count++;
+                try {
+                    if (student.getRefImage()!=null) {
+                        File source = new File(imagesFolder + "/" + Util.getActiveSchool().getTid() + "/"
+                                + student.getTid() + "." + student.getRefImage().getExtension());
+                        File dest = new File(tempFolder + "/" + student.getRefSchoolClass().getName() + "/"
+                                + student.getSchoolNo() + "." + student.getRefImage().getExtension());
+                        logger.debug("source : " + source);
+                        logger.debug("dest : " + dest);
+                        //Util.createDirectory(tempFolder+"/"+student.getRefSchoolClass().getName());
+                        Files.createParentDirs(dest);
+
+                        Files.copy(source, dest);
+                        i++;
+                    } else {
+                        notcopied=notcopied.concat(student.getRefSchoolClass().getName() +"|"+ student.getSchoolNo()+" ");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //if (i>5) break;
+            }
+            logger.info("Students count : " +count + " copied : " + i);
+            logger.info("Not copied : " + notcopied);
+
+            ZipUtil.pack(tempFolder,new File(Util.getUploadsFolder()+"/"+Util.getActiveSchool().getTid()+"Foto.zip"));
+
+
+            File file = new File(Util.getUploadsFolder() + "/"
+                    + Util.getActiveSchool().getTid().toString() + "Foto.zip");
+            HttpServletResponse httpServletResponse = (HttpServletResponse)
+                    FacesContext.getCurrentInstance().getExternalContext().getResponse();
+            httpServletResponse.addHeader("Content-disposition", "attachment; filename="
+                    + Util.getActiveSchool().getTid().toString() + "Foto.zip");
+
+            FacesContext.getCurrentInstance().responseComplete();
+
+            ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream();
+
+            BufferedInputStream input = null;
+            //BufferedOutputStream output = null;
+            input = new BufferedInputStream(new FileInputStream(file), BUFFER_SIZE);
+
+            // Write file contents to response.
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int length;
+            while ((length = input.read(buffer)) > 0) {
+                servletOutputStream.write(buffer, 0, length);
+            }
+
+            servletOutputStream.flush();
+            servletOutputStream.close();
+            input.close();
+            FacesContext.getCurrentInstance().responseComplete();
+
+        } catch (Exception e) {
+            logger.error("EXCEPTION: ", e);
+            Util.setFacesMessageError(e.getMessage());
+            throw e;
+        }
+    }
     public void resetCredits() {
         String credit;
         try {
