@@ -106,7 +106,12 @@ public class UploadsBean extends BaseDao implements Serializable{
                 }
             }
             logger.info("STUDENT : " + student );
-            handleImageUpload(event);
+            if (student==null) {
+                logger.error(schoolNo+" nolu ogrenci yok");
+                Util.setFacesMessageError(schoolNo+" nolu ogrenci yok");
+            } else {
+                handleImageUpload(event);
+            }
         } catch (Exception e) {
             Util.catchException(e);
         }

@@ -57,8 +57,11 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
     public void downloadAllPhotos() throws IOException {
         try {
 
-            File tempFolder = new File(Util.getUploadsFolder()+"/temp");
+            File tempFolder =Files.createTempDir();
+            //new File(Util.getUploadsFolder()+"/temp");
             //Util.createDirectory(tempFolder);
+            logger.info("TEMP FOLDER : " + tempFolder);
+
             String imagesFolder = Util.getImagesFolder()+"/student";
             int i=0;
             int count=0;
@@ -87,6 +90,11 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
                 }
                 //if (i>5) break;
             }
+            File bilgi=new File(tempFolder+"/bilgi.txt");
+            FileWriter fw=new FileWriter(bilgi);
+            fw.write("Ogrenci sayisi : " +count + " kopyalanan : " + i + "\n");
+            fw.write("Kopyalanmayanlar : " + notcopied);
+            fw.close();
             logger.info("Students count : " +count + " copied : " + i);
             logger.info("Not copied : " + notcopied);
 
