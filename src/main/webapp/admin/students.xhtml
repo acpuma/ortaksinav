@@ -80,6 +80,7 @@
                              action="#{uploadsBean.deleteClassStudentsImages()}"
             >
             </p:commandButton>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
             <p:fileUpload fileUploadListener="#{uploadsBean.handleStudentImages}"
                           mode="advanced"
