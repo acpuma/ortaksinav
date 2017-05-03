@@ -8,3 +8,5 @@ Archive.zip
 deployments/
 out/
 /.idea/
+/src/main/resources/rebel.xml
+/ors.iml
