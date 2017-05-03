@@ -20,6 +20,7 @@
     </security:http>
 
      <security:http auto-config="true" use-expressions="true" >
+
         <security:intercept-url pattern="/javax.faces.resource/**" access="permitAll"/>
         <security:intercept-url pattern="/resources/**" access="permitAll"/>
         <security:intercept-url pattern="/index.html" access="permitAll"/>
@@ -34,7 +35,7 @@
         <!--<security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>-->
         
         <security:form-login login-page="/login/login.html"/>
-        
+
       <!--    we don't use this config because we use a custom logout action in LoginBean and we invalidate session in there -->
 <!--         <security:logout invalidate-session="true" delete-cookies="true" logout-success-url="/faces/login.xhtml" logout-url="/logout"></security:logout> -->
     </security:http>

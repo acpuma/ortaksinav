@@ -1,5 +1,6 @@
 package net.yazsoft.frame.upload;
 
+import com.google.common.io.Files;
 import net.yazsoft.frame.hibernate.BaseDao;
 import net.yazsoft.frame.images.ImagesDao;
 import net.yazsoft.frame.images.ImagesTypeDao;
@@ -8,15 +9,18 @@ import net.yazsoft.frame.security.UsersDao;
 import net.yazsoft.frame.utils.Util;
 import net.yazsoft.ors.entities.*;
 import net.yazsoft.ors.products.ProductsDao;
+import net.yazsoft.ors.schools.SchoolsClassDao;
 import net.yazsoft.ors.schools.SchoolsDao;
 import net.yazsoft.ors.students.StudentsDao;
 import net.yazsoft.ors.weblinks.WebLinksDao;
 import net.yazsoft.ors.webslides.WebSlidesDao;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.zeroturnaround.zip.ZipUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -74,6 +78,8 @@ public class UploadsBean extends BaseDao implements Serializable{
     @Inject ProductsDao productsDao;
     @Inject WebLinksDao webLinksDao;
 
+    @Inject SchoolsClassDao schoolsClassDao;
+
     @PostConstruct
     public void init() {
         logger.info("UPLOAD CONSTRUCTOR");
@@ -86,6 +92,87 @@ public class UploadsBean extends BaseDao implements Serializable{
         logger.info("School Class : " +schoolClass);
     }
 
+    public void handleSchoolImages(FileUploadEvent event) {
+        try {
+            File tempFolder = Files.createTempDir();
+            logger.info("TEMP : " + tempFolder);
+            ZipUtil.unpack(event.getFile().getInputstream(),tempFolder);
+            File[] directories = tempFolder.listFiles(File::isDirectory);
+            for (File dir:directories) {
+            //File dir=directories[0];
+                File[] files = dir.listFiles(File::isFile);
+                for (File file:files) {
+                //File file=files[0];
+                    String filename=file.getName();
+                    logger.info("Student Filename : " + filename);
+                    Integer schoolNo=Integer.valueOf(filename.substring(0,filename.lastIndexOf(".")).toLowerCase());
+                    logger.info("STUDENT NO : " + schoolNo);
+                    Students student=studentsDao.findBySchoolClassAndNo(Util.getActiveSchool(),
+                            schoolsClassDao.findBySchoolAndName(Util.getActiveSchool(),dir.getName()),schoolNo);
+
+                    logger.info("STUDENT : " + student );
+                    if (student==null) {
+                        logger.error(schoolNo+" nolu ogrenci yok");
+                        Util.setFacesMessageError(schoolNo+" nolu ogrenci yok");
+                    } else {
+                        saveStudentImage(file,student);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+    }
+
+
+    public void saveStudentImage(File file,Students student) {
+        try {
+            //logger.info("File name/size : "+file.getAbsolutePath()+"  "+file.length());
+            //logger.info("UPLOad Directory : "+uploadDirectory);
+            fileType=IMAGE;
+            Long tid=null;
+            if (student!=null) {
+                tid=student.getTid();
+            } else {
+                tid = studentsDao.getItem().getTid();
+            }
+
+            getUploadDirectory(null);
+            String filenameOriginal=file.getName();
+            String extension=UploadsDao.getFileExtension(filenameOriginal);
+
+            FileUtils.copyFile(file,new File(uploadDirectory,tid+"."+extension));
+
+            ImagesType imagesType=null;
+
+            imagesType=(ImagesType)getSession().load(ImagesType.class,3L);
+
+            Images image=null;
+            image=imagesDao.findImageByTidAndType(tid,imagesType);
+            if (image==null) {
+                image=new Images();
+            }
+            image.setName(filenameOriginal);
+            image.setExtension(extension);
+            image.setRefSchool(Util.getActiveSchool());
+            image.setActive(true);
+            image.setRefTid(tid);
+            image.setRefImageType(imagesType);
+
+            imagesDao.saveOrUpdate(image);
+
+            student.setRefImage(image);
+            studentsDao.update(student);
+
+        } catch (Exception e) {
+            Util.catchException(e);
+        }
+
+    }
+
+
+
     @Transactional
     public void handleStudentImages(FileUploadEvent event) {
         try {
@@ -95,7 +182,7 @@ public class UploadsBean extends BaseDao implements Serializable{
             }
             String filename=event.getFile().getFileName();
 
-            logger.info("Stdunet Filename : " + filename);
+            logger.info("Student Filename : " + filename);
             Integer schoolNo=Integer.valueOf(filename.substring(0,filename.lastIndexOf(".")).toLowerCase());
             logger.info("STUDENT NO : " + schoolNo);
             List<Students> studentsList=studentsDao.findBySchoolClass(schoolClass);
@@ -137,7 +224,6 @@ public class UploadsBean extends BaseDao implements Serializable{
         }
     }
 
-
     @Transactional
     public void handleImageUpload(FileUploadEvent event) {
         logger.info("UPLOADING IMAGE.......");
@@ -168,7 +254,10 @@ public class UploadsBean extends BaseDao implements Serializable{
 
             InputStream inputStream;
             inputStream = event.getFile().getInputstream();
-            BufferedImage bufferedImage= ImageIO.read(event.getFile().getInputstream());
+            if (inputStream==null) {
+                throw new Exception("InputStream is NULL");
+            }
+            BufferedImage bufferedImage= ImageIO.read(inputStream);
             Integer imgWidth=bufferedImage.getWidth();
             Integer imgHeight=bufferedImage.getHeight();
             if (imageWidth==null) {
