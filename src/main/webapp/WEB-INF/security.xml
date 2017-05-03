@@ -7,7 +7,7 @@
           http://www.springframework.org/schema/security
           http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <security:http auto-config="true" use-expressions="true" pattern="/student/**">
+    <security:http auto-config="true" use-expressions="true" pattern="/student/**" >
         <security:intercept-url pattern="/student/login.html" access="permitAll"/>
         <security:intercept-url pattern="/logout" access="permitAll"/>
         <security:intercept-url pattern="/student/**" access="hasRole('STUDENT')"/>
