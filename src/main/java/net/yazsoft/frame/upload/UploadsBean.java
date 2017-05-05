@@ -269,17 +269,18 @@ public class UploadsBean extends BaseDao implements Serializable{
                 inputStream = Util.imageResize(event.getFile().getInputstream(), extension, imageWidth, imageHeight);
             }
             String filename=tid.toString()+"."+extension.toLowerCase();
+            /*
             OutputStream out = new FileOutputStream(new File(uploadDirectory,filename));
             int read = 0;
             byte[] bytes = new byte[BUFFER_SIZE];
-
             while ((read = inputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
             inputStream.close();
             out.flush();
             out.close();
-
+            */
+            Files.write(event.getFile().getContents(),new File(uploadDirectory,filename));
             //Util.setFacesMessage(" RESIM YUKLENDI ");
 
             ImagesType imagesType=null;
