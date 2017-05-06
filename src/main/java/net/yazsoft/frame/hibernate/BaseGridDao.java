@@ -2,25 +2,11 @@ package net.yazsoft.frame.hibernate;
 
 import net.yazsoft.frame.utils.Util;
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /* @author acpuma */
 

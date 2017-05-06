@@ -1,0 +1,2 @@
+tomcat run java options :
+    -Dorg.apache.el.parser.SKIP_IDENTIFIER_CHECK=true
