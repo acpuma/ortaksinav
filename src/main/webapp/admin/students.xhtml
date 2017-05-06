@@ -63,8 +63,8 @@
             <p:tab title="Sinif">
         <h:form enctype="multipart/form-data" id="uploadStudentImages" >
             #{uploadsBean.setImageType('student')}
-            #{uploadsBean.setImageHeight(256)}
-            #{uploadsBean.setImageWidth(256)}
+            #{uploadsBean.setImageHeight(512)}
+            #{uploadsBean.setImageWidth(512)}
 
             <p:selectOneMenu value="#{uploadsBean.schoolClass}" required="true" requiredMessage="Sinif seciniz" converter="entityConverter"
                     id="selectSchoolClass" >
@@ -101,8 +101,8 @@
             <p:tab title="Okul">
                 <h:form id="uploadAllImages" enctype="multipart/form-data">
                     #{uploadsBean.setImageType('student')}
-                    #{uploadsBean.setImageHeight(256)}
-                    #{uploadsBean.setImageWidth(256)}
+                    #{uploadsBean.setImageHeight(512)}
+                    #{uploadsBean.setImageWidth(512)}
                     <p:fileUpload fileUploadListener="#{uploadsBean.handleSchoolImages}"
                               mode="advanced"
                               multiple="false"

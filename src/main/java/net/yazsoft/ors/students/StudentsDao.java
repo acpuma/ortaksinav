@@ -250,9 +250,10 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
 
                 //query.setLong("role", getItem().getRefRole().getTid());
                 query.executeUpdate();
-                Util.setFacesMessage("KAYIT GÜNCELLENDİ");
+                Util.setFacesMessage("KAYIT GÜNCELLENDİ (sifre degistirilMEdi)");
             } else {
                 getItem().setPassword(encoder.encode(getItem().getPassword()));
+                Util.setFacesMessage("KAYIT GÜNCELLENDİ (sifre degistirildi)");
                 super.update();
             }
             logger.info("LOG02680: STUDENT UPDATE : " + getItem().getTid() + " : " + getItem().getUsername()

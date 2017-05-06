@@ -92,6 +92,11 @@ public class UploadsBean extends BaseDao implements Serializable{
         logger.info("School Class : " +schoolClass);
     }
 
+
+    /**
+     * Update all students in a school from uploaded zip file
+     * @param event FileUploadEvent from form
+     */
     public void handleSchoolImages(FileUploadEvent event) {
         try {
             File tempFolder = Files.createTempDir();
@@ -126,6 +131,11 @@ public class UploadsBean extends BaseDao implements Serializable{
     }
 
 
+    /**
+     * Saves image File to the student
+     * @param file
+     * @param student
+     */
     public void saveStudentImage(File file,Students student) {
         try {
             //logger.info("File name/size : "+file.getAbsolutePath()+"  "+file.length());
@@ -142,7 +152,22 @@ public class UploadsBean extends BaseDao implements Serializable{
             String filenameOriginal=file.getName();
             String extension=UploadsDao.getFileExtension(filenameOriginal);
 
-            FileUtils.copyFile(file,new File(uploadDirectory,tid+"."+extension));
+
+
+            BufferedImage bufferedImage= ImageIO.read(file);
+            Integer imgWidth=bufferedImage.getWidth();
+            Integer imgHeight=bufferedImage.getHeight();
+            if (imageWidth==null) {
+                imageWidth=512;
+            }
+
+            InputStream inputStream = new FileInputStream(file);
+            if (imgWidth>imageWidth) {
+                imageHeight=imgHeight*(imageWidth/imgWidth); //scale
+                inputStream = Util.imageResize(inputStream, extension, imageWidth, imageHeight);
+            }
+            String filename=tid.toString()+"."+extension.toLowerCase();
+            FileUtils.copyInputStreamToFile(inputStream,new File(uploadDirectory,tid+"."+extension));
 
             ImagesType imagesType=null;
 
@@ -261,7 +286,7 @@ public class UploadsBean extends BaseDao implements Serializable{
             Integer imgWidth=bufferedImage.getWidth();
             Integer imgHeight=bufferedImage.getHeight();
             if (imageWidth==null) {
-                imageWidth=256;
+                imageWidth=512;
             }
 
             if (imgWidth>imageWidth) {
@@ -314,16 +339,18 @@ public class UploadsBean extends BaseDao implements Serializable{
             imagesDao.saveOrUpdate(image);
             switch (imageType) {
                 case (IMAGE_USER) :
-                    usersDao.getItem().setRefImage(image); usersDao.update();break;
+                    usersDao.getItem().setRefImage(image);
+                    //usersDao.update();
+                    break;
                 case (IMAGE_SCHOOL) :
                     schoolsDao.getItem().setRefImage(image); schoolsDao.update();break;
                 case (IMAGE_STUDENT) :
                     if (student==null) {
                         studentsDao.getItem().setRefImage(image);
-                        studentsDao.update();
+                        //studentsDao.update();
                     } else {
                         student.setRefImage(image);
-                        studentsDao.update(student);
+                        //studentsDao.update(student);
                     }
                     break;
                 case (IMAGE_SLIDE) :
