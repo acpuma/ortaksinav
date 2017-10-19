@@ -172,7 +172,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
             } else {
                 params.put("pclass", selectedClass);
             }
-            params.put("pdate", Util.getNow());
+
             Date now = Calendar.getInstance(new Locale("TR")).getTime();
             params.put("pnow", now);
             if (Util.getActiveSchool().getRefCity() != null) {
@@ -182,8 +182,11 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
             if (Util.getActiveSchool().getRefTown() != null) {
                 params.put("pilce", Util.getActiveSchool().getRefTown().getName().toUpperCase());
             }
-            params.put("pyil", Util.getActiveExam().getRefExamYear().getName());
-            params.put("pdonem", Util.getActiveExam().getRefExamSeason().getNameTr());
+            if (Util.getActiveExam()!=null) {
+                params.put("pdate", Util.getActiveExam().getDate());
+                params.put("pyil", Util.getActiveExam().getRefExamYear().getName());
+                params.put("pdonem", Util.getActiveExam().getRefExamSeason().getNameTr());
+            }
             if (Util.getActiveSchool().getRefImage() != null) {
                 params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
                         + "." + Util.getActiveSchool().getRefImage().getExtension());
