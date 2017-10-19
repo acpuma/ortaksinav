@@ -172,7 +172,7 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
             } else {
                 params.put("pclass", selectedClass);
             }
-            params.put("pdate", Util.getActiveExam().getDate());
+            params.put("pdate", Util.getNow());
             Date now = Calendar.getInstance(new Locale("TR")).getTime();
             params.put("pnow", now);
             if (Util.getActiveSchool().getRefCity() != null) {
