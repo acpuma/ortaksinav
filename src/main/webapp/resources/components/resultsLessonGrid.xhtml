@@ -153,6 +153,9 @@
                 <p:commandButton value="Ortalama PDF" process="@this"
                                  actionListener="#{resultsDao.reportLessonAverage}" ajax="false" rendered="true"
                                  disabled="#{not authsDao.auths.preport}" />
+                <p:commandButton value="Cevap PDF" process="@this"
+                                 actionListener="#{resultsDao.reportAnswerPlus}" ajax="false" rendered="true"
+                                 disabled="#{not authsDao.auths.preport}" />
 
 
                 <h:commandLink>

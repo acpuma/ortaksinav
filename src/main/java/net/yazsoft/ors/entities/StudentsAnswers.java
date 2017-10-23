@@ -82,6 +82,8 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Students refStudent;
 
+    private String answersPlus;
+
     public StudentsAnswers() {
     }
 
@@ -269,6 +271,14 @@ public class StudentsAnswers extends BaseEntity implements Serializable {
 
     public void setRefStudent(Students refStudent) {
         this.refStudent = refStudent;
+    }
+
+    public String getAnswersPlus() {
+        return answersPlus;
+    }
+
+    public void setAnswersPlus(String answersPlus) {
+        this.answersPlus = answersPlus;
     }
 
     @Override

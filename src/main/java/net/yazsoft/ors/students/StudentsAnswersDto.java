@@ -86,6 +86,8 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools refSchool;
 
+    private String answersPlus;
+
     @Override
     public int compareTo(StudentsAnswersDto o) {
         return Comparators.SCORE.compare(this, o);
@@ -126,6 +128,7 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
         entity.setRankClass(this.rankClass);
         entity.setScore(this.score);
         entity.setRefSchool(this.refSchool);
+        entity.setAnswersPlus(this.answersPlus);
         return entity;
     }
 
@@ -148,6 +151,7 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
         this.rankClass=entity.getRankClass();
         this.score=entity.getScore();
         this.refSchool=entity.getRefSchool();
+        this.answersPlus=entity.getAnswersPlus();
     }
 
     public StudentsAnswersDto(StudentsAnswers entity) {
@@ -353,5 +357,13 @@ public class StudentsAnswersDto extends BaseEntity implements Comparable<Student
 
     public void setRefSchool(Schools refSchool) {
         this.refSchool = refSchool;
+    }
+
+    public String getAnswersPlus() {
+        return answersPlus;
+    }
+
+    public void setAnswersPlus(String answersPlus) {
+        this.answersPlus = answersPlus;
     }
 }

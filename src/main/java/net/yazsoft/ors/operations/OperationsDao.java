@@ -518,8 +518,24 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                         } else {
                             if (answers.charAt(i) == dto.getAnswers().charAt(i)) {
                                 trues++;
+                                if (dto.getAnswersPlus()==null) {
+                                    dto.setAnswersPlus("");
+                                }
+                                if (dto.getAnswersPlus().length()>0) {
+                                    dto.setAnswersPlus(dto.getAnswersPlus().substring(0, i) + '+'
+                                            + dto.getAnswersPlus().substring(i));
+                                }
+
                             } else {
                                 falses++;
+                                if (dto.getAnswersPlus()==null) {
+                                    dto.setAnswersPlus("");
+                                }
+                                if (dto.getAnswersPlus().length()>0) {
+                                    dto.setAnswersPlus(dto.getAnswersPlus().substring(0, i) + '-'
+                                            + dto.getAnswersPlus().substring(i));
+                                }
+
                             }
                         }
                     }

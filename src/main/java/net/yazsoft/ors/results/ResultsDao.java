@@ -92,6 +92,45 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         report.pdf("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
     }
 
+    public void reportAnswerPlus() {
+        if (selectedLesson==null) {
+            Util.setFacesMessageError("Ders Seciniz");
+            return;
+        }
+        if (selectedClasses==null) {
+            Util.setFacesMessageError("Sinif Seciniz");
+            return;
+        }
+        logger.info("LOG01600: REPORT LESSON : " + selectedLesson + " : " + selectedLesson.getRefLessonName().getNameTr());
+        logger.info("LOG01610: selelectedClasses : " + selectedClasses);
+        Map<String, Object> params = new HashMap<>();
+        params.put("pSchoolName", Util.getActiveSchool().getName());
+        params.put("pexam", Util.getActiveExam().getTid());
+        params.put("plesson", selectedLesson.getTid());
+        params.put("pLessonName", selectedLesson.getRefLessonName().getNameTr());
+        params.put("pclasses",selectedClasses);
+        params.put("pdate",Util.getActiveExam().getDate());
+        Date now=Calendar.getInstance(new Locale("TR")).getTime();
+        params.put("pnow",now);
+        if (Util.getActiveSchool().getRefCity()!=null) {
+            logger.info("CITY : " + Util.getActiveSchool().getRefCity().getName());
+            params.put("pil", Util.getActiveSchool().getRefCity().getName().toUpperCase());
+        }
+        if (Util.getActiveSchool().getRefTown()!=null) {
+            params.put("pilce",Util.getActiveSchool().getRefTown().getName().toUpperCase());
+        }
+        params.put("pyil",Util.getActiveExam().getRefExamYear().getName());
+        params.put("pdonem",Util.getActiveExam().getRefExamSeason().getNameTr());
+        params.put("psinavno",Util.getActiveExam().getRefExamSeasonNumber().getName());
+        if (Util.getActiveSchool().getRefImage()!=null) {
+            params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
+                    + "." + Util.getActiveSchool().getRefImage().getExtension());
+        }
+        Locale trlocale= Locale.forLanguageTag("tr-TR");
+        params.put(JRParameter.REPORT_LOCALE, trlocale);
+        report.pdf("repAnswersPlus", params, selectedLesson.getRefLessonName().getNameTr());
+    }
+
     public void reportLessonAverage() {
         if (selectedLesson==null) {
             Util.setFacesMessageError("Ders Seciniz");
