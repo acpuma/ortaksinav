@@ -101,6 +101,10 @@ public class Schools extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "refSchool", fetch = FetchType.LAZY)
     private Collection<Schedules> schedulesCollection;
 
+    @JoinColumn(name = "ref_school", referencedColumnName = "tid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Schools mainSchool;
+
     public Schools() {
     }
 
@@ -331,6 +335,14 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setSchedulesCollection(Collection<Schedules> schedulesCollection) {
         this.schedulesCollection = schedulesCollection;
+    }
+
+    public Schools getMainSchool() {
+        return mainSchool;
+    }
+
+    public void setMainSchool(Schools mainSchool) {
+        this.mainSchool = mainSchool;
     }
 
     @Override

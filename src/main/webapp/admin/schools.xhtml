@@ -61,6 +61,12 @@
                     <f:selectItems value="#{citiesDao.towns}" var="sitem"
                                    itemValue="#{sitem}" itemLabel="#{sitem.name}"/>
                 </p:selectOneMenu>
+                <h:outputLabel value="Ust Kurum:" for="mainSchool" />
+                <p:selectOneMenu value="#{schoolsDao.item.mainSchool}"  rendered="true" id="mainSchool" style="max-width: 150px;"
+                >
+                    <f:selectItems value="#{schoolsDao.all}" var="sitem"
+                                   itemValue="#{sitem}" itemLabel="#{sitem.name}" />
+                </p:selectOneMenu>
                 <h:outputLabel value="Kullanıcı Adı Kimlik No ?" for="usemernis" />
                 <p:selectBooleanCheckbox value="#{schoolsDao.item.useMernis}" id="usemernis"/>
 
