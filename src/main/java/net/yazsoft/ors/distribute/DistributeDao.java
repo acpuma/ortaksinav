@@ -635,6 +635,11 @@ public class DistributeDao extends BaseGridDao<Distributes> implements Serializa
                 params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
                         + "." + Util.getActiveSchool().getRefImage().getExtension());
             }
+            Schools mainSchool=Util.getActiveSchool().getMainSchool();
+            if (mainSchool.getRefImage()!=null) {
+                params.put("plogoMain", "http://www.ortaksinav.com.tr/images/school/" + mainSchool.getTid()
+                        + "." + mainSchool.getRefImage().getExtension());
+            }
             params.put("pDistributeNameId", distributeNameId);
             Locale trlocale = Locale.forLanguageTag("tr-TR");
             params.put(JRParameter.REPORT_LOCALE, trlocale);
