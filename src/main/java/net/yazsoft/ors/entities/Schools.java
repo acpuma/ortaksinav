@@ -105,6 +105,8 @@ public class Schools extends BaseEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Schools mainSchool;
 
+    private String header;
+
     public Schools() {
     }
 
@@ -343,6 +345,14 @@ public class Schools extends BaseEntity implements Serializable {
 
     public void setMainSchool(Schools mainSchool) {
         this.mainSchool = mainSchool;
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     @Override

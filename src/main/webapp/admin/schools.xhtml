@@ -64,12 +64,25 @@
                 <h:outputLabel value="Ust Kurum:" for="mainSchool" />
                 <p:selectOneMenu value="#{schoolsDao.item.mainSchool}"  rendered="true" id="mainSchool" style="max-width: 150px;"
                 >
+                    <f:selectItem itemLabel="#{msg.global_select}" itemValue="#{null}"
+                                  noSelectionOption="true"/>
                     <f:selectItems value="#{schoolsDao.all}" var="sitem"
                                    itemValue="#{sitem}" itemLabel="#{sitem.name}" />
                 </p:selectOneMenu>
                 <h:outputLabel value="Kullanıcı Adı Kimlik No ?" for="usemernis" />
                 <p:selectBooleanCheckbox value="#{schoolsDao.item.useMernis}" id="usemernis"/>
 
+            </p:panelGrid>
+            <p:panelGrid columns="4">
+                <p:row>
+                    <p:column>
+                        <p:outputLabel value="Rapor Basligi : " for="baslik" />
+                    </p:column>
+                    <p:column rowspan="3">
+                        <p:inputTextarea id="baslik" value="#{schoolsDao.item.header}" style="text-align: center"
+                                         rows="3" cols="80"  />
+                    </p:column>
+                </p:row>
             </p:panelGrid>
             <h:inputHidden id="tid" value="#{schoolsDao.item.tid}"/>
             <h:inputHidden id="status" value="#{schoolsDao.status}"  />

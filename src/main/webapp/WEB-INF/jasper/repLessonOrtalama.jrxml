@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-09-16T18:47:43 -->
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repLessonOrtalama" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="4a347f6f-d90a-478c-a4a1-e131f8f7eb00">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="orsdb"/>
 	<style name="ZebraStyle">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2==1]]></conditionExpression>
@@ -50,32 +50,33 @@
 	<parameter name="pil" class="java.lang.String"/>
 	<parameter name="pclasses" class="java.util.Collection"/>
 	<parameter name="pclassesstr" class="java.lang.String"/>
+	<parameter name="plogoMain" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[select c.name as classname, count(*) as sayi,s.ref_school_class,
 sum(a.trues) as trues,
 sum(a.falses) as falses,
 sum(a.nulls) as nulls,
 sum(a.nets) as nets,
-sum(a.score)/count(*) as score 
+sum(a.score)/count(*) as score,
+(SELECT header from orsdb.`Schools` where tid=s.ref_school) as header
 from StudentsAnswers a, Students s, SchoolsClass c
  where a.ref_student=s.tid 
  and  s.ref_school_class=c.tid
  and  a.ref_exam= $P{pexam} 
  and a.ref_lesson=$P{plesson}
  and $X{IN,c.tid, pclasses}
- group by classname collate utf8_turkish_ci ,s.ref_school_class 
+ group by classname collate utf8_turkish_ci ,s.ref_school_class,header 
   order by score desc]]>
 	</queryString>
 	<field name="classname" class="java.lang.String"/>
 	<field name="sayi" class="java.lang.Long"/>
-	<field name="ref_school_class" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="trues" class="java.lang.Double"/>
-	<field name="falses" class="java.lang.Double"/>
-	<field name="nulls" class="java.lang.Double"/>
+	<field name="ref_school_class" class="java.lang.Long"/>
+	<field name="trues" class="java.math.BigDecimal"/>
+	<field name="falses" class="java.math.BigDecimal"/>
+	<field name="nulls" class="java.math.BigDecimal"/>
 	<field name="nets" class="java.lang.Double"/>
 	<field name="score" class="java.lang.Double"/>
+	<field name="header" class="java.lang.String"/>
 	<variable name="sumscore" class="java.lang.Float" calculation="Sum">
 		<variableExpression><![CDATA[$F{score}]]></variableExpression>
 	</variable>
@@ -146,28 +147,8 @@ from StudentsAnswers a, Students s, SchoolsClass c
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA["http://www.ortaksinav.com.tr/images/school/0.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{plogoMain}]]></imageExpression>
 			</image>
-			<textField>
-				<reportElement x="79" y="32" width="402" height="27" uuid="efe29bb9-ea84-4c7b-a521-5c0b2eb8e254">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{pSchoolName} + " MÜDÜRLÜĞÜ"]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="79" y="0" width="402" height="16" uuid="e46e0676-0394-4bb5-aa5d-d89bae41d295">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[T.C.]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="80" y="75" width="402" height="16" uuid="f62c5cad-347a-4475-a5b1-d3f2ff318a67">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -219,14 +200,11 @@ from StudentsAnswers a, Students s, SchoolsClass c
 				<textFieldExpression><![CDATA[$P{pclassesstr}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="82" y="16" width="402" height="16" uuid="3573075c-7bf2-44a0-8c93-533f740cf4f4">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="80" y="0" width="404" height="50" uuid="bb458e5d-2241-4b0e-9f69-77129e4fc0c2"/>
+				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{pilce}.contains("MERKEZ") ? $P{pil} + " VALİLİĞİ" : $P{pilce} + " KAYMAKAMLIĞI"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{header}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -354,7 +332,7 @@ from StudentsAnswers a, Students s, SchoolsClass c
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{trues}/$F{sayi}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{trues}.longValue()/$F{sayi}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#0.00">
 					<reportElement x="196" y="0" width="60" height="12" uuid="128c383f-2b92-48c0-ac0d-74a3cccba7b2">
@@ -363,21 +341,21 @@ from StudentsAnswers a, Students s, SchoolsClass c
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{falses}/$F{sayi}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{falses}.longValue()/$F{sayi}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#0.00">
 					<reportElement x="256" y="0" width="61" height="12" uuid="d05b5635-b7ad-4079-a6ba-d57034d292d1">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{nulls}/$F{sayi}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nulls}.longValue()/$F{sayi}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#0.00">
 					<reportElement x="317" y="0" width="63" height="12" uuid="a9032dab-3b23-4a0b-b6a8-5518568eeecc">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{nets}/$F{sayi}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{nets}.longValue()/$F{sayi}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#0.00">
 					<reportElement x="380" y="0" width="60" height="12" uuid="70f33f5a-da1e-4aef-b91d-1e258c958ee5">

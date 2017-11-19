@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2016-09-16T18:49:14 -->
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="repDistribute" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4a347f6f-d90a-478c-a4a1-e131f8f7eb00">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="orsdb"/>
 	<style name="ZebraStyle">
 		<conditionalStyle>
 			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2==1]]></conditionExpression>
@@ -124,72 +124,35 @@ ORDER BY classname ASC,
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<parameter name="pil" class="java.lang.String"/>
+	<parameter name="plogoMain" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[SELECT *
+		<![CDATA[SELECT d.*,
+	(SELECT header from orsdb.`Schools` where tid=d.ref_school) as header
 FROM orsdb.`Distributes` d
 WHERE 
 	ref_distribute_name = $P{pDistributeNameId}]]>
 	</queryString>
-	<field name="tid" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="active" class="java.lang.Boolean">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="className" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="created" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="distributeRank" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="lesson1" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="lesson2" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="lesson3" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="lesson4" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="mernis" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="name" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="room" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="roomRank" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="schoolNo" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="surname" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="updated" class="java.sql.Timestamp">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="version" class="java.lang.Integer">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ref_distribute_name" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="ref_school" class="java.lang.Long">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
-	<field name="booklet" class="java.lang.String">
-		<fieldDescription><![CDATA[]]></fieldDescription>
-	</field>
+	<field name="tid" class="java.lang.Long"/>
+	<field name="active" class="java.lang.Boolean"/>
+	<field name="className" class="java.lang.String"/>
+	<field name="created" class="java.sql.Timestamp"/>
+	<field name="distributeRank" class="java.lang.Integer"/>
+	<field name="lesson1" class="java.lang.String"/>
+	<field name="lesson2" class="java.lang.String"/>
+	<field name="lesson3" class="java.lang.String"/>
+	<field name="lesson4" class="java.lang.String"/>
+	<field name="mernis" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="room" class="java.lang.String"/>
+	<field name="roomRank" class="java.lang.Integer"/>
+	<field name="schoolNo" class="java.lang.String"/>
+	<field name="surname" class="java.lang.String"/>
+	<field name="updated" class="java.sql.Timestamp"/>
+	<field name="version" class="java.lang.Integer"/>
+	<field name="ref_distribute_name" class="java.lang.Long"/>
+	<field name="ref_school" class="java.lang.Long"/>
+	<field name="booklet" class="java.lang.String"/>
+	<field name="header" class="java.lang.String"/>
 	<group name="Group1" isStartNewPage="true" keepTogether="true">
 		<groupExpression><![CDATA[$F{room}]]></groupExpression>
 		<groupHeader>
@@ -222,28 +185,8 @@ WHERE
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<imageExpression><![CDATA["http://www.ortaksinav.com.tr/images/school/0.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{plogoMain}]]></imageExpression>
 			</image>
-			<textField>
-				<reportElement x="79" y="32" width="402" height="16" uuid="efe29bb9-ea84-4c7b-a521-5c0b2eb8e254">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{pSchoolName} + " MÜDÜRLÜĞÜ"]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="79" y="0" width="402" height="16" uuid="e46e0676-0394-4bb5-aa5d-d89bae41d295">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12"/>
-				</textElement>
-				<text><![CDATA[T.C.]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="80" y="59" width="402" height="16" uuid="f8acf2ae-f234-4ca1-8253-05c0454a5df9">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -264,14 +207,11 @@ WHERE
 				<imageExpression><![CDATA[$P{plogo}]]></imageExpression>
 			</image>
 			<textField>
-				<reportElement x="82" y="16" width="402" height="16" uuid="4c130e6c-5666-4c4c-9cd2-64b52e58876c">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="80" y="0" width="404" height="50" uuid="0433b15a-2241-4b7c-85da-4643953c78f6"/>
+				<textElement textAlignment="Center">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{pilce}.contains("MERKEZ") ? $P{pil} + " VALİLİĞİ" : $P{pilce} + " KAYMAKAMLIĞI"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{header}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

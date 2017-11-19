@@ -87,6 +87,11 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
             params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
                     + "." + Util.getActiveSchool().getRefImage().getExtension());
         }
+        Schools mainSchool=Util.getActiveSchool().getMainSchool();
+        if (mainSchool.getRefImage()!=null) {
+            params.put("plogoMain", "http://www.ortaksinav.com.tr/images/school/" + mainSchool.getTid()
+                    + "." + mainSchool.getRefImage().getExtension());
+        }
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
         report.pdf("repLesson", params, selectedLesson.getRefLessonName().getNameTr());
@@ -125,6 +130,11 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         if (Util.getActiveSchool().getRefImage()!=null) {
             params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
                     + "." + Util.getActiveSchool().getRefImage().getExtension());
+        }
+        Schools mainSchool=Util.getActiveSchool().getMainSchool();
+        if (mainSchool.getRefImage()!=null) {
+            params.put("plogoMain", "http://www.ortaksinav.com.tr/images/school/" + mainSchool.getTid()
+                    + "." + mainSchool.getRefImage().getExtension());
         }
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
@@ -175,6 +185,11 @@ public class ResultsDao extends BaseGridDao<Results> implements Serializable{
         if (Util.getActiveSchool().getRefImage()!=null) {
             params.put("plogo", "http://www.ortaksinav.com.tr/images/school/" + Util.getActiveSchool().getTid()
                     + "." + Util.getActiveSchool().getRefImage().getExtension());
+        }
+        Schools mainSchool=Util.getActiveSchool().getMainSchool();
+        if (mainSchool.getRefImage()!=null) {
+            params.put("plogoMain", "http://www.ortaksinav.com.tr/images/school/" + mainSchool.getTid()
+                    + "." + mainSchool.getRefImage().getExtension());
         }
         Locale trlocale= Locale.forLanguageTag("tr-TR");
         params.put(JRParameter.REPORT_LOCALE, trlocale);
