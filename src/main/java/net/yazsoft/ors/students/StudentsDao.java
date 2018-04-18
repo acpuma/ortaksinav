@@ -330,8 +330,10 @@ public class StudentsDao extends BaseGridDao<Students> implements Serializable{
             foundStudents=findBySchool(Util.getActiveSchool());
         }
         for (Students student:foundStudents) {
-            if (student.getSchoolNo().equals(schoolNo)) {
-                return student;
+            if (student.getSchoolNo()!=null) {
+                if (student.getSchoolNo().equals(schoolNo)) {
+                    return student;
+                }
             }
         }
         return null;
