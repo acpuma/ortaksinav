@@ -923,8 +923,10 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
     private StudentsDto findStudentBySchoolno(Integer schoolNo) {
         for (StudentsDto dto:studentsDto) {
-            if (dto.getSchoolNo().equals(schoolNo)) {
-                return dto;
+            if (dto.getSchoolNo()!=null) {
+                if (dto.getSchoolNo().equals(schoolNo)) {
+                    return dto;
+                }
             }
         }
         return null;

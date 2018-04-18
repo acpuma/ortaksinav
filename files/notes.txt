@@ -1,2 +1,6 @@
 tomcat run java options :
     -Dorg.apache.el.parser.SKIP_IDENTIFIER_CHECK=true
+remove git ignored files from remote :
+    git rm --cached --force src/main/resources/rebel.xml
+    git commit -m "removed ignored file"
+    git push origin
