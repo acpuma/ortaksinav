@@ -480,7 +480,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             if ((examTime==null) || (examTime==0)){
                 examRatio = 1;
             } else {
-                examRatio = examTime / 100;
+                examRatio = (float)examTime * 0.010f;
             }
 
             logger.info("FALSETYPE : " + falseType);
@@ -557,11 +557,11 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 }
                 if (nets<0) nets=0f;
 
-                score= ( (float) 100 * examRatio /(lesson.getQuestionCount()-cancelCount) ) * nets;
+                score= ( (float) (100 * examRatio) /(lesson.getQuestionCount()-cancelCount) ) * nets;
 
                 //if all trues, score is 100
                 if (lesson.getQuestionCount()-cancelCount==trues) {
-                    score=(float)100 * examRatio;
+                    score=(float) (100 * examRatio);
                 }
                 logger.info("LESSON RESULT : trues:" + trues + ", falses : " + falses
                         + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score );
@@ -624,14 +624,14 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
                 //score=score/lessonsCount;
                 int totalcount=totalQuestionCount-totalCancelCount;
-                score = ( (float) 100 / (totalQuestionCount-totalCancelCount) ) * nets;
+                score = ( (float) (100 * examRatio) / (totalQuestionCount-totalCancelCount) ) * nets;
                 logger.info("EXAM RESULT : trues:" + trues + ", falses : " + falses
                         + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score + ", qc:" +totalQuestionCount
                         + " , totalCount : " + totalcount);
 
                 //if all trues, set score 100
                 if (totalQuestionCount-totalCancelCount==trues) {
-                    score = (float) 100 * examRatio;
+                    score = (float) (100 * examRatio);
                 }
                 result.setRefStudent(student);
                 result.setRefExam(Util.getActiveExam());
