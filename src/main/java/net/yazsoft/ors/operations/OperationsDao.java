@@ -474,6 +474,15 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
             Integer cancelCount;
 
             Integer falseType=Integer.parseInt(Util.getActiveExam().getRefFalseType().getName());
+            Integer examTime = Util.getActiveExam().getTime();
+            //100 den baska puanlama icin
+            float examRatio = 1;
+            if ((examTime==null) || (examTime==0)){
+                examRatio = 1;
+            } else {
+                examRatio = examTime / 100;
+            }
+
             logger.info("FALSETYPE : " + falseType);
             //find trues,falses,nulls,score
             logger.info("LOG01530: ANSWERS COUNT : " + answersDto.size());
@@ -548,11 +557,11 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
                 }
                 if (nets<0) nets=0f;
 
-                score= ( (float) 100/(lesson.getQuestionCount()-cancelCount) ) * nets;
+                score= ( (float) 100 * examRatio /(lesson.getQuestionCount()-cancelCount) ) * nets;
 
                 //if all trues, score is 100
                 if (lesson.getQuestionCount()-cancelCount==trues) {
-                    score=(float)100;
+                    score=(float)100 * examRatio;
                 }
                 logger.info("LESSON RESULT : trues:" + trues + ", falses : " + falses
                         + ", nulls : " + nulls + ", nets : " + nets + " ,score : " + score );
@@ -622,7 +631,7 @@ public class OperationsDao extends BaseGridDao<Results> implements Serializable{
 
                 //if all trues, set score 100
                 if (totalQuestionCount-totalCancelCount==trues) {
-                    score = (float) 100;
+                    score = (float) 100 * examRatio;
                 }
                 result.setRefStudent(student);
                 result.setRefExam(Util.getActiveExam());
