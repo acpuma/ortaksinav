@@ -8,4 +8,3 @@ tasks:
     init: | 
       mysql -u root < init/orsdb.sql
       mvn install
-      brew install tomcat@9
