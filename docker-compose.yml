@@ -1,0 +1,29 @@
+services:
+  db:
+     image: mysql:5.7
+     volumes:
+       - /opt/test:/var/lib/mysql
+       - ./mysql-dump:/docker-entrypoint-initdb.d
+     environment:
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_DATABASE: orsdb
+       MYSQL_USER: ors
+       MYSQL_PASSWORD: ortaks21
+     ports:
+       - 3306:3306
+     network_mode: "host" 
+  web:
+    depends_on:
+      - db
+    image: tomcat:9.0
+    volumes:
+      - ./deployments/ors.war:/usr/local/tomcat/webapps/ors.war
+    ports:
+      - '8082:8080'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: orsdb
+      MYSQL_USER: ors
+      MYSQL_PASSWORD: ortaks21
+    network_mode: "host" 
+  
