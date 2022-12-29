@@ -3,7 +3,7 @@ services:
      image: mysql:5.7
      volumes:
        - /opt/test:/var/lib/mysql
-       - ./mysql-dump:/docker-entrypoint-initdb.d
+       - ./init/orsdb.sql:/docker-entrypoint-initdb.d/datadump.sql 
      environment:
        MYSQL_ROOT_PASSWORD: root
        MYSQL_DATABASE: orsdb
@@ -18,6 +18,7 @@ services:
     image: tomcat:9.0
     volumes:
       - ./deployments/ors.war:/usr/local/tomcat/webapps/ors.war
+      - ./init/uploads.zip:/home/admin/uploads.zip
     ports:
       - '8082:8080'
     environment:
@@ -26,4 +27,4 @@ services:
       MYSQL_USER: ors
       MYSQL_PASSWORD: ortaks21
     network_mode: "host" 
-  
+    command: ["bash", "-c", "sleep 10 && apt-get update -y && apt-get install -y unzip && unzip /home/admin/uploads.zip"]
