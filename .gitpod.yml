@@ -4,4 +4,4 @@
 image:
   file: .gitpod.DockerFile
 tasks:
-  - init: mvn install -DskipTests=false
+  - init: mysql -u root < init/orsdb.sql
