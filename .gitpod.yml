@@ -4,4 +4,8 @@
 image:
   file: .gitpod.DockerFile
 tasks:
-  - init: mysql -u root < init/orsdb.sql
+  - name: dependencies
+    init: | 
+      mysql -u root < init/orsdb.sql
+      mvn install
+      brew install tomcat@9
