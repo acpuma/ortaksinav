@@ -1,17 +1,23 @@
 tasks:
+  - name: mysql
+    init : |
+      docker-compose up
+      gp sync-done bundle
   - name: dependencies
-    init: | 
+    init: |
+      gp sync-await bundle
       sudo cp settings.xml /home/gitpod/.m2
       mysql -u root -e "CREATE USER 'ors'@'localhost' IDENTIFIED BY 'ortaks21';"
       mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'ors'@'localhost' WITH GRANT OPTION;"
       mysql -u root -e "FLUSH PRIVILEGES;" 
       mysql -u root < init/orsdb.sql
       sudo mkdir /home/admin
-      sudo unzip init/uploads.zip -d /home/admin
+      sudo unzip init/uploads.zip -d /home/gitpod
       wget -c https://downloads.apache.org/tomcat/tomcat-9/v9.0.70/bin/apache-tomcat-9.0.70.tar.gz -P /workspace
       tar -xf /workspace/apache-tomcat-9.0.70.tar.gz -C /workspace
       cp deployments/ors.war /workspace/apache-tomcat-9.0.70/webapps/
-    command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh run 
+      export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.el.parser.SKIP_IDENTIFIER_CHECK=true"
+    command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh 
 ports:
   - port: 3306
   - port: 8080
