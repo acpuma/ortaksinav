@@ -6,8 +6,8 @@ image:
 tasks:
   - name: dependencies
     init: | 
-      mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'orsdb'@'%' WITH GRANT OPTION;"
-      mysql -e "FLUSH PRIVILEGES;" 
+      mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'orsdb'@'%' WITH GRANT OPTION;"
+      mysql -u root -e "FLUSH PRIVILEGES;" 
       mysql -u root < init/orsdb.sql
       sudo mkdir /home/admin
       sudo unzip init/uploads.zip -d /home/admin
