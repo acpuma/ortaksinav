@@ -6,7 +6,8 @@ image:
 tasks:
   - name: dependencies
     init: | 
-      mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'orsdb'@'%' WITH GRANT OPTION;"
+      mysql -u root -e "CREATE USER 'ors'@'localhost' IDENTIFIED BY 'ortaks21';"
+      mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'ors'@'localhost' WITH GRANT OPTION;"
       mysql -u root -e "FLUSH PRIVILEGES;" 
       mysql -u root < init/orsdb.sql
       sudo mkdir /home/admin
@@ -16,3 +17,5 @@ tasks:
       cp deployments/ors.war /workspace/apache-tomcat-9.0.70/webapps/
 
     command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh run 
+ports:
+  - port: 3306
