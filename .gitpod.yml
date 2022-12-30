@@ -9,3 +9,7 @@ tasks:
       mysql -u root < init/orsdb.sql
       sudo mkdir /home/admin
       sudo unzip init/uploads.zip -d /home/admin
+      wget -c https://downloads.apache.org/tomcat/tomcat-9/v9.0.70/bin/apache-tomcat-9.0.70.tar.gz -P /workspace
+      tar -xf /workspace/apache-tomcat-9.0.70.tar.gz -C /workspace
+      cp deployments/ors.war /workspace/apache-tomcat-9.0.70/webapps/
+    command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh run 
