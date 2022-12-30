@@ -16,7 +16,7 @@ tasks:
       tar -xf /workspace/apache-tomcat-9.0.70.tar.gz -C /workspace
       cp deployments/ors.war /workspace/apache-tomcat-9.0.70/webapps/
       export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.el.parser.SKIP_IDENTIFIER_CHECK=true"
-    command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh 
+    command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh run
 ports:
   - port: 3306
   - port: 8080
