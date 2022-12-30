@@ -19,4 +19,6 @@ tasks:
     command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh run
 ports:
   - port: 3306
-  - port: 8080
+  - name: WebApp
+    port: 8080
+    onOpen: open-browser
