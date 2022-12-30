@@ -7,4 +7,5 @@ tasks:
   - name: dependencies
     init: | 
       mysql -u root < init/orsdb.sql
-      mvn install
+      sudo mkdir /home/admin
+      sudo unzip init/uploads.zip -d /home/admin
