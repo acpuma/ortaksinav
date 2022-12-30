@@ -2,10 +2,9 @@ tasks:
   - name: mysql
     init : |
       docker-compose up
-      gp sync-done bundle
   - name: dependencies
     init: |
-      gp sync-await bundle
+      gp ports await 3306
       sudo cp settings.xml /home/gitpod/.m2
       mysql -u root -e "CREATE USER 'ors'@'localhost' IDENTIFIED BY 'ortaks21';"
       mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'ors'@'localhost' WITH GRANT OPTION;"
