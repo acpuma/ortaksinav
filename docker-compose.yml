@@ -20,7 +20,7 @@ services:
       - ./deployments/ors.war:/usr/local/tomcat/webapps/ors.war
       - ./init/uploads.zip:/home/admin/uploads.zip
     ports:
-      - '8082:8080'
+      - '8080:8080'
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: orsdb
