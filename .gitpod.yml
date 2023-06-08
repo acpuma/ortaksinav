@@ -12,12 +12,12 @@ tasks:
       mysql -u root < init/orsdb.sql
       sudo mkdir /home/admin
       sudo unzip init/uploads.zip -d /home/gitpod
-      wget -c https://downloads.apache.org/tomcat/tomcat-9/v9.0.70/bin/apache-tomcat-9.0.70.tar.gz -P /workspace
-      tar -xf /workspace/apache-tomcat-9.0.70.tar.gz -C /workspace
-      rm -R /workspace/apache-tomcat-9.0.70/webapps/ROOT
-      cp deployments/ors.war /workspace/apache-tomcat-9.0.70/webapps/ROOT.war
+      wget -c https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.75/bin/apache-tomcat-9.0.75.zip -P /workspace
+      tar -xf /workspace/apache-tomcat-9.0.75.tar.gz -C /workspace
+      rm -R /workspace/apache-tomcat-9.0.75/webapps/ROOT
+      cp deployments/ors.war /workspace/apache-tomcat-9.0.75/webapps/ROOT.war
       export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.el.parser.SKIP_IDENTIFIER_CHECK=true"
-    command: sh /workspace/apache-tomcat-9.0.70/bin/catalina.sh run
+    command: sh /workspace/apache-tomcat-9.0.75/bin/catalina.sh run
 ports:
   - port: 3306
   - name: WebApp
