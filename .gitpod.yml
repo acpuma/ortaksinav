@@ -12,9 +12,9 @@ tasks:
       mysql -u root < init/orsdb.sql
       sudo mkdir /home/admin
       sudo unzip init/uploads.zip -d /home/gitpod
-      wget -c https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz -P /workspace
+      wget -c https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.80/bin/apache-tomcat-9.0.80.tar.gz -P /workspace
       mkdir /workspace/tomcat
-      tar -xf /workspace/apache-tomcat-9.0.76.tar.gz -C /workspace/tomcat --strip-components=1 
+      tar -xf /workspace/apache-tomcat-9.0.80.tar.gz -C /workspace/tomcat --strip-components=1 
       rm -R /workspace/tomcat/webapps/ROOT
       cp deployments/ors.war /workspace/tomcat/webapps/ROOT.war
       export CATALINA_OPTS="$CATALINA_OPTS -Dorg.apache.el.parser.SKIP_IDENTIFIER_CHECK=true"
